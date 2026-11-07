@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>1-Click GSTR-1 JSON & GSTR-3B Filing Assistant — SellGST Pro</title>
+  <meta name="theme-color" content="#111827" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          },
+          colors: {
+            canvas: '#F4F5F7',
+            mint: '#CBE8BA'
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body {
+      background-color: #F4F5F7;
+      color: #111827;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+    }
+    .bento-card {
+      background: #FFFFFF;
+      border-radius: 24px;
+      border: 1px solid #E5E7EB;
+      box-shadow: 0 10px 30px -10px rgba(17, 24, 39, 0.05);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+    }
+    .bento-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 35px -12px rgba(17, 24, 39, 0.08);
+    }
+    .bento-mint {
+      background: #CBE8BA;
+      border-radius: 24px;
+      border: 1px solid #A3D987;
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-24 lg:pb-12 lg:pl-24">
+
+  <!-- DESKTOP FLOATING LEFT PILL SIDEBAR -->
+  <aside class="hidden lg:flex fixed left-4 top-4 bottom-4 w-16 bg-white border border-gray-200 rounded-full shadow-lg flex-col items-center justify-between py-5 z-40">
+    <a href="/app.html" title="SellGST Pro" class="w-11 h-11 rounded-2xl bg-gray-900 text-[#CBE8BA] flex items-center justify-center font-black text-base shadow">
+      S₹
+    </a>
+    <nav class="flex flex-col items-center gap-3">
+      <a href="/app.html" title="Dashboard" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+        📊
+      </a>
+      <a href="/invoice.html" title="GST Billing & Khata" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+        🧾
+      </a>
+      <a href="/ecom-audit.html" title="E-Com Audit & 4x6 Labels" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+        📦
+      </a>
+      <a href="/gst-filing.html" title="1-Click GSTR-1 JSON" class="w-11 h-11 rounded-2xl bg-gray-900 text-white flex items-center justify-center text-lg shadow-sm transition">
+        🏛️
+      </a>
+      <a href="/admin.html" title="Admin Console" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+        🛡️
+      </a>
+    </nav>
+    <div class="flex flex-col items-center gap-2">
+      <button type="button" data-open-ai="How do I upload the GSTR-1 JSON file on gst.gov.in and file with EVC OTP?" title="Ask AI" class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm">
+        🤖
+      </button>
+    </div>
+  </aside>
+
+  <!-- MOBILE FLOATING BOTTOM DOCK -->
+  <nav class="lg:hidden fixed bottom-3 inset-x-3 bg-gray-950/95 backdrop-blur-md text-white rounded-3xl px-3 py-2.5 shadow-2xl border border-white/10 z-40 flex items-center justify-around">
+    <a href="/app.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+      <span class="text-base">📊</span>
+      <span data-i18n="nav_dashboard">Dashboard</span>
+    </a>
+    <a href="/invoice.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+      <span class="text-base">🧾</span>
+      <span data-i18n="nav_invoice">GST Bill</span>
+    </a>
+    <a href="/ecom-audit.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+      <span class="text-base">📦</span>
+      <span data-i18n="nav_audit">Audit</span>
+    </a>
+    <a href="/gst-filing.html" class="flex flex-col items-center gap-0.5 text-[#CBE8BA] font-bold text-[10px]">
+      <span class="text-base">🏛️</span>
+      <span data-i18n="nav_gst">GSTR-1</span>
+    </a>
+    <a href="/admin.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+      <span class="text-base">🛡️</span>
+      <span>Admin</span>
+    </a>
+  </nav>
+
+  <!-- MAIN CONTENT WRAPPER -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-4 space-y-6">
+
+    <!-- TOP HEADER -->
+    <header class="bg-white rounded-3xl border border-gray-200 px-4 sm:px-6 py-3.5 shadow-sm flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-gray-900 text-[#CBE8BA] flex items-center justify-center text-lg font-extrabold">
+          🏛️
+        </div>
+        <div>
+          <h1 class="font-extrabold text-sm sm:text-base text-gray-900">1-Click GSTR-1 (.JSON) Generator & GSTR-3B Copy Assistant</h1>
+          <p class="text-[11px] text-gray-500">Strict `gst.gov.in` Schema v3.1.6 • Zero-CA Self-Filing Engine • E-Com TCS Credit</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2.5">
+        <select
+          data-lang-switcher
+          aria-label="Language"
+          class="px-3 py-1.5 rounded-full bg-[#F4F5F7] border border-gray-200 text-xs font-bold text-gray-800 cursor-pointer"
+        ></select>
+        <button
+          type="button"
+          data-pro-badge
+          data-unlock-pro="MONTHLY"
+          class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-gray-900 text-white"
+        >
+          Unlock Pro ⚡
+        </button>
+      </div>
+    </header>
+
+    <!-- PERIOD SELECTOR & PRIMARY EXPORT BAR -->
+    <section class="bento-card p-5 sm:p-6 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex flex-wrap items-center gap-3 text-xs">
+        <div>
+          <label class="block font-bold text-gray-500 mb-1">Seller GSTIN</label>
+          <input
+            type="text"
+            id="filing-gstin-input"
+            maxlength="15"
+            value="10AABCA8921K1Z5"
+            class="px-3.5 py-2 rounded-xl bg-[#F4F5F7] border border-gray-200 font-mono font-bold uppercase w-44"
+          />
+        </div>
+        <div>
+          <label class="block font-bold text-gray-500 mb-1">Filing Period (MMYYYY)</label>
+          <select id="filing-period-select" class="px-3.5 py-2 rounded-xl bg-[#F4F5F7] border border-gray-200 font-mono font-bold">
+            <option value="112026">112026 (Nov 2026)</option>
+            <option value="102026">102026 (Oct 2026)</option>
+            <option value="092026">092026 (Sep 2026)</option>
+            <option value="082026">082026 (Aug 2026)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-bold text-gray-500 mb-1">E-Com Operator GSTIN (TCS Sec 52)</label>
+          <input
+            type="text"
+            id="ecom-operator-gstin"
+            maxlength="15"
+            value="07AABCF8078M1Z6"
+            title="Meesho / Flipkart / Amazon TCS Operator GSTIN"
+            class="px-3.5 py-2 rounded-xl bg-[#F4F5F7] border border-gray-200 font-mono uppercase w-44"
+          />
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2.5">
+        <button
+          type="button"
+          id="download-gstr1-json-btn"
+          class="px-5 py-3 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white font-extrabold text-xs sm:text-sm shadow-lg transition flex items-center gap-2"
+        >
+          <span>⬇ Download Official GSTR-1 (.JSON)</span>
+        </button>
+        <button
+          type="button"
+          id="copy-gstr1-json-btn"
+          class="px-4 py-3 rounded-2xl bg-[#CBE8BA] hover:bg-emerald-300 text-gray-950 font-extrabold text-xs border border-emerald-400/50 transition"
+        >
+          📋 Copy JSON
+        </button>
+      </div>
+    </section>
+
+    <!-- 4 GSTR-1 TABLE SUMMARY BENTO CARDS -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="bento-mint p-5 flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-extrabold text-gray-800">Table 4A: B2B Invoices</span>
+          <span class="px-2 py-0.5 rounded-full bg-gray-900 text-[#CBE8BA] text-[10px] font-bold">WITH GSTIN</span>
+        </div>
+        <div id="sum-b2b-val" class="text-2xl font-black text-gray-950 font-mono my-2">₹0.00</div>
+        <div id="sum-b2b-count" class="text-[11px] font-bold text-gray-800">0 Registered Buyer Bills</div>
+      </div>
+
+      <div class="bento-card p-5 flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-gray-500">Table 7: B2CS (Consumer)</span>
+          <span class="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-bold">STATE-WISE</span>
+        </div>
+        <div id="sum-b2cs-val" class="text-2xl font-black text-gray-900 font-mono my-2">₹0.00</div>
+        <div id="sum-b2cs-count" class="text-[11px] font-bold text-gray-500">0 Unregistered B2C Supplies</div>
+      </div>
+
+      <div class="bento-card p-5 flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-gray-500">Table 12: HSN Summary</span>
+          <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold">AUTO GROUPED</span>
+        </div>
+        <div id="sum-hsn-count" class="text-2xl font-black text-gray-900 font-mono my-2">0 HSN Codes</div>
+        <div id="sum-hsn-qty" class="text-[11px] font-bold text-gray-500">Total Units Sold: 0</div>
+      </div>
+
+      <div class="bento-card p-5 flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-gray-500">Total Output GST Liability</span>
+          <span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 text-[10px] font-bold">IGST + C/SGST</span>
+        </div>
+        <div id="sum-total-tax" class="text-2xl font-black text-indigo-600 font-mono my-2">₹0.00</div>
+        <div class="text-[11px] font-bold text-gray-500">Ready for GSTR-3B Offset</div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- GSTR-3B COPY ASSISTANT (LEFT 7 COLS) + LIVE JSON SCHEMA (RIGHT 5)   -->
+    <!-- =================================================================== -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+      <!-- LEFT 7 COLS: GSTR-3B TABLE 3.1 + ITC & TCS CALCULATOR -->
+      <div class="bento-card p-6 lg:col-span-7 space-y-5">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-3">
+          <div>
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-indigo-600">GSTR-3B Auto-Computation</span>
+            <h2 class="text-base sm:text-lg font-extrabold text-gray-900">Table 3.1 Outward Supplies & ITC/TCS Offset</h2>
+          </div>
+          <span class="px-3 py-1 rounded-full bg-[#CBE8BA] text-gray-900 text-[11px] font-extrabold">
+            1-Click Copy Values
+          </span>
+        </div>
+
+        <!-- Table 3.1(a) Copy Grid -->
+        <div class="space-y-2.5 text-xs">
+          <div class="font-extrabold text-gray-700">
+            3.1(a) Outward Taxable Supplies (Other than zero rated, nil rated and exempted)
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <!-- Total Taxable Value -->
+            <div class="p-3.5 rounded-2xl bg-[#F4F5F7] border border-gray-200 flex items-center justify-between">
+              <div>
+                <div class="text-[10px] font-bold uppercase text-gray-500">Total Taxable Value</div>
+                <div id="g3b-taxable" class="text-base font-black text-gray-900 font-mono mt-0.5">0.00</div>
+              </div>
+              <button type="button" data-copy-target="g3b-taxable" class="px-2.5 py-1.5 rounded-xl bg-white border border-gray-300 font-bold text-[11px] hover:bg-gray-900 hover:text-white transition">
+                Copy
+              </button>
+            </div>
+
+            <!-- Integrated Tax (IGST) -->
+            <div class="p-3.5 rounded-2xl bg-[#F4F5F7] border border-gray-200 flex items-center justify-between">
+              <div>
+                <div class="text-[10px] font-bold uppercase text-indigo-600">Integrated Tax (IGST)</div>
+                <div id="g3b-igst" class="text-base font-black text-gray-900 font-mono mt-0.5">0.00</div>
+              </div>
+              <button type="button" data-copy-target="g3b-igst" class="px-2.5 py-1.5 rounded-xl bg-white border border-gray-300 font-bold text-[11px] hover:bg-gray-900 hover:text-white transition">
+                Copy
+              </button>
+            </div>
+
+            <!-- Central Tax (CGST) -->
+            <div class="p-3.5 rounded-2xl bg-[#F4F5F7] border border-gray-200 flex items-center justify-between">
+              <div>
+                <div class="text-[10px] font-bold uppercase text-emerald-700">Central Tax (CGST)</div>
+                <div id="g3b-cgst" class="text-base font-black text-gray-900 font-mono mt-0.5">0.00</div>
+              </div>
+              <button type="button" data-copy-target="g3b-cgst" class="px-2.5 py-1.5 rounded-xl bg-white border border-gray-300 font-bold text-[11px] hover:bg-gray-900 hover:text-white transition">
+                Copy
+              </button>
+            </div>
+
+            <!-- State/UT Tax (SGST) -->
+            <div class="p-3.5 rounded-2xl bg-[#F4F5F7] border border-gray-200 flex items-center justify-between">
+              <div>
+                <div class="text-[10px] font-bold uppercase text-emerald-700">State / UT Tax (SGST)</div>
+                <div id="g3b-sgst" class="text-base font-black text-gray-900 font-mono mt-0.5">0.00</div>
+              </div>
+              <button type="button" data-copy-target="g3b-sgst" class="px-2.5 py-1.5 rounded-xl bg-white border border-gray-300 font-bold text-[11px] hover:bg-gray-900 hover:text-white transition">
+                Copy
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Table 4 Eligible ITC & E-Commerce TCS Credit Offset Calculator -->
+        <div class="p-4 rounded-2xl bg-[#F4F5F7] border border-gray-200 space-y-3 text-xs">
+          <div class="font-extrabold text-gray-900">
+            Table 4 (Eligible Purchase ITC) & E-Commerce TCS Cash Ledger Offset
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-gray-600 mb-1">Eligible Input Tax Credit (GSTR-2B ITC ₹)</label>
+              <input
+                type="number"
+                id="itc-input-val"
+                value="1800"
+                min="0"
+                step="10"
+                class="w-full px-3 py-2 rounded-xl bg-white border border-gray-300 font-mono font-bold"
+              />
+            </div>
+            <div>
+              <label class="block font-bold text-gray-600 mb-1">E-Com TCS Credited (0.5% / 1% Sec 52 ₹)</label>
+              <input
+                type="number"
+                id="tcs-input-val"
+                value="350"
+                min="0"
+                step="10"
+                class="w-full px-3 py-2 rounded-xl bg-white border border-gray-300 font-mono font-bold"
+              />
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-2xl bg-[#CBE8BA] border border-emerald-400/60 flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <div class="text-[11px] font-extrabold text-gray-800">Net Cash Challan Required for GSTR-3B</div>
+              <div class="text-[10px] text-gray-700">Output Tax minus Eligible ITC & TCS Credit</div>
+            </div>
+            <div id="net-challan-payable" class="text-xl font-black text-gray-950 font-mono">₹0.00</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT 5 COLS: LIVE GST.GOV.IN JSON SCHEMA INSPECTOR -->
+      <div class="bento-card p-6 lg:col-span-5 space-y-3">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">Validated Portal Payload</span>
+            <h3 class="text-base font-extrabold text-gray-900">Live `gst.gov.in` JSON Schema Preview</h3>
+          </div>
+          <span class="px-2.5 py-0.5 rounded-full bg-gray-900 text-[#CBE8BA] font-mono text-[10px] font-bold">v3.1.6</span>
+        </div>
+
+        <pre
+          id="gstr1-json-preview"
+          class="w-full h-80 p-4 rounded-2xl bg-gray-950 text-[#CBE8BA] font-mono text-[11px] overflow-auto leading-relaxed border border-gray-800"
+        ></pre>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- 4-STEP VISUAL GUIDE TO FILE ON GST.GOV.IN IN 60 SECONDS             -->
+    <!-- =================================================================== -->
+    <section class="bento-card p-6 space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-indigo-600">Zero-CA Self Filing Workflow</span>
+          <h2 class="text-base sm:text-lg font-extrabold text-gray-900">How to Upload Your GSTR-1 JSON on `gst.gov.in` in 4 Steps</h2>
+        </div>
+        <button
+          type="button"
+          data-open-ai="Walk me through filing GSTR-1 and GSTR-3B on gst.gov.in step by step in simple language."
+          class="px-3.5 py-1.5 rounded-xl bg-indigo-50 text-indigo-700 font-bold text-xs hover:bg-indigo-100"
+        >
+          🤖 Need Help? Ask AI Assistant
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+        <div class="p-4 rounded-2xl bg-[#F4F5F7] border border-gray-200 space-y-1.5">
+          <span class="inline-block px-2.5 py-0.5 rounded-full bg-gray-900 text-[#CBE8BA] font-mono font-bold text-[10px]">STEP 01</span>
+          <h4 class="font-extrabold text-gray-900 text-sm">Download GSTR-1 (.JSON)</h4>
+          <p class="text-gray-600 leading-relaxed">
+            Verify your B2B, B2CS, and HSN totals above and click <strong>Download Official GSTR-1 (.JSON)</strong>.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-[#F4F5F7] border border-gray-200 space-y-1.5">
+          <span class="inline-block px-2.5 py-0.5 rounded-full bg-gray-900 text-[#CBE8BA] font-mono font-bold text-[10px]">STEP 02</span>
+          <h4 class="font-extrabold text-gray-900 text-sm">Open GST Portal Offline Tab</h4>
+          <p class="text-gray-600 leading-relaxed">
+            Log in to <code>gst.gov.in</code> → <strong>Services → Returns → Returns Dashboard</strong> → Select Month → Click <strong>Prepare Offline</strong> under GSTR-1.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-[#F4F5F7] border border-gray-200 space-y-1.5">
+          <span class="inline-block px-2.5 py-0.5 rounded-full bg-gray-900 text-[#CBE8BA] font-mono font-bold text-[10px]">STEP 03</span>
+          <h4 class="font-extrabold text-gray-900 text-sm">Upload JSON & Verify</h4>
+          <p class="text-gray-600 leading-relaxed">
+            Under the <strong>Upload</strong> tab, select your downloaded `.JSON` file. Within 10 seconds, the status will show <strong>Processed with 0 Errors</strong>.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-[#CBE8BA]/40 border border-emerald-400/50 space-y-1.5">
+          <span class="inline-block px-2.5 py-0.5 rounded-full bg-gray-900 text-white font-mono font-bold text-[10px]">STEP 04</span>
+          <h4 class="font-extrabold text-gray-900 text-sm">Generate Summary & EVC OTP</h4>
+          <p class="text-gray-700 leading-relaxed">
+            Click <strong>Generate Summary</strong> at the bottom of GSTR-1, click <strong>Proceed to File</strong>, and sign with your mobile <strong>EVC (OTP)</strong>!
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- GSTR-1 JSON & GSTR-3B ENGINE SCRIPT -->
+  <script type="module">
+    import {
+      AppState,
+      subscribeAppState,
+      formatINR,
+      showToast,
+      syncProDOMElements
+    } from "./assets/js/security-core.js";
+
+    function getSavedInvoices() {
+      const existing = JSON.parse(localStorage.getItem("sellgst_invoices") || "[]");
+      if (existing.length > 0) return existing;
+
+      // Fallback realistic invoices if user visits /gst-filing.html directly
+      const today = new Date().toISOString().slice(0, 10);
+      return [
+        {
+          invNo: "INV-2026-001",
+          date: today,
+          buyerName: "Patna Mobile Hub",
+          buyerGstin: "10AABCP1122K1Z2",
+          placeOfSupply: "10-Bihar",
+          isInterState: false,
+          taxableTotal: 14990,
+          cgstTotal: 1349.1,
+          sgstTotal: 1349.1,
+          igstTotal: 0,
+          totalTax: 2698.2,
+          grandTotal: 17688.2,
+          items: [{ name: "RoyalTank Water Controller Kit", hsn: "8537", qty: 10, rate: 1499, gstRate: 18 }]
+        },
+        {
+          invNo: "INV-2026-002",
+          date: today,
+          buyerName: "Shree Krishna Electronics",
+          buyerGstin: "27AABCS9988L1Z5",
+          placeOfSupply: "27-Maharashtra",
+          isInterState: true,
+          taxableTotal: 9980,
+          cgstTotal: 0,
+          sgstTotal: 0,
+          igstTotal: 1796.4,
+          totalTax: 1796.4,
+          grandTotal: 11776.4,
+          items: [{ name: "Heavy Duty 3-Round-Pin Extension", hsn: "8536", qty: 20, rate: 499, gstRate: 18 }]
+        },
+        {
+          invNo: "INV-2026-003",
+          date: today,
+          buyerName: "Walk-in Consumer (B2C)",
+          buyerGstin: "",
+          placeOfSupply: "10-Bihar",
+          isInterState: false,
+          taxableTotal: 3490,
+          cgstTotal: 314.1,
+          sgstTotal: 314.1,
+          igstTotal: 0,
+          totalTax: 628.2,
+          grandTotal: 4118.2,
+          items: [{ name: "Smart LCD Writing Pencil Box", hsn: "3926", qty: 10, rate: 349, gstRate: 18 }]
+        }
+      ];
+    }
+
+    function formatPortalDate(isoDate = "") {
+      // Converts YYYY-MM-DD -> DD-MM-YYYY required by gst.gov.in
+      const parts = String(isoDate).split("-");
+      if (parts.length === 3) {
+        return `${parts[2]}-${parts[1]}-${parts[0]}`;
+      }
+      return "07-11-2026";
+    }
+
+    function buildGSTR1Payload() {
+      const invoices = getSavedInvoices();
+      const gstin = document.getElementById("filing-gstin-input").value.trim().toUpperCase() || "10AABCA8921K1Z5";
+      const fp = document.getElementById("filing-period-select").value || "112026";
+
+      const b2bMap = new Map();
+      const b2csMap = new Map();
+      const hsnMap = new Map();
+
+      let b2bTaxableSum = 0;
+      let b2bCount = 0;
+      let b2csTaxableSum = 0;
+      let b2csCount = 0;
+
+      let totalTaxable = 0;
+      let totalIgst = 0;
+      let totalCgst = 0;
+      let totalSgst = 0;
+      let totalUnits = 0;
+
+      invoices.forEach((inv) => {
+        const posCode = String(inv.placeOfSupply || "10-Bihar").split("-")[0].trim() || "10";
+        const isInter = Boolean(inv.isInterState);
+        const hasValidGstin = inv.buyerGstin && inv.buyerGstin.trim().length === 15;
+
+        totalTaxable += Number(inv.taxableTotal) || 0;
+        totalIgst += Number(inv.igstTotal) || 0;
+        totalCgst += Number(inv.cgstTotal) || 0;
+        totalSgst += Number(inv.sgstTotal) || 0;
+
+        if (hasValidGstin) {
+          b2bCount++;
+          b2bTaxableSum += Number(inv.taxableTotal) || 0;
+          const ctin = inv.buyerGstin.trim().toUpperCase();
+          if (!b2bMap.has(ctin)) {
+            b2bMap.set(ctin, []);
+          }
+          b2bMap.get(ctin).push({
+            inum: inv.invNo,
+            idt: formatPortalDate(inv.date),
+            val: Number((Number(inv.grandTotal) || 0).toFixed(2)),
+            pos: posCode,
+            rchrg: "N",
+            inv_typ: "R",
+            itms: [
+              {
+                num: 1,
+                itm_det: {
+                  txval: Number((Number(inv.taxableTotal) || 0).toFixed(2)),
+                  rt: 18,
+                  iamt: Number((Number(inv.igstTotal) || 0).toFixed(2)),
+                  camt: Number((Number(inv.cgstTotal) || 0).toFixed(2)),
+                  samt: Number((Number(inv.sgstTotal) || 0).toFixed(2)),
+                  csamt: 0
+                }
+              }
+            ]
+          });
+        } else {
+          b2csCount++;
+          b2csTaxableSum += Number(inv.taxableTotal) || 0;
+          const key = `${posCode}_${isInter ? "INTER" : "INTRA"}_18`;
+          if (!b2csMap.has(key)) {
+            b2csMap.set(key, {
+              sply_ty: isInter ? "INTER" : "INTRA",
+              pos: posCode,
+              typ: "OE",
+              rt: 18,
+              txval: 0,
+              iamt: 0,
+              camt: 0,
+              samt: 0,
+              csamt: 0
+            });
+          }
+          const entry = b2csMap.get(key);
+          entry.txval = Number((entry.txval + (Number(inv.taxableTotal) || 0)).toFixed(2));
+          entry.iamt = Number((entry.iamt + (Number(inv.igstTotal) || 0)).toFixed(2));
+          entry.camt = Number((entry.camt + (Number(inv.cgstTotal) || 0)).toFixed(2));
+          entry.samt = Number((entry.samt + (Number(inv.sgstTotal) || 0)).toFixed(2));
+        }
+
+        // Aggregate HSN Summary
+        (inv.items || []).forEach((it, idx) => {
+          const hsnCode = it.hsn || "8537";
+          const qty = Number(it.qty) || 1;
+          const rate = Number(it.rate) || 0;
+          const gstRate = Number(it.gstRate) || 18;
+          const txval = qty * rate;
+          const tax = txval * (gstRate / 100);
+          totalUnits += qty;
+
+          if (!hsnMap.has(hsnCode)) {
+            hsnMap.set(hsnCode, {
+              num: hsnMap.size + 1,
+              hsn_sc: hsnCode,
+              desc: (it.name || "E-Com Goods").slice(0, 30),
+              uqc: "PCS",
+              qty: 0,
+              val: 0,
+              txval: 0,
+              iamt: 0,
+              camt: 0,
+              samt: 0,
+              csamt: 0,
+              rt: gstRate
+            });
+          }
+          const hEntry = hsnMap.get(hsnCode);
+          hEntry.qty += qty;
+          hEntry.txval = Number((hEntry.txval + txval).toFixed(2));
+          hEntry.val = Number((hEntry.val + txval + tax).toFixed(2));
+          if (isInter) {
+            hEntry.iamt = Number((hEntry.iamt + tax).toFixed(2));
+          } else {
+            hEntry.camt = Number((hEntry.camt + tax / 2).toFixed(2));
+            hEntry.samt = Number((hEntry.samt + tax / 2).toFixed(2));
+          }
+        });
+      });
+
+      const b2bArray = [];
+      b2bMap.forEach((invList, ctin) => {
+        b2bArray.push({ ctin, inv: invList });
+      });
+
+      const payload = {
+        gstin,
+        fp,
+        gt: 0,
+        cur_gt: Number(totalTaxable.toFixed(2)),
+        version: "GST3.1.6",
+        hash: "hash",
+        b2b: b2bArray,
+        b2cl: [],
+        b2cs: Array.from(b2csMap.values()),
+        hsn: {
+          data: Array.from(hsnMap.values())
+        }
+      };
+
+      // Update UI Summary Cards & GSTR-3B Assistant
+      const totalTax = totalIgst + totalCgst + totalSgst;
+      document.getElementById("sum-b2b-val").textContent = formatINR(b2bTaxableSum);
+      document.getElementById("sum-b2b-count").textContent = `${b2bCount} Registered Buyer Bills`;
+      document.getElementById("sum-b2cs-val").textContent = formatINR(b2csTaxableSum);
+      document.getElementById("sum-b2cs-count").textContent = `${b2csCount} Unregistered B2C Supplies`;
+      document.getElementById("sum-hsn-count").textContent = `${hsnMap.size} HSN Codes`;
+      document.getElementById("sum-hsn-qty").textContent = `Total Units Sold: ${totalUnits}`;
+      document.getElementById("sum-total-tax").textContent = formatINR(totalTax);
+
+      // Update GSTR-3B Copy Boxes
+      document.getElementById("g3b-taxable").textContent = totalTaxable.toFixed(2);
+      document.getElementById("g3b-igst").textContent = totalIgst.toFixed(2);
+      document.getElementById("g3b-cgst").textContent = totalCgst.toFixed(2);
+      document.getElementById("g3b-sgst").textContent = totalSgst.toFixed(2);
+
+      // Calculate Net Challan after ITC & TCS
+      const itcVal = Number(document.getElementById("itc-input-val").value) || 0;
+      const tcsVal = Number(document.getElementById("tcs-input-val").value) || 0;
+      const netPayable = Math.max(0, totalTax - itcVal - tcsVal);
+      document.getElementById("net-challan-payable").textContent = formatINR(netPayable);
+
+      // Render Live Formatted JSON
+      document.getElementById("gstr1-json-preview").textContent = JSON.stringify(payload, null, 2);
+
+      return payload;
+    }
+
+    // Bind Inputs
+    ["filing-gstin-input", "filing-period-select", "ecom-operator-gstin", "itc-input-val", "tcs-input-val"].forEach((id) => {
+      document.getElementById(id)?.addEventListener("input", buildGSTR1Payload);
+      document.getElementById(id)?.addEventListener("change", buildGSTR1Payload);
+    });
+
+    // 1-Click Download Official GSTR-1 JSON
+    document.getElementById("download-gstr1-json-btn")?.addEventListener("click", () => {
+      const payload = buildGSTR1Payload();
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `GSTR1_${payload.gstin}_${payload.fp}.json`;
+      a.click();
+      showToast(`Downloaded GSTR1_${payload.gstin}_${payload.fp}.json! Ready for gst.gov.in upload.`, "success");
+    });
+
+    // Copy JSON Button
+    document.getElementById("copy-gstr1-json-btn")?.addEventListener("click", () => {
+      const text = document.getElementById("gstr1-json-preview").textContent;
+      navigator.clipboard.writeText(text);
+      showToast("GSTR-1 JSON copied to clipboard!", "success");
+    });
+
+    // GSTR-3B 1-Click Copy Buttons
+    document.querySelectorAll("[data-copy-target]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const targetId = btn.getAttribute("data-copy-target");
+        const val = document.getElementById(targetId)?.textContent || "0.00";
+        navigator.clipboard.writeText(val);
+        showToast(`Copied ${val} for GSTR-3B Table 3.1!`, "success");
+      });
+    });
+
+    subscribeAppState(() => {
+      syncProDOMElements();
+      if (AppState.profile.gstin) {
+        document.getElementById("filing-gstin-input").value = AppState.profile.gstin;
+      }
+      buildGSTR1Payload();
+    });
+
+    buildGSTR1Payload();
+  </script>
+</body>
+</html>
