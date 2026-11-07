@@ -1,0 +1,129 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // =========================================================================
+    // HELPER FUNCTIONS
+    // =========================================================================
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function isAdmin() {
+      return isSignedIn() &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+
+    function isValidString(val, minLen, maxLen) {
+      return val is string && val.size() >= minLen && val.size() <= maxLen;
+    }
+
+    // Prevent privilege escalation on user profile creation
+    function hasSafeInitialUserFields() {
+      let data = request.resource.data;
+      return (!('isAdmin' in data) || data.isAdmin == false) &&
+             (!('isPro' in data) || data.isPro == false) &&
+             (!('subscriptionStatus' in data) || data.subscriptionStatus == 'FREE');
+    }
+
+    // Prevent regular users from modifying restricted privilege fields
+    function doesNotModifyProtectedUserFields() {
+      let incoming = request.resource.data;
+      let existing = resource.data;
+      return incoming.get('isAdmin', false) == existing.get('isAdmin', false) &&
+             incoming.get('isPro', false) == existing.get('isPro', false) &&
+             incoming.get('subscriptionStatus', 'FREE') == existing.get('subscriptionStatus', 'FREE') &&
+             incoming.get('approvedAt', null) == existing.get('approvedAt', null) &&
+             incoming.get('planAmount', 0) == existing.get('planAmount', 0) &&
+             incoming.get('planExpiry', null) == existing.get('planExpiry', null);
+    }
+
+    // =========================================================================
+    // 1. USERS COLLECTION (/users/{uid})
+    // =========================================================================
+    match /users/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+
+      // New user signup: strictly force Free & Non-Admin tier
+      allow create: if isOwner(uid) && hasSafeInitialUserFields();
+
+      // Profile updates: Users can update business info, GSTIN, state, language,
+      // and paymentPending flag, but NEVER isPro, isAdmin, or subscriptionStatus.
+      // Admins can update any field (for 1-Click Approval & Pro Activation).
+      allow update: if isAdmin() || (isOwner(uid) && doesNotModifyProtectedUserFields());
+
+      allow delete: if isAdmin();
+
+      // -----------------------------------------------------------------------
+      // USER SUBCOLLECTIONS: Invoices, Parties (Udhar), Inventory Stock, Audits
+      // -----------------------------------------------------------------------
+      match /invoices/{invoiceId} {
+        allow read, write: if isOwner(uid) || isAdmin();
+      }
+
+      match /parties/{partyId} {
+        allow read, write: if isOwner(uid) || isAdmin();
+      }
+
+      match /inventory/{itemId} {
+        allow read, write: if isOwner(uid) || isAdmin();
+      }
+
+      match /audit_ summaries/{summaryId} {
+        allow read, write: if isOwner(uid) || isAdmin();
+      }
+
+      match /audit_logs/{logId} {
+        allow read: if isOwner(uid) || isAdmin();
+        allow create: if isOwner(uid);
+        allow update, delete: if false;
+      }
+    }
+
+    // =========================================================================
+    // 2. SEMI-AUTOMATIC UPI PAYMENT REQUESTS (/payment_requests/{requestId})
+    // =========================================================================
+    match /payment_requests/{requestId} {
+      // Users can read only their own payment requests to show live status banner;
+      // Admins can read all requests in the live queue.
+      allow read: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+
+      // Users can submit a new UPI payment verification request ONLY in "PENDING" status
+      allow create: if isSignedIn() &&
+        request.resource.data.uid == request.auth.uid &&
+        request.resource.data.status == "PENDING" &&
+        request.resource.data.planAmount is number &&
+        request.resource.data.planAmount >= 1 &&
+        isValidString(request.resource.data.utrNumber, 6, 36);
+
+      // STRICT RULE: Only Admin can update status to "APPROVED" or "REJECTED"
+      allow update: if isAdmin();
+
+      allow delete: if isAdmin();
+    }
+
+    // =========================================================================
+    // 3. SYSTEM SETTINGS & BROADCAST BANNERS (/system_config/{docId})
+    // =========================================================================
+    match /system_config/{docId} {
+      // All authenticated users can read merchant UPI settings (UPI ID, Payee Name)
+      // and global broadcast announcements.
+      allow read: if true;
+
+      // Only Admin can modify Merchant UPI ID, Payee Name, WhatsApp Alert Config, or Broadcasts
+      allow write: if isAdmin();
+    }
+
+    // =========================================================================
+    // 4. DEFAULT FALLBACK DENY
+    // =========================================================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
