@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>Dashboard — SellGST Pro Super-App</title>
+  <meta name="theme-color" content="#111827" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          },
+          colors: {
+            canvas: '#F4F5F7',
+            mint: '#CBE8BA'
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body {
+      background-color: #F4F5F7;
+      color: #111827;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+    }
+    .bento-card {
+      background: #FFFFFF;
+      border-radius: 24px;
+      border: 1px solid #E5E7EB;
+      box-shadow: 0 10px 30px -10px rgba(17, 24, 39, 0.05);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+    }
+    .bento-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 35px -12px rgba(17, 24, 39, 0.09);
+    }
+    .bento-mint {
+      background: #CBE8BA;
+      border-radius: 24px;
+      border: 1px solid #A3D987;
+      box-shadow: 0 12px 30px -10px rgba(34, 197, 94, 0.18);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .bento-mint:hover {
+      transform: translateY(-4px);
+    }
+    .gst-3d-card {
+      background: radial-gradient(circle at top right, #312e81 0%, #111827 65%, #030712 100%);
+      border-radius: 24px;
+      transform-style: preserve-3d;
+      transition: transform 0.2s ease-out;
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-24 lg:pb-10 lg:pl-24">
+
+  <!-- DESKTOP FLOATING LEFT PILL SIDEBAR -->
+  <aside class="hidden lg:flex fixed left-4 top-4 bottom-4 w-16 bg-white border border-gray-200 rounded-full shadow-lg flex-col items-center justify-between py-5 z-40">
+    <a href="/app.html" title="SellGST Pro" class="w-11 h-11 rounded-2xl bg-gray-900 text-[#CBE8BA] flex items-center justify-center font-black text-base shadow">
+      S₹
+    </a>
+
+    <nav class="flex flex-col items-center gap-3">
+      <a href="/app.html" title="Dashboard" class="w-11 h-11 rounded-2xl bg-gray-900 text-white flex items-center justify-center text-lg shadow-sm transition">
+        📊
+      </a>
+      <a href="/invoice.html" title="GST Billing & Khata" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+        🧾
+      </a>
+      <a href="/ecom-audit.html" title="E-Com Audit & 4x6 Labels" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+        📦
+      </a>
+      <a href="/gst-filing.html" title="1-Click GSTR-1 JSON" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+        🏛️
+      </a>
+      <a href="/admin.html" title="Admin Console" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+        🛡️
+      </a>
+    </nav>
+
+    <div class="flex flex-col items-center gap-2">
+      <button type="button" id="open-profile-modal-btn" title="Store Settings" class="w-10 h-10 rounded-full bg-[#F4F5F7] hover:bg-gray-200 flex items-center justify-center text-sm">
+        ⚙️
+      </button>
+      <button type="button" id="sidebar-logout-btn" title="Sign Out" class="w-10 h-10 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center text-sm">
+        ⏻
+      </button>
+    </div>
+  </aside>
+
+  <!-- MOBILE FLOATING BOTTOM DOCK -->
+  <nav class="lg:hidden fixed bottom-3 inset-x-3 bg-gray-950/95 backdrop-blur-md text-white rounded-3xl px-3 py-2.5 shadow-2xl border border-white/10 z-40 flex items-center justify-around">
+    <a href="/app.html" class="flex flex-col items-center gap-0.5 text-[#CBE8BA] font-bold text-[10px]">
+      <span class="text-base">📊</span>
+      <span data-i18n="nav_dashboard">Dashboard</span>
+    </a>
+    <a href="/invoice.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+      <span class="text-base">🧾</span>
+      <span data-i18n="nav_invoice">GST Bill</span>
+    </a>
+    <a href="/ecom-audit.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+      <span class="text-base">📦</span>
+      <span data-i18n="nav_audit">Audit</span>
+    </a>
+    <a href="/gst-filing.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+      <span class="text-base">🏛️</span>
+      <span data-i18n="nav_gst">GSTR-1</span>
+    </a>
+    <a href="/admin.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+      <span class="text-base">🛡️</span>
+      <span>Admin</span>
+    </a>
+  </nav>
+
+  <!-- MAIN CONTENT WRAPPER -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-4 space-y-6">
+
+    <!-- TOP HEADER BAR -->
+    <header class="bg-white rounded-3xl border border-gray-200 px-4 sm:px-6 py-3.5 shadow-sm flex flex-wrap items-center justify-between gap-3">
+      <!-- Left: Store Identity -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-[#CBE8BA] text-gray-900 flex items-center justify-center font-extrabold text-sm">
+          🏪
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 data-user-name class="font-extrabold text-sm sm:text-base text-gray-900">AgniVolt E-Com Store</h1>
+            <button type="button" id="edit-store-inline-btn" class="text-[11px] text-indigo-600 font-bold hover:underline">Edit</button>
+          </div>
+          <div class="text-[11px] text-gray-500 font-mono">
+            GSTIN: <span data-user-gstin class="font-semibold text-gray-700">10AABCA8921K1Z5</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center: AI Search Trigger Bar -->
+      <button
+        type="button"
+        data-open-ai=""
+        class="hidden md:flex items-center gap-3 flex-1 max-w-md mx-4 px-4 py-2 rounded-2xl bg-[#F4F5F7] hover:bg-gray-200/70 border border-gray-200 text-left transition"
+      >
+        <span class="text-sm">🤖</span>
+        <span data-i18n="ai_search_placeholder" class="text-xs text-gray-500 truncate flex-1">
+          Ask SellGST AI: How to claim RTO &gt;30 days or file GSTR-1...
+        </span>
+        <span class="px-2 py-0.5 rounded bg-white text-[10px] font-mono font-bold text-gray-700 border border-gray-200">24/7 AI</span>
+      </button>
+
+      <!-- Right: Language Switcher & Pro Unlock Badge -->
+      <div class="flex items-center gap-2.5">
+        <select
+          data-lang-switcher
+          aria-label="Language"
+          class="px-3 py-1.5 rounded-full bg-[#F4F5F7] border border-gray-200 text-xs font-bold text-gray-800 cursor-pointer focus:outline-none"
+        ></select>
+
+        <button
+          type="button"
+          data-pro-badge
+          data-unlock-pro="MONTHLY"
+          class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-gray-900 text-white hover:bg-gray-800 transition"
+        >
+          Unlock Pro ⚡
+        </button>
+      </div>
+    </header>
+
+    <!-- QUICK ACTION PILL ROW -->
+    <div class="flex items-center gap-2.5 overflow-x-auto no-scrollbar pb-1">
+      <a href="/invoice.html" class="px-4 py-2.5 rounded-2xl bg-gray-900 text-white font-extrabold text-xs whitespace-nowrap shadow-sm hover:bg-gray-800 transition">
+        <span data-i18n="btn_create_invoice">+ Create GST Bill</span>
+      </a>
+      <a href="/ecom-audit.html" class="px-4 py-2.5 rounded-2xl bg-white border border-gray-200 text-gray-800 font-bold text-xs whitespace-nowrap hover:border-gray-900 transition">
+        🔍 <span data-i18n="btn_scan_csv">Scan Marketplace CSV</span>
+      </a>
+      <a href="/gst-filing.html" class="px-4 py-2.5 rounded-2xl bg-white border border-gray-200 text-gray-800 font-bold text-xs whitespace-nowrap hover:border-gray-900 transition">
+        🏛️ <span data-i18n="btn_download_gstr1">Download GSTR-1 (.JSON)</span>
+      </a>
+      <a href="/ecom-audit.html#label-cropper-section" class="px-4 py-2.5 rounded-2xl bg-white border border-gray-200 text-gray-800 font-bold text-xs whitespace-nowrap hover:border-gray-900 transition">
+        🏷️ <span data-i18n="btn_crop_labels">4x6 Label Cropper</span>
+      </a>
+      <a href="/admin.html" class="px-4 py-2.5 rounded-2xl bg-[#CBE8BA]/50 border border-emerald-400/50 text-gray-900 font-bold text-xs whitespace-nowrap hover:bg-[#CBE8BA] transition">
+        🛡️ Admin Approval Queue
+      </a>
+    </div>
+
+    <!-- 6 BENTO KPI CARDS -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
+
+      <!-- KPI 1: Mint-Green Highlight Card -->
+      <div class="bento-mint p-5 lg:col-span-2 flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <span data-i18n="kpi_net_sales" class="text-xs font-extrabold text-gray-800">Net GST Sales (This Month)</span>
+          <span class="px-2.5 py-0.5 rounded-full bg-gray-900 text-[#CBE8BA] text-[10px] font-extrabold">+18.4% ↑</span>
+        </div>
+        <div id="kpi-sales-val" class="text-2xl sm:text-3xl font-black text-gray-950 font-mono my-2">
+          ₹4,82,950.00
+        </div>
+        <div class="flex items-center justify-between text-[11px] font-bold text-gray-800">
+          <span>B2B + B2C: 142 Invoices</span>
+          <a href="/invoice.html" class="underline">View Ledger →</a>
+        </div>
+      </div>
+
+      <!-- KPI 2: Recoverable E-Com Claims -->
+      <div class="bento-card p-5 flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <span data-i18n="kpi_recoverable_rto" class="text-xs font-bold text-gray-500">Recoverable Claims</span>
+          <span class="w-7 h-7 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-xs font-bold">!</span>
+        </div>
+        <div id="kpi-rto-val" class="text-xl font-black text-rose-600 font-mono my-2">
+          ₹24,680.00
+        </div>
+        <a href="/ecom-audit.html" class="text-[11px] font-bold text-indigo-600 hover:underline">
+          19 Overdue RTOs (&gt;30d) →
+        </a>
+      </div>
+
+      <!-- KPI 3: Party Udhar (To Collect) -->
+      <div class="bento-card p-5 flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <span data-i18n="kpi_udhar_collect" class="text-xs font-bold text-gray-500">Party Udhar (Collect)</span>
+          <span class="w-7 h-7 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center text-xs font-bold">₹</span>
+        </div>
+        <div id="kpi-udhar-val" class="text-xl font-black text-gray-900 font-mono my-2">
+          ₹63,400.00
+        </div>
+        <a href="#udhar-widget" class="text-[11px] font-bold text-emerald-700 hover:underline">
+          Send WhatsApp Reminders →
+        </a>
+      </div>
+
+      <!-- KPI 4: Net GST Payable (3B) -->
+      <div class="bento-card p-5 flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <span data-i18n="kpi_gst_payable" class="text-xs font-bold text-gray-500">Net GST Payable (3B)</span>
+          <span class="w-7 h-7 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs font-bold">%</span>
+        </div>
+        <div id="kpi-gst-val" class="text-xl font-black text-gray-900 font-mono my-2">
+          ₹31,240.00
+        </div>
+        <a href="/gst-filing.html" class="text-[11px] font-bold text-gray-600 hover:text-gray-900">
+          After ₹55.6k ITC Offset →
+        </a>
+      </div>
+
+      <!-- KPI 5 & 6 Combined Stacked or Side-by-Side -->
+      <div class="bento-card p-5 flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <span data-i18n="kpi_low_stock" class="text-xs font-bold text-gray-500">Low Stock & Audit</span>
+          <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold">94.8% Score</span>
+        </div>
+        <div id="kpi-stock-val" class="text-xl font-black text-amber-600 font-mono my-2">
+          4 SKUs Low
+        </div>
+        <a href="#stock-widget" class="text-[11px] font-bold text-gray-600 hover:text-gray-900">
+          Restock Alert Active →
+        </a>
+      </div>
+    </section>
+
+    <!-- MIDDLE ROW: INTERACTIVE SPLINE CHART (8 COLS) + 3D GST VIRTUAL CARD (4 COLS) -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- SPLINE REVENUE & PAYOUT AUDIT CHART -->
+      <div class="bento-card p-6 lg:col-span-8 flex flex-col justify-between">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <div>
+            <span class="text-[11px] font-extrabold uppercase tracking-wider text-gray-400">Cashflow & Settlement Intelligence</span>
+            <h2 class="text-lg font-extrabold text-gray-900">GST Billed Sales vs Bank Settlements & RTO Leaks</h2>
+          </div>
+          <div class="flex items-center gap-1.5 bg-[#F4F5F7] p-1 rounded-xl border border-gray-200 text-xs font-bold">
+            <button type="button" data-chart-range="6M" class="chart-range-btn px-3 py-1 rounded-lg bg-white text-gray-900 shadow-sm">6 Months</button>
+            <button type="button" data-chart-range="1Y" class="chart-range-btn px-3 py-1 rounded-lg text-gray-600 hover:text-gray-900">Full FY</button>
+          </div>
+        </div>
+
+        <!-- SVG Smooth Spline Chart -->
+        <div class="relative w-full h-56 sm:h-64 bg-[#F4F5F7]/60 rounded-2xl p-4 border border-gray-100 flex flex-col justify-end overflow-hidden">
+          <svg id="revenue-spline-svg" viewBox="0 0 700 220" class="w-full h-full overflow-visible">
+            <defs>
+              <linearGradient id="mintGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#CBE8BA" stop-opacity="0.85" />
+                <stop offset="100%" stop-color="#CBE8BA" stop-opacity="0.0" />
+              </linearGradient>
+              <linearGradient id="darkGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#111827" stop-opacity="0.18" />
+                <stop offset="100%" stop-color="#111827" stop-opacity="0.0" />
+              </linearGradient>
+            </defs>
+
+            <!-- Horizontal Grid Lines -->
+            <line x1="0" y1="30" x2="700" y2="30" stroke="#E5E7EB" stroke-dasharray="4 4" />
+            <line x1="0" y1="90" x2="700" y2="90" stroke="#E5E7EB" stroke-dasharray="4 4" />
+            <line x1="0" y1="150" x2="700" y2="150" stroke="#E5E7EB" stroke-dasharray="4 4" />
+            <line x1="0" y1="205" x2="700" y2="205" stroke="#D1D5DB" />
+
+            <!-- Area Under Gross GST Sales Curve -->
+            <path
+              id="spline-area-sales"
+              d="M 20 165 C 110 140, 160 115, 240 105 C 320 95, 390 120, 470 70 C 550 25, 610 45, 680 25 L 680 205 L 20 205 Z"
+              fill="url(#mintGrad)"
+            />
+
+            <!-- Gross GST Sales Spline Curve -->
+            <path
+              id="spline-line-sales"
+              d="M 20 165 C 110 140, 160 115, 240 105 C 320 95, 390 120, 470 70 C 550 25, 610 45, 680 25"
+              fill="none"
+              stroke="#111827"
+              stroke-width="3.5"
+              stroke-linecap="round"
+            />
+
+            <!-- Settled Bank Payout Spline Curve -->
+            <path
+              id="spline-line-payout"
+              d="M 20 182 C 110 160, 160 142, 240 130 C 320 122, 390 145, 470 98 C 550 60, 610 72, 680 54"
+              fill="none"
+              stroke="#4F46E5"
+              stroke-width="2.5"
+              stroke-dasharray="6 4"
+              stroke-linecap="round"
+            />
+
+            <!-- Interactive Data Points -->
+            <circle cx="20" cy="165" r="5" fill="#111827" />
+            <circle cx="150" cy="122" r="5" fill="#111827" />
+            <circle cx="240" cy="105" r="5" fill="#111827" />
+            <circle cx="360" cy="108" r="5" fill="#111827" />
+            <circle cx="470" cy="70" r="5" fill="#111827" />
+            <circle cx="580" cy="38" r="5" fill="#111827" />
+            <circle cx="680" cy="25" r="6" fill="#16A34A" stroke="#FFFFFF" stroke-width="2" />
+          </svg>
+
+          <!-- X-Axis Labels -->
+          <div class="flex justify-between text-[11px] font-mono text-gray-500 px-2 mt-1">
+            <span>Jun</span>
+            <span>Jul</span>
+            <span>Aug</span>
+            <span>Sep</span>
+            <span>Oct</span>
+            <span class="font-bold text-gray-900">Nov (Current)</span>
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="mt-4 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div class="flex items-center gap-4">
+            <span class="flex items-center gap-1.5 font-bold text-gray-800">
+              <span class="w-3 h-3 rounded-full bg-gray-900 inline-block"></span> Gross GST Sales
+            </span>
+            <span class="flex items-center gap-1.5 font-semibold text-indigo-600">
+              <span class="w-3 h-3 rounded-full bg-indigo-600 inline-block"></span> Net Settled Payout
+            </span>
+          </div>
+          <span class="text-gray-500">Gap = Marketplace Commission + Unclaimed RTO/Weight Leaks</span>
+        </div>
+      </div>
+
+      <!-- 3D GST COMPLIANCE VIRTUAL CARD -->
+      <div class="lg:col-span-4 flex flex-col gap-4">
+        <div id="gst-3d-card" class="gst-3d-card text-white p-6 shadow-2xl flex flex-col justify-between h-full relative overflow-hidden">
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="text-[10px] font-mono uppercase tracking-widest text-[#CBE8BA]">GSTN Compliance Pass</span>
+              <h3 data-user-name class="text-base font-extrabold mt-0.5">AgniVolt E-Com Store</h3>
+            </div>
+            <span class="px-2.5 py-1 rounded-full bg-white/10 text-[#CBE8BA] font-mono text-[11px] font-bold border border-white/15">
+              ACTIVE REG
+            </span>
+          </div>
+
+          <div class="my-6">
+            <div class="text-[10px] uppercase tracking-wider text-gray-400">Registered GSTIN</div>
+            <div data-user-gstin class="text-lg sm:text-xl font-mono font-bold tracking-wider text-white mt-0.5">
+              10AABCA8921K1Z5
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 bg-white/5 rounded-2xl p-3.5 border border-white/10 text-xs">
+            <div>
+              <div class="text-gray-400 text-[10px]">GSTR-1 Status</div>
+              <div class="font-bold text-[#CBE8BA] mt-0.5">Ready (JSON v3.1.6)</div>
+            </div>
+            <div>
+              <div class="text-gray-400 text-[10px]">GSTR-3B Liability</div>
+              <div id="card-3b-val" class="font-bold text-white font-mono mt-0.5">₹31,240</div>
+            </div>
+          </div>
+
+          <div class="mt-5 flex items-center gap-2">
+            <a
+              href="/gst-filing.html"
+              class="flex-1 py-2.5 px-4 rounded-xl bg-[#CBE8BA] hover:bg-emerald-300 text-gray-950 font-extrabold text-xs text-center transition"
+            >
+              🏛️ 1-Click GSTR-1 JSON
+            </a>
+            <button
+              type="button"
+              data-open-ai="Explain my GSTR-1 and GSTR-3B filing checklist for this month"
+              class="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition"
+            >
+              🤖 Ask AI
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOTTOM BENTO ROW: LIVE PAYWALL UNBLUR DEMO TABLE + PARTY UDHAR + LOW STOCK -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- LIVE FLAGGED ORDERS (DEMONSTRATES REAL-TIME ONSNAPSHOT UNBLUR) -->
+      <div class="bento-card p-6 lg:col-span-6 flex flex-col justify-between relative overflow-hidden">
+        <div>
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <div>
+              <span class="text-[10px] font-extrabold uppercase tracking-wider text-rose-600">Live RAM Audit Preview</span>
+              <h3 class="text-base font-extrabold text-gray-900">Flagged Overdue RTO & Weight Fraud Orders</h3>
+            </div>
+            <a href="/ecom-audit.html" class="text-xs font-extrabold text-indigo-600 hover:underline">Full CSV Scanner →</a>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="border-b border-gray-200 text-gray-400 uppercase text-[10px]">
+                  <th class="py-2">Order ID</th>
+                  <th class="py-2">Channel</th>
+                  <th class="py-2">Leak Type</th>
+                  <th class="py-2 text-right">Claim Amt</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100">
+                <tr>
+                  <td class="py-3">
+                    <span data-order-id="MSH-894120984">ORD-XXXXXXX</span>
+                  </td>
+                  <td class="py-3 font-semibold">Meesho</td>
+                  <td class="py-3"><span class="px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 font-bold text-[10px]">RTO 42 Days</span></td>
+                  <td class="py-3 text-right font-mono font-bold text-gray-900">₹1,240</td>
+                </tr>
+                <tr>
+                  <td class="py-3">
+                    <span data-order-id="OD429817491028">ORD-XXXXXXX</span>
+                  </td>
+                  <td class="py-3 font-semibold">Flipkart</td>
+                  <td class="py-3"><span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 font-bold text-[10px]">Weight +1.0kg</span></td>
+                  <td class="py-3 text-right font-mono font-bold text-gray-900">₹185</td>
+                </tr>
+                <tr>
+                  <td class="py-3">
+                    <span data-order-id="405-9918273-4812">ORD-XXXXXXX</span>
+                  </td>
+                  <td class="py-3 font-semibold">Amazon</td>
+                  <td class="py-3"><span class="px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 font-bold text-[10px]">SAFE-T Due</span></td>
+                  <td class="py-3 text-right font-mono font-bold text-gray-900">₹2,890</td>
+                </tr>
+                <tr>
+                  <td class="py-3">
+                    <span data-order-id="MSH-773190442">ORD-XXXXXXX</span>
+                  </td>
+                  <td class="py-3 font-semibold">Meesho</td>
+                  <td class="py-3"><span class="px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 font-bold text-[10px]">RTO 36 Days</span></td>
+                  <td class="py-3 text-right font-mono font-bold text-gray-900">₹860</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Pro Paywall Callout Banner (Automatically hides via onSnapshot when Pro is approved!) -->
+        <div
+          data-pro-lock-overlay
+          class="mt-4 p-3.5 rounded-2xl bg-gray-900 text-white flex flex-wrap items-center justify-between gap-2"
+        >
+          <div class="text-xs">
+            <span class="font-extrabold text-[#CBE8BA]">🔒 Order IDs Masked (Free Tier):</span>
+            <span class="text-gray-300"> Unlock full Order IDs & 1-click claim tickets instantly via UPI.</span>
+          </div>
+          <button
+            type="button"
+            data-unlock-pro="MONTHLY"
+            class="px-3.5 py-1.5 rounded-xl bg-[#CBE8BA] text-gray-950 font-extrabold text-xs whitespace-nowrap"
+          >
+            Unlock @ ₹99 →
+          </button>
+        </div>
+      </div>
+
+      <!-- PARTY UDHAR (KHATA) WIDGET -->
+      <div id="udhar-widget" class="bento-card p-6 lg:col-span-3 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-base font-extrabold text-gray-900">Party Udhar (Khata)</h3>
+            <a href="/invoice.html#party-khata-section" class="text-xs font-bold text-indigo-600 hover:underline">Manage →</a>
+          </div>
+          <div id="dashboard-party-list" class="space-y-3">
+            <!-- Populated dynamically from localStorage / Firestore -->
+          </div>
+        </div>
+
+        <a
+          href="/invoice.html"
+          class="mt-4 w-full py-2.5 rounded-xl bg-[#F4F5F7] hover:bg-gray-200 text-gray-800 font-bold text-xs text-center transition block"
+        >
+          + Record Party Payment / Bill
+        </a>
+      </div>
+
+      <!-- LOW STOCK INVENTORY WIDGET -->
+      <div id="stock-widget" class="bento-card p-6 lg:col-span-3 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-base font-extrabold text-gray-900">Low Stock Alert</h3>
+            <a href="/invoice.html#inventory-section" class="text-xs font-bold text-indigo-600 hover:underline">Update Stock →</a>
+          </div>
+          <div id="dashboard-stock-list" class="space-y-2.5">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <a
+          href="/invoice.html#inventory-section"
+          class="mt-4 w-full py-2.5 rounded-xl bg-[#CBE8BA]/40 hover:bg-[#CBE8BA] text-gray-900 font-bold text-xs text-center transition block"
+        >
+          📦 Add / Restock SKUs
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <!-- SELLER BUSINESS SETTINGS MODAL -->
+  <div id="store-settings-modal" class="fixed inset-0 z-50 bg-gray-950/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl border border-gray-200 max-w-md w-full p-6 shadow-2xl">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-extrabold text-gray-900">Seller GST & UPI Profile</h3>
+        <button type="button" id="close-store-settings" class="w-8 h-8 rounded-full bg-gray-100 font-bold">✕</button>
+      </div>
+      <form id="store-settings-form" class="space-y-3.5 text-xs sm:text-sm">
+        <div>
+          <label class="block font-bold text-gray-700 mb-1">Business Legal / Trade Name</label>
+          <input type="text" id="set-biz-name" required class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300" />
+        </div>
+        <div>
+          <label class="block font-bold text-gray-700 mb-1">15-Digit GSTIN</label>
+          <input type="text" id="set-gstin" required maxlength="15" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 font-mono uppercase" />
+        </div>
+        <div>
+          <label class="block font-bold text-gray-700 mb-1">Home State (For CGST+SGST vs IGST Split)</label>
+          <select id="set-state" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 bg-white">
+            <option value="10|Bihar">10 - Bihar</option>
+            <option value="27|Maharashtra">27 - Maharashtra</option>
+            <option value="07|Delhi">07 - Delhi</option>
+            <option value="29|Karnataka">29 - Karnataka</option>
+            <option value="24|Gujarat">24 - Gujarat</option>
+            <option value="09|Uttar Pradesh">09 - Uttar Pradesh</option>
+            <option value="33|Tamil Nadu">33 - Tamil Nadu</option>
+            <option value="19|West Bengal">19 - West Bengal</option>
+            <option value="36|Telangana">36 - Telangana</option>
+            <option value="08|Rajasthan">08 - Rajasthan</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-bold text-gray-700 mb-1">Seller Invoice UPI ID (Printed on Bills)</label>
+          <input type="text" id="set-upi" required placeholder="yourstore@ybl" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 font-mono" />
+        </div>
+        <button type="submit" class="w-full py-3 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white font-extrabold">
+          💾 Save Business Profile
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- DASHBOARD LOGIC -->
+  <script type="module">
+    import {
+      db,
+      AppState,
+      subscribeAppState,
+      sanitizeHTML,
+      formatINR,
+      showToast,
+      logoutUser,
+      syncProDOMElements
+    } from "./assets/js/security-core.js";
+    import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // 1. Seed Default Parties & Inventory in localStorage if empty so Dashboard is rich immediately
+    const defaultParties = [
+      { id: "p1", name: "Patna Mobile Hub", phone: "919876543210", gstin: "10AABCP1122K1Z2", balance: 28500 },
+      { id: "p2", name: "Shree Krishna Electronics", phone: "919811223344", gstin: "27AABCS9988L1Z5", balance: 19400 },
+      { id: "p3", name: "Maa Tara Traders", phone: "919900112233", gstin: "10AAACT4455M1Z9", balance: 15500 }
+    ];
+
+    const defaultStock = [
+      { id: "s1", sku: "RT-AUTO-01", name: "RoyalTank Water Controller Kit", stock: 4, price: 1499, hsn: "8537" },
+      { id: "s2", sku: "LCD-BOX-02", name: "Smart LCD Writing Pencil Box", stock: 6, price: 349, hsn: "3926" },
+      { id: "s3", sku: "EXT-3PIN-09", name: "Heavy Duty 3-Round-Pin Extension", stock: 3, price: 499, hsn: "8536" },
+      { id: "s4", sku: "TVS-DIODE-50", name: "Industrial Surge Protection PCB", stock: 8, price: 220, hsn: "8541" }
+    ];
+
+    if (!localStorage.getItem("sellgst_parties")) {
+      localStorage.setItem("sellgst_parties", JSON.stringify(defaultParties));
+    }
+    if (!localStorage.getItem("sellgst_inventory")) {
+      localStorage.setItem("sellgst_inventory", JSON.stringify(defaultStock));
+    }
+
+    function renderWidgets() {
+      const parties = JSON.parse(localStorage.getItem("sellgst_parties") || "[]");
+      const inventory = JSON.parse(localStorage.getItem("sellgst_inventory") || "[]");
+      const invoices = JSON.parse(localStorage.getItem("sellgst_invoices") || "[]");
+
+      // Calculate KPI Totals if custom invoices exist
+      if (invoices.length > 0) {
+        const totalSales = invoices.reduce((acc, inv) => acc + (Number(inv.grandTotal) || 0), 0);
+        const totalTax = invoices.reduce((acc, inv) => acc + (Number(inv.totalTax) || 0), 0);
+        document.getElementById("kpi-sales-val").textContent = formatINR(totalSales);
+        document.getElementById("kpi-gst-val").textContent = formatINR(totalTax);
+        document.getElementById("card-3b-val").textContent = formatINR(totalTax);
+      }
+
+      const totalUdhar = parties.reduce((acc, p) => acc + (Number(p.balance) || 0), 0);
+      document.getElementById("kpi-udhar-val").textContent = formatINR(totalUdhar);
+
+      // Render Party Udhar List with 1-Click WhatsApp Reminder
+      const partyContainer = document.getElementById("dashboard-party-list");
+      partyContainer.innerHTML = parties.slice(0, 3).map((p) => {
+        const waMsg = `Namaste ${p.name}, gentle reminder from ${AppState.profile.businessName || "our store"}: Your GST invoice balance of ${formatINR(p.balance)} is pending. You can pay directly via UPI to ${AppState.profile.upiId || "9661692365@ybl"}. Thank you!`;
+        const waUrl = `https://wa.me/${encodeURIComponent(String(p.phone || "").replace(/\D/g, ""))}?text=${encodeURIComponent(waMsg)}`;
+        return `
+          <div class="p-3 rounded-2xl bg-[#F4F5F7] border border-gray-200 flex items-center justify-between gap-2">
+            <div>
+              <div class="font-bold text-xs text-gray-900">${sanitizeHTML(p.name)}</div>
+              <div class="text-[11px] font-mono text-rose-600 font-bold">${formatINR(p.balance)} Due</div>
+            </div>
+            <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] whitespace-nowrap">
+              💬 WhatsApp
+            </a>
+          </div>
+        `;
+      }).join("");
+
+      // Render Low Stock List
+      const lowItems = inventory.filter((item) => Number(item.stock) <= 10);
+      document.getElementById("kpi-stock-val").textContent = `${lowItems.length} SKUs Low`;
+      const stockContainer = document.getElementById("dashboard-stock-list");
+      stockContainer.innerHTML = lowItems.slice(0, 4).map((item) => `
+        <div class="p-2.5 rounded-2xl bg-[#F4F5F7] border border-gray-200 flex items-center justify-between text-xs">
+          <div class="truncate pr-2">
+            <div class="font-bold text-gray-900 truncate">${sanitizeHTML(item.name)}</div>
+            <div class="text-[10px] font-mono text-gray-500">SKU: ${sanitizeHTML(item.sku)}</div>
+          </div>
+          <span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 font-mono font-bold text-[11px] whitespace-nowrap">
+            ${Number(item.stock)} left
+          </span>
+        </div>
+      `).join("");
+    }
+
+    renderWidgets();
+
+    // 2. Subscribe to Real-Time AppState updates (Pro Unblur & Profile Sync)
+    subscribeAppState(() => {
+      syncProDOMElements();
+    });
+
+    // 3. Interactive 3D Tilt Effect on GST Compliance Card
+    const card3d = document.getElementById("gst-3d-card");
+    card3d?.addEventListener("mousemove", (e) => {
+      const rect = card3d.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      card3d.style.transform = `perspective(900px) rotateY(${(x / 28).toFixed(2)}deg) rotateX(${(-y / 28).toFixed(2)}deg)`;
+    });
+    card3d?.addEventListener("mouseleave", () => {
+      card3d.style.transform = "perspective(900px) rotateY(0deg) rotateX(0deg)";
+    });
+
+    // 4. Spline Chart 6M / 1Y Toggle
+    document.querySelectorAll("[data-chart-range]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const range = btn.getAttribute("data-chart-range");
+        document.querySelectorAll(".chart-range-btn").forEach((b) => {
+          b.classList.remove("bg-white", "text-gray-900", "shadow-sm");
+          b.classList.add("text-gray-600");
+        });
+        btn.classList.add("bg-white", "text-gray-900", "shadow-sm");
+
+        const salesLine = document.getElementById("spline-line-sales");
+        const salesArea = document.getElementById("spline-area-sales");
+        if (range === "1Y") {
+          salesLine.setAttribute("d", "M 20 180 C 110 150, 160 95, 240 120 C 320 75, 390 85, 470 50 C 550 35, 610 28, 680 18");
+          salesArea.setAttribute("d", "M 20 180 C 110 150, 160 95, 240 120 C 320 75, 390 85, 470 50 C 550 35, 610 28, 680 18 L 680 205 L 20 205 Z");
+        } else {
+          salesLine.setAttribute("d", "M 20 165 C 110 140, 160 115, 240 105 C 320 95, 390 120, 470 70 C 550 25, 610 45, 680 25");
+          salesArea.setAttribute("d", "M 20 165 C 110 140, 160 115, 240 105 C 320 95, 390 120, 470 70 C 550 25, 610 45, 680 25 L 680 205 L 20 205 Z");
+        }
+      });
+    });
+
+    // 5. Business Profile Settings Modal
+    const settingsModal = document.getElementById("store-settings-modal");
+    function openStoreSettings() {
+      document.getElementById("set-biz-name").value = AppState.profile.businessName || "AgniVolt E-Com Store";
+      document.getElementById("set-gstin").value = AppState.profile.gstin || "10AABCA8921K1Z5";
+      document.getElementById("set-upi").value = AppState.profile.upiId || "9661692365@ybl";
+      settingsModal.classList.remove("hidden");
+      settingsModal.classList.add("flex");
+    }
+
+    document.getElementById("open-profile-modal-btn")?.addEventListener("click", openStoreSettings);
+    document.getElementById("edit-store-inline-btn")?.addEventListener("click", openStoreSettings);
+    document.getElementById("close-store-settings")?.addEventListener("click", () => {
+      settingsModal.classList.add("hidden");
+      settingsModal.classList.remove("flex");
+    });
+
+    document.getElementById("store-settings-form")?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const businessName = document.getElementById("set-biz-name").value.trim();
+      const gstin = document.getElementById("set-gstin").value.trim().toUpperCase();
+      const [stateCode, stateName] = document.getElementById("set-state").value.split("|");
+      const upiId = document.getElementById("set-upi").value.trim();
+
+      const updated = {
+        ...AppState.profile,
+        businessName,
+        displayName: businessName,
+        gstin,
+        stateCode,
+        stateName,
+        upiId
+      };
+      AppState.profile = updated;
+      localStorage.setItem("sellgst_local_profile", JSON.stringify(updated));
+
+      if (AppState.user?.uid) {
+        try {
+          await setDoc(doc(db, "users", AppState.user.uid), {
+            businessName,
+            displayName: businessName,
+            gstin,
+            stateCode,
+            stateName,
+            upiId
+          }, { merge: true });
+        } catch (_) {}
+      }
+
+      syncProDOMElements();
+      renderWidgets();
+      settingsModal.classList.add("hidden");
+      settingsModal.classList.remove("flex");
+      showToast("Business GSTIN & UPI settings saved!", "success");
+    });
+
+    document.getElementById("sidebar-logout-btn")?.addEventListener("click", logoutUser);
+  </script>
+</body>
+</html>
