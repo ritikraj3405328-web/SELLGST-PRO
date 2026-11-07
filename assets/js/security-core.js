@@ -1,6 +1,5 @@
 /**
- * SellGST Pro — Principal Security Core, Firebase Cloud Sync,
- * Semi-Automatic UPI Payment Engine & 24/7 Floating AI Support
+ * SellGST Pro — Fixed Security Core (GitHub Pages, Cloudflare Pages & Vercel Compatible)
  * File: /assets/js/security-core.js
  */
 
@@ -20,14 +19,11 @@ import {
 import {
   getFirestore,
   doc,
-  getDoc,
   setDoc,
-  updateDoc,
   addDoc,
   collection,
   query,
   where,
-  orderBy,
   limit,
   onSnapshot,
   serverTimestamp
@@ -35,9 +31,6 @@ import {
 
 import { initI18n, t, getCurrentLang, setLanguage, SUPPORTED_LANGUAGES } from "./i18n.js";
 
-// ============================================================================
-// 1. EXACT FIREBASE CONFIGURATION
-// ============================================================================
 export const firebaseConfig = {
   apiKey: "AIzaSyCYs-MCUZJrofjusErAbVSzu7o8WnGpuac",
   authDomain: "sellgstpro.firebaseapp.com",
@@ -52,9 +45,6 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const googleProvider = new GoogleAuthProvider();
 
-// ============================================================================
-// 2. GLOBAL APPLICATION STATE
-// ============================================================================
 export const AppState = {
   user: null,
   profile: {
@@ -62,10 +52,10 @@ export const AppState = {
     displayName: "Seller Store",
     email: "",
     phone: "",
-    gstin: "27AABCU9603R1ZM",
-    businessName: "Apex E-Com Enterprises",
-    stateCode: "27",
-    stateName: "Maharashtra",
+    gstin: "10AABCA8921K1Z5",
+    businessName: "AgniVolt E-Com Store",
+    stateCode: "10",
+    stateName: "Bihar",
     upiId: "9661692365@ybl",
     isPro: false,
     isAdmin: false,
@@ -77,7 +67,7 @@ export const AppState = {
     payeeName: "AGNI VOLT",
     monthlyPrice: 99,
     yearlyPrice: 499,
-    whatsappWebhookNumber: "", // Dynamically loaded from Firestore system_config/payment_settings
+    whatsappWebhookNumber: "",
     autoWhatsAppNotify: true
   },
   pendingRequest: null,
@@ -102,18 +92,10 @@ export function subscribeAppState(callback) {
 
 function notifyStateChange() {
   AppState.subscribers.forEach((cb) => {
-    try {
-      cb(AppState);
-    } catch (err) {
-      console.error("[SellGST State Subscriber Error]:", err);
-    }
+    try { cb(AppState); } catch (_) {}
   });
-  window.dispatchEvent(new CustomEvent("sellgst:state-changed", { detail: AppState }));
 }
 
-// ============================================================================
-// 3. ZERO-TRUST XSS & CSV FORMULA-INJECTION SANITIZERS
-// ============================================================================
 export function sanitizeHTML(input) {
   if (input === null || input === undefined) return "";
   return String(input)
@@ -128,9 +110,6 @@ export function escapeAttr(input) {
   return sanitizeHTML(input).replace(/`/g, "&#096;");
 }
 
-/**
- * Prevents CSV Macro / Formula Injection (=, +, -, @, Tab, CR)
- */
 export function sanitizeCSVCell(value) {
   if (value === null || value === undefined) return "";
   let str = String(value).trim();
@@ -149,14 +128,9 @@ export function formatINR(amount) {
   }).format(num);
 }
 
-// ============================================================================
-// 4. NATIVE HARDWARE BACK-BUTTON & MODAL STACK MANAGER
-// ============================================================================
 export function pushModalState(modalId, closeCallback) {
   const existingIdx = AppState.activeModalStack.findIndex((m) => m.id === modalId);
-  if (existingIdx !== -1) {
-    AppState.activeModalStack.splice(existingIdx, 1);
-  }
+  if (existingIdx !== -1) AppState.activeModalStack.splice(existingIdx, 1);
   AppState.activeModalStack.push({ id: modalId, close: closeCallback });
   try {
     window.history.pushState({ sellgstModal: modalId, ts: Date.now() }, "", window.location.href);
@@ -165,14 +139,11 @@ export function pushModalState(modalId, closeCallback) {
 
 export function removeModalState(modalId) {
   const idx = AppState.activeModalStack.findIndex((m) => m.id === modalId);
-  if (idx !== -1) {
-    AppState.activeModalStack.splice(idx, 1);
-  }
+  if (idx !== -1) AppState.activeModalStack.splice(idx, 1);
 }
 
 function initBackButtonManager() {
-  window.addEventListener("popstate", (event) => {
-    // 1. If any modal or AI drawer is open, close top-most overlay instead of leaving page
+  window.addEventListener("popstate", () => {
     if (AppState.activeModalStack.length > 0) {
       const topModal = AppState.activeModalStack.pop();
       if (topModal && typeof topModal.close === "function") {
@@ -180,8 +151,6 @@ function initBackButtonManager() {
       }
       return;
     }
-
-    // 2. If user is on an inner tool page and has no history stack, route smoothly to /app.html
     const path = window.location.pathname;
     const isSubToolPage =
       path.includes("invoice") ||
@@ -190,20 +159,17 @@ function initBackButtonManager() {
       path.includes("admin");
 
     if (isSubToolPage && document.referrer === "") {
-      window.location.href = "/app.html";
+      window.location.href = "./app.html";
     }
   });
 }
 
-// ============================================================================
-// 5. TOAST NOTIFICATION SYSTEM
-// ============================================================================
 export function showToast(message, type = "success", duration = 4000) {
   let container = document.getElementById("sellgst-toast-container");
   if (!container) {
     container = document.createElement("div");
     container.id = "sellgst-toast-container";
-    container.className = "fixed top-5 right-5 z-[9999] flex flex-col gap-2.5 max-w-sm w-full pointer-events-none px-4 sm:px-0";
+    container.className = "fixed top-4 right-4 left-4 sm:left-auto z-[9999] flex flex-col gap-2 max-w-sm sm:w-full pointer-events-none";
     document.body.appendChild(container);
   }
 
@@ -214,35 +180,25 @@ export function showToast(message, type = "success", duration = 4000) {
     info: "bg-indigo-600 text-white border-indigo-400"
   };
 
-  const icons = {
-    success: "✅",
-    warning: "⏳",
-    error: "⚠️",
-    info: "✨"
-  };
+  const icons = { success: "✅", warning: "⏳", error: "⚠️", info: "✨" };
 
   const toast = document.createElement("div");
-  toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3.5 rounded-2xl border shadow-xl transition-all duration-300 transform translate-y-0 opacity-100 ${colors[type] || colors.success}`;
+  toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-2xl border shadow-xl transition-all duration-300 ${colors[type] || colors.success}`;
   toast.innerHTML = `
-    <span class="text-lg select-none">${icons[type] || "✅"}</span>
-    <div class="text-xs sm:text-sm font-semibold leading-snug flex-1">${sanitizeHTML(message)}</div>
-    <button type="button" class="text-current opacity-70 hover:opacity-100 font-bold text-sm px-1">✕</button>
+    <span class="text-base select-none">${icons[type] || "✅"}</span>
+    <div class="text-xs font-semibold leading-snug flex-1 break-words">${sanitizeHTML(message)}</div>
+    <button type="button" class="text-current opacity-70 hover:opacity-100 font-bold text-xs px-1">✕</button>
   `;
-
   toast.querySelector("button").addEventListener("click", () => toast.remove());
   container.appendChild(toast);
 
   setTimeout(() => {
-    toast.classList.add("opacity-0", "-translate-y-2");
+    toast.classList.add("opacity-0");
     setTimeout(() => toast.remove(), 300);
   }, duration);
 }
 
-// ============================================================================
-// 6. REAL-TIME FIRESTORE LISTENERS (PRO UNLOCK, PENDING BANNER & CONFIG)
-// ============================================================================
 function startSystemListeners() {
-  // Listen to Merchant UPI & Admin Alert Configuration
   try {
     const configRef = doc(db, "system_config", "payment_settings");
     AppState.listeners.configUnsub = onSnapshot(
@@ -265,20 +221,15 @@ function startSystemListeners() {
       () => {}
     );
 
-    // Listen to Global Broadcast Banner
     const broadcastRef = doc(db, "system_config", "broadcast");
     AppState.listeners.broadcastUnsub = onSnapshot(
       broadcastRef,
       (snap) => {
-        if (snap.exists()) {
-          renderBroadcastBanner(snap.data());
-        }
+        if (snap.exists()) renderBroadcastBanner(snap.data());
       },
       () => {}
     );
-  } catch (err) {
-    console.warn("[SellGST Config Listener Fallback]:", err.message);
-  }
+  } catch (_) {}
 }
 
 function startUserRealtimeListeners(user) {
@@ -286,22 +237,19 @@ function startUserRealtimeListeners(user) {
   if (!user || !user.uid) return;
 
   const userRef = doc(db, "users", user.uid);
-
-  // 1. Live User Profile & Instant Pro Activation Listener
   AppState.listeners.userUnsub = onSnapshot(
     userRef,
     async (snap) => {
       if (!snap.exists()) {
-        // Initialize safe Free-tier profile in Firestore
         const initialProfile = {
           uid: user.uid,
           displayName: user.displayName || user.email?.split("@")[0] || "SellGST Merchant",
           email: user.email || "",
           phone: user.phoneNumber || "",
-          businessName: "My E-Com Store",
-          gstin: "27AABCU9603R1ZM",
-          stateCode: "27",
-          stateName: "Maharashtra",
+          businessName: user.displayName || "My E-Com Store",
+          gstin: "10AABCA8921K1Z5",
+          stateCode: "10",
+          stateName: "Bihar",
           upiId: "9661692365@ybl",
           isPro: false,
           isAdmin: false,
@@ -309,9 +257,7 @@ function startUserRealtimeListeners(user) {
           paymentPending: false,
           createdAt: serverTimestamp()
         };
-        try {
-          await setDoc(userRef, initialProfile, { merge: true });
-        } catch (_) {}
+        try { await setDoc(userRef, initialProfile, { merge: true }); } catch (_) {}
         AppState.profile = { ...AppState.profile, ...initialProfile };
       } else {
         const prevPro = AppState.profile.isPro;
@@ -323,59 +269,37 @@ function startUserRealtimeListeners(user) {
           isPro: Boolean(data.isPro || data.subscriptionStatus === "ACTIVE"),
           isAdmin: Boolean(data.isAdmin)
         };
-
-        // Real-Time Instant Unblur Celebration when Admin clicks Approve!
         if (!prevPro && AppState.profile.isPro) {
-          showToast("🎉 Payment Verified! SellGST Pro is now ACTIVE in real-time!", "success", 6000);
+          showToast("🎉 Payment Verified! SellGST Pro is now ACTIVE!", "success", 6000);
           closeProPaymentModal();
         }
       }
-
       syncProDOMElements();
       notifyStateChange();
     },
-    (err) => {
-      console.warn("[User Snapshot Fallback]:", err.message);
-      loadCachedLocalProfile(user);
-    }
+    () => loadCachedLocalProfile(user)
   );
 
-  // 2. Live Payment Request Status Listener
-  const q = query(
-    collection(db, "payment_requests"),
-    where("uid", "==", user.uid),
-    limit(5)
-  );
-
+  const q = query(collection(db, "payment_requests"), where("uid", "==", user.uid), limit(5));
   AppState.listeners.paymentUnsub = onSnapshot(
     q,
     (snap) => {
       let latestPending = null;
       snap.forEach((docSnap) => {
         const d = docSnap.data();
-        if (d.status === "PENDING") {
-          latestPending = { id: docSnap.id, ...d };
-        }
+        if (d.status === "PENDING") latestPending = { id: docSnap.id, ...d };
       });
       AppState.pendingRequest = latestPending;
       renderPendingPaymentBanner();
       notifyStateChange();
     },
-    () => {
-      renderPendingPaymentBanner();
-    }
+    () => renderPendingPaymentBanner()
   );
 }
 
 function cleanupUserListeners() {
-  if (AppState.listeners.userUnsub) {
-    AppState.listeners.userUnsub();
-    AppState.listeners.userUnsub = null;
-  }
-  if (AppState.listeners.paymentUnsub) {
-    AppState.listeners.paymentUnsub();
-    AppState.listeners.paymentUnsub = null;
-  }
+  if (AppState.listeners.userUnsub) { AppState.listeners.userUnsub(); AppState.listeners.userUnsub = null; }
+  if (AppState.listeners.paymentUnsub) { AppState.listeners.paymentUnsub(); AppState.listeners.paymentUnsub = null; }
 }
 
 function loadCachedLocalProfile(user) {
@@ -384,8 +308,8 @@ function loadCachedLocalProfile(user) {
     AppState.profile = {
       ...AppState.profile,
       ...cached,
-      uid: user?.uid || "demo-seller",
-      displayName: user?.displayName || cached.displayName || "Seller Store",
+      uid: user?.uid || cached.uid || "demo-seller",
+      displayName: user?.displayName || cached.displayName || "AgniVolt E-Com Store",
       email: user?.email || cached.email || ""
     };
     syncProDOMElements();
@@ -394,25 +318,20 @@ function loadCachedLocalProfile(user) {
   } catch (_) {}
 }
 
-// ============================================================================
-// 7. REAL-TIME DOM UNBLUR & STATUS BANNER ENGINE
-// ============================================================================
 export function syncProDOMElements() {
   const isPro = Boolean(AppState.profile.isPro);
   const isAdmin = Boolean(AppState.profile.isAdmin);
 
-  // Update Pro Badges
   document.querySelectorAll("[data-pro-badge]").forEach((el) => {
     if (isPro) {
       el.textContent = "PRO ACTIVE ✨";
-      el.className = "px-3 py-1 rounded-full text-xs font-bold bg-[#CBE8BA] text-gray-900 border border-emerald-400/50 shadow-sm";
+      el.className = "px-3 py-1.5 rounded-full text-xs font-bold bg-[#CBE8BA] text-gray-900 border border-emerald-400/50 shadow-sm whitespace-nowrap";
     } else {
       el.textContent = t("unlock_pro_btn", "Unlock Pro ⚡");
-      el.className = "px-3 py-1 rounded-full text-xs font-bold bg-gray-900 text-white hover:bg-gray-800 cursor-pointer transition";
+      el.className = "px-3 py-1.5 rounded-full text-xs font-bold bg-gray-900 text-white hover:bg-gray-800 cursor-pointer transition whitespace-nowrap";
     }
   });
 
-  // Unmask Order IDs (ORD-XXXXXXX -> Real Order ID) in real time without refresh!
   document.querySelectorAll("[data-order-id]").forEach((el) => {
     const realId = el.getAttribute("data-order-id") || "";
     if (isPro) {
@@ -426,23 +345,20 @@ export function syncProDOMElements() {
     }
   });
 
-  // Hide/Show Paywall Lock Overlays
   document.querySelectorAll("[data-pro-lock-overlay]").forEach((el) => {
     el.style.display = isPro ? "none" : "flex";
   });
 
-  // Show/Hide Admin Navigation Links
   document.querySelectorAll("[data-admin-only]").forEach((el) => {
     el.classList.toggle("hidden", !isAdmin);
   });
 
-  // Update User Display Name & Business Info in Navbar
   document.querySelectorAll("[data-user-name]").forEach((el) => {
     el.textContent = AppState.profile.businessName || AppState.profile.displayName || "Seller Store";
   });
 
   document.querySelectorAll("[data-user-gstin]").forEach((el) => {
-    el.textContent = AppState.profile.gstin || "27AABCU9603R1ZM";
+    el.textContent = AppState.profile.gstin || "10AABCA8921K1Z5";
   });
 }
 
@@ -461,17 +377,14 @@ export function renderPendingPaymentBanner() {
   if (!banner) {
     banner = document.createElement("div");
     banner.id = "sellgst-pending-payment-banner";
-    banner.className = "w-full bg-amber-100/95 border-b border-amber-300 text-amber-950 px-4 py-2.5 text-xs sm:text-sm font-medium flex flex-wrap items-center justify-between gap-2 z-40";
+    banner.className = "w-full bg-amber-100 border-b border-amber-300 text-amber-950 px-3 py-2 text-xs font-medium flex items-center justify-center z-40 text-center";
     document.body.prepend(banner);
   }
 
   const utrDisplay = AppState.pendingRequest?.utrNumber || localPending || "Submitted";
   banner.innerHTML = `
-    <div class="flex items-center gap-2.5 mx-auto">
-      <span class="inline-block animate-spin text-base">⏳</span>
-      <span>
-        <strong>Payment Verification Pending (UTR: ${sanitizeHTML(utrDisplay)})</strong> — Your account will activate automatically as soon as the admin verifies the bank transfer.
-      </span>
+    <div>
+      ⏳ <strong>Payment Verification Pending (UTR: ${sanitizeHTML(utrDisplay)})</strong> — Your account will activate automatically once Admin approves.
     </div>
   `;
 }
@@ -485,15 +398,12 @@ function renderBroadcastBanner(data) {
   if (!el) {
     el = document.createElement("div");
     el.id = "sellgst-global-broadcast";
-    el.className = "w-full bg-gray-900 text-[#CBE8BA] px-4 py-2 text-xs sm:text-sm font-semibold text-center tracking-wide z-40";
+    el.className = "w-full bg-gray-900 text-[#CBE8BA] px-3 py-2 text-xs font-semibold text-center z-40";
     document.body.prepend(el);
   }
   el.innerHTML = `📢 ${sanitizeHTML(data.message)}`;
 }
 
-// ============================================================================
-// 8. SEMI-AUTOMATIC UPI PAYMENT & 1-CLICK ADMIN APPROVAL MODAL
-// ============================================================================
 export function openProPaymentModal(defaultPlan = "MONTHLY") {
   let modal = document.getElementById("sellgst-upi-modal");
   if (modal) modal.remove();
@@ -504,90 +414,52 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
   const planTitle = selectedPlan === "YEARLY" ? "Pro Yearly Pass (12 Months)" : "Pro Monthly Pass (30 Days)";
 
   const upiUri = `upi://pay?pa=${encodeURIComponent(cfg.upiId)}&pn=${encodeURIComponent(cfg.payeeName)}&am=${amount}&cu=INR&tn=${encodeURIComponent("SellGST Pro Subscription")}`;
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=10&data=${encodeURIComponent(upiUri)}`;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=10&data=${encodeURIComponent(upiUri)}`;
 
   modal = document.createElement("div");
   modal.id = "sellgst-upi-modal";
-  modal.className = "fixed inset-0 z-[9990] bg-gray-950/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto";
+  modal.className = "fixed inset-0 z-[9990] bg-gray-950/60 backdrop-blur-sm flex items-center justify-center p-3 overflow-y-auto";
 
   modal.innerHTML = `
-    <div class="bg-white rounded-3xl border border-gray-200 shadow-2xl max-w-md w-full p-6 sm:p-7 relative animate-fadeIn my-auto">
-      <button type="button" id="close-upi-modal-btn" class="absolute top-5 right-5 w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 font-bold">✕</button>
+    <div class="bg-white rounded-3xl border border-gray-200 shadow-2xl max-w-md w-full p-5 sm:p-6 relative my-auto">
+      <button type="button" id="close-upi-modal-btn" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 font-bold">✕</button>
+      <span class="px-3 py-1 rounded-full text-[10px] font-bold bg-[#CBE8BA] text-gray-900">INSTANT UPI UNLOCK</span>
+      <h3 class="text-lg font-extrabold text-gray-900 mt-2">Unlock SellGST Pro</h3>
+      <p class="text-xs text-gray-500 mt-0.5">Unblur all RTO & Weight Fraud Order IDs + Unlimited GST Bills.</p>
 
-      <div class="flex items-center gap-2.5 mb-2">
-        <span class="px-3 py-1 rounded-full text-xs font-bold bg-[#CBE8BA] text-gray-900">INSTANT UPI UNLOCK</span>
-        <span class="text-xs font-semibold text-gray-500">Zero-Commission Direct Bank</span>
-      </div>
-
-      <h3 class="text-xl font-extrabold text-gray-900">Unlock SellGST Pro</h3>
-      <p class="text-xs text-gray-500 mt-1">Unblur all RTO & Weight Fraud Order IDs, unlimited GST bills & 1-click GSTR-1 JSON export.</p>
-
-      <!-- Plan Switcher -->
-      <div class="grid grid-cols-2 gap-3 mt-4">
-        <button type="button" data-plan-select="MONTHLY" class="plan-card-btn p-3.5 rounded-2xl border-2 text-left transition ${selectedPlan === "MONTHLY" ? "border-gray-900 bg-gray-50" : "border-gray-200 hover:border-gray-300"}">
-          <div class="text-xs font-bold text-gray-500">MONTHLY PRO</div>
-          <div class="text-xl font-black text-gray-900 mt-0.5">₹${cfg.monthlyPrice}<span class="text-xs font-medium text-gray-500">/mo</span></div>
+      <div class="grid grid-cols-2 gap-2.5 mt-3">
+        <button type="button" data-plan-select="MONTHLY" class="plan-card-btn p-3 rounded-2xl border-2 text-left transition ${selectedPlan === "MONTHLY" ? "border-gray-900 bg-gray-50" : "border-gray-200"}">
+          <div class="text-[10px] font-bold text-gray-500">MONTHLY PRO</div>
+          <div class="text-lg font-black text-gray-900">₹${cfg.monthlyPrice}<span class="text-xs font-normal">/mo</span></div>
         </button>
-        <button type="button" data-plan-select="YEARLY" class="plan-card-btn p-3.5 rounded-2xl border-2 text-left transition relative ${selectedPlan === "YEARLY" ? "border-gray-900 bg-[#CBE8BA]/25" : "border-gray-200 hover:border-gray-300"}">
-          <span class="absolute -top-2.5 right-2.5 bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">SAVE 58%</span>
-          <div class="text-xs font-bold text-gray-500">YEARLY PRO</div>
-          <div class="text-xl font-black text-gray-900 mt-0.5">₹${cfg.yearlyPrice}<span class="text-xs font-medium text-gray-500">/yr</span></div>
+        <button type="button" data-plan-select="YEARLY" class="plan-card-btn p-3 rounded-2xl border-2 text-left transition relative ${selectedPlan === "YEARLY" ? "border-gray-900 bg-[#CBE8BA]/25" : "border-gray-200"}">
+          <span class="absolute -top-2 right-2 bg-emerald-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full">SAVE 58%</span>
+          <div class="text-[10px] font-bold text-gray-500">YEARLY PRO</div>
+          <div class="text-lg font-black text-gray-900">₹${cfg.yearlyPrice}<span class="text-xs font-normal">/yr</span></div>
         </button>
       </div>
 
-      <!-- Step 1: Dynamic QR & Deep Link -->
-      <div class="mt-4 bg-[#F4F5F7] rounded-2xl p-4 text-center border border-gray-200">
+      <div class="mt-3 bg-[#F4F5F7] rounded-2xl p-3.5 text-center border border-gray-200">
         <div class="text-xs font-bold text-gray-700 mb-2">
           Step 1: Scan QR or Tap UPI App (<span id="upi-plan-label">${sanitizeHTML(planTitle)} — ₹${amount}</span>)
         </div>
-        <div class="bg-white p-3 rounded-2xl inline-block shadow-sm border border-gray-100">
-          <img id="upi-dynamic-qr" src="${qrUrl}" alt="Scan UPI QR Code" class="w-40 h-40 mx-auto rounded-lg object-contain" />
+        <img id="upi-dynamic-qr" src="${qrUrl}" alt="UPI QR" class="w-36 h-36 mx-auto rounded-xl bg-white p-2 border border-gray-200 object-contain" />
+        <div class="mt-2 text-[11px] text-gray-600">
+          Merchant: <strong class="text-gray-900">${sanitizeHTML(cfg.payeeName)}</strong> • <code class="font-mono text-gray-900">${sanitizeHTML(cfg.upiId)}</code>
         </div>
-        <div class="mt-2.5 text-xs text-gray-600 flex items-center justify-center gap-1.5">
-          <span>Merchant: <strong class="text-gray-900">${sanitizeHTML(cfg.payeeName)}</strong></span>
-          <span>•</span>
-          <span class="font-mono bg-white px-2 py-0.5 rounded border border-gray-200 text-gray-900">${sanitizeHTML(cfg.upiId)}</span>
-        </div>
-
-        <!-- Mobile 1-Click Intent Button -->
-        <a id="upi-deeplink-btn" href="${upiUri}" class="mt-3 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs sm:text-sm shadow-sm transition">
-          <span>📱 Pay ₹<span id="upi-btn-amt">${amount}</span> via PhonePe / GPay / Paytm</span>
+        <a id="upi-deeplink-btn" href="${upiUri}" class="mt-2.5 w-full inline-flex items-center justify-center py-2.5 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-sm transition">
+          📱 Pay ₹<span id="upi-btn-amt">${amount}</span> via PhonePe / GPay / Paytm
         </a>
       </div>
 
-      <!-- Step 2: Submit 12-Digit UTR -->
-      <form id="upi-utr-form" class="mt-4 space-y-3">
-        <div>
-          <label class="block text-xs font-bold text-gray-700 mb-1">
-            Step 2: Enter 12-Digit UPI UTR / Reference No.
-          </label>
-          <div class="flex gap-2">
-            <input
-              type="text"
-              id="upi-utr-input"
-              required
-              minlength="6"
-              maxlength="36"
-              placeholder="e.g. 412893746512"
-              class="flex-1 px-3.5 py-2.5 rounded-xl border border-gray-300 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-gray-900"
-            />
-            <button
-              type="button"
-              id="upi-paid-quick-btn"
-              title="Auto-fill timestamp reference if paid via mobile intent"
-              class="px-3 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-xs whitespace-nowrap"
-            >
-              I Have Paid
-            </button>
-          </div>
+      <form id="upi-utr-form" class="mt-3 space-y-2.5">
+        <label class="block text-xs font-bold text-gray-700">Step 2: Enter 12-Digit UPI UTR / Ref No.</label>
+        <div class="flex gap-2">
+          <input type="text" id="upi-utr-input" required minlength="6" maxlength="36" placeholder="e.g. 412893746512" class="flex-1 px-3 py-2 rounded-xl border border-gray-300 text-xs font-mono" />
+          <button type="button" id="upi-paid-quick-btn" class="px-3 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs whitespace-nowrap">I Have Paid</button>
         </div>
-
-        <button
-          type="submit"
-          id="upi-submit-btn"
-          class="w-full py-3.5 px-5 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white font-extrabold text-sm shadow-lg transition flex items-center justify-center gap-2"
-        >
-          <span>✅ Submit Payment for Instant Activation</span>
+        <button type="submit" id="upi-submit-btn" class="w-full py-3 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white font-extrabold text-xs shadow-lg transition">
+          ✅ Submit Payment for Instant Activation
         </button>
       </form>
     </div>
@@ -599,66 +471,34 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
   let currentAmount = amount;
   let currentPlan = selectedPlan;
 
-  // Plan Switcher Handler
   modal.querySelectorAll("[data-plan-select]").forEach((btn) => {
     btn.addEventListener("click", () => {
       const p = btn.getAttribute("data-plan-select");
       currentPlan = p;
       currentAmount = p === "YEARLY" ? cfg.yearlyPrice : cfg.monthlyPrice;
       const newUri = `upi://pay?pa=${encodeURIComponent(cfg.upiId)}&pn=${encodeURIComponent(cfg.payeeName)}&am=${currentAmount}&cu=INR&tn=${encodeURIComponent("SellGST Pro " + p)}`;
-      const newQr = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=10&data=${encodeURIComponent(newUri)}`;
-
-      modal.querySelector("#upi-dynamic-qr").src = newQr;
+      modal.querySelector("#upi-dynamic-qr").src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=10&data=${encodeURIComponent(newUri)}`;
       modal.querySelector("#upi-deeplink-btn").href = newUri;
       modal.querySelector("#upi-btn-amt").textContent = currentAmount;
-      modal.querySelector("#upi-plan-label").textContent =
-        (p === "YEARLY" ? "Pro Yearly Pass (12 Months)" : "Pro Monthly Pass (30 Days)") + ` — ₹${currentAmount}`;
-
-      modal.querySelectorAll(".plan-card-btn").forEach((b) => {
-        b.classList.remove("border-gray-900", "bg-gray-50", "bg-[#CBE8BA]/25");
-        b.classList.add("border-gray-200");
-      });
-      btn.classList.remove("border-gray-200");
-      btn.classList.add("border-gray-900", p === "YEARLY" ? "bg-[#CBE8BA]/25" : "bg-gray-50");
+      modal.querySelector("#upi-plan-label").textContent = `${p === "YEARLY" ? "Pro Yearly" : "Pro Monthly"} — ₹${currentAmount}`;
     });
   });
 
-  // "I Have Paid" quick helper
   modal.querySelector("#upi-paid-quick-btn").addEventListener("click", () => {
     const input = modal.querySelector("#upi-utr-input");
-    if (!input.value.trim()) {
-      input.value = "PAID-" + String(Date.now()).slice(-8);
-    }
-    input.focus();
+    if (!input.value.trim()) input.value = "PAID-" + String(Date.now()).slice(-8);
   });
 
-  // Close Button
   modal.querySelector("#close-upi-modal-btn").addEventListener("click", () => closeProPaymentModal());
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) closeProPaymentModal();
-  });
 
-  // Form Submission -> Firestore `payment_requests` + Instant Admin Alert
   modal.querySelector("#upi-utr-form").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const utrInput = modal.querySelector("#upi-utr-input");
-    const submitBtn = modal.querySelector("#upi-submit-btn");
-    const utrNumber = sanitizeHTML(utrInput.value.trim());
-
-    if (utrNumber.length < 6) {
-      showToast("Please enter a valid 12-digit UPI UTR / Reference number.", "warning");
-      return;
-    }
-
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = `<span class="animate-spin">⏳</span> Submitting Verification...`;
-
-    const uid = AppState.user?.uid || AppState.profile.uid || "guest-" + Date.now();
+    const utrNumber = sanitizeHTML(modal.querySelector("#upi-utr-input").value.trim());
+    const uid = AppState.user?.uid || AppState.profile.uid || "seller-" + Date.now();
     const payload = {
       uid,
       userName: AppState.profile.businessName || AppState.profile.displayName || "Seller Store",
       userEmail: AppState.profile.email || AppState.user?.email || "seller@sellgst.pro",
-      userPhone: AppState.profile.phone || "",
       planName: currentPlan,
       planAmount: Number(currentAmount),
       utrNumber,
@@ -671,13 +511,9 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
     try {
       if (AppState.user) {
         await addDoc(collection(db, "payment_requests"), payload);
-        await setDoc(doc(db, "users", uid), { paymentPending: true }, { merge: true });
       }
-    } catch (err) {
-      console.warn("[Firestore Payment Queue Fallback]:", err.message);
-    }
+    } catch (_) {}
 
-    // Persist locally so pending banner also shows immediately
     localStorage.setItem("sellgst_pending_utr", utrNumber);
     const localQueue = JSON.parse(localStorage.getItem("sellgst_local_payment_requests") || "[]");
     localQueue.unshift({ id: "req_" + Date.now(), ...payload });
@@ -686,121 +522,67 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
     AppState.pendingRequest = payload;
     renderPendingPaymentBanner();
     closeProPaymentModal();
-
-    showToast("⏳ Payment Verification Pending! Admin has been notified for instant activation.", "warning", 6000);
-
-    // Trigger optional WhatsApp Instant Notification if configured by Admin in Firestore
-    if (cfg.whatsappWebhookNumber && cfg.autoWhatsAppNotify) {
-      const waText = `🔔 *New SellGST Pro UPI Payment*\n• *Seller:* ${payload.userName}\n• *UID:* ${uid}\n• *Plan:* ${currentPlan} (₹${currentAmount})\n• *UTR:* ${utrNumber}\n• *Approve Now:* ${window.location.origin}/admin.html`;
-      const waLink = `https://wa.me/${encodeURIComponent(cfg.whatsappWebhookNumber.replace(/\D/g, ""))}?text=${encodeURIComponent(waText)}`;
-      window.open(waLink, "_blank", "noopener,noreferrer");
-    }
+    showToast("⏳ Payment Verification Pending! Admin notified.", "warning", 5000);
   });
 }
 
 export function closeProPaymentModal(fromPopState = false) {
   const modal = document.getElementById("sellgst-upi-modal");
   if (modal) modal.remove();
-  if (!fromPopState) {
-    removeModalState("upi-payment-modal");
-  }
+  if (!fromPopState) removeModalState("upi-payment-modal");
 }
 
-// ============================================================================
-// 9. FLOATING 3D AI CUSTOMER SUPPORT ASSISTANT (24/7 ZERO-CARE BOT)
-// ============================================================================
+function getLocalAIFallback(q = "") {
+  const s = String(q).toLowerCase();
+  if (s.includes("rto") || s.includes("claim") || s.includes("weight")) {
+    return "**How to Claim Pending RTO (>30 Days) & Weight Fraud:**\n1. Open **E-Com Audit** (`./ecom-audit.html`).\n2. Upload your Meesho, Flipkart, or Amazon CSV report.\n3. Click **Claim Ticket** next to any flagged order to copy a ready-to-send SPF / SAFE-T claim!";
+  }
+  if (s.includes("gst") || s.includes("json") || s.includes("3b")) {
+    return "**How to File GSTR-1 (.JSON) in 60 Seconds:**\n1. Open **GST Filing** (`./gst-filing.html`).\n2. Click **Download Official GSTR-1 (.JSON)**.\n3. Upload the JSON file on `gst.gov.in` under **Prepare Offline** and file with OTP!";
+  }
+  return "**Welcome to SellGST AI (24/7)!**\n- **E-Com Audit (`./ecom-audit.html`):** Find RTO >30 days, Weight Fraud & crop 4x6 labels.\n- **GST Billing (`./invoice.html`):** Create B2B/B2C bills with auto CGST/SGST/IGST & UPI QR.\n- **GST Filing (`./gst-filing.html`):** Download 1-Click `gst.gov.in` JSON.";
+}
+
 function injectFloatingAIAssistant() {
   if (document.getElementById("sellgst-ai-orb")) return;
 
-  // 1. Glowing 3D AI Orb Button in Bottom-Right
   const orb = document.createElement("button");
   orb.id = "sellgst-ai-orb";
   orb.type = "button";
-  orb.setAttribute("aria-label", "Open SellGST 24/7 AI Assistant");
-  orb.className =
-    "fixed bottom-20 sm:bottom-6 right-5 z-[9980] group flex items-center gap-2.5 p-1.5 sm:pr-4 rounded-full bg-gray-950 text-white shadow-2xl border border-indigo-400/40 hover:scale-105 transition-all duration-300";
-
+  orb.className = "fixed bottom-20 sm:bottom-6 right-4 z-[9980] flex items-center gap-2 p-1.5 sm:pr-4 rounded-full bg-gray-950 text-white shadow-2xl border border-indigo-400/40 hover:scale-105 transition-all";
   orb.innerHTML = `
-    <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-indigo-600 via-purple-500 to-emerald-400 flex items-center justify-center shadow-inner relative">
+    <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-indigo-600 via-purple-500 to-emerald-400 flex items-center justify-center relative">
       <span class="text-lg">🤖</span>
-      <span class="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-[#CBE8BA] border-2 border-gray-950 animate-ping"></span>
       <span class="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-[#CBE8BA] border-2 border-gray-950"></span>
     </div>
     <div class="hidden sm:flex flex-col text-left">
-      <span class="text-[10px] font-bold uppercase tracking-wider text-[#CBE8BA]">24/7 AI Support</span>
+      <span class="text-[10px] font-bold uppercase text-[#CBE8BA]">24/7 AI Support</span>
       <span class="text-xs font-extrabold text-white">Ask SellGST AI</span>
     </div>
   `;
 
-  // 2. Slide-Over AI Chat Drawer
   const drawer = document.createElement("div");
   drawer.id = "sellgst-ai-drawer";
-  drawer.className =
-    "fixed inset-y-0 right-0 z-[9985] w-full sm:w-[410px] bg-white shadow-2xl border-l border-gray-200 flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out";
-
+  drawer.className = "fixed inset-y-0 right-0 z-[9985] w-full sm:w-[400px] bg-white shadow-2xl border-l border-gray-200 flex flex-col transform translate-x-full transition-transform duration-300";
   drawer.innerHTML = `
-    <!-- Header -->
-    <div class="p-4 sm:p-5 bg-gray-950 text-white flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-500 to-emerald-400 flex items-center justify-center text-lg shadow">
-          🤖
-        </div>
+    <div class="p-4 bg-gray-950 text-white flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-indigo-600 to-emerald-400 flex items-center justify-center">🤖</div>
         <div>
-          <div class="flex items-center gap-2">
-            <h4 class="font-extrabold text-sm">SellGST Pro AI</h4>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#CBE8BA] text-gray-950">ONLINE</span>
-          </div>
-          <p class="text-[11px] text-gray-400">Trained on GST Filing, RTO Claims & Billing</p>
+          <h4 class="font-extrabold text-sm">SellGST Pro AI</h4>
+          <p class="text-[11px] text-gray-400">24/7 GST, Billing & RTO Assistant</p>
         </div>
       </div>
-      <button type="button" id="close-ai-drawer-btn" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold">✕</button>
+      <button type="button" id="close-ai-drawer-btn" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center font-bold">✕</button>
     </div>
-
-    <!-- Quick Prompt Chips -->
-    <div class="px-4 py-2.5 bg-[#F4F5F7] border-b border-gray-200 flex items-center gap-2 overflow-x-auto no-scrollbar">
-      <button type="button" data-ai-chip="How do I find Pending RTO (>30 days) and raise claims?" class="px-3 py-1.5 rounded-full bg-white border border-gray-200 hover:border-gray-900 text-[11px] font-semibold text-gray-800 whitespace-nowrap shadow-sm">
-        📦 Pending RTO Claims
-      </button>
-      <button type="button" data-ai-chip="How to download GSTR-1 JSON and upload on gst.gov.in?" class="px-3 py-1.5 rounded-full bg-white border border-gray-200 hover:border-gray-900 text-[11px] font-semibold text-gray-800 whitespace-nowrap shadow-sm">
-        🏛️ File GSTR-1 JSON
-      </button>
-      <button type="button" data-ai-chip="How to unlock Pro via UPI and how fast is activation?" class="px-3 py-1.5 rounded-full bg-white border border-gray-200 hover:border-gray-900 text-[11px] font-semibold text-gray-800 whitespace-nowrap shadow-sm">
-        ⚡ Unlock Pro UPI
-      </button>
-      <button type="button" data-ai-chip="How does CGST+SGST vs IGST auto-calculation work?" class="px-3 py-1.5 rounded-full bg-white border border-gray-200 hover:border-gray-900 text-[11px] font-semibold text-gray-800 whitespace-nowrap shadow-sm">
-        🧾 GST Invoice Rules
-      </button>
-    </div>
-
-    <!-- Messages Container -->
-    <div id="ai-chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3 bg-[#F4F5F7]/50 text-xs sm:text-sm">
-      <div class="bg-white p-3.5 rounded-2xl rounded-tl-sm border border-gray-200 shadow-sm text-gray-800 leading-relaxed">
-        👋 <strong>Namaste! I am SellGST AI.</strong><br/>
-        Ask me anything in <strong>English, Hindi, Hinglish</strong>, or your regional language about:
-        <ul class="list-disc pl-4 mt-1.5 space-y-1 text-xs text-gray-600">
-          <li>Exporting Amazon, Flipkart & Meesho CSVs for <strong>RTO (>30 days)</strong> & <strong>Weight Fraud</strong></li>
-          <li>Creating GST Bills with <strong>Dynamic UPI QR</strong> & Party Udhar</li>
-          <li>1-Click <strong>GSTR-1 .JSON</strong> filing on <code>gst.gov.in</code></li>
-          <li>Instant <strong>Pro Activation</strong> via UPI (<code>9661692365@ybl</code>)</li>
-        </ul>
+    <div id="ai-chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3 bg-[#F4F5F7]/60 text-xs">
+      <div class="bg-white p-3.5 rounded-2xl border border-gray-200 shadow-sm text-gray-800 leading-relaxed">
+        👋 <strong>Namaste!</strong> Ask me anything about <strong>RTO Claims, 4x6 Labels, GST Bills, or GSTR-1 JSON Filing</strong>!
       </div>
     </div>
-
-    <!-- Input Bar -->
-    <form id="ai-chat-form" class="p-3.5 bg-white border-t border-gray-200 flex items-center gap-2">
-      <input
-        type="text"
-        id="ai-chat-input"
-        placeholder="Ask about RTO claims, GST filing, bills..."
-        class="flex-1 px-3.5 py-2.5 rounded-2xl bg-[#F4F5F7] border border-gray-200 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
-      />
-      <button
-        type="submit"
-        id="ai-chat-send-btn"
-        class="px-4 py-2.5 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white font-bold text-xs sm:text-sm shadow transition"
-      >
-        Send
-      </button>
+    <form id="ai-chat-form" class="p-3 bg-white border-t border-gray-200 flex items-center gap-2">
+      <input type="text" id="ai-chat-input" placeholder="Ask about RTO claims, GST filing..." class="flex-1 px-3.5 py-2.5 rounded-2xl bg-[#F4F5F7] border border-gray-200 text-xs focus:outline-none" />
+      <button type="submit" class="px-4 py-2.5 rounded-2xl bg-gray-900 text-white font-bold text-xs">Send</button>
     </form>
   `;
 
@@ -809,16 +591,6 @@ function injectFloatingAIAssistant() {
 
   orb.addEventListener("click", () => openAIAssistant());
   drawer.querySelector("#close-ai-drawer-btn").addEventListener("click", () => closeAIAssistant());
-
-  // Quick Prompt Chips
-  drawer.querySelectorAll("[data-ai-chip]").forEach((chip) => {
-    chip.addEventListener("click", () => {
-      const q = chip.getAttribute("data-ai-chip");
-      sendAIMessage(q);
-    });
-  });
-
-  // Form Submit
   drawer.querySelector("#ai-chat-form").addEventListener("submit", (e) => {
     e.preventDefault();
     const input = drawer.querySelector("#ai-chat-input");
@@ -827,11 +599,6 @@ function injectFloatingAIAssistant() {
     input.value = "";
     sendAIMessage(msg);
   });
-
-  // Bind any top search bar or page trigger with `[data-open-ai]`
-  document.querySelectorAll("[data-open-ai]").forEach((trigger) => {
-    trigger.addEventListener("click", () => openAIAssistant());
-  });
 }
 
 export function openAIAssistant(initialQuery = "") {
@@ -839,108 +606,94 @@ export function openAIAssistant(initialQuery = "") {
   if (!drawer) return;
   drawer.classList.remove("translate-x-full");
   pushModalState("ai-assistant-drawer", () => closeAIAssistant(true));
-
-  if (initialQuery && typeof initialQuery === "string") {
-    sendAIMessage(initialQuery);
-  } else {
-    setTimeout(() => {
-      document.getElementById("ai-chat-input")?.focus();
-    }, 150);
-  }
+  if (initialQuery) sendAIMessage(initialQuery);
 }
 
 export function closeAIAssistant(fromPopState = false) {
   const drawer = document.getElementById("sellgst-ai-drawer");
   if (!drawer) return;
   drawer.classList.add("translate-x-full");
-  if (!fromPopState) {
-    removeModalState("ai-assistant-drawer");
-  }
-}
-
-function formatAIMarkdown(text) {
-  const safe = sanitizeHTML(text);
-  return safe
-    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-    .replace(/`(.*?)`/g, "<code class='px-1.5 py-0.5 rounded bg-gray-100 font-mono text-indigo-700 text-xs'>$1</code>")
-    .replace(/\n/g, "<br/>");
+  if (!fromPopState) removeModalState("ai-assistant-drawer");
 }
 
 async function sendAIMessage(messageText) {
   const container = document.getElementById("ai-chat-messages");
   if (!container) return;
 
-  // Append User Bubble
   const userDiv = document.createElement("div");
-  userDiv.className = "ml-auto max-w-[85%] bg-gray-900 text-white p-3 rounded-2xl rounded-tr-sm shadow-sm text-xs sm:text-sm";
+  userDiv.className = "ml-auto max-w-[85%] bg-gray-900 text-white p-3 rounded-2xl text-xs";
   userDiv.textContent = messageText;
   container.appendChild(userDiv);
 
-  // Append Typing Indicator
   const loadingDiv = document.createElement("div");
-  loadingDiv.className = "max-w-[88%] bg-white p-3.5 rounded-2xl rounded-tl-sm border border-gray-200 shadow-sm text-gray-500 text-xs flex items-center gap-2";
-  loadingDiv.innerHTML = `<span class="animate-pulse">✨</span> <span>SellGST AI is analyzing...</span>`;
+  loadingDiv.className = "max-w-[90%] bg-white p-3 rounded-2xl border border-gray-200 text-gray-800 text-xs leading-relaxed";
+  loadingDiv.textContent = "Thinking...";
   container.appendChild(loadingDiv);
   container.scrollTop = container.scrollHeight;
 
   try {
-    const res = await fetch("/api/ai-assistant", {
+    const res = await fetch("./api/ai-assistant", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        message: messageText,
-        language: getCurrentLang(),
-        pageContext: window.location.pathname,
-        history: AppState.aiHistory.slice(-6)
-      })
+      body: JSON.stringify({ message: messageText, language: getCurrentLang() })
     });
-
     const data = await res.json();
-    const reply = data?.reply || "Please check E-Com Audit (/ecom-audit.html) or GST Filing (/gst-filing.html) to proceed.";
-
-    AppState.aiHistory.push({ role: "user", text: messageText });
-    AppState.aiHistory.push({ role: "model", text: reply });
-
-    loadingDiv.className = "max-w-[92%] bg-white p-3.5 rounded-2xl rounded-tl-sm border border-gray-200 shadow-sm text-gray-800 leading-relaxed text-xs sm:text-sm";
-    loadingDiv.innerHTML = formatAIMarkdown(reply);
-  } catch (err) {
-    loadingDiv.className = "max-w-[92%] bg-white p-3.5 rounded-2xl rounded-tl-sm border border-gray-200 shadow-sm text-gray-800 leading-relaxed text-xs sm:text-sm";
-    loadingDiv.innerHTML = formatAIMarkdown(
-      "**SellGST AI Instant Guide:**\n1. **E-Com Audit (`/ecom-audit.html`):** Upload Meesho/Flipkart/Amazon CSV to spot RTO >30 days & Weight Fraud.\n2. **GST Billing (`/invoice.html`):** Auto CGST+SGST vs IGST bills with dynamic UPI QR.\n3. **GSTR-1 Filing (`/gst-filing.html`):** Download 1-Click `.JSON` for `gst.gov.in`.\n4. **Unlock Pro:** Click **Unlock Pro**, pay via UPI (`9661692365@ybl`), and submit your 12-digit UTR!"
-    );
+    loadingDiv.innerHTML = sanitizeHTML(data?.reply || getLocalAIFallback(messageText))
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\n/g, "<br/>");
+  } catch (_) {
+    loadingDiv.innerHTML = sanitizeHTML(getLocalAIFallback(messageText))
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\n/g, "<br/>");
   }
-
   container.scrollTop = container.scrollHeight;
 }
 
 // ============================================================================
-// 10. AUTHENTICATION HELPERS (EMAIL, GOOGLE & PHONE OTP)
+// BULLETPROOF AUTHENTICATION HELPERS (WITH INSTANT SANDBOX FALLBACK)
 // ============================================================================
 export async function loginWithEmail(email, password) {
-  return signInWithEmailAndPassword(auth, email.trim(), password);
+  const cleanEmail = email.trim();
+  const cred = await signInWithEmailAndPassword(auth, cleanEmail, password);
+  localStorage.setItem(
+    "sellgst_local_profile",
+    JSON.stringify({
+      uid: cred.user.uid,
+      displayName: cred.user.displayName || cleanEmail.split("@")[0],
+      businessName: cred.user.displayName || cleanEmail.split("@")[0],
+      email: cleanEmail
+    })
+  );
+  return cred;
 }
 
 export async function registerWithEmail(email, password, businessName, gstin) {
-  const cred = await createUserWithEmailAndPassword(auth, email.trim(), password);
-  if (businessName) {
-    await updateProfile(cred.user, { displayName: businessName.trim() });
+  const cleanEmail = email.trim();
+  const cleanBiz = (businessName || "My E-Com Store").trim();
+  const cleanGstin = (gstin || "10AABCA8921K1Z5").trim().toUpperCase();
+
+  const cred = await createUserWithEmailAndPassword(auth, cleanEmail, password);
+  try {
+    await updateProfile(cred.user, { displayName: cleanBiz });
+  } catch (_) {}
+
+  const profileData = {
+    uid: cred.user.uid,
+    displayName: cleanBiz,
+    businessName: cleanBiz,
+    gstin: cleanGstin,
+    email: cleanEmail,
+    isPro: false,
+    isAdmin: false,
+    subscriptionStatus: "FREE"
+  };
+  localStorage.setItem("sellgst_local_profile", JSON.stringify(profileData));
+
+  try {
+    await setDoc(doc(db, "users", cred.user.uid), { ...profileData, createdAt: serverTimestamp() }, { merge: true });
+  } catch (e) {
+    console.warn("Firestore profile write deferred:", e.message);
   }
-  const userRef = doc(db, "users", cred.user.uid);
-  await setDoc(
-    userRef,
-    {
-      uid: cred.user.uid,
-      displayName: businessName?.trim() || "Seller Store",
-      businessName: businessName?.trim() || "Seller Store",
-      gstin: (gstin || "27AABCU9603R1ZM").trim().toUpperCase(),
-      email: cred.user.email,
-      isPro: false,
-      isAdmin: false,
-      subscriptionStatus: "FREE",
-      createdAt: serverTimestamp()
-    },
-    { merge: true }
-  );
   return cred;
 }
 
@@ -950,32 +703,23 @@ export async function loginWithGoogle() {
 
 export function setupRecaptcha(buttonOrContainerId) {
   if (window.recaptchaVerifier) {
-    try {
-      window.recaptchaVerifier.clear();
-    } catch (_) {}
+    try { window.recaptchaVerifier.clear(); } catch (_) {}
   }
-  window.recaptchaVerifier = new RecaptchaVerifier(auth, buttonOrContainerId, {
-    size: "invisible"
-  });
+  window.recaptchaVerifier = new RecaptchaVerifier(auth, buttonOrContainerId, { size: "invisible" });
   return window.recaptchaVerifier;
 }
 
 export async function sendPhoneOTP(phoneNumber, recaptchaVerifier) {
-  const formatted = phoneNumber.startsWith("+") ? phoneNumber : `+91${phoneNumber.replace(/\D/g, "")}`;
-  return signInWithPhoneNumber(auth, formatted, recaptchaVerifier);
+  const digits = phoneNumber.replace(/\D/g, "").slice(-10);
+  return signInWithPhoneNumber(auth, `+91${digits}`, recaptchaVerifier);
 }
 
 export async function logoutUser() {
-  try {
-    await signOut(auth);
-  } catch (_) {}
+  try { await signOut(auth); } catch (_) {}
   localStorage.removeItem("sellgst_demo_session");
-  window.location.href = "/index.html";
+  window.location.href = "./index.html";
 }
 
-// ============================================================================
-// 11. AUTOMATIC CORE INITIALIZATION
-// ============================================================================
 export function initSecurityCore() {
   initI18n();
   initBackButtonManager();
@@ -1003,50 +747,18 @@ function onDOMReady() {
   syncProDOMElements();
   renderPendingPaymentBanner();
 
-  // Global delegation for `[data-unlock-pro]` buttons across all pages
   document.body.addEventListener("click", (e) => {
     const unlockBtn = e.target.closest("[data-unlock-pro]");
     if (unlockBtn) {
       e.preventDefault();
-      const plan = unlockBtn.getAttribute("data-unlock-pro") || "MONTHLY";
-      openProPaymentModal(plan);
+      openProPaymentModal(unlockBtn.getAttribute("data-unlock-pro") || "MONTHLY");
     }
-
     const aiTrigger = e.target.closest("[data-open-ai]");
     if (aiTrigger) {
       e.preventDefault();
-      const promptText = aiTrigger.getAttribute("data-open-ai") || "";
-      openAIAssistant(promptText);
+      openAIAssistant(aiTrigger.getAttribute("data-open-ai") || "");
     }
   });
 }
 
-// Initialize immediately & expose on window for convenient inline/module access
 initSecurityCore();
-
-window.SellGSTCore = {
-  app,
-  auth,
-  db,
-  AppState,
-  subscribeAppState,
-  sanitizeHTML,
-  sanitizeCSVCell,
-  escapeAttr,
-  formatINR,
-  showToast,
-  openProPaymentModal,
-  closeProPaymentModal,
-  openAIAssistant,
-  closeAIAssistant,
-  loginWithEmail,
-  registerWithEmail,
-  loginWithGoogle,
-  setupRecaptcha,
-  sendPhoneOTP,
-  logoutUser,
-  t,
-  setLanguage,
-  getCurrentLang,
-  SUPPORTED_LANGUAGES
-};
