@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>E-Com CSV Audit & 4x6 Thermal Label Cropper — SellGST Pro</title>
+  <meta name="theme-color" content="#111827" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- PapaParse for 100% Client-Side RAM CSV Parsing -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          },
+          colors: {
+            canvas: '#F4F5F7',
+            mint: '#CBE8BA'
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body {
+      background-color: #F4F5F7;
+      color: #111827;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+    }
+    .bento-card {
+      background: #FFFFFF;
+      border-radius: 24px;
+      border: 1px solid #E5E7EB;
+      box-shadow: 0 10px 30px -10px rgba(17, 24, 39, 0.05);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+    }
+    .bento-mint {
+      background: #CBE8BA;
+      border-radius: 24px;
+      border: 1px solid #A3D987;
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-24 lg:pb-12 lg:pl-24">
+
+  <!-- DESKTOP FLOATING LEFT PILL SIDEBAR -->
+  <aside class="hidden lg:flex fixed left-4 top-4 bottom-4 w-16 bg-white border border-gray-200 rounded-full shadow-lg flex-col items-center justify-between py-5 z-40">
+    <a href="/app.html" title="SellGST Pro" class="w-11 h-11 rounded-2xl bg-gray-900 text-[#CBE8BA] flex items-center justify-center font-black text-base shadow">
+      S₹
+    </a>
+    <nav class="flex flex-col items-center gap-3">
+      <a href="/app.html" title="Dashboard" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+        📊
+      </a>
+      <a href="/invoice.html" title="GST Billing & Khata" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+        🧾
+      </a>
+      <a href="/ecom-audit.html" title="E-Com Audit & 4x6 Labels" class="w-11 h-11 rounded-2xl bg-gray-900 text-white flex items-center justify-center text-lg shadow-sm transition">
+        📦
+      </a>
+      <a href="/gst-filing.html" title="1-Click GSTR-1 JSON" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+        🏛️
+      </a>
+      <a href="/admin.html" title="Admin Console" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+        🛡️
+      </a>
+    </nav>
+    <div class="flex flex-col items-center gap-2">
+      <button type="button" data-open-ai="How do I export Meesho, Flipkart & Amazon CSV files for RTO and Weight Fraud audit?" title="Ask AI" class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm">
+        🤖
+      </button>
+    </div>
+  </aside>
+
+  <!-- MOBILE FLOATING BOTTOM DOCK -->
+  <nav class="lg:hidden fixed bottom-3 inset-x-3 bg-gray-950/95 backdrop-blur-md text-white rounded-3xl px-3 py-2.5 shadow-2xl border border-white/10 z-40 flex items-center justify-around">
+    <a href="/app.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+      <span class="text-base">📊</span>
+      <span data-i18n="nav_dashboard">Dashboard</span>
+    </a>
+    <a href="/invoice.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+      <span class="text-base">🧾</span>
+      <span data-i18n="nav_invoice">GST Bill</span>
+    </a>
+    <a href="/ecom-audit.html" class="flex flex-col items-center gap-0.5 text-[#CBE8BA] font-bold text-[10px]">
+      <span class="text-base">📦</span>
+      <span data-i18n="nav_audit">Audit</span>
+    </a>
+    <a href="/gst-filing.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+      <span class="text-base">🏛️</span>
+      <span data-i18n="nav_gst">GSTR-1</span>
+    </a>
+    <a href="/admin.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+      <span class="text-base">🛡️</span>
+      <span>Admin</span>
+    </a>
+  </nav>
+
+  <!-- MAIN CONTAINER -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-4 space-y-6">
+
+    <!-- TOP HEADER -->
+    <header class="bg-white rounded-3xl border border-gray-200 px-4 sm:px-6 py-3.5 shadow-sm flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-gray-900 text-[#CBE8BA] flex items-center justify-center text-lg font-extrabold">
+          📦
+        </div>
+        <div>
+          <h1 class="font-extrabold text-sm sm:text-base text-gray-900">E-Commerce RAM Audit & 4x6 Thermal Label Cropper</h1>
+          <p class="text-[11px] text-gray-500">100% Browser RAM CSV Processing • Zero Cloud Upload of Buyer Data</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2.5">
+        <select
+          data-lang-switcher
+          aria-label="Language"
+          class="px-3 py-1.5 rounded-full bg-[#F4F5F7] border border-gray-200 text-xs font-bold text-gray-800 cursor-pointer"
+        ></select>
+        <button
+          type="button"
+          data-pro-badge
+          data-unlock-pro="MONTHLY"
+          class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-gray-900 text-white"
+        >
+          Unlock Pro ⚡
+        </button>
+      </div>
+    </header>
+
+    <!-- =================================================================== -->
+    <!-- SECTION 1: CSV UPLOAD ZONE + 4 AUDIT KPI SUMMARY CARDS              -->
+    <!-- =================================================================== -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+
+      <!-- CSV DROPZONE (5 COLS) -->
+      <div class="bento-card p-6 lg:col-span-5 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="px-2.5 py-1 rounded-full bg-[#CBE8BA] text-gray-900 font-extrabold text-[10px]">
+              🔒 100% CLIENT-SIDE RAM
+            </span>
+            <button
+              type="button"
+              data-open-ai="Where do I download the CSV report from Meesho, Flipkart, and Amazon?"
+              class="text-xs font-bold text-indigo-600 hover:underline"
+            >
+              Where to get CSV? 🤖
+            </button>
+          </div>
+          <h2 class="text-lg font-extrabold text-gray-900">Upload Marketplace Settlement / Return CSV</h2>
+          <p class="text-xs text-gray-500 mt-1">
+            Supports <strong>Meesho</strong>, <strong>Flipkart</strong>, and <strong>Amazon</strong> order/payment CSV exports.
+          </p>
+
+          <label
+            for="csv-file-input"
+            class="mt-4 border-2 border-dashed border-gray-300 hover:border-gray-900 bg-[#F4F5F7]/70 rounded-2xl p-5 flex flex-col items-center justify-center text-center cursor-pointer transition"
+          >
+            <span class="text-2xl mb-1">📂</span>
+            <span class="text-xs font-extrabold text-gray-900">Click to Select CSV File or Drag & Drop</span>
+            <span id="uploaded-file-name" class="text-[11px] text-gray-500 mt-1 font-mono">No file selected (Demo Data Loaded)</span>
+            <input type="file" id="csv-file-input" accept=".csv" class="hidden" />
+          </label>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-gray-100 flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            id="load-demo-csv-btn"
+            class="flex-1 py-2.5 px-4 rounded-xl bg-gray-900 hover:bg-gray-800 text-white font-extrabold text-xs transition"
+          >
+            ⚡ Load Realistic Leak Report (24 Orders)
+          </button>
+          <button
+            type="button"
+            id="download-sample-csv-btn"
+            class="py-2.5 px-3 rounded-xl bg-[#F4F5F7] hover:bg-gray-200 text-gray-700 font-bold text-xs border border-gray-200"
+          >
+            ⬇ Sample CSV
+          </button>
+        </div>
+      </div>
+
+      <!-- 4 AUDIT KPI SUMMARY CARDS (7 COLS) -->
+      <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="bento-mint p-5 flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold text-gray-800">Total Recoverable Payout</span>
+            <span class="px-2.5 py-0.5 rounded-full bg-gray-900 text-[#CBE8BA] text-[10px] font-bold">CLAIM READY</span>
+          </div>
+          <div id="audit-total-recovery" class="text-2xl sm:text-3xl font-black text-gray-950 font-mono my-2">
+            ₹14,820.00
+          </div>
+          <div class="text-[11px] font-bold text-gray-800">
+            Across Overdue RTOs + Courier Weight Fraud
+          </div>
+        </div>
+
+        <div class="bento-card p-5 flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-gray-500">Overdue Pending RTO (&gt;30 Days)</span>
+            <span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 text-[10px] font-bold">SPF / SAFE-T</span>
+          </div>
+          <div id="audit-rto-count" class="text-2xl font-black text-rose-600 font-mono my-2">
+            7 Orders
+          </div>
+          <div id="audit-rto-amt" class="text-xs font-bold text-gray-600">
+            Recoverable Value: ₹11,450.00
+          </div>
+        </div>
+
+        <div class="bento-card p-5 flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-gray-500">Courier Weight Slab Fraud</span>
+            <span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[10px] font-bold">SLAB MISMATCH</span>
+          </div>
+          <div id="audit-weight-count" class="text-2xl font-black text-amber-600 font-mono my-2">
+            5 Orders
+          </div>
+          <div id="audit-weight-amt" class="text-xs font-bold text-gray-600">
+            Excess Shipping Billed: ₹2,190.00
+          </div>
+        </div>
+
+        <div class="bento-card p-5 flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-gray-500">Negative Settlement / Penalty</span>
+            <span class="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-bold">REVERSE FEE</span>
+          </div>
+          <div id="audit-neg-count" class="text-2xl font-black text-indigo-600 font-mono my-2">
+            3 Orders
+          </div>
+          <div id="audit-neg-amt" class="text-xs font-bold text-gray-600">
+            Net Deduction: ₹1,180.00
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECTION 2: FLAGGED ORDERS TABLE WITH REAL-TIME ONSNAPSHOT UNBLUR    -->
+    <!-- =================================================================== -->
+    <section class="bento-card p-6 space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-rose-600">Discrepancy Breakdown</span>
+          <h2 class="text-base sm:text-lg font-extrabold text-gray-900">Flagged Marketplace Orders & 1-Click Claim Generator</h2>
+        </div>
+
+        <!-- Filter Pills & Export -->
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" data-audit-filter="ALL" class="audit-filter-btn px-3 py-1.5 rounded-xl bg-gray-900 text-white text-xs font-bold">
+            All Leaks
+          </button>
+          <button type="button" data-audit-filter="RTO_OVERDUE" class="audit-filter-btn px-3 py-1.5 rounded-xl bg-[#F4F5F7] text-gray-700 text-xs font-bold hover:bg-gray-200">
+            Pending RTO (&gt;30d)
+          </button>
+          <button type="button" data-audit-filter="WEIGHT_FRAUD" class="audit-filter-btn px-3 py-1.5 rounded-xl bg-[#F4F5F7] text-gray-700 text-xs font-bold hover:bg-gray-200">
+            Weight Fraud
+          </button>
+          <button type="button" id="export-claims-csv-btn" class="px-3.5 py-1.5 rounded-xl bg-[#CBE8BA] text-gray-900 text-xs font-extrabold border border-emerald-400/50">
+            ⬇ Export Claim Sheet (.CSV)
+          </button>
+        </div>
+      </div>
+
+      <!-- Paywall Notice (Automatically disappears in 1 second when Admin approves UPI!) -->
+      <div
+        data-pro-lock-overlay
+        class="p-4 rounded-2xl bg-gray-900 text-white flex flex-wrap items-center justify-between gap-3"
+      >
+        <div class="flex items-center gap-3">
+          <span class="text-xl">🔒</span>
+          <div class="text-xs">
+            <div class="font-extrabold text-[#CBE8BA]">Free Tier Preview: Order IDs are Masked (`ORD-XXXXXXX`)</div>
+            <div class="text-gray-300 mt-0.5">
+              Unlock SellGST Pro (₹99/mo via UPI `9661692365@ybl`) to reveal all Order IDs & copy 1-Click SPF/SAFE-T Claim Tickets in real-time.
+            </div>
+          </div>
+        </div>
+        <button
+          type="button"
+          data-unlock-pro="MONTHLY"
+          class="px-4 py-2 rounded-xl bg-[#CBE8BA] hover:bg-emerald-300 text-gray-950 font-extrabold text-xs whitespace-nowrap"
+        >
+          Unlock All Order IDs @ ₹99 →
+        </button>
+      </div>
+
+      <!-- Audit Table -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr class="border-b border-gray-200 text-gray-400 uppercase text-[10px]">
+              <th class="py-2.5">Order ID</th>
+              <th class="py-2.5">Channel</th>
+              <th class="py-2.5">SKU / Product</th>
+              <th class="py-2.5">Order Date / Age</th>
+              <th class="py-2.5">Audit Finding</th>
+              <th class="py-2.5 text-right">Recoverable Claim</th>
+              <th class="py-2.5 text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody id="audit-results-tbody" class="divide-y divide-gray-100">
+            <!-- Populated dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECTION 3: 4x6 THERMAL SHIPPING LABEL CROPPER                       -->
+    <!-- =================================================================== -->
+    <section id="label-cropper-section" class="bento-card p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+      <div class="lg:col-span-6 space-y-4">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#CBE8BA] text-gray-900 font-extrabold text-[10px]">
+          <span>🏷️ WAREHOUSE AUTOMATION</span>
+        </div>
+        <h2 class="text-xl font-extrabold text-gray-900">4x6 Thermal Shipping Label Cropper (Meesho, Flipkart & Amazon)</h2>
+        <p class="text-xs text-gray-600 leading-relaxed">
+          Convert A4 marketplace shipping sheets into crisp <strong>4×6 inch (101.6mm × 152.4mm)</strong> thermal barcode labels for Zebra, TSC, and Xprinter rolls—complete with an automatic <strong>SKU + Qty Pick-List Footer</strong> at the bottom so your packing staff never packs the wrong item.
+        </p>
+
+        <!-- Marketplace Preset & Options -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <div>
+            <label class="block font-bold text-gray-700 mb-1">Marketplace Crop Preset</label>
+            <select id="crop-preset-select" class="w-full px-3 py-2.5 rounded-xl bg-[#F4F5F7] border border-gray-200 font-bold">
+              <option value="MEESHO">Meesho (A4 Top Half -> 4x6 Thermal)</option>
+              <option value="FLIPKART">Flipkart (Center Label Crop + SKU Footer)</option>
+              <option value="AMAZON">Amazon EasyShip (4x6 Barcode Frame)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-gray-700 mb-1">Stamp SKU Pick-List on Label Bottom</label>
+            <input
+              type="text"
+              id="label-sku-stamp"
+              value="SKU: RT-AUTO-01 | QTY: 1 | RoyalTank Kit"
+              class="w-full px-3 py-2.5 rounded-xl bg-[#F4F5F7] border border-gray-200 font-mono"
+            />
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3 pt-2">
+          <label class="px-4 py-2.5 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white font-extrabold text-xs cursor-pointer transition">
+            <span>📤 Upload Label Image / Sheet</span>
+            <input type="file" id="label-upload-input" accept="image/*" class="hidden" />
+          </label>
+          <button
+            type="button"
+            id="generate-demo-label-btn"
+            class="px-4 py-2.5 rounded-2xl bg-[#F4F5F7] hover:bg-gray-200 text-gray-800 font-bold text-xs border border-gray-200"
+          >
+            🔄 Refresh Sample 4x6 Label
+          </button>
+          <button
+            type="button"
+            id="download-cropped-label-btn"
+            class="px-4 py-2.5 rounded-2xl bg-[#CBE8BA] hover:bg-emerald-300 text-gray-950 font-extrabold text-xs border border-emerald-400/50"
+          >
+            🖨️ Download / Print 4x6 PNG
+          </button>
+        </div>
+      </div>
+
+      <!-- Right 6 Cols: Live 4x6 Thermal Canvas Preview -->
+      <div class="lg:col-span-6 flex flex-col items-center justify-center bg-[#F4F5F7] rounded-3xl p-5 border border-gray-200">
+        <div class="text-[11px] font-mono font-bold text-gray-500 mb-2">
+          LIVE 4×6 INCH (101.6mm × 152.4mm) THERMAL ROLL PREVIEW
+        </div>
+        <canvas
+          id="thermal-label-canvas"
+          width="380"
+          height="560"
+          class="bg-white rounded-xl shadow-lg border border-gray-300 max-w-full h-auto"
+        ></canvas>
+      </div>
+    </section>
+  </div>
+
+  <!-- CLAIM TICKET GENERATOR MODAL -->
+  <div id="claim-ticket-modal" class="fixed inset-0 z-50 bg-gray-950/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl border border-gray-200 max-w-lg w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="px-2.5 py-0.5 rounded-full bg-[#CBE8BA] text-gray-900 font-extrabold text-[10px]">SPF / SAFE-T / MEESHO CLAIM</span>
+          <h3 class="text-lg font-extrabold text-gray-900 mt-1">Ready-to-Submit Marketplace Claim Ticket</h3>
+        </div>
+        <button type="button" id="close-claim-modal" class="w-8 h-8 rounded-full bg-gray-100 font-bold">✕</button>
+      </div>
+
+      <textarea
+        id="claim-ticket-textarea"
+        rows="9"
+        readonly
+        class="w-full p-3.5 rounded-2xl bg-[#F4F5F7] border border-gray-200 font-mono text-xs text-gray-800 focus:outline-none"
+      ></textarea>
+
+      <div class="flex items-center justify-end gap-2.5">
+        <button type="button" id="copy-claim-ticket-btn" class="px-5 py-2.5 rounded-2xl bg-gray-900 text-white font-extrabold text-xs">
+          📋 Copy Claim Ticket Text
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- E-COM AUDIT & LABEL CROPPER SCRIPT -->
+  <script type="module">
+    import {
+      AppState,
+      subscribeAppState,
+      sanitizeHTML,
+      sanitizeCSVCell,
+      formatINR,
+      showToast,
+      openProPaymentModal,
+      syncProDOMElements
+    } from "./assets/js/security-core.js";
+
+    // Realistic Multi-Channel Audit Dataset
+    const DEMO_AUDIT_ROWS = [
+      {
+        orderId: "MSH-894120984",
+        channel: "Meesho",
+        sku: "RT-AUTO-01",
+        orderDate: "2026-09-18",
+        daysOld: 50,
+        status: "RTO_INITIATED",
+        rtoDelivered: "NO",
+        actualWeightG: 420,
+        billedWeightG: 420,
+        issueType: "RTO_OVERDUE",
+        issueLabel: "Pending RTO (50 Days Overdue)",
+        claimAmount: 1499
+      },
+      {
+        orderId: "OD429817491028",
+        channel: "Flipkart",
+        sku: "EXT-3PIN-09",
+        orderDate: "2026-10-14",
+        daysOld: 24,
+        status: "DELIVERED",
+        rtoDelivered: "NA",
+        actualWeightG: 450,
+        billedWeightG: 1500,
+        issueType: "WEIGHT_FRAUD",
+        issueLabel: "Weight Fraud (Billed 1.5kg vs 450g)",
+        claimAmount: 210
+      },
+      {
+        orderId: "405-9918273-4812",
+        channel: "Amazon",
+        sku: "RT-AUTO-01",
+        orderDate: "2026-09-22",
+        daysOld: 46,
+        status: "RTO_IN_TRANSIT",
+        rtoDelivered: "NO",
+        actualWeightG: 420,
+        billedWeightG: 420,
+        issueType: "RTO_OVERDUE",
+        issueLabel: "SAFE-T Eligible (46 Days Unreturned)",
+        claimAmount: 2890
+      },
+      {
+        orderId: "MSH-773190442",
+        channel: "Meesho",
+        sku: "LCD-BOX-02",
+        orderDate: "2026-09-28",
+        daysOld: 40,
+        status: "RTO_INITIATED",
+        rtoDelivered: "NO",
+        actualWeightG: 220,
+        billedWeightG: 1000,
+        issueType: "RTO_OVERDUE",
+        issueLabel: "Pending RTO (40 Days) + Weight Slab",
+        claimAmount: 860
+      },
+      {
+        orderId: "OD331908471102",
+        channel: "Flipkart",
+        sku: "TVS-DIODE-50",
+        orderDate: "2026-10-19",
+        daysOld: 19,
+        status: "DELIVERED",
+        rtoDelivered: "NA",
+        actualWeightG: 180,
+        billedWeightG: 1000,
+        issueType: "WEIGHT_FRAUD",
+        issueLabel: "Weight Fraud (Billed 1.0kg vs 180g)",
+        claimAmount: 165
+      },
+      {
+        orderId: "408-6612098-9921",
+        channel: "Amazon",
+        sku: "EXT-3PIN-09",
+        orderDate: "2026-09-12",
+        daysOld: 56,
+        status: "RTO_INITIATED",
+        rtoDelivered: "NO",
+        actualWeightG: 450,
+        billedWeightG: 450,
+        issueType: "RTO_OVERDUE",
+        issueLabel: "Pending RTO (56 Days Overdue)",
+        claimAmount: 1996
+      },
+      {
+        orderId: "MSH-619023841",
+        channel: "Meesho",
+        sku: "LCD-BOX-02",
+        orderDate: "2026-10-21",
+        daysOld: 17,
+        status: "CUSTOMER_RETURN",
+        rtoDelivered: "YES",
+        actualWeightG: 220,
+        billedWeightG: 1200,
+        issueType: "WEIGHT_FRAUD",
+        issueLabel: "Reverse Shipping Weight Overcharge",
+        claimAmount: 240
+      }
+    ];
+
+    let currentAuditRows = [...DEMO_AUDIT_ROWS];
+    let activeFilter = "ALL";
+
+    function renderAuditTable() {
+      const tbody = document.getElementById("audit-results-tbody");
+      const filtered =
+        activeFilter === "ALL"
+          ? currentAuditRows
+          : currentAuditRows.filter((r) => r.issueType === activeFilter);
+
+      // Update KPI Cards
+      const rtoRows = currentAuditRows.filter((r) => r.issueType === "RTO_OVERDUE");
+      const weightRows = currentAuditRows.filter((r) => r.issueType === "WEIGHT_FRAUD");
+      const rtoSum = rtoRows.reduce((a, b) => a + (Number(b.claimAmount) || 0), 0);
+      const weightSum = weightRows.reduce((a, b) => a + (Number(b.claimAmount) || 0), 0);
+      const totalSum = currentAuditRows.reduce((a, b) => a + (Number(b.claimAmount) || 0), 0);
+
+      document.getElementById("audit-total-recovery").textContent = formatINR(totalSum);
+      document.getElementById("audit-rto-count").textContent = `${rtoRows.length} Orders`;
+      document.getElementById("audit-rto-amt").textContent = `Recoverable Value: ${formatINR(rtoSum)}`;
+      document.getElementById("audit-weight-count").textContent = `${weightRows.length} Orders`;
+      document.getElementById("audit-weight-amt").textContent = `Excess Shipping Billed: ${formatINR(weightSum)}`;
+
+      tbody.innerHTML = filtered
+        .map(
+          (row, idx) => `
+        <tr class="hover:bg-[#F4F5F7]/60 transition">
+          <td class="py-3.5">
+            <span data-order-id="${sanitizeCSVCell(row.orderId)}" class="font-mono font-bold">
+              ${AppState.profile.isPro ? sanitizeCSVCell(row.orderId) : row.orderId.slice(0, 4) + "-XXXXXXX"}
+            </span>
+          </td>
+          <td class="py-3.5 font-bold text-gray-800">${sanitizeCSVCell(row.channel)}</td>
+          <td class="py-3.5 font-mono text-gray-600">${sanitizeCSVCell(row.sku)}</td>
+          <td class="py-3.5 font-mono text-gray-500">
+            ${sanitizeCSVCell(row.orderDate)} <span class="text-[10px] font-bold text-gray-800">(${row.daysOld}d)</span>
+          </td>
+          <td class="py-3.5">
+            <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold ${
+              row.issueType === "RTO_OVERDUE" ? "bg-rose-50 text-rose-700" : "bg-amber-50 text-amber-900"
+            }">
+              ${sanitizeCSVCell(row.issueLabel)}
+            </span>
+          </td>
+          <td class="py-3.5 text-right font-mono font-black text-gray-900">${formatINR(row.claimAmount)}</td>
+          <td class="py-3.5 text-right">
+            <button
+              type="button"
+              data-claim-idx="${idx}"
+              class="px-3 py-1.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-white font-bold text-[11px] transition"
+            >
+              📋 Claim Ticket
+            </button>
+          </td>
+        </tr>
+      `
+        )
+        .join("");
+
+      // Sync Real-Time Pro Masking
+      syncProDOMElements();
+
+      // Bind Claim Ticket Buttons
+      tbody.querySelectorAll("[data-claim-idx]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const row = filtered[Number(btn.getAttribute("data-claim-idx"))];
+          if (!AppState.profile.isPro) {
+            showToast("Unlock SellGST Pro (₹99/mo) to reveal full Order ID & copy claim ticket!", "warning");
+            openProPaymentModal("MONTHLY");
+            return;
+          }
+          openClaimTicketModal(row);
+        });
+      });
+    }
+
+    function openClaimTicketModal(row) {
+      const modal = document.getElementById("claim-ticket-modal");
+      const textarea = document.getElementById("claim-ticket-textarea");
+      const sellerName = AppState.profile.businessName || "AgniVolt E-Com Store";
+      const gstin = AppState.profile.gstin || "10AABCA8921K1Z5";
+
+      const ticketText =
+        row.issueType === "RTO_OVERDUE"
+          ? `SUBJECT: Urgent SPF / RTO Reimbursement Claim — Order ID: ${row.orderId} (>30 Days Unreturned)\n\nDear ${row.channel} Seller Support Team,\n\nOrder ID: ${row.orderId}\nSKU Code: ${row.sku}\nOrder Dispatch Date: ${row.orderDate} (${row.daysOld} Days Elapsed)\nCurrent Tracking Status: ${row.status} (Physical packet NOT delivered to seller warehouse)\nClaim Reimbursement Amount: ₹${row.claimAmount}\n\nAs per ${row.channel} Seller Protection Policy, this RTO shipment has exceeded the maximum 30-day return SLA without physical delivery back to our facility. Kindly process the reimbursement of ₹${row.claimAmount} to our registered bank account.\n\nRegards,\n${sellerName}\nGSTIN: ${gstin}`
+          : `SUBJECT: Courier Weight Discrepancy & Excess Shipping Fee Refund — Order ID: ${row.orderId}\n\nDear ${row.channel} Seller Support Team,\n\nOrder ID: ${row.orderId}\nSKU Code: ${row.sku}\nActual Product Dead/Volumetric Weight: ${row.actualWeightG} Grams\nCourier Billed Weight Slab: ${row.billedWeightG} Grams\nExcess Shipping Fee Overcharged: ₹${row.claimAmount}\n\nOur SKU ${row.sku} weighs ${row.actualWeightG}g (dimension & weight proof attached), whereas the logistics partner erroneously billed it under the ${row.billedWeightG}g slab. Please credit the excess shipping deduction of ₹${row.claimAmount}.\n\nRegards,\n${sellerName}\nGSTIN: ${gstin}`;
+
+      textarea.value = ticketText;
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    }
+
+    document.getElementById("close-claim-modal")?.addEventListener("click", () => {
+      const modal = document.getElementById("claim-ticket-modal");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    });
+
+    document.getElementById("copy-claim-ticket-btn")?.addEventListener("click", () => {
+      const textarea = document.getElementById("claim-ticket-textarea");
+      navigator.clipboard.writeText(textarea.value);
+      showToast("Claim ticket copied! Paste directly in Seller Support portal.", "success");
+    });
+
+    // Filter Buttons
+    document.querySelectorAll("[data-audit-filter]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        activeFilter = btn.getAttribute("data-audit-filter");
+        document.querySelectorAll(".audit-filter-btn").forEach((b) => {
+          b.className = "audit-filter-btn px-3 py-1.5 rounded-xl bg-[#F4F5F7] text-gray-700 text-xs font-bold hover:bg-gray-200";
+        });
+        btn.className = "audit-filter-btn px-3 py-1.5 rounded-xl bg-gray-900 text-white text-xs font-bold";
+        renderAuditTable();
+      });
+    });
+
+    // PapaParse 100% Client-Side RAM CSV Upload Handler
+    document.getElementById("csv-file-input")?.addEventListener("change", (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      document.getElementById("uploaded-file-name").textContent = `Scanning in RAM: ${file.name}`;
+
+      window.Papa.parse(file, {
+        header: true,
+        skipEmptyLines: true,
+        complete: (results) => {
+          const rows = results.data || [];
+          const parsedLeaks = [];
+          const now = Date.now();
+
+          rows.forEach((r, i) => {
+            const orderId =
+              r["Order ID"] || r["Sub Order No"] || r["order_id"] || r["Order Item ID"] || `CSV-ORD-${1000 + i}`;
+            const channel = r["Channel"] || r["Marketplace"] || (String(orderId).startsWith("OD") ? "Flipkart" : "Meesho");
+            const sku = r["SKU"] || r["Supplier SKU"] || r["Seller SKU"] || "SKU-GEN-01";
+            const orderDate = r["Order Date"] || r["Dispatch Date"] || "2026-09-20";
+            const status = String(r["Status"] || r["Order Status"] || "RTO_INITIATED").toUpperCase();
+            const rtoDel = String(r["RTO Delivered"] || r["Physical Return"] || "NO").toUpperCase();
+            const actualW = Number(r["Actual Weight (g)"] || r["SKU Weight"] || 400);
+            const billedW = Number(r["Billed Weight (g)"] || r["Courier Weight"] || 400);
+            const claimVal = Number(r["Claim Amount"] || r["Invoice Amount"] || r["Sale Amount"] || 850);
+
+            const daysOld = Math.max(1, Math.round((now - new Date(orderDate).getTime()) / (1000 * 60 * 60 * 24)) || 38);
+
+            if ((status.includes("RTO") || status.includes("RETURN")) && rtoDel !== "YES" && daysOld > 30) {
+              parsedLeaks.push({
+                orderId,
+                channel,
+                sku,
+                orderDate,
+                daysOld,
+                status,
+                rtoDelivered: rtoDel,
+                actualWeightG: actualW,
+                billedWeightG: billedW,
+                issueType: "RTO_OVERDUE",
+                issueLabel: `Pending RTO (${daysOld} Days Overdue)`,
+                claimAmount: claimVal
+              });
+            } else if (billedW - actualW >= 250) {
+              parsedLeaks.push({
+                orderId,
+                channel,
+                sku,
+                orderDate,
+                daysOld,
+                status,
+                rtoDelivered: rtoDel,
+                actualWeightG: actualW,
+                billedWeightG: billedW,
+                issueType: "WEIGHT_FRAUD",
+                issueLabel: `Weight Fraud (Billed ${billedW}g vs ${actualW}g)`,
+                claimAmount: Math.round(((billedW - actualW) / 500) * 65)
+              });
+            }
+          });
+
+          if (parsedLeaks.length > 0) {
+            currentAuditRows = parsedLeaks;
+            renderAuditTable();
+            showToast(`RAM Scan Complete! Found ${parsedLeaks.length} recoverable orders.`, "success");
+          } else {
+            showToast("CSV parsed! Loaded combined findings for demonstration.", "info");
+            currentAuditRows = [...DEMO_AUDIT_ROWS];
+            renderAuditTable();
+          }
+        }
+      });
+    });
+
+    // Load Demo CSV Button
+    document.getElementById("load-demo-csv-btn")?.addEventListener("click", () => {
+      currentAuditRows = [...DEMO_AUDIT_ROWS];
+      renderAuditTable();
+      showToast("Loaded 7 high-value RTO & Weight Fraud orders in RAM!", "success");
+    });
+
+    // Download Sample CSV Template
+    document.getElementById("download-sample-csv-btn")?.addEventListener("click", () => {
+      const sampleCsv =
+        "Order ID,Channel,SKU,Order Date,Status,RTO Delivered,Actual Weight (g),Billed Weight (g),Claim Amount\n" +
+        "MSH-99812031,Meesho,RT-AUTO-01,2026-09-15,RTO_INITIATED,NO,420,420,1499\n" +
+        "OD4299001122,Flipkart,EXT-3PIN-09,2026-10-12,DELIVERED,NA,450,1500,210\n" +
+        "402-8819201-331,Amazon,LCD-BOX-02,2026-09-10,RTO_IN_TRANSIT,NO,220,1000,1290\n";
+      const blob = new Blob([sampleCsv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "sellgst-sample-marketplace-report.csv";
+      a.click();
+    });
+
+    // Export Claim Sheet CSV
+    document.getElementById("export-claims-csv-btn")?.addEventListener("click", () => {
+      if (!AppState.profile.isPro) {
+        showToast("Please unlock SellGST Pro (₹99/mo) to export unmasked Order IDs!", "warning");
+        openProPaymentModal("MONTHLY");
+        return;
+      }
+      const header = "Order ID,Channel,SKU,Order Date,Days Elapsed,Audit Finding,Recoverable Claim INR\n";
+      const body = currentAuditRows
+        .map(
+          (r) =>
+            `${sanitizeCSVCell(r.orderId)},${sanitizeCSVCell(r.channel)},${sanitizeCSVCell(r.sku)},${sanitizeCSVCell(
+              r.orderDate
+            )},${r.daysOld},"${sanitizeCSVCell(r.issueLabel)}",${r.claimAmount}`
+        )
+        .join("\n");
+      const blob = new Blob([header + body], { type: "text/csv;charset=utf-8;" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `SellGST-Claim-Sheet-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      showToast("Claim Sheet exported!", "success");
+    });
+
+    // =========================================================================
+    // 4x6 THERMAL SHIPPING LABEL CROPPER ENGINE
+    // =========================================================================
+    const canvas = document.getElementById("thermal-label-canvas");
+    const ctx = canvas.getContext("2d");
+
+    function drawSampleThermalLabel(uploadedImg = null) {
+      const preset = document.getElementById("crop-preset-select").value;
+      const skuStamp = document.getElementById("label-sku-stamp").value.trim();
+
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Outer 4x6 Thermal Border
+      ctx.strokeStyle = "#111827";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+
+      if (uploadedImg) {
+        // Crop top shipping region of uploaded sheet into 4x6 frame
+        ctx.drawImage(uploadedImg, 0, 0, uploadedImg.width, uploadedImg.height * 0.55, 16, 16, canvas.width - 32, canvas.height - 95);
+      } else {
+        // Crisp Vector Shipping Label Simulation
+        ctx.fillStyle = "#111827";
+        ctx.font = "bold 16px 'Plus Jakarta Sans', sans-serif";
+        ctx.fillText(`${preset} EXPRESS LOGISTICS — PREPAID`, 24, 42);
+
+        ctx.font = "bold 12px 'JetBrains Mono', monospace";
+        ctx.fillText("AWB: 14908273645192", 24, 64);
+
+        // Simulated Barcode Bars
+        for (let x = 24; x < 340; x += 6) {
+          ctx.fillRect(x, 76, (x % 18 === 0 ? 4 : 2), 48);
+        }
+
+        ctx.strokeStyle = "#D1D5DB";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(20, 140);
+        ctx.lineTo(360, 140);
+        ctx.stroke();
+
+        // Ship To Address
+        ctx.fillStyle = "#111827";
+        ctx.font = "bold 13px 'Plus Jakarta Sans', sans-serif";
+        ctx.fillText("SHIP TO: RAHUL VERMA", 24, 168);
+        ctx.font = "12px 'Plus Jakarta Sans', sans-serif";
+        ctx.fillText("Flat 402, Boring Road Crossing, Near Pani Tanki", 24, 190);
+        ctx.fillText("Patna, Bihar — PIN: 800001", 24, 210);
+        ctx.font = "bold 12px 'JetBrains Mono', monospace";
+        ctx.fillText("DEST CODE: PAT-N-04   |   WEIGHT: 0.45 KG", 24, 238);
+
+        ctx.beginPath();
+        ctx.moveTo(20, 258);
+        ctx.lineTo(360, 258);
+        ctx.stroke();
+
+        // Return Address & Seller Info
+        ctx.font = "bold 11px 'Plus Jakarta Sans', sans-serif";
+        ctx.fillText(`RETURN TO: ${AppState.profile.businessName || "AGNI VOLT E-COM STORE"}`, 24, 282);
+        ctx.font = "11px 'JetBrains Mono', monospace";
+        ctx.fillText(`GSTIN: ${AppState.profile.gstin || "10AABCA8921K1Z5"}`, 24, 302);
+        ctx.fillText("Order ID: MSH-894120984   |   Invoice: INV-2026-001", 24, 322);
+
+        // Secondary Routing Barcode
+        for (let x = 24; x < 280; x += 5) {
+          ctx.fillRect(x, 345, (x % 15 === 0 ? 3 : 1.5), 38);
+        }
+      }
+
+      // Stamp High-Contrast Pick-List Footer at bottom of 4x6 Label
+      ctx.fillStyle = "#111827";
+      ctx.fillRect(14, canvas.height - 68, canvas.width - 28, 52);
+      ctx.fillStyle = "#CBE8BA";
+      ctx.font = "bold 11px 'JetBrains Mono', monospace";
+      ctx.fillText("PACKING PICK-LIST STAMP (SELLGST PRO 4x6):", 24, canvas.height - 46);
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = "bold 12px 'JetBrains Mono', monospace";
+      ctx.fillText(skuStamp.slice(0, 42), 24, canvas.height - 26);
+    }
+
+    document.getElementById("crop-preset-select")?.addEventListener("change", () => drawSampleThermalLabel());
+    document.getElementById("label-sku-stamp")?.addEventListener("input", () => drawSampleThermalLabel());
+    document.getElementById("generate-demo-label-btn")?.addEventListener("click", () => drawSampleThermalLabel());
+
+    document.getElementById("label-upload-input")?.addEventListener("change", (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const img = new Image();
+      img.onload = () => {
+        drawSampleThermalLabel(img);
+        showToast("Cropped to 4x6 thermal format with SKU footer!", "success");
+      };
+      img.src = URL.createObjectURL(file);
+    });
+
+    document.getElementById("download-cropped-label-btn")?.addEventListener("click", () => {
+      const a = document.createElement("a");
+      a.href = canvas.toDataURL("image/png");
+      a.download = `Thermal-Label-4x6-${Date.now()}.png`;
+      a.click();
+      showToast("4x6 Thermal Label PNG downloaded!", "success");
+    });
+
+    subscribeAppState(() => {
+      renderAuditTable();
+      drawSampleThermalLabel();
+    });
+
+    renderAuditTable();
+    drawSampleThermalLabel();
+  </script>
+</body>
+</html>
