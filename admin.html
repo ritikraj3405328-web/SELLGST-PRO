@@ -1,11 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="overflow-x-hidden scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <title>Master Admin Console & 1-Click UPI Approval Engine — SellGST Pro</title>
   <meta name="theme-color" content="#111827" />
-  <link rel="manifest" href="/manifest.json" />
+  <link rel="manifest" href="./manifest.json" />
+
+  <!-- 0.1s Instant Module Preload & Speculative Tool Prefetch (Zero 404 Relative Paths) -->
+  <link rel="modulepreload" href="./assets/js/security-core.js" />
+  <link rel="modulepreload" href="./assets/js/i18n.js" />
+  <link rel="prefetch" href="./app.html" as="document" />
+  <link rel="prefetch" href="./ecom-audit.html" as="document" />
+  <link rel="prefetch" href="./invoice.html" as="document" />
+  <link rel="prefetch" href="./gst-filing.html" as="document" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
@@ -27,122 +36,172 @@
     };
   </script>
   <style>
-    body {
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    html, body {
+      max-width: 100vw;
+      overflow-x: hidden;
       background-color: #F4F5F7;
       color: #111827;
       font-family: 'Plus Jakarta Sans', sans-serif;
-      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
     }
     .bento-card {
       background: #FFFFFF;
       border-radius: 24px;
       border: 1px solid #E5E7EB;
       box-shadow: 0 10px 30px -10px rgba(17, 24, 39, 0.05);
-      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+      transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease;
+      will-change: transform;
+      min-width: 0;
+    }
+    @media (hover: hover) {
+      .bento-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 18px 35px -12px rgba(17, 24, 39, 0.08);
+      }
     }
     .bento-mint {
       background: #CBE8BA;
       border-radius: 24px;
       border: 1px solid #A3D987;
+      min-width: 0;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
   </style>
 </head>
-<body class="min-h-screen pb-24 lg:pb-12 lg:pl-24">
+<body class="min-h-screen w-full overflow-x-hidden pb-24 lg:pb-12 lg:pl-24">
 
-  <!-- DESKTOP FLOATING LEFT PILL SIDEBAR -->
+  <!-- DESKTOP FLOATING LEFT PILL SIDEBAR (ALL RELATIVE LINKS ./ FOR ZERO 404) -->
   <aside class="hidden lg:flex fixed left-4 top-4 bottom-4 w-16 bg-white border border-gray-200 rounded-full shadow-lg flex-col items-center justify-between py-5 z-40">
-    <a href="/app.html" title="SellGST Pro" class="w-11 h-11 rounded-2xl bg-gray-900 text-[#CBE8BA] flex items-center justify-center font-black text-base shadow">
+    <a href="./app.html" title="SellGST Pro" class="w-11 h-11 rounded-2xl bg-gray-900 text-[#CBE8BA] flex items-center justify-center font-black text-base shadow">
       S₹
     </a>
     <nav class="flex flex-col items-center gap-3">
-      <a href="/app.html" title="Dashboard" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+      <a href="./app.html" title="Dashboard" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
         📊
       </a>
-      <a href="/invoice.html" title="GST Billing & Khata" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+      <a href="./invoice.html" title="GST Billing & Khata" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
         🧾
       </a>
-      <a href="/ecom-audit.html" title="E-Com Audit & 4x6 Labels" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+      <a href="./ecom-audit.html" title="E-Com Audit & 4x6 Labels" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
         📦
       </a>
-      <a href="/gst-filing.html" title="1-Click GSTR-1 JSON" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+      <a href="./gst-filing.html" title="1-Click GSTR-1 JSON" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
         🏛️
       </a>
-      <a href="/admin.html" title="Admin Console" class="w-11 h-11 rounded-2xl bg-gray-900 text-white flex items-center justify-center text-lg shadow-sm transition">
+      <a href="./admin.html" title="Admin Console" class="w-11 h-11 rounded-2xl bg-gray-900 text-white flex items-center justify-center text-lg shadow-sm transition">
         🛡️
       </a>
     </nav>
     <div class="flex flex-col items-center gap-2">
-      <button type="button" id="sound-test-btn" title="Test Sound Alert" class="w-10 h-10 rounded-full bg-[#CBE8BA] text-gray-900 flex items-center justify-center text-sm">
+      <button type="button" id="sound-test-btn" title="Test Sound Alert" class="w-10 h-10 rounded-full bg-[#CBE8BA] text-gray-900 flex items-center justify-center text-sm shadow-sm hover:scale-105 transition">
         🔔
       </button>
     </div>
   </aside>
 
-  <!-- MOBILE FLOATING BOTTOM DOCK -->
-  <nav class="lg:hidden fixed bottom-3 inset-x-3 bg-gray-950/95 backdrop-blur-md text-white rounded-3xl px-3 py-2.5 shadow-2xl border border-white/10 z-40 flex items-center justify-around">
-    <a href="/app.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+  <!-- MOBILE FLOATING BOTTOM DOCK (ALL RELATIVE LINKS ./ FOR ZERO 404) -->
+  <nav class="lg:hidden fixed bottom-2.5 inset-x-3 bg-gray-950/95 backdrop-blur-md text-white rounded-3xl px-2 py-2.5 shadow-2xl border border-white/10 z-40 flex items-center justify-around">
+    <a href="./app.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
       <span class="text-base">📊</span>
       <span data-i18n="nav_dashboard">Dashboard</span>
     </a>
-    <a href="/invoice.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+    <a href="./invoice.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
       <span class="text-base">🧾</span>
       <span data-i18n="nav_invoice">GST Bill</span>
     </a>
-    <a href="/ecom-audit.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+    <a href="./ecom-audit.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
       <span class="text-base">📦</span>
       <span data-i18n="nav_audit">Audit</span>
     </a>
-    <a href="/gst-filing.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+    <a href="./gst-filing.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
       <span class="text-base">🏛️</span>
       <span data-i18n="nav_gst">GSTR-1</span>
     </a>
-    <a href="/admin.html" class="flex flex-col items-center gap-0.5 text-[#CBE8BA] font-bold text-[10px]">
+    <a href="./admin.html" class="flex flex-col items-center gap-0.5 text-[#CBE8BA] font-bold text-[10px]">
       <span class="text-base">🛡️</span>
       <span>Admin</span>
     </a>
   </nav>
 
   <!-- MAIN CONTENT WRAPPER -->
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-4 space-y-6">
+  <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-3 sm:pt-4 space-y-5 sm:space-y-6 overflow-x-hidden">
 
-    <!-- TOP HEADER -->
-    <header class="bg-white rounded-3xl border border-gray-200 px-4 sm:px-6 py-3.5 shadow-sm flex flex-wrap items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-gray-900 text-[#CBE8BA] flex items-center justify-center text-lg font-extrabold relative">
+    <!-- TOP HEADER (WITH ALWAYS-VISIBLE PWA INSTALL BUTTON & ZERO HORIZONTAL OVERFLOW) -->
+    <header class="bg-white rounded-3xl border border-gray-200 px-3.5 sm:px-6 py-3 sm:py-3.5 shadow-sm flex flex-wrap items-center justify-between gap-2.5">
+      <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gray-900 text-[#CBE8BA] flex items-center justify-center text-base sm:text-lg font-extrabold relative shrink-0">
           🛡️
           <span id="header-pending-dot" class="hidden absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-rose-500 border-2 border-white animate-ping"></span>
         </div>
-        <div>
-          <div class="flex items-center gap-2">
-            <h1 class="font-extrabold text-sm sm:text-base text-gray-900">Master Admin Console — Semi-Automatic UPI Approval Engine</h1>
-            <span class="px-2.5 py-0.5 rounded-full bg-[#CBE8BA] text-gray-900 font-extrabold text-[10px]">LIVE QUEUE</span>
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5 sm:gap-2">
+            <h1 class="font-extrabold text-xs sm:text-base text-gray-900 truncate">Master Admin Console — 1-Click UPI Approval</h1>
+            <span class="px-2 py-0.5 rounded-full bg-[#CBE8BA] text-gray-900 font-extrabold text-[9px] sm:text-[10px] shrink-0">LIVE QUEUE</span>
           </div>
-          <p class="text-[11px] text-gray-500">Merchant UPI: <code class="font-mono font-bold text-gray-800" id="header-upi-display">9661692365@ybl</code> (AGNI VOLT) • Real-Time `onSnapshot` Unblur</p>
+          <p class="text-[10px] sm:text-[11px] text-gray-500 truncate">
+            Merchant UPI: <code class="font-mono font-bold text-gray-800" id="header-upi-display">9661692365@ybl</code> (AGNI VOLT) • Real-Time <code>onSnapshot</code> Unblur
+          </p>
         </div>
       </div>
 
-      <div class="flex flex-wrap items-center gap-2.5">
+      <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-end ml-auto">
         <button
           type="button"
           id="simulate-payment-btn"
-          class="px-3.5 py-2 rounded-full bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-extrabold transition"
+          class="px-3 py-1.5 rounded-full bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-[11px] sm:text-xs font-extrabold transition whitespace-nowrap"
         >
-          ⚡ Simulate Incoming UPI Request
+          ⚡ Simulate UPI Request
         </button>
+
+        <!-- ALWAYS-VISIBLE PWA INSTALL BUTTON -->
+        <button
+          type="button"
+          id="pwa-install-btn"
+          data-pwa-install
+          class="px-2.5 sm:px-3.5 py-1.5 rounded-full bg-[#CBE8BA] hover:bg-emerald-300 text-gray-950 border border-emerald-400/60 text-[11px] sm:text-xs font-extrabold shadow-sm transition whitespace-nowrap flex items-center gap-1"
+        >
+          <span>📲 Install App</span>
+        </button>
+
         <select
           data-lang-switcher
           aria-label="Language"
-          class="px-3 py-1.5 rounded-full bg-[#F4F5F7] border border-gray-200 text-xs font-bold text-gray-800 cursor-pointer"
+          class="px-2.5 sm:px-3 py-1.5 rounded-full bg-[#F4F5F7] border border-gray-200 text-[11px] sm:text-xs font-bold text-gray-800 cursor-pointer focus:outline-none max-w-[92px] sm:max-w-none truncate"
         ></select>
       </div>
     </header>
 
+    <!-- QUICK JUMP BAR -->
+    <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 w-full">
+      <a href="#live-approval-queue" class="px-4 py-2 rounded-2xl bg-gray-900 text-white font-extrabold text-xs whitespace-nowrap">
+        1. Live UPI Approval Queue
+      </a>
+      <a href="#merchant-settings-section" class="px-4 py-2 rounded-2xl bg-white border border-gray-200 text-gray-800 font-bold text-xs whitespace-nowrap hover:border-gray-900">
+        2. Merchant UPI & WhatsApp Alert
+      </a>
+      <a href="#broadcast-banner-section" class="px-4 py-2 rounded-2xl bg-white border border-gray-200 text-gray-800 font-bold text-xs whitespace-nowrap hover:border-gray-900">
+        3. Global Broadcast & Device Tester
+      </a>
+      <a href="./app.html" class="px-3.5 py-2 rounded-2xl bg-white border border-gray-200 text-gray-600 font-bold text-xs whitespace-nowrap hover:text-gray-900">
+        ← Back to Dashboard
+      </a>
+    </div>
+
     <!-- 4 ADMIN KPI CARDS -->
     <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       <div class="bento-mint p-5 flex flex-col justify-between">
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between gap-2">
           <span class="text-xs font-extrabold text-gray-800">Pending UPI Approvals</span>
-          <span id="kpi-pending-badge" class="px-2.5 py-0.5 rounded-full bg-gray-900 text-[#CBE8BA] text-[10px] font-extrabold">
+          <span id="kpi-pending-badge" class="px-2.5 py-0.5 rounded-full bg-gray-900 text-[#CBE8BA] text-[10px] font-extrabold shrink-0">
             ACTION NEEDED
           </span>
         </div>
@@ -151,27 +210,27 @@
       </div>
 
       <div class="bento-card p-5 flex flex-col justify-between">
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between gap-2">
           <span class="text-xs font-bold text-gray-500">Approved Pro Revenue</span>
-          <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold">100% DIRECT UPI</span>
+          <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold shrink-0">100% DIRECT UPI</span>
         </div>
-        <div id="admin-approved-rev" class="text-2xl font-black text-gray-900 font-mono my-2">₹0.00</div>
+        <div id="admin-approved-rev" class="text-2xl font-black text-gray-900 font-mono my-2 truncate">₹0.00</div>
         <div class="text-[11px] font-bold text-emerald-700">Zero Gateway Commission</div>
       </div>
 
       <div class="bento-card p-5 flex flex-col justify-between">
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between gap-2">
           <span class="text-xs font-bold text-gray-500">Activated Pro IDs</span>
-          <span class="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-bold">INSTANT UNBLUR</span>
+          <span class="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-bold shrink-0">INSTANT UNBLUR</span>
         </div>
         <div id="admin-active-users" class="text-2xl font-black text-gray-900 font-mono my-2">0 Sellers</div>
-        <div class="text-[11px] font-bold text-gray-500">Synced via `users/{uid}`</div>
+        <div class="text-[11px] font-bold text-gray-500">Synced via <code>users/{uid}</code></div>
       </div>
 
       <div class="bento-card p-5 flex flex-col justify-between">
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between gap-2">
           <span class="text-xs font-bold text-gray-500">Active Receiving UPI</span>
-          <span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 text-[10px] font-bold">VERIFIED</span>
+          <span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 text-[10px] font-bold shrink-0">VERIFIED</span>
         </div>
         <div id="admin-upi-card" class="text-base font-black text-gray-900 font-mono my-2 truncate">9661692365@ybl</div>
         <div id="admin-payee-card" class="text-[11px] font-bold text-gray-600">Payee: AGNI VOLT</div>
@@ -181,14 +240,14 @@
     <!-- =================================================================== -->
     <!-- SECTION 1: LIVE PENDING UPI PAYMENT REQUESTS QUEUE                  -->
     <!-- =================================================================== -->
-    <section class="bento-card p-6 space-y-4">
+    <section id="live-approval-queue" class="bento-card p-4 sm:p-6 space-y-4 overflow-hidden">
       <div class="flex flex-wrap items-center justify-between gap-3">
         <div>
           <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">Step 4 of Semi-Auto Payment Engine</span>
           <h2 class="text-base sm:text-lg font-extrabold text-gray-900">Live UPI UTR Verification & 1-Click ID Activation Queue</h2>
         </div>
 
-        <div class="flex items-center gap-2">
+        <div class="flex flex-wrap items-center gap-2">
           <button type="button" data-q-filter="ALL" class="q-filter-btn px-3 py-1.5 rounded-xl bg-gray-900 text-white text-xs font-bold">
             All Requests
           </button>
@@ -201,8 +260,8 @@
         </div>
       </div>
 
-      <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse text-xs">
+      <div class="w-full overflow-x-auto">
+        <table class="w-full text-left border-collapse text-xs min-w-[580px]">
           <thead>
             <tr class="border-b border-gray-200 text-gray-400 uppercase text-[10px]">
               <th class="py-2.5">Submitted At</th>
@@ -214,7 +273,7 @@
             </tr>
           </thead>
           <tbody id="admin-payment-queue-tbody" class="divide-y divide-gray-100">
-            <!-- Populated dynamically from Firestore onSnapshot + Local Queue -->
+            <!-- Populated dynamically in 0.1s from Firestore onSnapshot + Local Queue -->
           </tbody>
         </table>
       </div>
@@ -223,13 +282,13 @@
     <!-- =================================================================== -->
     <!-- SECTION 2: MERCHANT UPI SETTINGS & GLOBAL BROADCAST MANAGER         -->
     <!-- =================================================================== -->
-    <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
 
       <!-- MERCHANT UPI & WHATSAPP WEBHOOK CONFIG (6 COLS) -->
-      <div class="bento-card p-6 lg:col-span-6 space-y-4">
+      <div id="merchant-settings-section" class="bento-card p-5 sm:p-6 lg:col-span-6 space-y-4">
         <div class="flex items-center justify-between">
           <div>
-            <span class="text-[10px] font-extrabold uppercase tracking-wider text-indigo-600">Zero-Trust Cloud Config (`system_config/payment_settings`)</span>
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-indigo-600">Zero-Trust Cloud Config (<code>system_config/payment_settings</code>)</span>
             <h3 class="text-base font-extrabold text-gray-900">Merchant UPI & Instant WhatsApp Alert Settings</h3>
           </div>
         </div>
@@ -282,7 +341,7 @@
 
           <div>
             <label class="block font-bold text-gray-700 mb-1">
-              Admin WhatsApp Alert Number (Stored in Firestore `system_config`, never hardcoded)
+              Admin WhatsApp Alert Number (Stored in Firestore <code>system_config</code>, never hardcoded)
             </label>
             <input
               type="tel"
@@ -302,9 +361,9 @@
       </div>
 
       <!-- GLOBAL BROADCAST BANNER MANAGER (6 COLS) -->
-      <div class="bento-card p-6 lg:col-span-6 flex flex-col justify-between space-y-4">
+      <div id="broadcast-banner-section" class="bento-card p-5 sm:p-6 lg:col-span-6 flex flex-col justify-between space-y-4">
         <div class="space-y-3">
-          <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">Real-Time Seller Announcement (`system_config/broadcast`)</span>
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">Real-Time Seller Announcement (<code>system_config/broadcast</code>)</span>
           <h3 class="text-base font-extrabold text-gray-900">Global Top Broadcast Banner</h3>
           <p class="text-xs text-gray-500">
             Push live GST due-date reminders or festival Pro offers to the top of every seller's screen in real-time.
@@ -342,11 +401,11 @@
             <div class="font-extrabold text-gray-900">Current Browser Session Pro Status</div>
             <div id="local-session-status" class="text-[11px] text-gray-500 font-mono">Checking status...</div>
           </div>
-          <div class="flex items-center gap-2">
-            <button type="button" id="force-activate-self-btn" class="px-3 py-1.5 rounded-xl bg-emerald-600 text-white font-bold text-[11px]">
+          <div class="flex flex-wrap items-center gap-2">
+            <button type="button" id="force-activate-self-btn" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px]">
               ✅ Activate Current Device
             </button>
-            <button type="button" id="force-reset-self-btn" class="px-3 py-1.5 rounded-xl bg-gray-200 text-gray-800 font-bold text-[11px]">
+            <button type="button" id="force-reset-self-btn" class="px-3 py-1.5 rounded-xl bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold text-[11px]">
               Reset to Free
             </button>
           </div>
@@ -355,7 +414,7 @@
     </section>
   </div>
 
-  <!-- ADMIN CONSOLE SCRIPT -->
+  <!-- ADMIN CONSOLE SCRIPT (0.1s ZERO-LAG ENGINE) -->
   <script type="module">
     import {
       db,
@@ -540,7 +599,7 @@
                       data-approve-id="${sanitizeHTML(req.id)}"
                       data-approve-uid="${sanitizeHTML(req.uid)}"
                       data-approve-plan="${sanitizeHTML(req.planName || "MONTHLY")}"
-                      class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-sm transition"
+                      class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-sm transition whitespace-nowrap"
                     >
                       ✅ Approve & Activate ID
                     </button>
@@ -548,7 +607,7 @@
                       type="button"
                       data-reject-id="${sanitizeHTML(req.id)}"
                       data-reject-uid="${sanitizeHTML(req.uid)}"
-                      class="px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs transition"
+                      class="px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs transition whitespace-nowrap"
                     >
                       ❌ Reject
                     </button>
@@ -595,7 +654,6 @@
 
     // 4. 1-Click Approval Handler (Updates Firestore `users/{uid}` + `payment_requests/{id}` + Local State)
     async function handleApproveRequest(reqId, targetUid, planName = "MONTHLY") {
-      // Update Firestore if Admin is authenticated
       try {
         await updateDoc(doc(db, "payment_requests", reqId), {
           status: "APPROVED",
@@ -617,7 +675,7 @@
         );
       } catch (_) {}
 
-      // Also update Local Storage Queue & Current Profile for instant single-device verification
+      // Update Local Storage Queue & Current Profile for instant single-device verification
       const localQueue = JSON.parse(localStorage.getItem("sellgst_local_payment_requests") || "[]");
       localQueue.forEach((r) => {
         if (r.id === reqId) r.status = "APPROVED";
@@ -810,7 +868,7 @@
       syncProDOMElements();
       renderPendingPaymentBanner();
       updateLocalSessionStatus();
-      showToast("🎉 Current device activated to PRO! Visit /ecom-audit.html or /app.html to see unmasked Order IDs.", "success");
+      showToast("🎉 Current device activated to PRO! Visit ./ecom-audit.html or ./app.html to see unmasked Order IDs.", "success");
     });
 
     document.getElementById("force-reset-self-btn")?.addEventListener("click", () => {
