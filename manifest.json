@@ -1,7 +1,8 @@
 {
   "name": "SellGST Pro — E-Commerce Audit, Billing & GST Compliance Super-App",
   "short_name": "SellGST Pro",
-  "start_url": "/app.html",
+  "start_url": "./app.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#F4F5F7",
   "theme_color": "#111827",
