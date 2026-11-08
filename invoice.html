@@ -1,17 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="overflow-x-hidden scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <title>GST Billing, Party Udhar & Inventory — SellGST Pro</title>
   <meta name="theme-color" content="#111827" />
-  <link rel="manifest" href="/manifest.json" />
+  <link rel="manifest" href="./manifest.json" />
+
+  <!-- 0.1s Instant Module Preload & Speculative Tool Prefetch (Zero 404 Relative Paths) -->
+  <link rel="modulepreload" href="./assets/js/security-core.js" />
+  <link rel="modulepreload" href="./assets/js/i18n.js" />
+  <link rel="prefetch" href="./app.html" as="document" />
+  <link rel="prefetch" href="./gst-filing.html" as="document" />
+  <link rel="prefetch" href="./ecom-audit.html" as="document" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- html2pdf for 1-Click GST Tax Invoice PDF Export -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
   <script>
     tailwind.config = {
       theme: {
@@ -29,23 +37,37 @@
     };
   </script>
   <style>
-    body {
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    html, body {
+      max-width: 100vw;
+      overflow-x: hidden;
       background-color: #F4F5F7;
       color: #111827;
       font-family: 'Plus Jakarta Sans', sans-serif;
-      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
     }
     .bento-card {
       background: #FFFFFF;
       border-radius: 24px;
       border: 1px solid #E5E7EB;
       box-shadow: 0 10px 30px -10px rgba(17, 24, 39, 0.05);
-      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+      transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease;
+      min-width: 0;
     }
     .bento-mint {
       background: #CBE8BA;
       border-radius: 24px;
       border: 1px solid #A3D987;
+      min-width: 0;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
     @media print {
       body * {
@@ -66,27 +88,27 @@
     }
   </style>
 </head>
-<body class="min-h-screen pb-24 lg:pb-12 lg:pl-24">
+<body class="min-h-screen w-full overflow-x-hidden pb-24 lg:pb-12 lg:pl-24">
 
-  <!-- DESKTOP FLOATING LEFT PILL SIDEBAR -->
+  <!-- DESKTOP FLOATING LEFT PILL SIDEBAR (ALL RELATIVE LINKS ./ FOR ZERO 404) -->
   <aside class="hidden lg:flex fixed left-4 top-4 bottom-4 w-16 bg-white border border-gray-200 rounded-full shadow-lg flex-col items-center justify-between py-5 z-40">
-    <a href="/app.html" title="SellGST Pro" class="w-11 h-11 rounded-2xl bg-gray-900 text-[#CBE8BA] flex items-center justify-center font-black text-base shadow">
+    <a href="./app.html" title="SellGST Pro" class="w-11 h-11 rounded-2xl bg-gray-900 text-[#CBE8BA] flex items-center justify-center font-black text-base shadow">
       S₹
     </a>
     <nav class="flex flex-col items-center gap-3">
-      <a href="/app.html" title="Dashboard" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+      <a href="./app.html" title="Dashboard" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
         📊
       </a>
-      <a href="/invoice.html" title="GST Billing & Khata" class="w-11 h-11 rounded-2xl bg-gray-900 text-white flex items-center justify-center text-lg shadow-sm transition">
+      <a href="./invoice.html" title="GST Billing & Khata" class="w-11 h-11 rounded-2xl bg-gray-900 text-white flex items-center justify-center text-lg shadow-sm transition">
         🧾
       </a>
-      <a href="/ecom-audit.html" title="E-Com Audit & 4x6 Labels" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+      <a href="./ecom-audit.html" title="E-Com Audit & 4x6 Labels" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
         📦
       </a>
-      <a href="/gst-filing.html" title="1-Click GSTR-1 JSON" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+      <a href="./gst-filing.html" title="1-Click GSTR-1 JSON" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
         🏛️
       </a>
-      <a href="/admin.html" title="Admin Console" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+      <a href="./admin.html" title="Admin Console" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
         🛡️
       </a>
     </nav>
@@ -97,56 +119,67 @@
     </div>
   </aside>
 
-  <!-- MOBILE FLOATING BOTTOM DOCK -->
-  <nav class="lg:hidden fixed bottom-3 inset-x-3 bg-gray-950/95 backdrop-blur-md text-white rounded-3xl px-3 py-2.5 shadow-2xl border border-white/10 z-40 flex items-center justify-around">
-    <a href="/app.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+  <!-- MOBILE FLOATING BOTTOM DOCK (ALL RELATIVE LINKS ./ FOR ZERO 404) -->
+  <nav class="lg:hidden fixed bottom-2.5 inset-x-3 bg-gray-950/95 backdrop-blur-md text-white rounded-3xl px-2 py-2.5 shadow-2xl border border-white/10 z-40 flex items-center justify-around">
+    <a href="./app.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
       <span class="text-base">📊</span>
       <span data-i18n="nav_dashboard">Dashboard</span>
     </a>
-    <a href="/invoice.html" class="flex flex-col items-center gap-0.5 text-[#CBE8BA] font-bold text-[10px]">
+    <a href="./invoice.html" class="flex flex-col items-center gap-0.5 text-[#CBE8BA] font-bold text-[10px]">
       <span class="text-base">🧾</span>
       <span data-i18n="nav_invoice">GST Bill</span>
     </a>
-    <a href="/ecom-audit.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+    <a href="./ecom-audit.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
       <span class="text-base">📦</span>
       <span data-i18n="nav_audit">Audit</span>
     </a>
-    <a href="/gst-filing.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+    <a href="./gst-filing.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
       <span class="text-base">🏛️</span>
       <span data-i18n="nav_gst">GSTR-1</span>
     </a>
-    <a href="/admin.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+    <a href="./admin.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
       <span class="text-base">🛡️</span>
       <span>Admin</span>
     </a>
   </nav>
 
   <!-- MAIN PAGE WRAPPER -->
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-4 space-y-6">
+  <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-3 sm:pt-4 space-y-5 sm:space-y-6 overflow-x-hidden">
 
-    <!-- TOP BAR -->
-    <header class="bg-white rounded-3xl border border-gray-200 px-4 sm:px-6 py-3.5 shadow-sm flex flex-wrap items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-gray-900 text-[#CBE8BA] flex items-center justify-center text-lg font-extrabold">
+    <!-- TOP BAR (WITH ALWAYS-VISIBLE PWA INSTALL BUTTON & ZERO HORIZONTAL OVERFLOW) -->
+    <header class="bg-white rounded-3xl border border-gray-200 px-3.5 sm:px-6 py-3 sm:py-3.5 shadow-sm flex flex-wrap items-center justify-between gap-2.5">
+      <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gray-900 text-[#CBE8BA] flex items-center justify-center text-base sm:text-lg font-extrabold shrink-0">
           🧾
         </div>
-        <div>
-          <h1 class="font-extrabold text-sm sm:text-base text-gray-900">GST Tax Invoice Maker, Party Udhar & Stock</h1>
-          <p class="text-[11px] text-gray-500">Auto CGST+SGST vs IGST Split • Dynamic UPI QR on Bill • Auto GSTR-1 Sync</p>
+        <div class="min-w-0">
+          <h1 class="font-extrabold text-xs sm:text-base text-gray-900 truncate">GST Tax Invoice Maker, Party Udhar & Stock</h1>
+          <p class="text-[10px] sm:text-[11px] text-gray-500 truncate">Auto CGST+SGST vs IGST Split • Dynamic UPI QR on Bill • Auto GSTR-1 Sync</p>
         </div>
       </div>
 
-      <div class="flex items-center gap-2.5">
+      <div class="flex items-center gap-1.5 sm:gap-2.5 flex-wrap justify-end ml-auto">
         <select
           data-lang-switcher
           aria-label="Language"
-          class="px-3 py-1.5 rounded-full bg-[#F4F5F7] border border-gray-200 text-xs font-bold text-gray-800 cursor-pointer"
+          class="px-2.5 sm:px-3 py-1.5 rounded-full bg-[#F4F5F7] border border-gray-200 text-[11px] sm:text-xs font-bold text-gray-800 cursor-pointer focus:outline-none max-w-[92px] sm:max-w-none truncate"
         ></select>
+
+        <!-- ALWAYS-VISIBLE PWA INSTALL BUTTON -->
+        <button
+          type="button"
+          id="pwa-install-btn"
+          data-pwa-install
+          class="px-2.5 sm:px-3.5 py-1.5 rounded-full bg-[#CBE8BA] hover:bg-emerald-300 text-gray-950 border border-emerald-400/60 text-[11px] sm:text-xs font-extrabold shadow-sm transition whitespace-nowrap flex items-center gap-1"
+        >
+          <span>📲 Install App</span>
+        </button>
+
         <button
           type="button"
           data-pro-badge
           data-unlock-pro="MONTHLY"
-          class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-gray-900 text-white"
+          class="px-3 sm:px-3.5 py-1.5 rounded-full text-[11px] sm:text-xs font-bold bg-gray-900 text-white whitespace-nowrap"
         >
           Unlock Pro ⚡
         </button>
@@ -154,7 +187,7 @@
     </header>
 
     <!-- SUB-NAVIGATION TABS -->
-    <div class="flex items-center gap-2 overflow-x-auto pb-1">
+    <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 w-full">
       <a href="#invoice-builder-section" class="px-4 py-2 rounded-2xl bg-gray-900 text-white font-extrabold text-xs whitespace-nowrap">
         1. Create GST Invoice
       </a>
@@ -167,21 +200,24 @@
       <a href="#inventory-section" class="px-4 py-2 rounded-2xl bg-white border border-gray-200 text-gray-800 font-bold text-xs whitespace-nowrap hover:border-gray-900">
         4. SKU Inventory & Weights
       </a>
+      <a href="./app.html" class="px-3.5 py-2 rounded-2xl bg-white border border-gray-200 text-gray-600 font-bold text-xs whitespace-nowrap hover:text-gray-900">
+        ← Back to Dashboard
+      </a>
     </div>
 
     <!-- =================================================================== -->
     <!-- SECTION 1: LIVE GST INVOICE BUILDER (LEFT) + A4 PREVIEW (RIGHT)     -->
     <!-- =================================================================== -->
-    <section id="invoice-builder-section" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    <section id="invoice-builder-section" class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start">
 
       <!-- LEFT 7 COLS: INVOICE INPUT FORM -->
-      <div class="bento-card p-5 sm:p-6 lg:col-span-7 space-y-5">
+      <div class="bento-card p-4 sm:p-6 lg:col-span-7 space-y-5 overflow-hidden">
         <div class="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-3">
           <div>
             <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">B2B & B2C GST Compliant</span>
             <h2 class="text-base sm:text-lg font-extrabold text-gray-900">New Tax Invoice Details</h2>
           </div>
-          <span id="tax-mode-pill" class="px-3 py-1 rounded-full bg-[#CBE8BA] text-gray-900 font-mono text-xs font-extrabold">
+          <span id="tax-mode-pill" class="px-3 py-1 rounded-full bg-[#CBE8BA] text-gray-900 font-mono text-[10px] sm:text-xs font-extrabold">
             INTRA-STATE: CGST + SGST
           </span>
         </div>
@@ -214,10 +250,10 @@
         </div>
 
         <!-- Buyer / Party Selection -->
-        <div class="p-4 rounded-2xl bg-[#F4F5F7] border border-gray-200 space-y-3 text-xs">
+        <div class="p-3.5 sm:p-4 rounded-2xl bg-[#F4F5F7] border border-gray-200 space-y-3 text-xs">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <span class="font-extrabold text-gray-900">Buyer / Party Details</span>
-            <select id="quick-party-select" class="px-3 py-1 rounded-xl bg-white border border-gray-300 text-xs font-semibold">
+            <select id="quick-party-select" class="w-full sm:w-auto px-3 py-1.5 rounded-xl bg-white border border-gray-300 text-xs font-semibold">
               <option value="">-- Quick Fill from Saved Party Khata --</option>
             </select>
           </div>
@@ -263,18 +299,18 @@
         <div class="space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <h3 class="text-xs font-extrabold uppercase tracking-wider text-gray-700">Invoice Line Items</h3>
-            <div class="flex items-center gap-2">
-              <select id="quick-sku-select" class="px-3 py-1.5 rounded-xl bg-[#F4F5F7] border border-gray-200 text-xs font-bold">
+            <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+              <select id="quick-sku-select" class="flex-1 sm:flex-initial px-3 py-1.5 rounded-xl bg-[#F4F5F7] border border-gray-200 text-xs font-bold min-w-0">
                 <option value="">+ Add from SKU Stock...</option>
               </select>
-              <button type="button" id="add-blank-row-btn" class="px-3 py-1.5 rounded-xl bg-gray-900 text-white text-xs font-bold hover:bg-gray-800">
+              <button type="button" id="add-blank-row-btn" class="px-3 py-1.5 rounded-xl bg-gray-900 text-white text-xs font-bold hover:bg-gray-800 whitespace-nowrap">
                 + Add Custom Row
               </button>
             </div>
           </div>
 
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse text-xs">
+          <div class="w-full overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs min-w-[460px]">
               <thead>
                 <tr class="border-b border-gray-200 text-gray-500 text-[10px] uppercase">
                   <th class="py-2 pr-2">Item / Description</th>
@@ -287,7 +323,7 @@
                 </tr>
               </thead>
               <tbody id="invoice-items-tbody" class="divide-y divide-gray-100">
-                <!-- Populated dynamically -->
+                <!-- Populated dynamically in 0.1s -->
               </tbody>
             </table>
           </div>
@@ -295,35 +331,35 @@
 
         <!-- Seller UPI & Action Buttons -->
         <div class="pt-3 border-t border-gray-100 flex flex-wrap items-center justify-between gap-3">
-          <div class="flex items-center gap-2 text-xs">
-            <span class="font-bold text-gray-600">UPI on Bill:</span>
+          <div class="flex items-center gap-2 text-xs w-full sm:w-auto">
+            <span class="font-bold text-gray-600 shrink-0">UPI on Bill:</span>
             <input
               type="text"
               id="invoice-upi-id"
               value="9661692365@ybl"
-              class="px-2.5 py-1.5 rounded-xl bg-[#F4F5F7] border border-gray-200 font-mono text-xs font-bold w-44"
+              class="flex-1 sm:w-44 px-2.5 py-1.5 rounded-xl bg-[#F4F5F7] border border-gray-200 font-mono text-xs font-bold min-w-0"
             />
           </div>
 
-          <div class="flex flex-wrap items-center gap-2.5">
+          <div class="flex flex-wrap items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
             <button
               type="button"
               id="save-invoice-btn"
-              class="px-5 py-2.5 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white font-extrabold text-xs shadow transition"
+              class="flex-1 sm:flex-initial px-4 sm:px-5 py-2.5 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white font-extrabold text-xs shadow transition whitespace-nowrap"
             >
               💾 Save Bill & Update Stock
             </button>
             <button
               type="button"
               id="download-pdf-btn"
-              class="px-4 py-2.5 rounded-2xl bg-[#CBE8BA] hover:bg-emerald-300 text-gray-950 font-extrabold text-xs border border-emerald-400/50 transition"
+              class="px-4 py-2.5 rounded-2xl bg-[#CBE8BA] hover:bg-emerald-300 text-gray-950 font-extrabold text-xs border border-emerald-400/50 transition whitespace-nowrap"
             >
               📄 Download PDF
             </button>
             <button
               type="button"
-               onclick="window.print()"
-              class="px-3.5 py-2.5 rounded-2xl bg-[#F4F5F7] hover:bg-gray-200 text-gray-800 font-bold text-xs border border-gray-200"
+              onclick="window.print()"
+              class="px-3.5 py-2.5 rounded-2xl bg-[#F4F5F7] hover:bg-gray-200 text-gray-800 font-bold text-xs border border-gray-200 whitespace-nowrap"
             >
               🖨️ Print
             </button>
@@ -331,27 +367,27 @@
         </div>
       </div>
 
-      <!-- RIGHT 5 COLS: LIVE PRINTABLE A4 GST TAX INVOICE PREVIEW -->
-      <div class="lg:col-span-5">
-        <div id="printable-invoice-area" class="bg-white rounded-3xl border border-gray-300 p-6 shadow-xl text-xs text-gray-900 space-y-4">
+      <!-- RIGHT 5 COLS: LIVE PRINTABLE A4 GST TAX INVOICE PREVIEW (100% RESTORED) -->
+      <div class="lg:col-span-5 min-w-0">
+        <div id="printable-invoice-area" class="bg-white rounded-3xl border border-gray-300 p-4 sm:p-6 shadow-xl text-xs text-gray-900 space-y-4 overflow-hidden">
           <!-- Invoice Top Header -->
-          <div class="flex items-start justify-between border-b-2 border-gray-900 pb-3">
-            <div>
+          <div class="flex items-start justify-between border-b-2 border-gray-900 pb-3 gap-2">
+            <div class="min-w-0">
               <span class="px-2 py-0.5 rounded bg-gray-900 text-[#CBE8BA] font-extrabold text-[10px] uppercase tracking-wider">
                 TAX INVOICE
               </span>
-              <h3 id="prev-seller-name" data-user-name class="text-base font-black text-gray-900 mt-1">
+              <h3 id="prev-seller-name" data-user-name class="text-sm sm:text-base font-black text-gray-900 mt-1 truncate">
                 AgniVolt E-Com Store
               </h3>
-              <p class="text-[11px] text-gray-600 font-mono">
+              <p class="text-[10px] sm:text-[11px] text-gray-600 font-mono break-all">
                 GSTIN: <span id="prev-seller-gstin" data-user-gstin class="font-bold text-gray-900">10AABCA8921K1Z5</span>
               </p>
               <p id="prev-seller-state" class="text-[11px] text-gray-500">State: 10 - Bihar</p>
             </div>
-            <div class="text-right font-mono">
-              <div id="prev-inv-no" class="font-extrabold text-sm text-gray-900">INV-2026-001</div>
-              <div id="prev-inv-date" class="text-[11px] text-gray-500">2026-11-07</div>
-              <div id="prev-supply-type" class="mt-1 inline-block px-2 py-0.5 rounded bg-[#CBE8BA] text-gray-900 font-bold text-[10px]">
+            <div class="text-right font-mono shrink-0">
+              <div id="prev-inv-no" class="font-extrabold text-xs sm:text-sm text-gray-900">INV-2026-001</div>
+              <div id="prev-inv-date" class="text-[10px] sm:text-[11px] text-gray-500">2026-11-08</div>
+              <div id="prev-supply-type" class="mt-1 inline-block px-2 py-0.5 rounded bg-[#CBE8BA] text-gray-900 font-bold text-[9px] sm:text-[10px]">
                 B2B • INTRA-STATE
               </div>
             </div>
@@ -359,14 +395,14 @@
 
           <!-- Billed To -->
           <div class="bg-[#F4F5F7] p-3 rounded-xl border border-gray-200 flex items-start justify-between gap-2">
-            <div>
+            <div class="min-w-0">
               <div class="text-[10px] font-bold uppercase text-gray-400">Billed To (Buyer)</div>
-              <div id="prev-buyer-name" class="font-extrabold text-xs text-gray-900 mt-0.5">Patna Mobile Hub</div>
-              <div class="font-mono text-[11px] text-gray-600">
+              <div id="prev-buyer-name" class="font-extrabold text-xs text-gray-900 mt-0.5 truncate">Patna Mobile Hub</div>
+              <div class="font-mono text-[10px] sm:text-[11px] text-gray-600 break-all">
                 GSTIN: <span id="prev-buyer-gstin" class="font-semibold">10AABCP1122K1Z2</span>
               </div>
             </div>
-            <div class="text-right">
+            <div class="text-right shrink-0">
               <div class="text-[10px] font-bold uppercase text-gray-400">Place of Supply</div>
               <div id="prev-buyer-state" class="font-bold text-xs text-gray-900 mt-0.5">10 - Bihar</div>
               <div id="prev-payment-badge" class="text-[10px] font-bold text-emerald-700 mt-0.5">Mode: UPI_PAID</div>
@@ -374,32 +410,34 @@
           </div>
 
           <!-- Items Table -->
-          <table class="w-full text-left border-collapse text-[11px]">
-            <thead>
-              <tr class="border-b border-gray-300 text-gray-500 uppercase text-[10px]">
-                <th class="py-1.5">Item (HSN)</th>
-                <th class="py-1.5 text-center">Qty</th>
-                <th class="py-1.5 text-right">Taxable</th>
-                <th class="py-1.5 text-right">GST</th>
-                <th class="py-1.5 text-right">Total</th>
-              </tr>
-            </thead>
-            <tbody id="prev-items-tbody" class="divide-y divide-gray-200 font-mono">
-              <!-- Live rendered -->
-            </tbody>
-          </table>
+          <div class="w-full overflow-x-auto">
+            <table class="w-full text-left border-collapse text-[11px]">
+              <thead>
+                <tr class="border-b border-gray-300 text-gray-500 uppercase text-[10px]">
+                  <th class="py-1.5">Item (HSN)</th>
+                  <th class="py-1.5 text-center">Qty</th>
+                  <th class="py-1.5 text-right">Taxable</th>
+                  <th class="py-1.5 text-right">GST</th>
+                  <th class="py-1.5 text-right">Total</th>
+                </tr>
+              </thead>
+              <tbody id="prev-items-tbody" class="divide-y divide-gray-200 font-mono">
+                <!-- Live rendered -->
+              </tbody>
+            </table>
+          </div>
 
           <!-- Tax Breakdown & Dynamic UPI QR Footer -->
-          <div class="border-t-2 border-gray-900 pt-3 grid grid-cols-12 gap-3 items-center">
+          <div class="border-t-2 border-gray-900 pt-3 grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
             <!-- Left 5 Cols: Dynamic Scan & Pay QR -->
-            <div class="col-span-5 flex items-center gap-2.5 bg-[#F4F5F7] p-2.5 rounded-xl border border-gray-200">
+            <div class="sm:col-span-5 flex items-center gap-2.5 bg-[#F4F5F7] p-2.5 rounded-xl border border-gray-200">
               <img
                 id="prev-upi-qr"
                 src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=upi%3Apay"
                 alt="Invoice UPI QR"
-                class="w-16 h-16 rounded bg-white p-1 border border-gray-200 object-contain"
+                class="w-16 h-16 rounded bg-white p-1 border border-gray-200 object-contain shrink-0"
               />
-              <div class="text-[10px] leading-tight">
+              <div class="text-[10px] leading-tight min-w-0">
                 <div class="font-extrabold text-gray-900">Scan to Pay UPI</div>
                 <div id="prev-upi-id" class="font-mono text-gray-600 break-all mt-0.5">9661692365@ybl</div>
                 <div class="text-[9px] text-emerald-700 font-bold mt-1">Exact Total Pre-filled</div>
@@ -407,7 +445,7 @@
             </div>
 
             <!-- Right 7 Cols: Tax Totals -->
-            <div class="col-span-7 space-y-1 text-right font-mono text-[11px]">
+            <div class="sm:col-span-7 space-y-1 text-right font-mono text-[11px]">
               <div class="flex justify-between text-gray-600">
                 <span>Taxable Value:</span>
                 <span id="prev-taxable-val" class="font-semibold text-gray-900">₹0.00</span>
@@ -431,7 +469,8 @@
             </div>
           </div>
 
-          <div class="text-[10px] text-gray-400 flex items-center justify-between pt-2 border-t border-gray-100">
+          <!-- Authorized Signatory Footer (Restored 100%) -->
+          <div class="text-[10px] text-gray-400 flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-gray-100">
             <span>Generated on SellGST Pro • Computer Generated GST Invoice</span>
             <span class="font-bold text-gray-600">Authorized Signatory</span>
           </div>
@@ -442,19 +481,19 @@
     <!-- =================================================================== -->
     <!-- SECTION 2: SAVED INVOICES LEDGER (FEEDS GSTR-1 JSON)                -->
     <!-- =================================================================== -->
-    <section id="saved-invoices-section" class="bento-card p-6">
+    <section id="saved-invoices-section" class="bento-card p-4 sm:p-6 overflow-hidden">
       <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
         <div>
           <span class="text-[10px] font-extrabold uppercase tracking-wider text-indigo-600">Auto-Synced with GSTR-1 & GSTR-3B</span>
           <h2 class="text-base sm:text-lg font-extrabold text-gray-900">Saved GST Invoices Register</h2>
         </div>
-        <a href="/gst-filing.html" class="px-4 py-2 rounded-xl bg-gray-900 text-white font-extrabold text-xs">
+        <a href="./gst-filing.html" class="px-4 py-2 rounded-xl bg-gray-900 text-white font-extrabold text-xs">
           🏛️ Export All to GSTR-1 (.JSON) →
         </a>
       </div>
 
-      <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse text-xs">
+      <div class="w-full overflow-x-auto">
+        <table class="w-full text-left border-collapse text-xs min-w-[560px]">
           <thead>
             <tr class="border-b border-gray-200 text-gray-400 text-[10px] uppercase">
               <th class="py-2.5">Invoice No</th>
@@ -477,10 +516,10 @@
     <!-- =================================================================== -->
     <!-- SECTION 3 & 4: PARTY UDHAR (KHATA) & SKU INVENTORY MANAGER          -->
     <!-- =================================================================== -->
-    <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
 
       <!-- PARTY UDHAR LEDGER (6 COLS) -->
-      <div id="party-khata-section" class="bento-card p-6 lg:col-span-6 space-y-4">
+      <div id="party-khata-section" class="bento-card p-4 sm:p-6 lg:col-span-6 space-y-4">
         <div class="flex items-center justify-between">
           <div>
             <span class="text-[10px] font-extrabold uppercase tracking-wider text-amber-700">Receivables & WhatsApp Reminders</span>
@@ -490,10 +529,10 @@
 
         <!-- Add Party Form -->
         <form id="add-party-form" class="grid grid-cols-1 sm:grid-cols-4 gap-2 bg-[#F4F5F7] p-3 rounded-2xl border border-gray-200 text-xs">
-          <input type="text" id="party-name-in" required placeholder="Party Firm Name" class="px-3 py-2 rounded-xl bg-white border border-gray-200" />
-          <input type="tel" id="party-phone-in" required placeholder="WhatsApp (9198...)" class="px-3 py-2 rounded-xl bg-white border border-gray-200 font-mono" />
-          <input type="number" id="party-bal-in" required placeholder="Udhar Amt (₹)" class="px-3 py-2 rounded-xl bg-white border border-gray-200 font-mono" />
-          <button type="submit" class="px-3 py-2 rounded-xl bg-gray-900 text-white font-extrabold hover:bg-gray-800">
+          <input type="text" id="party-name-in" required placeholder="Party Firm Name" class="px-3 py-2 rounded-xl bg-white border border-gray-200 min-w-0" />
+          <input type="tel" id="party-phone-in" required placeholder="WhatsApp (9198...)" class="px-3 py-2 rounded-xl bg-white border border-gray-200 font-mono min-w-0" />
+          <input type="number" id="party-bal-in" required placeholder="Udhar Amt (₹)" class="px-3 py-2 rounded-xl bg-white border border-gray-200 font-mono min-w-0" />
+          <button type="submit" class="px-3 py-2 rounded-xl bg-gray-900 text-white font-extrabold hover:bg-gray-800 whitespace-nowrap">
             + Add Party
           </button>
         </form>
@@ -504,7 +543,7 @@
       </div>
 
       <!-- SKU INVENTORY & WEIGHT MASTER (6 COLS) -->
-      <div id="inventory-section" class="bento-card p-6 lg:col-span-6 space-y-4">
+      <div id="inventory-section" class="bento-card p-4 sm:p-6 lg:col-span-6 space-y-4">
         <div>
           <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">Auto-Deducts on Bill & Audits Weight Fraud</span>
           <h3 class="text-base font-extrabold text-gray-900">SKU Inventory & Master Weight Ledger</h3>
@@ -512,12 +551,12 @@
 
         <!-- Add SKU Form -->
         <form id="add-sku-form" class="grid grid-cols-2 sm:grid-cols-5 gap-2 bg-[#F4F5F7] p-3 rounded-2xl border border-gray-200 text-xs">
-          <input type="text" id="sku-code-in" required placeholder="SKU Code" class="px-2.5 py-2 rounded-xl bg-white border border-gray-200 font-mono uppercase" />
-          <input type="text" id="sku-name-in" required placeholder="Product Name" class="px-2.5 py-2 rounded-xl bg-white border border-gray-200" />
-          <input type="text" id="sku-hsn-in" required placeholder="HSN (8537)" class="px-2.5 py-2 rounded-xl bg-white border border-gray-200 font-mono" />
-          <input type="number" id="sku-price-in" required placeholder="Rate (₹)" class="px-2.5 py-2 rounded-xl bg-white border border-gray-200 font-mono" />
+          <input type="text" id="sku-code-in" required placeholder="SKU Code" class="px-2.5 py-2 rounded-xl bg-white border border-gray-200 font-mono uppercase min-w-0" />
+          <input type="text" id="sku-name-in" required placeholder="Product Name" class="px-2.5 py-2 rounded-xl bg-white border border-gray-200 min-w-0" />
+          <input type="text" id="sku-hsn-in" required placeholder="HSN (8537)" class="px-2.5 py-2 rounded-xl bg-white border border-gray-200 font-mono min-w-0" />
+          <input type="number" id="sku-price-in" required placeholder="Rate (₹)" class="px-2.5 py-2 rounded-xl bg-white border border-gray-200 font-mono min-w-0" />
           <div class="flex gap-1 col-span-2 sm:col-span-1">
-            <input type="number" id="sku-stock-in" required placeholder="Qty" class="w-16 px-2 py-2 rounded-xl bg-white border border-gray-200 font-mono" />
+            <input type="number" id="sku-stock-in" required placeholder="Qty" class="w-16 px-2 py-2 rounded-xl bg-white border border-gray-200 font-mono min-w-0" />
             <button type="submit" class="flex-1 px-2.5 py-2 rounded-xl bg-gray-900 text-white font-extrabold">+</button>
           </div>
         </form>
@@ -529,7 +568,7 @@
     </section>
   </div>
 
-  <!-- INVOICE & KHATA MODULE SCRIPT -->
+  <!-- INVOICE & KHATA MODULE SCRIPT (0.1s ZERO-LAG HYDRATION) -->
   <script type="module">
     import {
       db,
@@ -648,7 +687,7 @@
                 .join("")}
             </select>
           </td>
-          <td class="py-2 pl-2 text-right font-mono font-bold text-gray-900">
+          <td id="line-total-cell-${idx}" class="py-2 pl-2 text-right font-mono font-bold text-gray-900">
             ${formatINR(item.qty * item.rate * (1 + item.gstRate / 100))}
           </td>
           <td class="py-2 pl-1 text-right">
@@ -659,14 +698,18 @@
         )
         .join("");
 
-      // Bind Input Listeners
+      // Bind Input Listeners with 0.1s rAF Batching
       tbody.querySelectorAll(".item-input").forEach((inp) => {
         inp.addEventListener("input", (e) => {
           const idx = Number(e.target.getAttribute("data-idx"));
           const field = e.target.getAttribute("data-field");
           lineItems[idx][field] = field === "name" || field === "hsn" ? e.target.value : Number(e.target.value) || 0;
-          updateLivePreview();
-          if (e.target.tagName === "SELECT") renderInvoiceBuilder();
+          const cell = document.getElementById(`line-total-cell-${idx}`);
+          if (cell) {
+            const it = lineItems[idx];
+            cell.textContent = formatINR(it.qty * it.rate * (1 + it.gstRate / 100));
+          }
+          scheduleLivePreviewUpdate();
         });
       });
 
@@ -676,12 +719,12 @@
           if (lineItems.length > 1) {
             lineItems.splice(idx, 1);
             renderInvoiceBuilder();
-            updateLivePreview();
+            scheduleLivePreviewUpdate();
           }
         });
       });
 
-      updateLivePreview();
+      scheduleLivePreviewUpdate();
     }
 
     function calculateTotals() {
@@ -731,6 +774,18 @@
       };
     }
 
+    let previewFramePending = false;
+    let lastQrUri = "";
+
+    function scheduleLivePreviewUpdate() {
+      if (previewFramePending) return;
+      previewFramePending = true;
+      requestAnimationFrame(() => {
+        previewFramePending = false;
+        updateLivePreview();
+      });
+    }
+
     function updateLivePreview() {
       const calc = calculateTotals();
       const invNo = document.getElementById("inv-number").value.trim() || "INV-2026-001";
@@ -744,10 +799,10 @@
       const modePill = document.getElementById("tax-mode-pill");
       if (calc.isInterState) {
         modePill.textContent = "INTER-STATE: 100% IGST";
-        modePill.className = "px-3 py-1 rounded-full bg-indigo-100 text-indigo-900 font-mono text-xs font-extrabold";
+        modePill.className = "px-3 py-1 rounded-full bg-indigo-100 text-indigo-900 font-mono text-[10px] sm:text-xs font-extrabold";
       } else {
         modePill.textContent = "INTRA-STATE: 50% CGST + 50% SGST";
-        modePill.className = "px-3 py-1 rounded-full bg-[#CBE8BA] text-gray-900 font-mono text-xs font-extrabold";
+        modePill.className = "px-3 py-1 rounded-full bg-[#CBE8BA] text-gray-900 font-mono text-[10px] sm:text-xs font-extrabold";
       }
 
       document.getElementById("prev-inv-no").textContent = invNo;
@@ -789,17 +844,20 @@
       document.getElementById("prev-sgst-row").classList.toggle("hidden", calc.isInterState);
       document.getElementById("prev-igst-row").classList.toggle("hidden", !calc.isInterState);
 
-      // Update Dynamic UPI QR on Bill
+      // Update Dynamic UPI QR on Bill (Only refresh QR image URL when URI changes to prevent flicker)
       document.getElementById("prev-upi-id").textContent = upiId;
       const sellerName = AppState.profile.businessName || "AgniVolt Store";
       const upiUri = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(sellerName)}&am=${calc.grandTotal.toFixed(2)}&cu=INR&tn=${encodeURIComponent(invNo)}`;
-      document.getElementById("prev-upi-qr").src = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=6&data=${encodeURIComponent(upiUri)}`;
+      if (upiUri !== lastQrUri) {
+        lastQrUri = upiUri;
+        document.getElementById("prev-upi-qr").src = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=6&data=${encodeURIComponent(upiUri)}`;
+      }
     }
 
     // Bind Top-Level Form Inputs to Live Preview
     ["inv-number", "inv-date", "seller-state-select", "buyer-name", "buyer-gstin", "buyer-state-select", "payment-mode-select", "invoice-upi-id"].forEach((id) => {
-      document.getElementById(id)?.addEventListener("input", updateLivePreview);
-      document.getElementById(id)?.addEventListener("change", updateLivePreview);
+      document.getElementById(id)?.addEventListener("input", scheduleLivePreviewUpdate);
+      document.getElementById(id)?.addEventListener("change", scheduleLivePreviewUpdate);
     });
 
     // Add Blank Row
@@ -874,11 +932,11 @@
           const waHref = `https://wa.me/${encodeURIComponent(String(p.phone || "").replace(/\D/g, ""))}?text=${encodeURIComponent(waMsg)}`;
           return `
             <div class="p-3 rounded-2xl bg-[#F4F5F7] border border-gray-200 flex flex-wrap items-center justify-between gap-2 text-xs">
-              <div>
-                <div class="font-extrabold text-gray-900">${sanitizeHTML(p.name)}</div>
+              <div class="min-w-0">
+                <div class="font-extrabold text-gray-900 truncate">${sanitizeHTML(p.name)}</div>
                 <div class="text-[11px] font-mono text-gray-500">WhatsApp: +${sanitizeHTML(p.phone)}</div>
               </div>
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-2 shrink-0">
                 <span class="font-mono font-black text-rose-600 text-sm">${formatINR(p.balance)}</span>
                 <button type="button" data-settle-party="${idx}" class="px-2.5 py-1 rounded-xl bg-white border border-gray-300 font-bold text-[10px] hover:bg-gray-100">
                   Mark Paid
@@ -908,11 +966,11 @@
         .map(
           (item, idx) => `
         <div class="p-3 rounded-2xl bg-[#F4F5F7] border border-gray-200 flex items-center justify-between gap-2 text-xs">
-          <div>
-            <div class="font-extrabold text-gray-900">${sanitizeHTML(item.name)}</div>
-            <div class="text-[10px] font-mono text-gray-500">SKU: ${sanitizeHTML(item.sku)} • HSN: ${sanitizeHTML(item.hsn)} • ₹${item.price}</div>
+          <div class="min-w-0">
+            <div class="font-extrabold text-gray-900 truncate">${sanitizeHTML(item.name)}</div>
+            <div class="text-[10px] font-mono text-gray-500 truncate">SKU: ${sanitizeHTML(item.sku)} • HSN: ${sanitizeHTML(item.hsn)} • ₹${item.price}</div>
           </div>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 shrink-0">
             <span class="px-2.5 py-1 rounded-full font-mono font-bold text-[11px] ${
               item.stock <= 5 ? "bg-rose-100 text-rose-800" : "bg-[#CBE8BA] text-gray-900"
             }">
@@ -948,7 +1006,7 @@
         document.getElementById("buyer-name").value = p.name;
         document.getElementById("buyer-gstin").value = p.gstin || "";
         if (p.state) document.getElementById("buyer-state-select").value = p.state;
-        updateLivePreview();
+        scheduleLivePreviewUpdate();
       }
     });
 
@@ -1035,7 +1093,7 @@
         localStorage.setItem("sellgst_parties", JSON.stringify(parties));
       }
 
-      // 4. Sync to Firestore if signed in
+      // 4. Sync to Firestore in background if signed in
       if (AppState.user?.uid) {
         try {
           await addDoc(collection(db, "users", AppState.user.uid, "invoices"), {
@@ -1109,7 +1167,7 @@
       if (AppState.profile.upiId) {
         document.getElementById("invoice-upi-id").value = AppState.profile.upiId;
       }
-      updateLivePreview();
+      scheduleLivePreviewUpdate();
     });
 
     renderInvoiceBuilder();
