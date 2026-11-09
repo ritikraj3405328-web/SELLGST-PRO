@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-  <title>Dashboard — SellGST Pro Super-App</title>
-  <meta name="theme-color" content="#111827" />
+  <title>3D Financial Analysis & Store Valuation Dashboard — SellGST Pro</title>
+  <meta name="theme-color" content="#5B2EFF" />
   <link rel="manifest" href="./manifest.json" />
 
   <!-- 0.1s Instant Module Preload & Speculative Tool Prefetch (Zero 404 Relative Paths) -->
@@ -28,8 +28,9 @@
             mono: ['"JetBrains Mono"', 'monospace']
           },
           colors: {
-            canvas: '#F4F5F7',
-            mint: '#CBE8BA'
+            navy: '#081B4B',
+            royal: '#5B2EFF',
+            mint: '#10E594'
           }
         }
       }
@@ -42,46 +43,59 @@
     html, body {
       max-width: 100vw;
       overflow-x: hidden;
-      background-color: #F4F5F7;
-      color: #111827;
+      /* Exact 3D Lavender-Blue to Aqua-Mint Pastel Canvas from 1000173803.jpg */
+      background: linear-gradient(135deg, #DDE3FF 0%, #EEF2FF 48%, #D6F5F8 100%);
+      color: #0F172A;
       font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
       -webkit-tap-highlight-color: transparent;
     }
     .bento-card {
-      background: #FFFFFF;
-      border-radius: 24px;
-      border: 1px solid #E5E7EB;
-      box-shadow: 0 10px 30px -10px rgba(17, 24, 39, 0.05);
-      transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease;
-      will-change: transform;
-      min-width: 0;
-    }
-    @media (hover: hover) {
-      .bento-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 18px 35px -12px rgba(17, 24, 39, 0.09);
-      }
-    }
-    .bento-mint {
-      background: #CBE8BA;
-      border-radius: 24px;
-      border: 1px solid #A3D987;
-      box-shadow: 0 12px 30px -10px rgba(34, 197, 94, 0.18);
-      transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-      min-width: 0;
-    }
-    @media (hover: hover) {
-      .bento-mint:hover {
-        transform: translateY(-4px);
-      }
-    }
-    .gst-3d-card {
-      background: radial-gradient(circle at top right, #312e81 0%, #111827 65%, #030712 100%);
-      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(16px);
+      border-radius: 26px;
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 18px 40px -15px rgba(91, 46, 255, 0.14), 0 4px 12px rgba(15, 23, 42, 0.04);
+      transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease;
       transform-style: preserve-3d;
-      transition: transform 0.18s ease-out;
       will-change: transform;
       min-width: 0;
+    }
+    .purple-3d-banner {
+      background: linear-gradient(135deg, #6A3BFF 0%, #5B2EFF 55%, #3F16C4 100%);
+      border-radius: 26px;
+      box-shadow: 0 22px 45px -12px rgba(91, 46, 255, 0.38);
+      transform-style: preserve-3d;
+      min-width: 0;
+    }
+    .purple-credit-card {
+      background: linear-gradient(135deg, #7047FF 0%, #5B2EFF 60%, #4318FF 100%);
+      border-radius: 20px;
+      box-shadow: 0 14px 30px -8px rgba(91, 46, 255, 0.45);
+    }
+    .pill-bar-track {
+      background: #EEF2FF;
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+    .pill-bar-fill {
+      border-radius: 999px;
+      transition: height 0.5s cubic-bezier(0.16, 1, 0.3, 1), width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-4px); }
+    }
+    .float-3d {
+      animation: floatSlow 3.8s ease-in-out infinite;
+    }
+    @keyframes shrink7s {
+      from { width: 100%; }
+      to { width: 0%; }
+    }
+    .pwa-timer-bar {
+      animation: shrink7s 7s linear forwards;
     }
     .no-scrollbar::-webkit-scrollbar {
       display: none;
@@ -94,32 +108,32 @@
 </head>
 <body class="min-h-screen w-full overflow-x-hidden pb-24 lg:pb-10 lg:pl-24">
 
-  <!-- DESKTOP FLOATING LEFT PILL SIDEBAR (ALL RELATIVE LINKS ./ FOR ZERO 404) -->
-  <aside class="hidden lg:flex fixed left-4 top-4 bottom-4 w-16 bg-white border border-gray-200 rounded-full shadow-lg flex-col items-center justify-between py-5 z-40">
-    <a href="./app.html" title="SellGST Pro" class="w-11 h-11 rounded-2xl bg-gray-900 text-[#CBE8BA] flex items-center justify-center font-black text-base shadow">
+  <!-- DESKTOP FLOATING 3D LEFT PILL SIDEBAR (ZERO-404 RELATIVE LINKS) -->
+  <aside class="hidden lg:flex fixed left-4 top-4 bottom-4 w-16 bg-white/95 backdrop-blur-xl border border-white rounded-full shadow-xl shadow-indigo-500/10 flex-col items-center justify-between py-5 z-40">
+    <a href="./app.html" title="SellGST Pro 3D" class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#081B4B] via-[#5B2EFF] to-[#10E594] text-white flex items-center justify-center font-black text-sm shadow-md">
       S₹
     </a>
 
     <nav class="flex flex-col items-center gap-3">
-      <a href="./app.html" title="Dashboard" class="w-11 h-11 rounded-2xl bg-gray-900 text-white flex items-center justify-center text-lg shadow-sm transition">
+      <a href="./app.html" title="3D Financial Dashboard" class="w-11 h-11 rounded-2xl bg-[#5B2EFF] text-white flex items-center justify-center text-base shadow-md transition">
         📊
       </a>
-      <a href="./invoice.html" title="GST Billing & Khata" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+      <a href="./invoice.html" title="Custom Navy GST Invoice" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
         🧾
       </a>
-      <a href="./ecom-audit.html" title="E-Com Audit & 4x6 Labels" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+      <a href="./ecom-audit.html" title="E-Com Audit & 4x6 Labels" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
         📦
       </a>
-      <a href="./gst-filing.html" title="1-Click GSTR-1 JSON" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+      <a href="./gst-filing.html" title="1-Click GSTR-1 JSON" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
         🏛️
       </a>
-      <a href="./admin.html" title="Admin Console" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+      <a href="./admin.html" title="Admin Console" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
         🛡️
       </a>
     </nav>
 
     <div class="flex flex-col items-center gap-2">
-      <button type="button" id="open-profile-modal-btn" title="Store Settings" class="w-10 h-10 rounded-full bg-[#F4F5F7] hover:bg-gray-200 flex items-center justify-center text-sm">
+      <button type="button" id="open-profile-modal-btn" title="Store Settings" class="w-10 h-10 rounded-full bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] flex items-center justify-center text-sm">
         ⚙️
       </button>
       <button type="button" id="sidebar-logout-btn" title="Sign Out" class="w-10 h-10 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center text-sm">
@@ -128,47 +142,50 @@
     </div>
   </aside>
 
-  <!-- MOBILE FLOATING BOTTOM DOCK (ALL RELATIVE LINKS ./ FOR ZERO 404) -->
-  <nav class="lg:hidden fixed bottom-2.5 inset-x-3 bg-gray-950/95 backdrop-blur-md text-white rounded-3xl px-2 py-2.5 shadow-2xl border border-white/10 z-40 flex items-center justify-around">
-    <a href="./app.html" class="flex flex-col items-center gap-0.5 text-[#CBE8BA] font-bold text-[10px]">
+  <!-- MOBILE FLOATING BOTTOM DOCK (MATCHING 1000173803.jpg SOFT WHITE/PURPLE DOCK) -->
+  <nav class="lg:hidden fixed bottom-2.5 inset-x-3 bg-white/95 backdrop-blur-xl text-slate-700 rounded-3xl px-2 py-2.5 shadow-2xl border border-indigo-100 z-40 flex items-center justify-around">
+    <a href="./app.html" class="flex flex-col items-center gap-0.5 text-[#5B2EFF] font-extrabold text-[10px]">
       <span class="text-base">📊</span>
-      <span data-i18n="nav_dashboard">Dashboard</span>
+      <span data-i18n="nav_dashboard">Analytics</span>
     </a>
-    <a href="./invoice.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+    <a href="./invoice.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
       <span class="text-base">🧾</span>
-      <span data-i18n="nav_invoice">GST Bill</span>
+      <span data-i18n="nav_invoice">Navy Bill</span>
     </a>
-    <a href="./ecom-audit.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+    <a href="./ecom-audit.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
       <span class="text-base">📦</span>
       <span data-i18n="nav_audit">Audit</span>
     </a>
-    <a href="./gst-filing.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+    <a href="./gst-filing.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
       <span class="text-base">🏛️</span>
       <span data-i18n="nav_gst">GSTR-1</span>
     </a>
-    <a href="./admin.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+    <a href="./admin.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
       <span class="text-base">🛡️</span>
       <span>Admin</span>
     </a>
   </nav>
 
-  <!-- MAIN CONTENT WRAPPER -->
-  <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-3 sm:pt-4 space-y-5 sm:space-y-6 overflow-x-hidden">
+  <!-- MAIN CONTENT CONTAINER -->
+  <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-3 sm:pt-4 space-y-5 overflow-x-hidden">
 
-    <!-- TOP HEADER BAR (WITH ALWAYS-VISIBLE PWA INSTALL BUTTON & ZERO HORIZONTAL OVERFLOW) -->
-    <header class="bg-white rounded-3xl border border-gray-200 px-3.5 sm:px-6 py-3 sm:py-3.5 shadow-sm flex flex-wrap items-center justify-between gap-2.5">
-      <!-- Left: Store Identity -->
-      <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
-        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-[#CBE8BA] text-gray-900 flex items-center justify-center font-extrabold text-sm shrink-0">
-          🏪
+    <!-- TOP HEADER BAR (WITH 7-SECOND AUTO-HIDING PWA BUTTON) -->
+    <header class="bg-white/90 backdrop-blur-xl rounded-3xl border border-white px-4 sm:px-6 py-3 shadow-lg shadow-indigo-500/5 flex flex-wrap items-center justify-between gap-2.5">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#5B2EFF] to-[#38BDF8] text-white flex items-center justify-center font-extrabold text-sm shadow-md shrink-0">
+          👨‍💼
         </div>
         <div class="min-w-0">
-          <div class="flex items-center gap-1.5 sm:gap-2">
-            <h1 data-user-name class="font-extrabold text-xs sm:text-base text-gray-900 truncate max-w-[135px] sm:max-w-xs">AgniVolt E-Com Store</h1>
-            <button type="button" id="edit-store-inline-btn" class="text-[10px] sm:text-[11px] text-indigo-600 font-bold hover:underline shrink-0">Edit</button>
+          <div class="flex items-center gap-2">
+            <h1 data-user-name class="font-extrabold text-sm sm:text-[15px] text-[#081B4B] truncate max-w-[145px] sm:max-w-xs">
+              S.K.P.S DIGITAL
+            </h1>
+            <button type="button" id="edit-store-inline-btn" class="text-[11px] text-[#5B2EFF] font-bold hover:underline shrink-0">
+              Edit Store
+            </button>
           </div>
-          <div class="text-[10px] sm:text-[11px] text-gray-500 font-mono truncate">
-            GSTIN: <span data-user-gstin class="font-semibold text-gray-700">10AABCA8921K1Z5</span>
+          <div class="text-[11px] text-slate-500 font-mono truncate">
+            GSTIN: <span data-user-gstin class="font-semibold text-slate-700">07AABCS1429B1Z5</span>
           </div>
         </div>
       </div>
@@ -177,365 +194,534 @@
       <button
         type="button"
         data-open-ai=""
-        class="hidden xl:flex items-center gap-3 flex-1 max-w-md mx-4 px-4 py-2 rounded-2xl bg-[#F4F5F7] hover:bg-gray-200/70 border border-gray-200 text-left transition"
+        class="hidden xl:flex items-center gap-3 flex-1 max-w-md mx-4 px-4 py-2 rounded-2xl bg-indigo-50/70 hover:bg-indigo-100/70 border border-indigo-100 text-left transition"
       >
         <span class="text-sm">🤖</span>
-        <span data-i18n="ai_search_placeholder" class="text-xs text-gray-500 truncate flex-1">
-          Ask SellGST AI: How to claim RTO &gt;30 days or file GSTR-1...
+        <span data-i18n="ai_search_placeholder" class="text-xs text-slate-600 truncate flex-1 font-medium">
+          Ask SellGST AI: Check 3D valuation, claim RTO &gt;30d or file GSTR-1...
         </span>
-        <span class="px-2 py-0.5 rounded bg-white text-[10px] font-mono font-bold text-gray-700 border border-gray-200">24/7 AI</span>
+        <span class="px-2 py-0.5 rounded-full bg-[#5B2EFF] text-[10px] font-mono font-bold text-white">24/7 AI</span>
       </button>
 
-      <!-- Right: Language Switcher, Always-Visible PWA Install & Pro Unlock Badge -->
-      <div class="flex items-center gap-1.5 sm:gap-2.5 flex-wrap justify-end ml-auto">
+      <!-- Right: Language Switcher, 7-Second Install Button & Pro Unlock Badge -->
+      <div class="flex items-center gap-2 flex-wrap justify-end ml-auto">
         <select
           data-lang-switcher
           aria-label="Language"
-          class="px-2.5 sm:px-3 py-1.5 rounded-full bg-[#F4F5F7] border border-gray-200 text-[11px] sm:text-xs font-bold text-gray-800 cursor-pointer focus:outline-none max-w-[92px] sm:max-w-none truncate"
+          class="px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none max-w-[95px] sm:max-w-none truncate"
         ></select>
 
-        <!-- ALWAYS-VISIBLE PWA INSTALL BUTTON -->
+        <!-- 7-SECOND AUTO-HIDING PWA INSTALL BUTTON -->
         <button
           type="button"
           id="pwa-install-btn"
           data-pwa-install
-          class="px-2.5 sm:px-3.5 py-1.5 rounded-full bg-[#CBE8BA] hover:bg-emerald-300 text-gray-950 border border-emerald-400/60 text-[11px] sm:text-xs font-extrabold shadow-sm transition whitespace-nowrap flex items-center gap-1"
+          class="relative overflow-hidden px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#081B4B] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap flex items-center gap-1.5"
         >
           <span>📲 Install App</span>
+          <span id="pwa-sec-badge" class="px-1.5 py-0.2 rounded-full bg-white/20 text-[10px] font-mono">7s</span>
+          <span class="absolute bottom-0 left-0 h-0.5 bg-[#10E594] pwa-timer-bar"></span>
         </button>
 
         <button
           type="button"
           data-pro-badge
           data-unlock-pro="MONTHLY"
-          class="px-3 sm:px-3.5 py-1.5 rounded-full text-[11px] sm:text-xs font-bold bg-gray-900 text-white hover:bg-gray-800 transition whitespace-nowrap"
+          class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-[#5B2EFF] to-[#4318FF] text-white shadow-md transition whitespace-nowrap"
         >
           Unlock Pro ⚡
         </button>
       </div>
     </header>
 
-    <!-- QUICK ACTION PILL ROW (ALL RELATIVE LINKS ./ FOR ZERO 404) -->
-    <div class="flex items-center gap-2 sm:gap-2.5 overflow-x-auto no-scrollbar pb-1 w-full">
-      <a href="./invoice.html" class="px-4 py-2.5 rounded-2xl bg-gray-900 text-white font-extrabold text-xs whitespace-nowrap shadow-sm hover:bg-gray-800 transition">
-        <span data-i18n="btn_create_invoice">+ Create GST Bill</span>
-      </a>
-      <a href="./ecom-audit.html" class="px-4 py-2.5 rounded-2xl bg-white border border-gray-200 text-gray-800 font-bold text-xs whitespace-nowrap hover:border-gray-900 transition">
-        🔍 <span data-i18n="btn_scan_csv">Scan Marketplace CSV</span>
-      </a>
-      <a href="./gst-filing.html" class="px-4 py-2.5 rounded-2xl bg-white border border-gray-200 text-gray-800 font-bold text-xs whitespace-nowrap hover:border-gray-900 transition">
-        🏛️ <span data-i18n="btn_download_gstr1">Download GSTR-1 (.JSON)</span>
-      </a>
-      <a href="./ecom-audit.html#label-cropper-section" class="px-4 py-2.5 rounded-2xl bg-white border border-gray-200 text-gray-800 font-bold text-xs whitespace-nowrap hover:border-gray-900 transition">
-        🏷️ <span data-i18n="btn_crop_labels">4x6 Label Cropper</span>
-      </a>
-      <a href="./admin.html" class="px-4 py-2.5 rounded-2xl bg-[#CBE8BA]/50 border border-emerald-400/50 text-gray-900 font-bold text-xs whitespace-nowrap hover:bg-[#CBE8BA] transition">
-        🛡️ Admin Approval Queue
-      </a>
-      <a href="./index.html" class="px-3.5 py-2.5 rounded-2xl bg-white border border-gray-200 text-gray-600 font-bold text-xs whitespace-nowrap hover:text-gray-900 transition">
-        🏠 Home / Auth
-      </a>
-    </div>
+    <!-- =================================================================== -->
+    <!-- ROW 1: THE 3 CORE 3D FINANCIAL ANALYSIS CARDS FROM 1000173803.jpg   -->
+    <!-- =================================================================== -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
 
-    <!-- 6 BENTO KPI CARDS -->
-    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
-
-      <!-- KPI 1: Mint-Green Highlight Card -->
-      <div class="bento-mint p-5 lg:col-span-2 flex flex-col justify-between">
-        <div class="flex items-center justify-between gap-2">
-          <span data-i18n="kpi_net_sales" class="text-xs font-extrabold text-gray-800">Net GST Sales (This Month)</span>
-          <span class="px-2.5 py-0.5 rounded-full bg-gray-900 text-[#CBE8BA] text-[10px] font-extrabold shrink-0">+18.4% ↑</span>
-        </div>
-        <div id="kpi-sales-val" class="text-2xl sm:text-3xl font-black text-gray-950 font-mono my-2 truncate">
-          ₹4,82,950.00
-        </div>
-        <div class="flex items-center justify-between text-[11px] font-bold text-gray-800">
-          <span>B2B + B2C: 142 Invoices</span>
-          <a href="./invoice.html" class="underline">View Ledger →</a>
-        </div>
-      </div>
-
-      <!-- KPI 2: Recoverable E-Com Claims -->
-      <div class="bento-card p-5 flex flex-col justify-between">
-        <div class="flex items-center justify-between">
-          <span data-i18n="kpi_recoverable_rto" class="text-xs font-bold text-gray-500">Recoverable Claims</span>
-          <span class="w-7 h-7 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-xs font-bold shrink-0">!</span>
-        </div>
-        <div id="kpi-rto-val" class="text-xl font-black text-rose-600 font-mono my-2 truncate">
-          ₹24,680.00
-        </div>
-        <a href="./ecom-audit.html" class="text-[11px] font-bold text-indigo-600 hover:underline">
-          19 Overdue RTOs (&gt;30d) →
-        </a>
-      </div>
-
-      <!-- KPI 3: Party Udhar (To Collect) -->
-      <div class="bento-card p-5 flex flex-col justify-between">
-        <div class="flex items-center justify-between">
-          <span data-i18n="kpi_udhar_collect" class="text-xs font-bold text-gray-500">Party Udhar (Collect)</span>
-          <span class="w-7 h-7 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center text-xs font-bold shrink-0">₹</span>
-        </div>
-        <div id="kpi-udhar-val" class="text-xl font-black text-gray-900 font-mono my-2 truncate">
-          ₹63,400.00
-        </div>
-        <a href="#udhar-widget" class="text-[11px] font-bold text-emerald-700 hover:underline">
-          Send WhatsApp Reminders →
-        </a>
-      </div>
-
-      <!-- KPI 4: Net GST Payable (3B) -->
-      <div class="bento-card p-5 flex flex-col justify-between">
-        <div class="flex items-center justify-between">
-          <span data-i18n="kpi_gst_payable" class="text-xs font-bold text-gray-500">Net GST Payable (3B)</span>
-          <span class="w-7 h-7 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs font-bold shrink-0">%</span>
-        </div>
-        <div id="kpi-gst-val" class="text-xl font-black text-gray-900 font-mono my-2 truncate">
-          ₹31,240.00
-        </div>
-        <a href="./gst-filing.html" class="text-[11px] font-bold text-gray-600 hover:text-gray-900">
-          After ₹55.6k ITC Offset →
-        </a>
-      </div>
-
-      <!-- KPI 5 & 6 Combined: Low Stock & Audit Score -->
-      <div class="bento-card p-5 flex flex-col justify-between">
-        <div class="flex items-center justify-between gap-1">
-          <span data-i18n="kpi_low_stock" class="text-xs font-bold text-gray-500 truncate">Low Stock & Audit</span>
-          <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold shrink-0">94.8% Score</span>
-        </div>
-        <div id="kpi-stock-val" class="text-xl font-black text-amber-600 font-mono my-2 truncate">
-          4 SKUs Low
-        </div>
-        <a href="#stock-widget" class="text-[11px] font-bold text-gray-600 hover:text-gray-900">
-          Restock Alert Active →
-        </a>
-      </div>
-    </section>
-
-    <!-- MIDDLE ROW: INTERACTIVE SPLINE CHART (8 COLS) + 3D GST VIRTUAL CARD (4 COLS) -->
-    <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
-
-      <!-- SPLINE REVENUE & PAYOUT AUDIT CHART (WITH FULL DATA POINTS & GRADIENTS RESTORED) -->
-      <div class="bento-card p-4 sm:p-6 lg:col-span-8 flex flex-col justify-between overflow-hidden">
-        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-          <div>
-            <span class="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-gray-400">Cashflow & Settlement Intelligence</span>
-            <h2 class="text-sm sm:text-lg font-extrabold text-gray-900">GST Billed Sales vs Bank Settlements & RTO Leaks</h2>
+      <!-- CARD 1 (4 COLS): "My Card" + Active Toggle + 4 Action Tiles (Screen 1 of 1000173803.jpg) -->
+      <div data-3d-tilt class="bento-card p-5 lg:col-span-4 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-[15px] font-extrabold text-[#081B4B]">My GST & Valuation Card</h2>
+            <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-[#5B2EFF] font-mono text-[11px] font-bold">3D PASS</span>
           </div>
-          <div class="flex items-center gap-1.5 bg-[#F4F5F7] p-1 rounded-xl border border-gray-200 text-xs font-bold">
-            <button type="button" data-chart-range="6M" class="chart-range-btn px-3 py-1 rounded-lg bg-white text-gray-900 shadow-sm">6 Months</button>
-            <button type="button" data-chart-range="1Y" class="chart-range-btn px-3 py-1 rounded-lg text-gray-600 hover:text-gray-900">Full FY</button>
-          </div>
-        </div>
 
-        <!-- SVG Smooth Spline Chart (100% Full with Gradients + Interactive Data Circles) -->
-        <div class="relative w-full h-52 sm:h-64 bg-[#F4F5F7]/60 rounded-2xl p-3 sm:p-4 border border-gray-100 flex flex-col justify-end overflow-hidden">
-          <svg id="revenue-spline-svg" viewBox="0 0 700 220" class="w-full h-full">
-            <defs>
-              <linearGradient id="mintGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#CBE8BA" stop-opacity="0.85" />
-                <stop offset="100%" stop-color="#CBE8BA" stop-opacity="0.0" />
-              </linearGradient>
-              <linearGradient id="darkGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#111827" stop-opacity="0.18" />
-                <stop offset="100%" stop-color="#111827" stop-opacity="0.0" />
-              </linearGradient>
-            </defs>
-
-            <!-- Horizontal Grid Lines -->
-            <line x1="0" y1="30" x2="700" y2="30" stroke="#E5E7EB" stroke-dasharray="4 4" />
-            <line x1="0" y1="90" x2="700" y2="90" stroke="#E5E7EB" stroke-dasharray="4 4" />
-            <line x1="0" y1="150" x2="700" y2="150" stroke="#E5E7EB" stroke-dasharray="4 4" />
-            <line x1="0" y1="205" x2="700" y2="205" stroke="#D1D5DB" />
-
-            <!-- Area Under Gross GST Sales Curve -->
-            <path
-              id="spline-area-sales"
-              d="M 20 165 C 110 140, 160 115, 240 105 C 320 95, 390 120, 470 70 C 550 25, 610 45, 680 25 L 680 205 L 20 205 Z"
-              fill="url(#mintGrad)"
-            />
-
-            <!-- Gross GST Sales Spline Curve -->
-            <path
-              id="spline-line-sales"
-              d="M 20 165 C 110 140, 160 115, 240 105 C 320 95, 390 120, 470 70 C 550 25, 610 45, 680 25"
-              fill="none"
-              stroke="#111827"
-              stroke-width="3.5"
-              stroke-linecap="round"
-            />
-
-            <!-- Settled Bank Payout Spline Curve -->
-            <path
-              id="spline-line-payout"
-              d="M 20 182 C 110 160, 160 142, 240 130 C 320 122, 390 145, 470 98 C 550 60, 610 72, 680 54"
-              fill="none"
-              stroke="#4F46E5"
-              stroke-width="2.5"
-              stroke-dasharray="6 4"
-              stroke-linecap="round"
-            />
-
-            <!-- Interactive Data Points (Restored 100%) -->
-            <circle cx="20" cy="165" r="5" fill="#111827" />
-            <circle cx="150" cy="122" r="5" fill="#111827" />
-            <circle cx="240" cy="105" r="5" fill="#111827" />
-            <circle cx="360" cy="108" r="5" fill="#111827" />
-            <circle cx="470" cy="70" r="5" fill="#111827" />
-            <circle cx="580" cy="38" r="5" fill="#111827" />
-            <circle cx="680" cy="25" r="6" fill="#16A34A" stroke="#FFFFFF" stroke-width="2" />
-          </svg>
-
-          <!-- X-Axis Labels -->
-          <div class="flex justify-between text-[10px] sm:text-[11px] font-mono text-gray-500 px-1 sm:px-2 mt-1">
-            <span>Jun</span>
-            <span>Jul</span>
-            <span>Aug</span>
-            <span>Sep</span>
-            <span>Oct</span>
-            <span class="font-bold text-gray-900">Nov (Current)</span>
-          </div>
-        </div>
-
-        <!-- Legend -->
-        <div class="mt-4 flex flex-wrap items-center justify-between gap-2 text-[11px] sm:text-xs">
-          <div class="flex items-center gap-4">
-            <span class="flex items-center gap-1.5 font-bold text-gray-800">
-              <span class="w-3 h-3 rounded-full bg-gray-900 inline-block"></span> Gross GST Sales
-            </span>
-            <span class="flex items-center gap-1.5 font-semibold text-indigo-600">
-              <span class="w-3 h-3 rounded-full bg-indigo-600 inline-block"></span> Net Settled Payout
-            </span>
-          </div>
-          <span class="text-gray-500">Gap = Marketplace Commission + Unclaimed RTO/Weight Leaks</span>
-        </div>
-      </div>
-
-      <!-- 3D GST COMPLIANCE VIRTUAL CARD (WITH FULL 3D TILT EFFECT) -->
-      <div class="lg:col-span-4 flex flex-col gap-4">
-        <div id="gst-3d-card" class="gst-3d-card text-white p-5 sm:p-6 shadow-2xl flex flex-col justify-between h-full relative overflow-hidden">
-          <div class="flex items-center justify-between gap-2">
-            <div class="min-w-0">
-              <span class="text-[10px] font-mono uppercase tracking-widest text-[#CBE8BA]">GSTN Compliance Pass</span>
-              <h3 data-user-name class="text-base font-extrabold mt-0.5 truncate">AgniVolt E-Com Store</h3>
+          <!-- Glowing Purple Credit/GST Pass Card -->
+          <div class="purple-credit-card text-white p-4 relative overflow-hidden">
+            <div class=" -right-6 -top-6 w-24 h-24 rounded-full bg-white/10 pointer-events-none absolute"></div>
+            <div class="flex items-center justify-between text-[11px]">
+              <span class="px-2 py-0.5 rounded-md bg-white/15 font-semibold">Customization</span>
+              <span class="text-[#10E594] font-bold">GSTN Verified</span>
             </div>
-            <span class="px-2.5 py-1 rounded-full bg-white/10 text-[#CBE8BA] font-mono text-[10px] sm:text-[11px] font-bold border border-white/15 shrink-0">
-              ACTIVE REG
-            </span>
-          </div>
 
-          <div class="my-5 sm:my-6">
-            <div class="text-[10px] uppercase tracking-wider text-gray-400">Registered GSTIN</div>
-            <div data-user-gstin class="text-lg sm:text-xl font-mono font-bold tracking-wider text-white mt-0.5 break-all">
-              10AABCA8921K1Z5
+            <div data-user-gstin class="font-mono text-sm sm:text-[15px] font-bold tracking-widest text-white my-4 truncate">
+              07AA •••• 1429 ••••
+            </div>
+
+            <div class="flex items-center justify-between text-[11px] text-indigo-100 uppercase tracking-wider">
+              <span data-user-name class="font-bold text-white truncate max-w-[160px]">S.K.P.S DIGITAL</span>
+              <span class="font-mono">v3.1.6</span>
             </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-3 bg-white/5 rounded-2xl p-3.5 border border-white/10 text-xs">
-            <div>
-              <div class="text-gray-400 text-[10px]">GSTR-1 Status</div>
-              <div class="font-bold text-[#CBE8BA] mt-0.5">Ready (JSON v3.1.6)</div>
-            </div>
-            <div>
-              <div class="text-gray-400 text-[10px]">GSTR-3B Liability</div>
-              <div id="card-3b-val" class="font-bold text-white font-mono mt-0.5">₹31,240</div>
-            </div>
-          </div>
-
-          <div class="mt-5 flex items-center gap-2">
-            <a
-              href="./gst-filing.html"
-              class="flex-1 py-2.5 px-4 rounded-xl bg-[#CBE8BA] hover:bg-emerald-300 text-gray-950 font-extrabold text-xs text-center transition"
-            >
-              🏛️ 1-Click GSTR-1 JSON
-            </a>
+          <!-- "The card is active" Pill Toggle Row -->
+          <div class="mt-3.5 px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-700">The valuation & GST pass is active</span>
             <button
               type="button"
-              data-open-ai="Explain my GSTR-1 and GSTR-3B filing checklist for this month"
-              class="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition shrink-0"
+              id="card-active-switch"
+              class="w-11 h-6 rounded-full bg-[#10E594] p-0.5 flex items-center justify-end transition cursor-pointer"
+              aria-label="Toggle active status"
             >
-              🤖 Ask AI
+              <span class="w-5 h-5 rounded-full bg-white shadow-md"></span>
             </button>
           </div>
         </div>
+
+        <!-- 4 Soft 3D Action Tiles (Transfers/Bill, History/Audit, Deposit/Udhar, Financial/GSTR) -->
+        <div class="grid grid-cols-2 gap-2.5 mt-3.5">
+          <a href="./invoice.html" class="p-3 rounded-2xl bg-slate-50 hover:bg-indigo-50/70 border border-slate-200/70 flex flex-col items-center text-center transition group">
+            <span class="text-xs font-bold text-[#081B4B] group-hover:text-[#5B2EFF]">Navy GST Bill</span>
+            <span class="text-[11px] text-slate-400 mt-0.5">Create & Print</span>
+            <span class="mt-1.5 text-sm text-[#5B2EFF] font-bold">⇄</span>
+          </a>
+
+          <a href="./ecom-audit.html" class="p-3 rounded-2xl bg-slate-50 hover:bg-indigo-50/70 border border-slate-200/70 flex flex-col items-center text-center transition group">
+            <span class="text-xs font-bold text-[#081B4B] group-hover:text-[#5B2EFF]">RTO History</span>
+            <span class="text-[11px] text-slate-400 mt-0.5">&gt;30d Claims</span>
+            <span class="mt-1.5 text-sm text-[#10E594] font-bold">⟳</span>
+          </a>
+
+          <a href="./invoice.html#party-khata-section" class="p-3 rounded-2xl bg-slate-50 hover:bg-indigo-50/70 border border-slate-200/70 flex flex-col items-center text-center transition group">
+            <span class="text-xs font-bold text-[#081B4B] group-hover:text-[#5B2EFF]">Party Deposit</span>
+            <span class="text-[11px] text-slate-400 mt-0.5">Udhar Khata</span>
+            <span class="mt-1.5 text-xs font-mono font-extrabold text-[#5B2EFF]">₹O</span>
+          </a>
+
+          <a href="./gst-filing.html" class="p-3 rounded-2xl bg-slate-50 hover:bg-indigo-50/70 border border-slate-200/70 flex flex-col items-center text-center transition group">
+            <span class="text-xs font-bold text-[#081B4B] group-hover:text-[#5B2EFF]">Financial 1 & 3B</span>
+            <span class="text-[11px] text-slate-400 mt-0.5">1-Click JSON</span>
+            <span class="mt-1.5 text-sm text-[#5B2EFF] font-bold">📊</span>
+          </a>
+        </div>
       </div>
+
+      <!-- CARD 2 (4 COLS): Purple Header Financial Analysis + Store Valuation + Category History (Screen 2 of 1000173803.jpg) -->
+      <div data-3d-tilt class="bento-card overflow-hidden lg:col-span-4 flex flex-col justify-between">
+        <!-- Royal Purple Top Banner -->
+        <div class="bg-gradient-to-br from-[#6336FF] via-[#5B2EFF] to-[#4318FF] text-white p-5 pb-12 relative">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-bold text-indigo-100">Financial Analysis</span>
+            <span class="px-2 py-0.5 rounded-full bg-white/15 text-[#10E594] font-mono text-[10px] font-bold">12x Multiple</span>
+          </div>
+          <div class="text-center mt-2">
+            <div class="text-[11px] text-indigo-200">Estimated Store Valuation</div>
+            <div id="kpi-valuation-val" class="text-2xl font-black font-mono tracking-tight mt-0.5">
+              ₹28,97,700
+            </div>
+          </div>
+        </div>
+
+        <!-- Overlapping White Pill Card (Expenses / Leaks vs Net GST Profit) -->
+        <div class="px-4 -mt-8 relative z-10">
+          <div class="bg-white rounded-2xl p-3.5 shadow-lg border border-indigo-50 text-center">
+            <div class="w-7 h-7 rounded-full bg-indigo-50 text-[#5B2EFF] flex items-center justify-center text-xs font-bold mx-auto -mt-6 border-2 border-white shadow">
+              💎
+            </div>
+            <div data-user-name class="text-xs font-extrabold text-[#081B4B] mt-1 truncate">S.K.P.S DIGITAL</div>
+            <div class="grid grid-cols-2 gap-2 mt-2.5 pt-2 border-t border-slate-100">
+              <div>
+                <div class="text-[10px] font-bold text-slate-400">RTO &amp; Tax Outflow</div>
+                <div id="kpi-rto-val" class="text-[13px] font-black text-rose-600 font-mono mt-0.5">₹24,680</div>
+              </div>
+              <div>
+                <div class="text-[10px] font-bold text-slate-400">Net GST Sales</div>
+                <div id="kpi-sales-val" class="text-[13px] font-black text-[#5B2EFF] font-mono mt-0.5">₹4,82,950</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Colorful Icon History List (From Screen 2 of 1000173803.jpg) -->
+        <div class="p-4 pt-3 space-y-2.5 flex-1 flex flex-col justify-end">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-extrabold text-[#081B4B]">Live Channel Breakdown</span>
+            <a href="./ecom-audit.html" class="text-[11px] font-bold text-[#5B2EFF] hover:underline">Audit All →</a>
+          </div>
+
+          <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-100">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="w-8 h-8 rounded-xl bg-orange-500 text-white flex items-center justify-center text-xs font-bold shrink-0">🛒</span>
+              <div class="min-w-0">
+                <div class="text-xs font-bold text-[#081B4B] truncate">Meesho Settlement</div>
+                <div class="text-[10px] text-slate-400">12 Pending RTO Claims</div>
+              </div>
+            </div>
+            <span class="font-mono text-xs font-extrabold text-rose-600 shrink-0">-₹14,200</span>
+          </div>
+
+          <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-100">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="w-8 h-8 rounded-xl bg-sky-500 text-white flex items-center justify-center text-xs font-bold shrink-0">⚡</span>
+              <div class="min-w-0">
+                <div class="text-xs font-bold text-[#081B4B] truncate">Flipkart &amp; Amazon</div>
+                <div class="text-[10px] text-slate-400">Weight Slab Overcharge</div>
+              </div>
+            </div>
+            <span class="font-mono text-xs font-extrabold text-amber-600 shrink-0">-₹10,480</span>
+          </div>
+
+          <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-100">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="w-8 h-8 rounded-xl bg-[#10E594] text-[#081B4B] flex items-center justify-center text-xs font-bold shrink-0">🧾</span>
+              <div class="min-w-0">
+                <div class="text-xs font-bold text-[#081B4B] truncate">B2B &amp; B2C GST Billing</div>
+                <div class="text-[10px] text-slate-400">Party Udhar Collectable</div>
+              </div>
+            </div>
+            <span id="kpi-udhar-val" class="font-mono text-xs font-extrabold text-emerald-600 shrink-0">+₹63,400</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 3 (4 COLS): Day/Week/Month/Year Bars + 3D Speedometer Gauge (Screen 3 of 1000173803.jpg) -->
+      <div data-3d-tilt class="bento-card p-5 lg:col-span-4 flex flex-col justify-between">
+        <!-- Top Half: Day / Week / Month / Year Progress Bars -->
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-1.5">
+              <button type="button" data-period-tab="M" class="period-pill px-2.5 py-1 rounded-full bg-[#5B2EFF] text-white text-[11px] font-bold">Month</button>
+              <button type="button" data-period-tab="Y" class="period-pill px-2.5 py-1 rounded-full bg-indigo-50 text-[#5B2EFF] text-[11px] font-bold">Year</button>
+            </div>
+            <span class="px-2.5 py-0.5 rounded-full bg-[#5B2EFF] text-white text-[10px] font-bold">All Tasks</span>
+          </div>
+
+          <div class="space-y-2.5 bg-slate-50 p-3.5 rounded-2xl border border-slate-200/70 text-xs">
+            <div class="flex items-center gap-3">
+              <span class="w-12 font-bold text-slate-600 text-[11px]">• Day</span>
+              <div class="flex-1 h-2.5 bg-indigo-100 rounded-full overflow-hidden">
+                <div id="bar-day" class="h-full bg-[#5B2EFF] rounded-full" style="width: 48%;"></div>
+              </div>
+              <span class="font-mono text-[11px] font-bold text-slate-700 w-9 text-right">48%</span>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <span class="w-12 font-bold text-slate-600 text-[11px]">• Week</span>
+              <div class="flex-1 h-2.5 bg-emerald-100 rounded-full overflow-hidden">
+                <div id="bar-week" class="h-full bg-[#10E594] rounded-full" style="width: 74%;"></div>
+              </div>
+              <span class="font-mono text-[11px] font-bold text-slate-700 w-9 text-right">74%</span>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <span class="w-12 font-bold text-slate-600 text-[11px]">• Month</span>
+              <div class="flex-1 h-2.5 bg-emerald-100 rounded-full overflow-hidden">
+                <div id="bar-month" class="h-full bg-[#10E594] rounded-full" style="width: 86%;"></div>
+              </div>
+              <span class="font-mono text-[11px] font-bold text-slate-700 w-9 text-right">86%</span>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <span class="w-12 font-bold text-slate-600 text-[11px]">• Year</span>
+              <div class="flex-1 h-2.5 bg-indigo-100 rounded-full overflow-hidden">
+                <div id="bar-year" class="h-full bg-[#5B2EFF] rounded-full" style="width: 92%;"></div>
+              </div>
+              <span class="font-mono text-[11px] font-bold text-slate-700 w-9 text-right">92%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Half: 3D Speedometer Gauge (From Screen 3 of 1000173803.jpg) -->
+        <div class="mt-3.5 bg-slate-50 p-4 rounded-2xl border border-slate-200/70 text-center">
+          <div class="flex items-center justify-between text-xs mb-1">
+            <span class="font-extrabold text-[#081B4B]">Analytics • Profit Gauge</span>
+            <span id="kpi-gst-val" class="font-mono text-[11px] font-bold text-[#5B2EFF]">3B: ₹31,240</span>
+          </div>
+
+          <svg viewBox="0 0 200 110" class="w-44 h-24 mx-auto overflow-visible float-3d">
+            <defs>
+              <linearGradient id="speedoGrad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#5B2EFF" />
+                <stop offset="55%" stop-color="#38BDF8" />
+                <stop offset="100%" stop-color="#10E594" />
+              </linearGradient>
+            </defs>
+            <!-- Background Arc -->
+            <path d="M 20 95 A 75 75 0 0 1 180 95" fill="none" stroke="#E2E8F0" stroke-width="12" stroke-linecap="round" />
+            <!-- Active Gradient Arc -->
+            <path d="M 20 95 A 75 75 0 0 1 168 62" fill="none" stroke="url(#speedoGrad)" stroke-width="12" stroke-linecap="round" />
+            <!-- Shaded Purple Wedge -->
+            <path d="M 100 95 L 68 32 A 75 75 0 0 1 115 22 Z" fill="rgba(91, 46, 255, 0.14)" />
+            <!-- 3D Needle -->
+            <g id="speedo-needle" transform="rotate(24 100 95)" style="transition: transform 0.5s ease;">
+              <polygon points="100,95 95,95 100,26 105,95" fill="#5B2EFF" />
+              <circle cx="100" cy="95" r="7" fill="#081B4B" />
+            </g>
+            <text x="18" y="108" class="text-[9px] font-mono fill-slate-400">0%</text>
+            <text x="92" y="14" class="text-[9px] font-mono fill-slate-500 font-bold">50%</text>
+            <text x="168" y="108" class="text-[9px] font-mono fill-emerald-600 font-bold">100%</text>
+          </svg>
+
+          <div class="text-xs font-extrabold text-[#081B4B] -mt-1">
+            Store Valuation Health: <span class="text-[#5B2EFF]">94.8% Prime</span>
+          </div>
+        </div>
+      </div>
+
     </section>
 
-    <!-- BOTTOM BENTO ROW: LIVE PAYWALL UNBLUR DEMO TABLE + PARTY UDHAR + LOW STOCK -->
-    <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
+    <!-- =================================================================== -->
+    <!-- ROW 2: SCREEN 4 (3D DONUT RING) & SCREEN 5 (SPLINE + 3D PILL BARS)  -->
+    <!-- =================================================================== -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
 
-      <!-- LIVE FLAGGED ORDERS (DEMONSTRATES REAL-TIME ONSNAPSHOT UNBLUR) -->
-      <div class="bento-card p-4 sm:p-6 lg:col-span-6 flex flex-col justify-between relative overflow-hidden">
+      <!-- LEFT 5 COLS: 3D CONCENTRIC DONUT CHART (`900` Index) + 50%/25%/75% RINGS (Screen 4 of 1000173803.jpg) -->
+      <div data-3d-tilt class="bento-card p-5 lg:col-span-5 flex flex-col justify-between">
         <div>
-          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <span class="text-[11px] font-extrabold uppercase tracking-wider text-[#5B2EFF]">3D Ring Analytics</span>
+              <h2 class="text-[15px] font-extrabold text-[#081B4B]">Marketplace Margin &amp; Claim Ratio</h2>
+            </div>
+            <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-[#5B2EFF] text-[10px] font-bold">All Tasks</span>
+          </div>
+
+          <!-- 3 Mini Progress Rings (50%, 25%, 75% from Screen 4 of 1000173803.jpg) -->
+          <div class="grid grid-cols-3 gap-2.5 bg-slate-50 p-3 rounded-2xl border border-slate-200/70 text-center">
+            <div class="flex items-center justify-center gap-2">
+              <svg viewBox="0 0 44 44" class="w-10 h-10 shrink-0">
+                <circle cx="22" cy="22" r="16" fill="none" stroke="#E2E8F0" stroke-width="5" />
+                <circle cx="22" cy="22" r="16" fill="none" stroke="#5B2EFF" stroke-width="5" stroke-dasharray="50 100" stroke-linecap="round" transform="rotate(-90 22 22)" />
+              </svg>
+              <div class="text-left">
+                <div class="text-xs font-black text-[#081B4B] font-mono">50%</div>
+                <div class="text-[10px] text-slate-400">B2B GST</div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-center gap-2">
+              <svg viewBox="0 0 44 44" class="w-10 h-10 shrink-0">
+                <circle cx="22" cy="22" r="16" fill="none" stroke="#E2E8F0" stroke-width="5" />
+                <circle cx="22" cy="22" r="16" fill="none" stroke="#5B2EFF" stroke-width="5" stroke-dasharray="28 100" stroke-linecap="round" transform="rotate(-90 22 22)" />
+              </svg>
+              <div class="text-left">
+                <div class="text-xs font-black text-[#081B4B] font-mono">25%</div>
+                <div class="text-[10px] text-slate-400">ITC Offset</div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-center gap-2">
+              <svg viewBox="0 0 44 44" class="w-10 h-10 shrink-0">
+                <circle cx="22" cy="22" r="16" fill="none" stroke="#E2E8F0" stroke-width="5" />
+                <circle cx="22" cy="22" r="16" fill="none" stroke="#10E594" stroke-width="5" stroke-dasharray="75 100" stroke-linecap="round" transform="rotate(-90 22 22)" />
+              </svg>
+              <div class="text-left">
+                <div class="text-xs font-black text-[#081B4B] font-mono">75%</div>
+                <div class="text-[10px] text-slate-400">RTO Win</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Large 3D Concentric Donut Ring ("900" Index from Screen 4 of 1000173803.jpg) -->
+        <div class="mt-4 bg-slate-50 p-4 rounded-2xl border border-slate-200/70 flex items-center justify-around gap-3">
+          <div class="relative flex items-center justify-center float-3d">
+            <svg viewBox="0 0 120 120" class="w-28 h-28">
+              <circle cx="60" cy="60" r="44" fill="none" stroke="#E2E8F0" stroke-width="14" />
+              <!-- Purple Segment -->
+              <circle cx="60" cy="60" r="44" fill="none" stroke="#5B2EFF" stroke-width="16" stroke-dasharray="165 280" stroke-linecap="round" transform="rotate(-110 60 60)" />
+              <!-- Neon Mint Segment -->
+              <circle cx="60" cy="60" r="44" fill="none" stroke="#10E594" stroke-width="12" stroke-dasharray="75 280" stroke-dashoffset="-172" stroke-linecap="round" transform="rotate(-110 60 60)" />
+              <text x="60" y="58" text-anchor="middle" class="font-mono font-black text-base" fill="#081B4B">900</text>
+              <text x="60" y="72" text-anchor="middle" class="font-sans font-bold text-[8px]" fill="#64748B">INDEX</text>
+            </svg>
+          </div>
+
+          <div class="space-y-2 text-xs">
+            <div class="font-extrabold text-[#081B4B]">Active Statistics</div>
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-full bg-[#5B2EFF] text-white font-mono text-[10px] font-bold">Profit 68%</span>
+              <span class="text-slate-500 text-[11px]">Settled</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-full bg-[#10E594] text-[#081B4B] font-mono text-[10px] font-bold">Claims 24%</span>
+              <span class="text-slate-500 text-[11px]">Recoverable</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-full bg-indigo-100 text-[#5B2EFF] font-mono text-[10px] font-bold">GST 8%</span>
+              <span class="text-slate-500 text-[11px]">Net 3B</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT 7 COLS: PURPLE SPLINE WAVE CHART + 3D VERTICAL PILL BAR CHART (Screen 5 of 1000173803.jpg) -->
+      <div data-3d-tilt class="bento-card p-5 lg:col-span-7 flex flex-col justify-between overflow-hidden">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <div>
+            <span class="text-[11px] font-extrabold uppercase tracking-wider text-[#5B2EFF]">Financial Analysis • Screen 5</span>
+            <h2 class="text-[15px] font-extrabold text-[#081B4B]">3D Revenue Wave &amp; Monthly Pill Bar Comparison</h2>
+          </div>
+          <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl text-xs font-bold">
+            <button type="button" data-chart-range="6M" class="chart-range-btn px-3 py-1 rounded-lg bg-[#5B2EFF] text-white shadow-sm">6 Months</button>
+            <button type="button" data-chart-range="1Y" class="chart-range-btn px-3 py-1 rounded-lg text-slate-600 hover:text-[#081B4B]">Full Year</button>
+          </div>
+        </div>
+
+        <!-- Top Chart: Smooth Purple Spline Wave with Vertical Grid Columns -->
+        <div class="relative w-full h-36 bg-slate-50 rounded-2xl p-3 border border-slate-200/70 overflow-hidden">
+          <svg id="revenue-spline-svg" viewBox="0 0 700 160" class="w-full h-full overflow-visible">
+            <defs>
+              <linearGradient id="purpleWaveGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#5B2EFF" stop-opacity="0.42" />
+                <stop offset="100%" stop-color="#5B2EFF" stop-opacity="0.0" />
+              </linearGradient>
+            </defs>
+            <!-- Vertical & Horizontal Grid Lines (Matching Screen 5) -->
+            <line x1="90" y1="10" x2="90" y2="145" stroke="#E2E8F0" />
+            <line x1="210" y1="10" x2="210" y2="145" stroke="#E2E8F0" />
+            <line x1="330" y1="10" x2="330" y2="145" stroke="#E2E8F0" />
+            <line x1="450" y1="10" x2="450" y2="145" stroke="#E2E8F0" />
+            <line x1="570" y1="10" x2="570" y2="145" stroke="#E2E8F0" />
+            <line x1="0" y1="145" x2="700" y2="145" stroke="#CBD5E1" />
+
+            <path
+              id="spline-area-sales"
+              d="M 20 120 C 90 95, 150 65, 210 85 C 270 105, 330 45, 410 60 C 490 75, 550 20, 620 42 C 655 52, 675 30, 690 24 L 690 145 L 20 145 Z"
+              fill="url(#purpleWaveGrad)"
+            />
+            <path
+              id="spline-line-sales"
+              d="M 20 120 C 90 95, 150 65, 210 85 C 270 105, 330 45, 410 60 C 490 75, 550 20, 620 42 C 655 52, 675 30, 690 24"
+              fill="none"
+              stroke="#5B2EFF"
+              stroke-width="3.5"
+              stroke-linecap="round"
+            />
+            <circle cx="210" cy="85" r="4.5" fill="#FFFFFF" stroke="#5B2EFF" stroke-width="2.5" />
+            <circle cx="360" cy="52" r="4.5" fill="#FFFFFF" stroke="#5B2EFF" stroke-width="2.5" />
+            <circle cx="570" cy="25" r="5.5" fill="#10E594" stroke="#081B4B" stroke-width="2" />
+          </svg>
+        </div>
+
+        <!-- Bottom Chart: 3D Vertical Capsule Pill Bars (Matching Screen 5 of 1000173803.jpg) -->
+        <div class="mt-3.5 bg-slate-50 rounded-2xl p-3.5 border border-slate-200/70">
+          <div class="flex items-center justify-between text-xs mb-2">
+            <span class="font-extrabold text-[#081B4B]">Monthly Profit vs Claim Recovery Pills</span>
+            <span class="font-mono text-[11px] text-[#5B2EFF] font-bold">Jun — Nov 2026</span>
+          </div>
+          <div class="grid grid-cols-6 gap-3 items-end h-24 pt-2 px-2">
+            <div class="flex flex-col items-center gap-1 h-full justify-end">
+              <div class="w-3.5 sm:w-4 h-full pill-bar-track flex items-end">
+                <div class="w-full bg-[#10E594] pill-bar-fill" style="height: 62%;"></div>
+              </div>
+              <span class="text-[10px] font-mono text-slate-500">Jun</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 h-full justify-end">
+              <div class="w-3.5 sm:w-4 h-full pill-bar-track flex items-end">
+                <div class="w-full bg-[#10E594] pill-bar-fill" style="height: 48%;"></div>
+              </div>
+              <span class="text-[10px] font-mono text-slate-500">Jul</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 h-full justify-end">
+              <div class="w-3.5 sm:w-4 h-full pill-bar-track flex items-end">
+                <div class="w-full bg-[#5B2EFF] pill-bar-fill" style="height: 78%;"></div>
+              </div>
+              <span class="text-[10px] font-mono text-slate-500">Aug</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 h-full justify-end">
+              <div class="w-3.5 sm:w-4 h-full pill-bar-track flex items-end">
+                <div class="w-full bg-[#10E594] pill-bar-fill" style="height: 66%;"></div>
+              </div>
+              <span class="text-[10px] font-mono text-slate-500">Sep</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 h-full justify-end">
+              <div class="w-3.5 sm:w-4 h-full pill-bar-track flex items-end">
+                <div class="w-full bg-[#5B2EFF] pill-bar-fill" style="height: 88%;"></div>
+              </div>
+              <span class="text-[10px] font-mono text-slate-500">Oct</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 h-full justify-end">
+              <div class="w-3.5 sm:w-4 h-full pill-bar-track flex items-end">
+                <div class="w-full bg-[#5B2EFF] pill-bar-fill" style="height: 95%;"></div>
+              </div>
+              <span class="text-[10px] font-mono font-bold text-[#5B2EFF]">Nov</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- ROW 3: LIVE PAYWALL UNBLUR TABLE + PARTY UDHAR + LOW STOCK          -->
+    <!-- =================================================================== -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+
+      <!-- LIVE FLAGGED ORDERS (REAL-TIME ONSNAPSHOT UNBLUR) -->
+      <div data-3d-tilt class="bento-card p-5 lg:col-span-6 flex flex-col justify-between overflow-hidden">
+        <div>
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
             <div>
               <span class="text-[10px] font-extrabold uppercase tracking-wider text-rose-600">Live RAM Audit Preview</span>
-              <h3 class="text-sm sm:text-base font-extrabold text-gray-900">Flagged Overdue RTO & Weight Fraud Orders</h3>
+              <h3 class="text-[15px] font-extrabold text-[#081B4B]">Flagged Overdue RTO &amp; Weight Fraud Orders</h3>
             </div>
-            <a href="./ecom-audit.html" class="text-xs font-extrabold text-indigo-600 hover:underline">Full CSV Scanner →</a>
+            <a href="./ecom-audit.html" class="text-xs font-extrabold text-[#5B2EFF] hover:underline">Full CSV Scanner →</a>
           </div>
 
           <div class="w-full overflow-x-auto">
             <table class="w-full text-left border-collapse text-xs min-w-[300px]">
               <thead>
-                <tr class="border-b border-gray-200 text-gray-400 uppercase text-[10px]">
+                <tr class="border-b border-slate-200 text-slate-400 uppercase text-[10px]">
                   <th class="py-2 pr-2">Order ID</th>
                   <th class="py-2 px-1">Channel</th>
                   <th class="py-2 px-1">Leak Type</th>
                   <th class="py-2 pl-2 text-right">Claim Amt</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-gray-100">
+              <tbody class="divide-y divide-slate-100">
                 <tr>
-                  <td class="py-3 pr-2">
-                    <span data-order-id="MSH-894120984">ORD-XXXXXXX</span>
-                  </td>
-                  <td class="py-3 px-1 font-semibold">Meesho</td>
-                  <td class="py-3 px-1"><span class="px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 font-bold text-[10px]">RTO 42 Days</span></td>
-                  <td class="py-3 pl-2 text-right font-mono font-bold text-gray-900">₹1,240</td>
+                  <td class="py-2.5 pr-2"><span data-order-id="MSH-894120984">ORD-XXXXXXX</span></td>
+                  <td class="py-2.5 px-1 font-semibold">Meesho</td>
+                  <td class="py-2.5 px-1"><span class="px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 font-bold text-[10px]">RTO 42 Days</span></td>
+                  <td class="py-2.5 pl-2 text-right font-mono font-bold text-[#081B4B]">₹1,240</td>
                 </tr>
                 <tr>
-                  <td class="py-3 pr-2">
-                    <span data-order-id="OD429817491028">ORD-XXXXXXX</span>
-                  </td>
-                  <td class="py-3 px-1 font-semibold">Flipkart</td>
-                  <td class="py-3 px-1"><span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 font-bold text-[10px]">Weight +1.0kg</span></td>
-                  <td class="py-3 pl-2 text-right font-mono font-bold text-gray-900">₹185</td>
+                  <td class="py-2.5 pr-2"><span data-order-id="OD429817491028">ORD-XXXXXXX</span></td>
+                  <td class="py-2.5 px-1 font-semibold">Flipkart</td>
+                  <td class="py-2.5 px-1"><span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 font-bold text-[10px]">Weight +1.0kg</span></td>
+                  <td class="py-2.5 pl-2 text-right font-mono font-bold text-[#081B4B]">₹185</td>
                 </tr>
                 <tr>
-                  <td class="py-3 pr-2">
-                    <span data-order-id="405-9918273-4812">ORD-XXXXXXX</span>
-                  </td>
-                  <td class="py-3 px-1 font-semibold">Amazon</td>
-                  <td class="py-3 px-1"><span class="px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 font-bold text-[10px]">SAFE-T Due</span></td>
-                  <td class="py-3 pl-2 text-right font-mono font-bold text-gray-900">₹2,890</td>
+                  <td class="py-2.5 pr-2"><span data-order-id="405-9918273-4812">ORD-XXXXXXX</span></td>
+                  <td class="py-2.5 px-1 font-semibold">Amazon</td>
+                  <td class="py-2.5 px-1"><span class="px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 font-bold text-[10px]">SAFE-T Due</span></td>
+                  <td class="py-2.5 pl-2 text-right font-mono font-bold text-[#081B4B]">₹2,890</td>
                 </tr>
                 <tr>
-                  <td class="py-3 pr-2">
-                    <span data-order-id="MSH-773190442">ORD-XXXXXXX</span>
-                  </td>
-                  <td class="py-3 px-1 font-semibold">Meesho</td>
-                  <td class="py-3 px-1"><span class="px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 font-bold text-[10px]">RTO 36 Days</span></td>
-                  <td class="py-3 pl-2 text-right font-mono font-bold text-gray-900">₹860</td>
+                  <td class="py-2.5 pr-2"><span data-order-id="MSH-773190442">ORD-XXXXXXX</span></td>
+                  <td class="py-2.5 px-1 font-semibold">Meesho</td>
+                  <td class="py-2.5 px-1"><span class="px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 font-bold text-[10px]">RTO 36 Days</span></td>
+                  <td class="py-2.5 pl-2 text-right font-mono font-bold text-[#081B4B]">₹860</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
 
-        <!-- Pro Paywall Callout Banner (Automatically hides via onSnapshot when Pro is approved!) -->
         <div
           data-pro-lock-overlay
-          class="mt-4 p-3.5 rounded-2xl bg-gray-900 text-white flex flex-wrap items-center justify-between gap-2"
+          class="mt-4 p-3.5 rounded-2xl bg-gradient-to-r from-[#081B4B] to-[#5B2EFF] text-white flex flex-wrap items-center justify-between gap-2"
         >
           <div class="text-xs">
-            <span class="font-extrabold text-[#CBE8BA]">🔒 Order IDs Masked (Free Tier):</span>
-            <span class="text-gray-300"> Unlock full Order IDs & 1-click claim tickets instantly via UPI.</span>
+            <span class="font-extrabold text-[#10E594]">🔒 Order IDs Masked (Free Tier):</span>
+            <span class="text-indigo-100"> Unlock full Order IDs &amp; 1-click claim tickets instantly via UPI.</span>
           </div>
           <button
             type="button"
             data-unlock-pro="MONTHLY"
-            class="px-3.5 py-1.5 rounded-xl bg-[#CBE8BA] text-gray-950 font-extrabold text-xs whitespace-nowrap"
+            class="px-3.5 py-1.5 rounded-xl bg-[#10E594] text-[#081B4B] font-extrabold text-xs whitespace-nowrap shadow"
           >
             Unlock @ ₹99 →
           </button>
@@ -543,40 +729,36 @@
       </div>
 
       <!-- PARTY UDHAR (KHATA) WIDGET -->
-      <div id="udhar-widget" class="bento-card p-5 sm:p-6 lg:col-span-3 flex flex-col justify-between">
+      <div id="udhar-widget" data-3d-tilt class="bento-card p-5 lg:col-span-3 flex flex-col justify-between">
         <div>
           <div class="flex items-center justify-between mb-3">
-            <h3 class="text-base font-extrabold text-gray-900">Party Udhar (Khata)</h3>
-            <a href="./invoice.html#party-khata-section" class="text-xs font-bold text-indigo-600 hover:underline">Manage →</a>
+            <h3 class="text-[15px] font-extrabold text-[#081B4B]">Party Udhar (Khata)</h3>
+            <a href="./invoice.html#party-khata-section" class="text-xs font-bold text-[#5B2EFF] hover:underline">Manage →</a>
           </div>
-          <div id="dashboard-party-list" class="space-y-3">
-            <!-- Populated in 0.1s from local cache / Firestore -->
-          </div>
+          <div id="dashboard-party-list" class="space-y-2.5"></div>
         </div>
 
         <a
           href="./invoice.html"
-          class="mt-4 w-full py-2.5 rounded-xl bg-[#F4F5F7] hover:bg-gray-200 text-gray-800 font-bold text-xs text-center transition block"
+          class="mt-4 w-full py-2.5 rounded-xl bg-indigo-50 hover:bg-[#5B2EFF] hover:text-white text-[#5B2EFF] font-extrabold text-xs text-center transition block"
         >
-          + Record Party Payment / Bill
+          + Create Navy GST Invoice
         </a>
       </div>
 
       <!-- LOW STOCK INVENTORY WIDGET -->
-      <div id="stock-widget" class="bento-card p-5 sm:p-6 lg:col-span-3 flex flex-col justify-between">
+      <div id="stock-widget" data-3d-tilt class="bento-card p-5 lg:col-span-3 flex flex-col justify-between">
         <div>
           <div class="flex items-center justify-between mb-3">
-            <h3 class="text-base font-extrabold text-gray-900">Low Stock Alert</h3>
-            <a href="./invoice.html#inventory-section" class="text-xs font-bold text-indigo-600 hover:underline">Update Stock →</a>
+            <h3 class="text-[15px] font-extrabold text-[#081B4B]">Low Stock Alert</h3>
+            <span id="kpi-stock-val" class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-mono text-[10px] font-bold">4 SKUs</span>
           </div>
-          <div id="dashboard-stock-list" class="space-y-2.5">
-            <!-- Populated in 0.1s -->
-          </div>
+          <div id="dashboard-stock-list" class="space-y-2"></div>
         </div>
 
         <a
           href="./invoice.html#inventory-section"
-          class="mt-4 w-full py-2.5 rounded-xl bg-[#CBE8BA]/40 hover:bg-[#CBE8BA] text-gray-900 font-bold text-xs text-center transition block"
+          class="mt-4 w-full py-2.5 rounded-xl bg-[#10E594]/25 hover:bg-[#10E594] text-[#081B4B] font-extrabold text-xs text-center transition block"
         >
           📦 Add / Restock SKUs
         </a>
@@ -585,48 +767,46 @@
   </div>
 
   <!-- SELLER BUSINESS SETTINGS MODAL -->
-  <div id="store-settings-modal" class="fixed inset-0 z-50 bg-gray-950/60 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-white rounded-3xl border border-gray-200 max-w-md w-full p-6 shadow-2xl">
+  <div id="store-settings-modal" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl border border-indigo-100 max-w-md w-full p-6 shadow-2xl">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-lg font-extrabold text-gray-900">Seller GST & UPI Profile</h3>
-        <button type="button" id="close-store-settings" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 font-bold">✕</button>
+        <h3 class="text-base font-extrabold text-[#081B4B]">Seller GST &amp; UPI Profile</h3>
+        <button type="button" id="close-store-settings" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 font-bold text-xs">✕</button>
       </div>
-      <form id="store-settings-form" class="space-y-3.5 text-xs sm:text-sm">
+      <form id="store-settings-form" class="space-y-3 text-xs">
         <div>
-          <label class="block font-bold text-gray-700 mb-1">Business Legal / Trade Name</label>
-          <input type="text" id="set-biz-name" required class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300" />
+          <label class="block font-bold text-slate-700 mb-1">Business Legal / Trade Name</label>
+          <input type="text" id="set-biz-name" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-semibold" />
         </div>
         <div>
-          <label class="block font-bold text-gray-700 mb-1">15-Digit GSTIN</label>
-          <input type="text" id="set-gstin" required maxlength="15" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 font-mono uppercase" />
+          <label class="block font-bold text-slate-700 mb-1">15-Digit GSTIN</label>
+          <input type="text" id="set-gstin" required maxlength="15" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-mono uppercase" />
         </div>
         <div>
-          <label class="block font-bold text-gray-700 mb-1">Home State (For CGST+SGST vs IGST Split)</label>
-          <select id="set-state" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 bg-white">
-            <option value="10|Bihar">10 - Bihar</option>
-            <option value="27|Maharashtra">27 - Maharashtra</option>
+          <label class="block font-bold text-slate-700 mb-1">Home State (For CGST+SGST vs IGST Split)</label>
+          <select id="set-state" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-semibold">
             <option value="07|Delhi">07 - Delhi</option>
+            <option value="10|Bihar">10 - Bihar</option>
+            <option value="09|Uttar Pradesh">09 - Uttar Pradesh</option>
+            <option value="27|Maharashtra">27 - Maharashtra</option>
             <option value="29|Karnataka">29 - Karnataka</option>
             <option value="24|Gujarat">24 - Gujarat</option>
-            <option value="09|Uttar Pradesh">09 - Uttar Pradesh</option>
             <option value="33|Tamil Nadu">33 - Tamil Nadu</option>
             <option value="19|West Bengal">19 - West Bengal</option>
-            <option value="36|Telangana">36 - Telangana</option>
-            <option value="08|Rajasthan">08 - Rajasthan</option>
           </select>
         </div>
         <div>
-          <label class="block font-bold text-gray-700 mb-1">Seller Invoice UPI ID (Printed on Bills)</label>
-          <input type="text" id="set-upi" required placeholder="yourstore@ybl" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 font-mono" />
+          <label class="block font-bold text-slate-700 mb-1">Seller Invoice UPI ID (Printed on Bills)</label>
+          <input type="text" id="set-upi" required placeholder="yourstore@ybl" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-mono" />
         </div>
-        <button type="submit" class="w-full py-3 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white font-extrabold">
+        <button type="submit" class="w-full py-3 rounded-2xl bg-[#5B2EFF] hover:bg-indigo-700 text-white font-extrabold shadow-md">
           💾 Save Business Profile
         </button>
       </form>
     </div>
   </div>
 
-  <!-- DASHBOARD LOGIC (0.1s ZERO-LAG RENDERING) -->
+  <!-- 3D DASHBOARD LOGIC -->
   <script type="module">
     import {
       db,
@@ -636,15 +816,30 @@
       formatINR,
       showToast,
       logoutUser,
-      syncProDOMElements
+      syncProDOMElements,
+      init3DTiltCards
     } from "./assets/js/security-core.js";
     import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // 1. Seed Default Parties & Inventory in localStorage if empty so Dashboard hydrates in 0.1s
+    init3DTiltCards();
+
+    // 1. 7-Second Countdown Badge on Install App Button
+    const secBadge = document.getElementById("pwa-sec-badge");
+    let remainingSec = 7;
+    const secInterval = setInterval(() => {
+      remainingSec -= 1;
+      if (secBadge && remainingSec > 0) {
+        secBadge.textContent = `${remainingSec}s`;
+      } else {
+        clearInterval(secInterval);
+      }
+    }, 1000);
+
+    // 2. Seed Default Parties & Inventory if empty
     const defaultParties = [
-      { id: "p1", name: "Patna Mobile Hub", phone: "919876543210", gstin: "10AABCP1122K1Z2", balance: 28500 },
-      { id: "p2", name: "Shree Krishna Electronics", phone: "919811223344", gstin: "27AABCS9988L1Z5", balance: 19400 },
-      { id: "p3", name: "Maa Tara Traders", phone: "919900112233", gstin: "10AAACT4455M1Z9", balance: 15500 }
+      { id: "p1", name: "Nazim Khan (Noida U.P.)", phone: "918888888888", gstin: "09AABCN6969K1Z9", balance: 39750.18 },
+      { id: "p2", name: "Patna Mobile Hub", phone: "919876543210", gstin: "10AABCP1122K1Z2", balance: 14250 },
+      { id: "p3", name: "Shree Krishna Electronics", phone: "919811223344", gstin: "27AABCS9988L1Z5", balance: 9400 }
     ];
 
     const defaultStock = [
@@ -666,31 +861,30 @@
       const inventory = JSON.parse(localStorage.getItem("sellgst_inventory") || "[]");
       const invoices = JSON.parse(localStorage.getItem("sellgst_invoices") || "[]");
 
-      // Calculate KPI Totals if custom invoices exist
       if (invoices.length > 0) {
         const totalSales = invoices.reduce((acc, inv) => acc + (Number(inv.grandTotal) || 0), 0);
         const totalTax = invoices.reduce((acc, inv) => acc + (Number(inv.totalTax) || 0), 0);
         document.getElementById("kpi-sales-val").textContent = formatINR(totalSales);
-        document.getElementById("kpi-gst-val").textContent = formatINR(totalTax);
-        document.getElementById("card-3b-val").textContent = formatINR(totalTax);
+        document.getElementById("kpi-gst-val").textContent = `3B: ${formatINR(totalTax)}`;
+        document.getElementById("kpi-valuation-val").textContent = formatINR(totalSales * 6);
       }
 
       const totalUdhar = parties.reduce((acc, p) => acc + (Number(p.balance) || 0), 0);
-      document.getElementById("kpi-udhar-val").textContent = formatINR(totalUdhar);
+      document.getElementById("kpi-udhar-val").textContent = `+${formatINR(totalUdhar)}`;
 
-      // Render Party Udhar List with 1-Click WhatsApp Reminder
+      // Render Party Udhar List
       const partyContainer = document.getElementById("dashboard-party-list");
       partyContainer.innerHTML = parties.slice(0, 3).map((p) => {
-        const waMsg = `Namaste ${p.name}, gentle reminder from ${AppState.profile.businessName || "our store"}: Your GST invoice balance of ${formatINR(p.balance)} is pending. You can pay directly via UPI to ${AppState.profile.upiId || "9661692365@ybl"}. Thank you!`;
+        const waMsg = `Namaste ${p.name}, gentle reminder from ${AppState.profile.businessName || "S.K.P.S DIGITAL"}: Your GST invoice balance of ${formatINR(p.balance)} is pending. You can pay via UPI to ${AppState.profile.upiId || "9661692365@ybl"}.`;
         const waUrl = `https://wa.me/${encodeURIComponent(String(p.phone || "").replace(/\D/g, ""))}?text=${encodeURIComponent(waMsg)}`;
         return `
-          <div class="p-3 rounded-2xl bg-[#F4F5F7] border border-gray-200 flex items-center justify-between gap-2">
+          <div class="p-2.5 rounded-2xl bg-slate-50 border border-slate-200/70 flex items-center justify-between gap-2">
             <div class="min-w-0">
-              <div class="font-bold text-xs text-gray-900 truncate">${sanitizeHTML(p.name)}</div>
-              <div class="text-[11px] font-mono text-rose-600 font-bold">${formatINR(p.balance)} Due</div>
+              <div class="font-bold text-xs text-[#081B4B] truncate">${sanitizeHTML(p.name)}</div>
+              <div class="text-[11px] font-mono text-rose-600 font-bold">${formatINR(p.balance)}</div>
             </div>
-            <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] whitespace-nowrap shrink-0">
-              💬 WhatsApp
+            <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 rounded-xl bg-[#10E594] text-[#081B4B] font-extrabold text-[10px] whitespace-nowrap shrink-0">
+              💬 Remind
             </a>
           </div>
         `;
@@ -698,15 +892,15 @@
 
       // Render Low Stock List
       const lowItems = inventory.filter((item) => Number(item.stock) <= 10);
-      document.getElementById("kpi-stock-val").textContent = `${lowItems.length} SKUs Low`;
+      document.getElementById("kpi-stock-val").textContent = `${lowItems.length} SKUs`;
       const stockContainer = document.getElementById("dashboard-stock-list");
       stockContainer.innerHTML = lowItems.slice(0, 4).map((item) => `
-        <div class="p-2.5 rounded-2xl bg-[#F4F5F7] border border-gray-200 flex items-center justify-between text-xs gap-2">
+        <div class="p-2.5 rounded-2xl bg-slate-50 border border-slate-200/70 flex items-center justify-between text-xs gap-2">
           <div class="truncate pr-1 min-w-0">
-            <div class="font-bold text-gray-900 truncate">${sanitizeHTML(item.name)}</div>
-            <div class="text-[10px] font-mono text-gray-500 truncate">SKU: ${sanitizeHTML(item.sku)}</div>
+            <div class="font-bold text-[#081B4B] truncate">${sanitizeHTML(item.name)}</div>
+            <div class="text-[10px] font-mono text-slate-400 truncate">SKU: ${sanitizeHTML(item.sku)}</div>
           </div>
-          <span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 font-mono font-bold text-[11px] whitespace-nowrap shrink-0">
+          <span class="px-2 py-0.5 rounded-full bg-indigo-50 text-[#5B2EFF] font-mono font-bold text-[11px] whitespace-nowrap shrink-0">
             ${Number(item.stock)} left
           </span>
         </div>
@@ -715,60 +909,72 @@
 
     renderWidgets();
 
-    // 2. Subscribe to Real-Time AppState updates (Pro Unblur & Profile Sync)
     subscribeAppState(() => {
       syncProDOMElements();
     });
 
-    // 3. Interactive 60fps 3D Tilt Effect on GST Compliance Card (Restored 100%)
-    const card3d = document.getElementById("gst-3d-card");
-    let tiltFramePending = false;
-    card3d?.addEventListener(
-      "mousemove",
-      (e) => {
-        if (tiltFramePending) return;
-        tiltFramePending = true;
-        requestAnimationFrame(() => {
-          tiltFramePending = false;
-          const rect = card3d.getBoundingClientRect();
-          const x = e.clientX - rect.left - rect.width / 2;
-          const y = e.clientY - rect.top - rect.height / 2;
-          card3d.style.transform = `perspective(900px) rotateY(${(x / 28).toFixed(2)}deg) rotateX(${(-y / 28).toFixed(2)}deg)`;
-        });
-      },
-      { passive: true }
-    );
-    card3d?.addEventListener("mouseleave", () => {
-      card3d.style.transform = "perspective(900px) rotateY(0deg) rotateX(0deg)";
+    // 3. Active Card Switch Toggle
+    const activeSwitch = document.getElementById("card-active-switch");
+    activeSwitch?.addEventListener("click", () => {
+      activeSwitch.classList.toggle("justify-end");
+      activeSwitch.classList.toggle("justify-start");
+      activeSwitch.classList.toggle("bg-[#10E594]");
+      activeSwitch.classList.toggle("bg-slate-300");
+      showToast("3D Valuation Pass status updated!", "info");
     });
 
-    // 4. Spline Chart 6M / 1Y Toggle
-    document.querySelectorAll("[data-chart-range]").forEach((btn) => {
+    // 4. Month / Year Progress Bar & Speedometer Animation
+    document.querySelectorAll("[data-period-tab]").forEach((btn) => {
       btn.addEventListener("click", () => {
-        const range = btn.getAttribute("data-chart-range");
-        document.querySelectorAll(".chart-range-btn").forEach((b) => {
-          b.classList.remove("bg-white", "text-gray-900", "shadow-sm");
-          b.classList.add("text-gray-600");
+        const mode = btn.getAttribute("data-period-tab");
+        document.querySelectorAll(".period-pill").forEach((b) => {
+          b.className = "period-pill px-2.5 py-1 rounded-full bg-indigo-50 text-[#5B2EFF] text-[11px] font-bold";
         });
-        btn.classList.add("bg-white", "text-gray-900", "shadow-sm");
+        btn.className = "period-pill px-2.5 py-1 rounded-full bg-[#5B2EFF] text-white text-[11px] font-bold";
 
-        const salesLine = document.getElementById("spline-line-sales");
-        const salesArea = document.getElementById("spline-area-sales");
-        if (range === "1Y") {
-          salesLine.setAttribute("d", "M 20 180 C 110 150, 160 95, 240 120 C 320 75, 390 85, 470 50 C 550 35, 610 28, 680 18");
-          salesArea.setAttribute("d", "M 20 180 C 110 150, 160 95, 240 120 C 320 75, 390 85, 470 50 C 550 35, 610 28, 680 18 L 680 205 L 20 205 Z");
+        const needle = document.getElementById("speedo-needle");
+        if (mode === "Y") {
+          document.getElementById("bar-day").style.width = "65%";
+          document.getElementById("bar-week").style.width = "82%";
+          document.getElementById("bar-month").style.width = "91%";
+          document.getElementById("bar-year").style.width = "96%";
+          needle?.setAttribute("transform", "rotate(42 100 95)");
         } else {
-          salesLine.setAttribute("d", "M 20 165 C 110 140, 160 115, 240 105 C 320 95, 390 120, 470 70 C 550 25, 610 45, 680 25");
-          salesArea.setAttribute("d", "M 20 165 C 110 140, 160 115, 240 105 C 320 95, 390 120, 470 70 C 550 25, 610 45, 680 25 L 680 205 L 20 205 Z");
+          document.getElementById("bar-day").style.width = "48%";
+          document.getElementById("bar-week").style.width = "74%";
+          document.getElementById("bar-month").style.width = "86%";
+          document.getElementById("bar-year").style.width = "92%";
+          needle?.setAttribute("transform", "rotate(24 100 95)");
         }
       });
     });
 
-    // 5. Business Profile Settings Modal
+    // 5. Spline Chart 6M / 1Y Toggle
+    document.querySelectorAll("[data-chart-range]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const range = btn.getAttribute("data-chart-range");
+        document.querySelectorAll(".chart-range-btn").forEach((b) => {
+          b.className = "chart-range-btn px-3 py-1 rounded-lg text-slate-600 hover:text-[#081B4B]";
+        });
+        btn.className = "chart-range-btn px-3 py-1 rounded-lg bg-[#5B2EFF] text-white shadow-sm";
+
+        const salesLine = document.getElementById("spline-line-sales");
+        const salesArea = document.getElementById("spline-area-sales");
+        if (range === "1Y") {
+          salesLine.setAttribute("d", "M 20 130 C 90 100, 150 50, 210 70 C 270 90, 330 30, 410 45 C 490 60, 550 15, 620 28 C 655 35, 675 18, 690 12");
+          salesArea.setAttribute("d", "M 20 130 C 90 100, 150 50, 210 70 C 270 90, 330 30, 410 45 C 490 60, 550 15, 620 28 C 655 35, 675 18, 690 12 L 690 145 L 20 145 Z");
+        } else {
+          salesLine.setAttribute("d", "M 20 120 C 90 95, 150 65, 210 85 C 270 105, 330 45, 410 60 C 490 75, 550 20, 620 42 C 655 52, 675 30, 690 24");
+          salesArea.setAttribute("d", "M 20 120 C 90 95, 150 65, 210 85 C 270 105, 330 45, 410 60 C 490 75, 550 20, 620 42 C 655 52, 675 30, 690 24 L 690 145 L 20 145 Z");
+        }
+      });
+    });
+
+    // 6. Store Settings Modal
     const settingsModal = document.getElementById("store-settings-modal");
     function openStoreSettings() {
-      document.getElementById("set-biz-name").value = AppState.profile.businessName || "AgniVolt E-Com Store";
-      document.getElementById("set-gstin").value = AppState.profile.gstin || "10AABCA8921K1Z5";
+      document.getElementById("set-biz-name").value = AppState.profile.businessName || "S.K.P.S DIGITAL";
+      document.getElementById("set-gstin").value = AppState.profile.gstin || "07AABCS1429B1Z5";
       document.getElementById("set-upi").value = AppState.profile.upiId || "9661692365@ybl";
       settingsModal.classList.remove("hidden");
       settingsModal.classList.add("flex");
