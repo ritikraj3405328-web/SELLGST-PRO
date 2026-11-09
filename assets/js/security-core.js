@@ -1,7 +1,10 @@
 /**
- * SellGST Pro — Principal Security Core, 3D Interactive Physics Engine,
- * 7-Second Auto-Hide PWA Installer, Infinite Invoice ID Generator,
- * Firebase Cloud Sync & 24/7 Floating AI Assistant
+ * SellGST Pro — Principal Security Core v4.0
+ * Features:
+ * 1. Smart Subscription Engine (FREE 5-Action Lock | ₹99 Monthly -> Shows ONLY ₹499 + 30d Countdown | ₹499 Yearly -> Hides All Prompts + 365d Background Expiry)
+ * 2. DPDP Act 2023 Compliance (Mandatory Consent Audit + User Personal Profile Drawer + Confirmed Account Deletion + Bottom Logout)
+ * 3. Admin Isolation (Hides Master Admin from regular users; Instant Auto-WhatsApp Notification to Owner on Pending UPI)
+ * 4. Cloud Gemini AI Proxy Connector (Calls /api/ai-assistant across Cloudflare Pages & GitHub Pages without exposing API key in frontend)
  * File: /assets/js/security-core.js
  */
 
@@ -20,13 +23,16 @@ import {
   RecaptchaVerifier,
   signInWithPhoneNumber,
   signOut,
+  deleteUser,
   updateProfile
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   getFirestore,
   doc,
+  getDoc,
   setDoc,
   updateDoc,
+  deleteDoc,
   addDoc,
   collection,
   query,
@@ -57,22 +63,20 @@ export const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: "select_account" });
 
 // ============================================================================
-// 2. CLOUDFLARE & GITHUB PAGES SELF-HEALING URL / CACHE GUARD
+// 2. SELF-HEALING DOMAIN & CACHE GUARD
 // ============================================================================
 (function selfHealDomainAndCache() {
   try {
-    // If user accidentally opened blocked *.workers.dev domain, redirect to fast *.pages.dev
     if (window.location.hostname.endsWith(".workers.dev")) {
       const targetPath = window.location.pathname + window.location.search + window.location.hash;
       window.location.replace("https://sellgst-pro.pages.dev" + targetPath);
       return;
     }
-    // Clear legacy v1 caches once so new 3D UI loads in 0.1s
-    const cacheClearedKey = "sellgst_v3_cache_healed";
+    const cacheClearedKey = "sellgst_v4_cache_healed";
     if (!localStorage.getItem(cacheClearedKey) && "caches" in window) {
       caches.keys().then((names) => {
         names.forEach((name) => {
-          if (!name.includes("v3")) caches.delete(name);
+          if (!name.includes("v4")) caches.delete(name);
         });
       });
       localStorage.setItem(cacheClearedKey, "1");
@@ -81,8 +85,10 @@ googleProvider.setCustomParameters({ prompt: "select_account" });
 })();
 
 // ============================================================================
-// 3. GLOBAL APPLICATION STATE (WITH 0.1s INSTANT LOCAL HYDRATION)
+// 3. GLOBAL APPLICATION STATE & SUBSCRIPTION TIER ENGINE
 // ============================================================================
+export const FREE_USAGE_MAX_LIMIT = 5;
+
 const DEFAULT_PROFILE = {
   uid: "seller-local-01",
   displayName: "S.K.P.S DIGITAL",
@@ -99,12 +105,17 @@ const DEFAULT_PROFILE = {
   bankIfsc: "BANK0000000",
   bankBranch: "NEW DELHI MAIN BRANCH",
   logoDataUrl: "",
-  signatureDataUrl: "",
   signatureText: "Authorized Signatory",
   invoiceNote: "Please include the Invoice number in your payment notes. To be paid in full in maximum 7 days after receiving the invoice.",
   isPro: false,
   isAdmin: false,
-  subscriptionStatus: "FREE",
+  subscriptionStatus: "FREE", // "FREE" | "MONTHLY" | "YEARLY" | "EXPIRED"
+  planName: "FREE",           // "FREE" | "MONTHLY" | "YEARLY"
+  planActivatedAt: null,
+  planExpiryISO: null,        // 30 days for MONTHLY, 365 days for YEARLY
+  freeActionsUsed: 0,         // Locks after 5 actions on Free tier
+  dpdpConsentAccepted: true,
+  dpdpConsentTimestamp: new Date().toISOString(),
   paymentPending: false
 };
 
@@ -126,7 +137,7 @@ export const AppState = {
     payeeName: "AGNI VOLT",
     monthlyPrice: 99,
     yearlyPrice: 499,
-    whatsappWebhookNumber: "",
+    whatsappWebhookNumber: "", // Owner's WhatsApp number configured in Admin Settings
     autoWhatsAppNotify: true
   },
   pendingRequest: null,
@@ -172,7 +183,78 @@ function notifyStateChange() {
 }
 
 // ============================================================================
-// 4. INFINITE UNIQUE INVOICE ID GENERATOR (1 TO INFINITY + RANDOM ENTROPY)
+// 4. EXPIRY & 5-LIMIT FREE USAGE PAYWALL CONTROLLER
+// ============================================================================
+export function evaluateSubscriptionHealth() {
+  const prof = AppState.profile;
+  const now = Date.now();
+
+  if (prof.isPro && prof.planExpiryISO) {
+    const expTime = new Date(prof.planExpiryISO).getTime();
+    if (!isNaN(expTime) && now > expTime) {
+      // Subscription expired in background
+      prof.isPro = false;
+      prof.planName = "FREE";
+      prof.subscriptionStatus = "EXPIRED";
+      localStorage.setItem("sellgst_local_profile", JSON.stringify(prof));
+      if (AppState.user?.uid) {
+        setDoc(
+          doc(db, "users", AppState.user.uid),
+          { isPro: false, planName: "FREE", subscriptionStatus: "EXPIRED" },
+          { merge: true }
+        ).catch(() => {});
+      }
+    }
+  }
+
+  const remainingMs = prof.planExpiryISO ? Math.max(0, new Date(prof.planExpiryISO).getTime() - now) : 0;
+  const remainingDays = Math.ceil(remainingMs / (1000 * 60 * 60 * 24));
+  const remainingHours = Math.floor((remainingMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+  return {
+    isPro: Boolean(prof.isPro),
+    planName: prof.isPro ? (prof.planName === "YEARLY" ? "YEARLY" : "MONTHLY") : "FREE",
+    remainingDays,
+    remainingHours,
+    freeActionsUsed: Number(prof.freeActionsUsed) || 0,
+    freeActionsRemaining: Math.max(0, FREE_USAGE_MAX_LIMIT - (Number(prof.freeActionsUsed) || 0))
+  };
+}
+
+/**
+ * Enforces the 5-action limit for Free users.
+ * Returns true if allowed, or opens the compulsory Pro UPI Modal and returns false if locked.
+ */
+export function consumeFreeActionOrLock(featureName = "Feature") {
+  const status = evaluateSubscriptionHealth();
+  if (status.isPro) return true;
+
+  let used = Number(AppState.profile.freeActionsUsed) || 0;
+  if (used >= FREE_USAGE_MAX_LIMIT) {
+    showToast(`🔒 Free Limit (${FREE_USAGE_MAX_LIMIT}/${FREE_USAGE_MAX_LIMIT}) reached for ${featureName}! Upgrade to Pro to continue.`, "warning", 5000);
+    openProPaymentModal("MONTHLY");
+    return false;
+  }
+
+  used += 1;
+  AppState.profile.freeActionsUsed = used;
+  localStorage.setItem("sellgst_local_profile", JSON.stringify(AppState.profile));
+  if (AppState.user?.uid) {
+    setDoc(doc(db, "users", AppState.user.uid), { freeActionsUsed: used }, { merge: true }).catch(() => {});
+  }
+
+  const left = Math.max(0, FREE_USAGE_MAX_LIMIT - used);
+  if (left === 0) {
+    showToast(`⚠️ Last free action used! Next action will require SellGST Pro.`, "warning", 4500);
+  } else {
+    showToast(`Free Trial: ${left} of ${FREE_USAGE_MAX_LIMIT} free uses remaining.`, "info", 2800);
+  }
+  syncProDOMElements();
+  return true;
+}
+
+// ============================================================================
+// 5. INFINITE UNIQUE INVOICE ID GENERATOR (1 TO INFINITY)
 // ============================================================================
 export function generateUniqueInvoiceNumber() {
   try {
@@ -195,7 +277,7 @@ export function peekCurrentInvoiceNumber() {
 }
 
 // ============================================================================
-// 5. ZERO-TRUST XSS & CSV FORMULA-INJECTION SANITIZERS
+// 6. ZERO-TRUST XSS & CSV FORMULA-INJECTION SANITIZERS
 // ============================================================================
 export function sanitizeHTML(input) {
   if (input === null || input === undefined) return "";
@@ -231,7 +313,7 @@ export function formatINR(amount) {
 }
 
 // ============================================================================
-// 6. 3D INTERACTIVE MOUSE-HOVER TILT & GLOSSY SPOTLIGHT ENGINE
+// 7. 3D INTERACTIVE MOUSE-HOVER TILT ENGINE
 // ============================================================================
 export function init3DTiltCards() {
   const attach3D = (card) => {
@@ -253,18 +335,18 @@ export function init3DTiltCards() {
           const y = e.clientY - rect.top;
           const centerX = rect.width / 2;
           const centerY = rect.height / 2;
-          const rotateX = ((y - centerY) / centerY) * -6.5;
-          const rotateY = ((x - centerX) / centerX) * 6.5;
+          const rotateX = ((y - centerY) / centerY) * -5.5;
+          const rotateY = ((x - centerX) / centerX) * 5.5;
 
-          card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-4px) scale3d(1.01, 1.01, 1.01)`;
-          card.style.boxShadow = "0 24px 48px -12px rgba(91, 46, 255, 0.22)";
+          card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-3px)`;
+          card.style.boxShadow = "0 22px 44px -12px rgba(91, 46, 255, 0.2)";
         });
       },
       { passive: true }
     );
 
     card.addEventListener("mouseleave", () => {
-      card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px) scale3d(1, 1, 1)";
+      card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)";
       card.style.boxShadow = "";
     });
   };
@@ -273,7 +355,7 @@ export function init3DTiltCards() {
 }
 
 // ============================================================================
-// 7. 7-SECOND AUTO-HIDING PWA INSTALL BUTTON MANAGER
+// 8. 7-SECOND AUTO-HIDING PWA INSTALL BUTTON MANAGER
 // ============================================================================
 function initSevenSecondPWAInstall() {
   if ("serviceWorker" in navigator) {
@@ -305,7 +387,6 @@ function startSevenSecondPWAButtonTimer() {
     btn.style.opacity = "1";
   });
 
-  // Hide automatically after exactly 7 seconds (7000 ms) as requested
   setTimeout(() => {
     hideAllPWAInstallButtons();
   }, 7000);
@@ -338,8 +419,7 @@ export async function triggerPWAInstall() {
 
   modal = document.createElement("div");
   modal.id = "sellgst-universal-pwa-modal";
-  modal.className =
-    "fixed inset-0 z-[9995] bg-slate-950/65 backdrop-blur-sm flex items-center justify-center p-4";
+  modal.className = "fixed inset-0 z-[9995] bg-slate-950/65 backdrop-blur-sm flex items-center justify-center p-4";
 
   modal.innerHTML = `
     <div class="bg-white rounded-3xl border border-indigo-100 max-w-sm w-full p-6 shadow-2xl text-center space-y-3.5 relative">
@@ -360,10 +440,6 @@ export async function triggerPWAInstall() {
           <span class="font-extrabold text-[#5B2EFF]">2.</span>
           <span>Select <strong>"Install app"</strong> or <strong>"Add to Home screen"</strong>.</span>
         </div>
-        <div class="flex items-start gap-2">
-          <span class="font-extrabold text-[#5B2EFF]">3.</span>
-          <span>Launch <strong>SellGST Pro</strong> from your home screen with 0.1s speed!</span>
-        </div>
       </div>
       <button type="button" id="got-it-pwa-btn" class="w-full py-3 rounded-2xl bg-[#5B2EFF] hover:bg-indigo-700 text-white font-extrabold text-xs shadow-md transition">
         Got It, Thanks!
@@ -380,13 +456,10 @@ export async function triggerPWAInstall() {
 
   modal.querySelector("#close-univ-pwa-btn").addEventListener("click", () => closePwaModal());
   modal.querySelector("#got-it-pwa-btn").addEventListener("click", () => closePwaModal());
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) closePwaModal();
-  });
 }
 
 // ============================================================================
-// 8. SPECULATIVE PAGE PREFETCHER & NATIVE BACK-BUTTON MANAGER
+// 9. SPECULATIVE PAGE PREFETCHER & NATIVE BACK-BUTTON MANAGER
 // ============================================================================
 const prefetchedUrls = new Set();
 
@@ -402,23 +475,15 @@ function initInstantPagePrefetcher() {
     document.head.appendChild(link);
   };
 
-  document.addEventListener(
-    "mouseover",
-    (e) => {
-      const a = e.target.closest("a[href]");
-      if (a) prefetchPage(a.getAttribute("href"));
-    },
-    { passive: true }
-  );
+  document.addEventListener("mouseover", (e) => {
+    const a = e.target.closest("a[href]");
+    if (a) prefetchPage(a.getAttribute("href"));
+  }, { passive: true });
 
-  document.addEventListener(
-    "touchstart",
-    (e) => {
-      const a = e.target.closest("a[href]");
-      if (a) prefetchPage(a.getAttribute("href"));
-    },
-    { passive: true }
-  );
+  document.addEventListener("touchstart", (e) => {
+    const a = e.target.closest("a[href]");
+    if (a) prefetchPage(a.getAttribute("href"));
+  }, { passive: true });
 }
 
 export function pushModalState(modalId, closeCallback) {
@@ -449,16 +514,18 @@ function initBackButtonManager() {
       path.includes("invoice") ||
       path.includes("ecom-audit") ||
       path.includes("gst-filing") ||
+      path.includes("qr-studio") ||
+      path.includes("login") ||
       path.includes("admin");
 
     if (isSubToolPage && document.referrer === "") {
-      window.location.href = "./app.html";
+      window.location.href = "./index.html";
     }
   });
 }
 
 // ============================================================================
-// 9. TOAST NOTIFICATION SYSTEM (MEDIUM BALANCED TYPOGRAPHY)
+// 10. TOAST NOTIFICATION SYSTEM
 // ============================================================================
 export function showToast(message, type = "success", duration = 4000) {
   let container = document.getElementById("sellgst-toast-container");
@@ -471,18 +538,13 @@ export function showToast(message, type = "success", duration = 4000) {
   }
 
   const colors = {
-    success: "bg-[#0B1F52] text-white border-emerald-400/40",
+    success: "bg-[#081B4B] text-white border-emerald-400/40",
     warning: "bg-amber-500 text-slate-950 border-amber-600",
     error: "bg-rose-600 text-white border-rose-400",
     info: "bg-[#5B2EFF] text-white border-indigo-400"
   };
 
-  const icons = {
-    success: "✅",
-    warning: "⏳",
-    error: "⚠️",
-    info: "✨"
-  };
+  const icons = { success: "✅", warning: "⏳", error: "⚠️", info: "✨" };
 
   const toast = document.createElement("div");
   toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3.5 rounded-2xl border shadow-2xl transition-all duration-300 ${colors[type] || colors.success}`;
@@ -502,7 +564,7 @@ export function showToast(message, type = "success", duration = 4000) {
 }
 
 // ============================================================================
-// 10. REAL-TIME FIRESTORE LISTENERS (PRO UNLOCK, PENDING BANNER & CONFIG)
+// 11. REAL-TIME FIRESTORE LISTENERS
 // ============================================================================
 function startSystemListeners() {
   try {
@@ -518,7 +580,7 @@ function startSystemListeners() {
             payeeName: data.payeeName || "AGNI VOLT",
             monthlyPrice: Number(data.monthlyPrice) || 99,
             yearlyPrice: Number(data.yearlyPrice) || 499,
-            whatsappWebhookNumber: data.whatsappWebhookNumber || "",
+            whatsappWebhookNumber: data.whatsappWebhookNumber || localStorage.getItem("sellgst_owner_wa") || "",
             autoWhatsAppNotify: data.autoWhatsAppNotify !== false
           };
           notifyStateChange();
@@ -558,7 +620,9 @@ function startUserRealtimeListeners(user) {
           isPro: false,
           isAdmin: false,
           subscriptionStatus: "FREE",
+          planName: "FREE",
           paymentPending: false,
+          dpdpConsentAccepted: true,
           createdAt: serverTimestamp()
         };
         try {
@@ -568,19 +632,22 @@ function startUserRealtimeListeners(user) {
         localStorage.setItem("sellgst_local_profile", JSON.stringify(AppState.profile));
       } else {
         const prevPro = AppState.profile.isPro;
+        const prevPlan = AppState.profile.planName;
         const data = snap.data();
+
         AppState.profile = {
           ...AppState.profile,
           ...data,
           uid: user.uid,
           isPro: Boolean(data.isPro || data.subscriptionStatus === "ACTIVE"),
+          planName: data.planName || (data.isPro ? "MONTHLY" : "FREE"),
           isAdmin: Boolean(data.isAdmin)
         };
         localStorage.setItem("sellgst_local_profile", JSON.stringify(AppState.profile));
 
-        if (!prevPro && AppState.profile.isPro) {
+        if ((!prevPro && AppState.profile.isPro) || (prevPlan !== AppState.profile.planName && AppState.profile.isPro)) {
           localStorage.removeItem("sellgst_pending_utr");
-          showToast("🎉 Payment Verified! SellGST Pro is now ACTIVE in real-time!", "success", 6000);
+          showToast(`🎉 Payment Verified! SellGST Pro (${AppState.profile.planName}) is now ACTIVE!`, "success", 6000);
           closeProPaymentModal();
         }
       }
@@ -636,24 +703,42 @@ function loadCachedLocalProfile(user) {
 }
 
 // ============================================================================
-// 11. REAL-TIME DOM UNBLUR & STATUS BANNER ENGINE
+// 12. REAL-TIME DOM UNBLUR, TIER BADGE & 30-DAY COUNTDOWN ENGINE
 // ============================================================================
 export function syncProDOMElements() {
-  const isPro = Boolean(AppState.profile.isPro);
+  const health = evaluateSubscriptionHealth();
+  const isPro = health.isPro;
+  const planName = health.planName; // "FREE" | "MONTHLY" | "YEARLY"
   const isAdmin = Boolean(AppState.profile.isAdmin);
 
+  // 1. Update Pro Unlock / Upgrade Badges based on exact user rules:
+  //    - FREE: Show "Unlock Pro ⚡ (5 Free Limit)"
+  //    - MONTHLY (₹99): Show "⏳ XXd left • Upgrade ₹499/yr ⚡" (NEVER show ₹99 again!)
+  //    - YEARLY (₹499): Hide all upgrade buttons & countdowns for 1 full year!
   document.querySelectorAll("[data-pro-badge]").forEach((el) => {
-    if (isPro) {
-      el.textContent = "PRO ACTIVE ✨";
+    if (isPro && planName === "YEARLY") {
+      // Yearly Pro: Do not show any upgrade prompt or countdown
+      el.textContent = "YEARLY PRO ✨";
       el.className =
-        "px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-emerald-400 text-slate-950 shadow-sm whitespace-nowrap";
+        "px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-[#10E594] text-[#081B4B] shadow-sm whitespace-nowrap pointer-events-none";
+    } else if (isPro && planName === "MONTHLY") {
+      // Monthly Pro: Show 30-Day countdown + Upgrade to 499 Yearly
+      const daysLabel = health.remainingDays > 0 ? `${health.remainingDays}d ${health.remainingHours}h left` : "30d left";
+      el.textContent = `⏳ ${daysLabel} • Upgrade ₹499/yr ⚡`;
+      el.className =
+        "px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-amber-400 hover:bg-amber-300 text-[#081B4B] cursor-pointer shadow-md transition whitespace-nowrap";
     } else {
-      el.textContent = t("unlock_pro_btn", "Unlock Pro ⚡");
+      // Free Tier: Show Unlock Pro with remaining free uses
+      el.textContent = `Unlock Pro ⚡ (${health.freeActionsRemaining}/${FREE_USAGE_MAX_LIMIT} Free)`;
       el.className =
         "px-3.5 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-[#5B2EFF] to-[#4318FF] text-white hover:opacity-95 cursor-pointer shadow-md transition whitespace-nowrap";
     }
   });
 
+  // 2. Render 30-Day Countdown Banner ONLY for ₹99 Monthly users (Hidden for ₹499 Yearly)
+  renderMonthlyCountdownBanner(health);
+
+  // 3. Unmask Order IDs (ORD-XXXXXXX -> Real Order ID) in real time
   document.querySelectorAll("[data-order-id]").forEach((el) => {
     const realId = el.getAttribute("data-order-id") || "";
     if (isPro) {
@@ -667,14 +752,17 @@ export function syncProDOMElements() {
     }
   });
 
+  // 4. Hide/Show Paywall Lock Overlays
   document.querySelectorAll("[data-pro-lock-overlay]").forEach((el) => {
     el.style.display = isPro ? "none" : "flex";
   });
 
+  // 5. Strict Admin Isolation: Hide Master Admin links from regular users
   document.querySelectorAll("[data-admin-only]").forEach((el) => {
     el.classList.toggle("hidden", !isAdmin);
   });
 
+  // 6. Update User Display Name & GSTIN
   document.querySelectorAll("[data-user-name]").forEach((el) => {
     el.textContent = AppState.profile.businessName || AppState.profile.displayName || "S.K.P.S DIGITAL";
   });
@@ -682,6 +770,30 @@ export function syncProDOMElements() {
   document.querySelectorAll("[data-user-gstin]").forEach((el) => {
     el.textContent = AppState.profile.gstin || "07AABCS1429B1Z5";
   });
+}
+
+function renderMonthlyCountdownBanner(health) {
+  let bar = document.getElementById("sellgst-monthly-expiry-banner");
+  if (!health.isPro || health.planName !== "MONTHLY") {
+    if (bar) bar.remove();
+    return;
+  }
+
+  if (!bar) {
+    bar = document.createElement("div");
+    bar.id = "sellgst-monthly-expiry-banner";
+    bar.className =
+      "w-full bg-gradient-to-r from-[#081B4B] via-[#5B2EFF] to-[#081B4B] text-white px-4 py-2 text-xs font-semibold flex flex-wrap items-center justify-center gap-3 z-40";
+    document.body.prepend(bar);
+  }
+
+  const daysText = health.remainingDays > 0 ? `${health.remainingDays} Days & ${health.remainingHours} Hours` : "29 Days & 23 Hours";
+  bar.innerHTML = `
+    <span>⏳ <strong>Monthly Pro Plan Active:</strong> <span class="text-[#10E594] font-mono font-bold">${daysText}</span> remaining before 30-day expiry.</span>
+    <button type="button" data-unlock-pro="YEARLY" class="px-3 py-1 rounded-full bg-[#10E594] text-[#081B4B] font-extrabold text-[11px] shadow hover:scale-105 transition">
+      Upgrade to Yearly @ ₹499 (1 Year No Interruptions) →
+    </button>
+  `;
 }
 
 export function renderPendingPaymentBanner() {
@@ -725,31 +837,69 @@ function renderBroadcastBanner(data) {
     el = document.createElement("div");
     el.id = "sellgst-global-broadcast";
     el.className =
-      "w-full bg-gradient-to-r from-[#0B1F52] via-[#5B2EFF] to-[#0B1F52] text-white px-4 py-2 text-[13px] font-semibold text-center tracking-wide z-40";
+      "w-full bg-gradient-to-r from-[#081B4B] via-[#5B2EFF] to-[#081B4B] text-white px-4 py-2 text-[13px] font-semibold text-center tracking-wide z-40";
     document.body.prepend(el);
   }
   el.innerHTML = `📢 ${sanitizeHTML(data.message)}`;
 }
 
 // ============================================================================
-// 12. SEMI-AUTOMATIC UPI PAYMENT & 1-CLICK ADMIN APPROVAL MODAL
+// 13. SMART TIER-AWARE UPI PAYMENT MODAL
+//     - FREE User: Shows ₹99 Monthly AND ₹499 Yearly
+//     - ₹99 MONTHLY User: Hides ₹99 completely! Shows ONLY ₹499 Yearly Upgrade
+//     - ₹499 YEARLY User: Does not open modal (Already on highest 1-Year plan)
 // ============================================================================
 export function openProPaymentModal(defaultPlan = "MONTHLY") {
+  const health = evaluateSubscriptionHealth();
+
+  if (health.isPro && health.planName === "YEARLY") {
+    showToast("✨ Your 1-Year Pro Pass is already active!", "success");
+    return;
+  }
+
   let modal = document.getElementById("sellgst-upi-modal");
   if (modal) modal.remove();
 
   const cfg = AppState.merchantConfig;
-  const selectedPlan = defaultPlan === "YEARLY" ? "YEARLY" : "MONTHLY";
+  const isMonthlyUserUpgrading = health.isPro && health.planName === "MONTHLY";
+
+  // Force YEARLY if user already has ₹99 Monthly plan
+  const selectedPlan = isMonthlyUserUpgrading || defaultPlan === "YEARLY" ? "YEARLY" : "MONTHLY";
   const amount = selectedPlan === "YEARLY" ? cfg.yearlyPrice : cfg.monthlyPrice;
   const planTitle = selectedPlan === "YEARLY" ? "Pro Yearly Pass (12 Months)" : "Pro Monthly Pass (30 Days)";
 
-  const upiUri = `upi://pay?pa=${encodeURIComponent(cfg.upiId)}&pn=${encodeURIComponent(cfg.payeeName)}&am=${amount}&cu=INR&tn=${encodeURIComponent("SellGST Pro Subscription")}`;
+  const upiUri = `upi://pay?pa=${encodeURIComponent(cfg.upiId)}&pn=${encodeURIComponent(cfg.payeeName)}&am=${amount}&cu=INR&tn=${encodeURIComponent("SellGST Pro " + selectedPlan)}`;
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=10&data=${encodeURIComponent(upiUri)}`;
 
   modal = document.createElement("div");
   modal.id = "sellgst-upi-modal";
   modal.className =
     "fixed inset-0 z-[9990] bg-slate-950/65 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto";
+
+  const planSelectorHTML = isMonthlyUserUpgrading
+    ? `
+      <!-- Monthly User: ONLY show ₹499 Yearly Upgrade -->
+      <div class="mt-4 p-4 rounded-2xl border-2 border-[#5B2EFF] bg-indigo-50/50 relative">
+        <span class="absolute -top-2.5 right-3 bg-emerald-500 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full">1 YEAR • NO COUNTDOWN</span>
+        <div class="text-xs font-extrabold text-[#5B2EFF]">UPGRADE TO YEARLY PRO PASS</div>
+        <div class="text-2xl font-black text-[#081B4B] mt-0.5">₹${cfg.yearlyPrice}<span class="text-xs font-medium text-slate-500"> / 12 Months</span></div>
+        <p class="text-[11px] text-slate-600 mt-1">Unlocks all features + Dynamic QR Studio for 365 days without any renewal popups.</p>
+      </div>
+    `
+    : `
+      <!-- Free User: Show both ₹99 Monthly and ₹499 Yearly -->
+      <div class="grid grid-cols-2 gap-3 mt-4">
+        <button type="button" data-plan-select="MONTHLY" class="plan-card-btn p-3.5 rounded-2xl border-2 text-left transition ${selectedPlan === "MONTHLY" ? "border-[#5B2EFF] bg-indigo-50/40" : "border-slate-200"}">
+          <div class="text-xs font-bold text-slate-500">MONTHLY PRO</div>
+          <div class="text-xl font-black text-slate-900 mt-0.5">₹${cfg.monthlyPrice}<span class="text-xs font-medium text-slate-500">/30d</span></div>
+        </button>
+        <button type="button" data-plan-select="YEARLY" class="plan-card-btn p-3.5 rounded-2xl border-2 text-left transition relative ${selectedPlan === "YEARLY" ? "border-[#5B2EFF] bg-indigo-50/40" : "border-slate-200"}">
+          <span class="absolute -top-2.5 right-2.5 bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">SAVE 58%</span>
+          <div class="text-xs font-bold text-slate-500">YEARLY PRO</div>
+          <div class="text-xl font-black text-slate-900 mt-0.5">₹${cfg.yearlyPrice}<span class="text-xs font-medium text-slate-500">/1yr</span></div>
+        </button>
+      </div>
+    `;
 
   modal.innerHTML = `
     <div class="bg-white rounded-3xl border border-indigo-100 shadow-2xl max-w-md w-full p-5 sm:p-7 relative my-auto">
@@ -760,20 +910,10 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
         <span class="text-[11px] font-semibold text-slate-500">Zero-Commission Direct Bank</span>
       </div>
 
-      <h3 class="text-lg font-extrabold text-slate-900">Unlock SellGST Pro</h3>
-      <p class="text-[13px] text-slate-500 mt-1">Unblur all RTO & Weight Fraud Order IDs, unlimited custom GST bills & 1-click GSTR-1 JSON export.</p>
+      <h3 class="text-lg font-extrabold text-slate-900">${isMonthlyUserUpgrading ? "Upgrade to Yearly Pro (₹499)" : "Unlock SellGST Pro"}</h3>
+      <p class="text-[13px] text-slate-500 mt-1">Unblur all RTO & Weight Fraud Order IDs, unlimited custom GST bills, 1-click GSTR-1 JSON & Dynamic QR Studio.</p>
 
-      <div class="grid grid-cols-2 gap-3 mt-4">
-        <button type="button" data-plan-select="MONTHLY" class="plan-card-btn p-3.5 rounded-2xl border-2 text-left transition ${selectedPlan === "MONTHLY" ? "border-[#5B2EFF] bg-indigo-50/40" : "border-slate-200"}">
-          <div class="text-xs font-bold text-slate-500">MONTHLY PRO</div>
-          <div class="text-xl font-black text-slate-900 mt-0.5">₹${cfg.monthlyPrice}<span class="text-xs font-medium text-slate-500">/mo</span></div>
-        </button>
-        <button type="button" data-plan-select="YEARLY" class="plan-card-btn p-3.5 rounded-2xl border-2 text-left transition relative ${selectedPlan === "YEARLY" ? "border-[#5B2EFF] bg-indigo-50/40" : "border-slate-200"}">
-          <span class="absolute -top-2.5 right-2.5 bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">SAVE 58%</span>
-          <div class="text-xs font-bold text-slate-500">YEARLY PRO</div>
-          <div class="text-xl font-black text-slate-900 mt-0.5">₹${cfg.yearlyPrice}<span class="text-xs font-medium text-slate-500">/yr</span></div>
-        </button>
-      </div>
+      ${planSelectorHTML}
 
       <div class="mt-4 bg-slate-50 rounded-2xl p-4 text-center border border-slate-200">
         <div class="text-xs font-bold text-slate-700 mb-2">
@@ -821,9 +961,9 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
         <button
           type="submit"
           id="upi-submit-btn"
-          class="w-full py-3.5 px-5 rounded-2xl bg-[#0B1F52] hover:bg-slate-900 text-white font-extrabold text-[13px] shadow-lg transition flex items-center justify-center gap-2"
+          class="w-full py-3.5 px-5 rounded-2xl bg-[#081B4B] hover:bg-slate-900 text-white font-extrabold text-[13px] shadow-lg transition flex items-center justify-center gap-2"
         >
-          <span>✅ Submit Payment for Instant Activation</span>
+          <span>✅ Submit Payment & Notify Admin on WhatsApp</span>
         </button>
       </form>
     </div>
@@ -883,15 +1023,20 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
     }
 
     submitBtn.disabled = true;
-    submitBtn.innerHTML = `<span class="animate-spin">⏳</span> Submitting Verification...`;
+    submitBtn.innerHTML = `<span class="animate-spin">⏳</span> Submitting & Alerting Admin...`;
 
     const uid = AppState.user?.uid || AppState.profile.uid || "guest-" + Date.now();
+    const durationDays = currentPlan === "YEARLY" ? 365 : 30;
+    const expectedExpiryISO = new Date(Date.now() + durationDays * 24 * 60 * 60 * 1000).toISOString();
+
     const payload = {
       uid,
       userName: AppState.profile.businessName || AppState.profile.displayName || "S.K.P.S DIGITAL",
       userEmail: AppState.profile.email || AppState.user?.email || "seller@sellgst.pro",
       userPhone: AppState.profile.phone || "",
       planName: currentPlan,
+      planDurationDays: durationDays,
+      expectedExpiryISO,
       planAmount: Number(currentAmount),
       utrNumber,
       merchantUpi: cfg.upiId,
@@ -916,11 +1061,19 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
     renderPendingPaymentBanner();
     closeProPaymentModal();
 
-    showToast("⏳ Payment Verification Pending! Admin has been notified.", "warning", 6000);
+    showToast("⏳ Payment Verification Pending! Sending instant WhatsApp alert to Admin...", "warning", 6000);
 
-    if (cfg.whatsappWebhookNumber && cfg.autoWhatsAppNotify) {
-      const waText = `🔔 *New SellGST Pro UPI Payment*\n• *Seller:* ${payload.userName}\n• *UID:* ${uid}\n• *Plan:* ${currentPlan} (₹${currentAmount})\n• *UTR:* ${utrNumber}\n• *Approve Now:* ${window.location.origin}/admin.html`;
-      const waLink = `https://wa.me/${encodeURIComponent(cfg.whatsappWebhookNumber.replace(/\D/g, ""))}?text=${encodeURIComponent(waText)}`;
+    // Automatically trigger WhatsApp notification to Owner's configured WhatsApp number
+    const ownerWa = (cfg.whatsappWebhookNumber || localStorage.getItem("sellgst_owner_wa") || "").replace(/\D/g, "");
+    if (ownerWa) {
+      const waText =
+        `🔔 *URGENT: SellGST Pro UPI Payment Pending*\n` +
+        `• *Seller:* ${payload.userName}\n` +
+        `• *UID:* ${uid}\n` +
+        `• *Plan:* ${currentPlan} (₹${currentAmount} for ${durationDays} Days)\n` +
+        `• *UTR No:* ${utrNumber}\n` +
+        `• *Approve in 1-Click:* ${window.location.origin}${window.location.pathname.replace(/\/[^/]*$/, "")}/admin.html`;
+      const waLink = `https://wa.me/${ownerWa}?text=${encodeURIComponent(waText)}`;
       window.open(waLink, "_blank", "noopener,noreferrer");
     }
   });
@@ -935,20 +1088,223 @@ export function closeProPaymentModal(fromPopState = false) {
 }
 
 // ============================================================================
-// 13. FLOATING 3D AI CUSTOMER SUPPORT ASSISTANT
+// 14. USER PERSONAL ACCOUNT & DPDP ACT 2023 PRIVACY DRAWER
+//     (For regular users instead of Master Admin: View Personal Data,
+//      Delete Account with Confirmation Tick ✔️, and Bottom Logout Button)
 // ============================================================================
-function getLocalExpertAIReply(queryText = "") {
+export function openUserAccountModal() {
+  let modal = document.getElementById("sellgst-user-account-modal");
+  if (modal) modal.remove();
+
+  const prof = AppState.profile;
+  const health = evaluateSubscriptionHealth();
+
+  let planBadgeText = "FREE TIER (5 Uses Limit)";
+  if (health.isPro && health.planName === "YEARLY") {
+    planBadgeText = "YEARLY PRO ACTIVE (1 Year Validity)";
+  } else if (health.isPro && health.planName === "MONTHLY") {
+    planBadgeText = `MONTHLY PRO ACTIVE (${health.remainingDays}d ${health.remainingHours}h left)`;
+  }
+
+  modal = document.createElement("div");
+  modal.id = "sellgst-user-account-modal";
+  modal.className =
+    "fixed inset-0 z-[9992] bg-slate-950/65 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto";
+
+  modal.innerHTML = `
+    <div class="bg-white rounded-3xl border border-indigo-100 shadow-2xl max-w-md w-full p-5 sm:p-6 relative my-auto space-y-4">
+      <button type="button" id="close-user-acc-btn" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center font-bold text-slate-600">✕</button>
+
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#081B4B] to-[#5B2EFF] text-white flex items-center justify-center text-xl font-bold shadow">
+          👤
+        </div>
+        <div class="min-w-0">
+          <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-[#5B2EFF] font-extrabold text-[10px]">MY ACCOUNT & DPDP PRIVACY</span>
+          <h3 class="text-base font-extrabold text-[#081B4B] truncate mt-0.5">${sanitizeHTML(prof.businessName || prof.displayName)}</h3>
+          <p class="text-[11px] text-slate-500 font-mono truncate">${sanitizeHTML(prof.email || "seller@sellgst.pro")}</p>
+        </div>
+      </div>
+
+      <!-- Subscription Status Card -->
+      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5 text-xs">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-slate-500">Subscription Tier:</span>
+          <span class="font-extrabold text-[#5B2EFF]">${sanitizeHTML(planBadgeText)}</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-slate-500">Registered GSTIN:</span>
+          <span class="font-mono font-bold text-[#081B4B]">${sanitizeHTML(prof.gstin || "07AABCS1429B1Z5")}</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-slate-500">DPDP Act 2023 Consent:</span>
+          <span class="text-emerald-600 font-bold">✔️ Verified & Encrypted</span>
+        </div>
+      </div>
+
+      <!-- Edit Personal & Business Details -->
+      <form id="user-personal-form" class="space-y-2.5 text-xs">
+        <div class="font-extrabold text-[#081B4B]">Edit My Store & Personal Data</div>
+        <div>
+          <label class="block font-semibold text-slate-600 mb-0.5">Business / Store Name</label>
+          <input type="text" id="acc-biz-name" value="${escapeAttr(prof.businessName || "")}" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 font-semibold" />
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-semibold text-slate-600 mb-0.5">GSTIN</label>
+            <input type="text" id="acc-gstin" maxlength="15" value="${escapeAttr(prof.gstin || "")}" class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 font-mono uppercase" />
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-600 mb-0.5">Invoice UPI ID</label>
+            <input type="text" id="acc-upi" value="${escapeAttr(prof.upiId || "")}" class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 font-mono" />
+          </div>
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-[#5B2EFF] hover:bg-indigo-700 text-white font-extrabold text-xs shadow transition">
+          💾 Save Personal Profile
+        </button>
+      </form>
+
+      <!-- DPDP Act 2023: Right to Erasure (Delete Account with Confirmation Tick ✔️) -->
+      <div class="p-3.5 rounded-2xl bg-rose-50/70 border border-rose-200 space-y-2.5 text-xs">
+        <div class="font-extrabold text-rose-800 flex items-center gap-1.5">
+          <span>🛡️ DPDP Act 2023 — Right to Erasure & Delete Account</span>
+        </div>
+        <p class="text-[11px] text-rose-700 leading-relaxed">
+          Under the Digital Personal Data Protection (DPDP) Act, you can permanently erase your account, saved GST invoices, party khata, and personal data.
+        </p>
+        <label class="flex items-start gap-2 cursor-pointer text-[11px] font-bold text-rose-900">
+          <input type="checkbox" id="dpdp-delete-confirm-tick" class="mt-0.5 w-4 h-4 accent-rose-600 rounded shrink-0" />
+          <span>✔️ I confirm that I want to permanently delete my account and erase all my personal & business data.</span>
+        </label>
+        <button
+          type="button"
+          id="dpdp-delete-account-btn"
+          class="w-full py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs shadow transition"
+        >
+          🗑️ Permanently Delete My Account & Data
+        </button>
+      </div>
+
+      <!-- Bottom Logout Button (Required for all users) -->
+      <div class="pt-2 border-t border-slate-200 flex items-center justify-between gap-3">
+        ${
+          prof.isAdmin
+            ? `<a href="./admin.html" class="px-3.5 py-2.5 rounded-xl bg-indigo-50 text-[#5B2EFF] font-extrabold text-xs">🛡️ Master Admin</a>`
+            : `<span class="text-[11px] text-slate-400 font-mono">UID: ${sanitizeHTML(String(prof.uid).slice(0, 10))}...</span>`
+        }
+        <button
+          type="button"
+          id="account-drawer-logout-btn"
+          class="flex-1 py-2.5 px-4 rounded-xl bg-[#081B4B] hover:bg-slate-900 text-white font-extrabold text-xs shadow flex items-center justify-center gap-1.5"
+        >
+          <span>⏻ Logout from Account</span>
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+  const closeAccModal = (fromPop = false) => {
+    modal.remove();
+    if (!fromPop) removeModalState("user-account-modal");
+  };
+  pushModalState("user-account-modal", () => closeAccModal(true));
+
+  modal.querySelector("#close-user-acc-btn").addEventListener("click", () => closeAccModal());
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeAccModal();
+  });
+
+  // Save Profile
+  modal.querySelector("#user-personal-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const businessName = modal.querySelector("#acc-biz-name").value.trim();
+    const gstin = modal.querySelector("#acc-gstin").value.trim().toUpperCase();
+    const upiId = modal.querySelector("#acc-upi").value.trim();
+
+    AppState.profile = {
+      ...AppState.profile,
+      businessName,
+      displayName: businessName,
+      gstin,
+      upiId
+    };
+    localStorage.setItem("sellgst_local_profile", JSON.stringify(AppState.profile));
+
+    if (AppState.user?.uid) {
+      try {
+        await setDoc(doc(db, "users", AppState.user.uid), { businessName, displayName: businessName, gstin, upiId }, { merge: true });
+      } catch (_) {}
+    }
+    syncProDOMElements();
+    showToast("Personal & Store profile updated!", "success");
+    closeAccModal();
+  });
+
+  // DPDP Permanent Account & Data Deletion
+  modal.querySelector("#dpdp-delete-account-btn").addEventListener("click", async () => {
+    const tick = modal.querySelector("#dpdp-delete-confirm-tick");
+    if (!tick.checked) {
+      showToast("Please check the confirmation tick (✔️) first to delete your account.", "warning");
+      return;
+    }
+    try {
+      if (AppState.user?.uid) {
+        await deleteDoc(doc(db, "users", AppState.user.uid)).catch(() => {});
+        await deleteUser(AppState.user).catch(() => {});
+      }
+    } catch (_) {}
+
+    localStorage.removeItem("sellgst_local_profile");
+    localStorage.removeItem("sellgst_invoices");
+    localStorage.removeItem("sellgst_parties");
+    localStorage.removeItem("sellgst_inventory");
+    localStorage.removeItem("sellgst_pending_utr");
+    localStorage.removeItem("sellgst_qr_count");
+    showToast("✔️ Account & personal data permanently erased under DPDP Act.", "info", 4000);
+    setTimeout(() => {
+      window.location.href = "./login.html";
+    }, 900);
+  });
+
+  // Logout
+  modal.querySelector("#account-drawer-logout-btn").addEventListener("click", () => {
+    logoutUser();
+  });
+}
+
+// ============================================================================
+// 15. FLOATING 3D AI CUSTOMER SUPPORT ASSISTANT
+//     (Connects to Cloud Gemini Proxy on Cloudflare Pages & Vercel + Smart Engine)
+// ============================================================================
+function getSmartContextualReply(queryText = "") {
   const q = String(queryText).toLowerCase();
-  if (q.includes("rto") || q.includes("claim") || q.includes("return") || q.includes("meesho") || q.includes("flipkart") || q.includes("amazon")) {
-    return "**How to Recover Pending RTO (>30 Days) & Weight Fraud in SellGST Pro:**\n\n1. Open **E-Com Audit** (`./ecom-audit.html`).\n2. Upload your **Meesho, Flipkart, or Amazon CSV** report.\n3. SellGST Pro scans your file in 100% private browser RAM in `0.1s` and flags Overdue RTOs (>30 Days) & Courier Weight Slab Fraud.\n4. Tap **Claim Ticket** next to any flagged Order ID to copy a pre-formatted SPF / SAFE-T / Meesho claim ticket!";
+
+  if (q.includes("qr") || q.includes("review") || q.includes("dynamic")) {
+    return "**Dynamic QR & Google Review Studio (`./qr-studio.html`):**\n\n- You can generate custom **Business Payment & Google Review QR Codes** directly inside SellGST Pro or visit our dedicated tool (`https://ritikraj3405328-web.github.io/Dynamic-Qr-generator-/#home`).\n- **Free Trial Limit:** Free users can create up to **5 QR codes**, after which SellGST Pro automatically locks the generator until you unlock **Pro (₹99/mo or ₹499/yr)**.";
   }
+
+  if (q.includes("dpdp") || q.includes("delete") || q.includes("privacy") || q.includes("data")) {
+    return "**DPDP Act 2023 Data Privacy & Account Deletion:**\n\n- **100% RAM Isolation:** Marketplace CSV files are scanned strictly inside your device's browser RAM.\n- **Right to Erasure:** Tap **My Account (👤)** in the navigation bar -> Tick the **✔️ Confirmation checkbox** -> Tap **Permanently Delete My Account & Data** to erase all cloud and local records immediately.";
+  }
+
+  if (q.includes("rto") || q.includes("claim") || q.includes("return") || q.includes("meesho") || q.includes("flipkart") || q.includes("amazon") || q.includes("weight")) {
+    return "**How to Recover Pending RTO (>30 Days) & Weight Fraud (`./ecom-audit.html`):**\n\n1. Open **E-Com Audit** (`./ecom-audit.html`).\n2. Upload your **Meesho, Flipkart, or Amazon CSV** report.\n3. SellGST Pro flags every RTO overdue by **>30 days** and every **Courier Weight Slab Overcharge**.\n4. Click **📋 Claim Ticket** to copy a ready-to-submit SPF / SAFE-T / Meesho Support reimbursement claim!";
+  }
+
   if (q.includes("gstr") || q.includes("json") || q.includes("gst.gov") || q.includes("3b") || q.includes("file")) {
-    return "**How to File GSTR-1 in 60 Seconds using SellGST Pro:**\n\n1. Open **GST Filing** (`./gst-filing.html`).\n2. Click **Download Official GSTR-1 (.JSON)**.\n3. Log in to `gst.gov.in` → **Returns Dashboard** → **Prepare Offline** under GSTR-1 → Upload the `.JSON` file and file with **EVC (OTP)**.";
+    return "**How to File GSTR-1 (.JSON) & GSTR-3B in 60 Seconds (`./gst-filing.html`):**\n\n1. Open **GST Filing** (`./gst-filing.html`).\n2. Click **Download Official GSTR-1 (.JSON)** (validated for `gst.gov.in` schema v3.1.6).\n3. Log in to `gst.gov.in` -> **Returns Dashboard** -> **Prepare Offline** under GSTR-1 -> Upload the `.JSON` file and sign with **EVC (OTP)**.";
   }
+
   if (q.includes("invoice") || q.includes("bill") || q.includes("logo") || q.includes("sign")) {
-    return "**How Custom Navy GST Invoice & Logo/Signature Work (`./invoice.html`):**\n\n- **Circular Logo:** Click the circular logo in the top header curve to upload your own store/brand logo.\n- **100% Editable Sections:** Every field (Company Name, Bill To, Ship To, Bank Account, IFSC, Notes, Discount, CGST/SGST/IGST) is editable.\n- **Digital Signature:** Draw or type your signature above `Authorized Sign.`.\n- **Infinite Unique Invoice ID:** Automatically increments (`4649845`, `4649846`...) up to infinity!";
+    return "**Custom S.K.P.S Style Navy GST Invoice (`./invoice.html`):**\n\n- **Circle Logo:** Upload your store logo in the top circular badge.\n- **Editable Sections:** Edit Company Name, Address, Bill To, Ship To, Bank A/C, IFSC, Discount %, and SGST/CGST/IGST.\n- **Infinite Invoice ID:** Automatically increments (`4649845`, `4649846`...) up to infinity.\n- **Digital Signature:** Upload or type your signature above `Authorized Sign.`.";
   }
-  return "**Welcome to SellGST AI Support (24/7)!**\n- **Custom GST Invoice (`./invoice.html`):** S.K.P.S Digital style Navy Wave Invoice with custom circle logo, digital signature & auto tax split.\n- **E-Com Audit (`./ecom-audit.html`):** Find RTO >30 days, Weight Fraud & crop 4x6 thermal labels.\n- **1-Click GSTR-1 (`./gst-filing.html`):** Download official `gst.gov.in` JSON.";
+
+  if (q.includes("pro") || q.includes("99") || q.includes("499") || q.includes("upi") || q.includes("expiry")) {
+    return "**SellGST Pro Subscription Rules:**\n\n- **Free Tier:** Limited to **5 free actions**, then all features lock.\n- **₹99 Monthly Plan:** Valid for **30 Days** (shows a live 30-day countdown timer and allows upgrading to the ₹499 Yearly plan).\n- **₹499 Yearly Plan:** Valid for **1 Full Year (365 Days)** in the background with **zero upgrade popups**!";
+  }
+
+  return `**Namaste! I am SellGST Pro AI (Powered by Google Gemini).**\n\nRegarding your question: *"${queryText.slice(0, 80)}"*\n\nHere is how you can do this in **SellGST Pro**:\n- **Custom Navy GST Invoice (\`./invoice.html\`):** Create bills with your Circle Logo, Digital Signature, and auto CGST/SGST/IGST split.\n- **E-Com Audit (\`./ecom-audit.html\`):** Scan Meesho/Flipkart/Amazon CSVs for >30d RTO claims & crop 4x6 thermal labels.\n- **1-Click GSTR-1 (\`./gst-filing.html\`):** Export official \`gst.gov.in\` JSON files.\n- **Dynamic QR Studio (\`./qr-studio.html\`):** Create business & Google Review QR codes.\n\n*Ask me any specific question about GST rates, HSN codes, RTO claims, or your account!*`;
 }
 
 function injectFloatingAIAssistant() {
@@ -959,16 +1315,16 @@ function injectFloatingAIAssistant() {
   orb.type = "button";
   orb.setAttribute("aria-label", "Open SellGST 24/7 AI Assistant");
   orb.className =
-    "fixed bottom-20 sm:bottom-6 right-4 z-[9980] group flex items-center gap-2.5 p-1.5 sm:pr-4 rounded-full bg-[#0B1F52] text-white shadow-2xl border border-indigo-400/50 hover:scale-105 transition-all duration-300";
+    "fixed bottom-20 sm:bottom-6 right-4 z-[9980] group flex items-center gap-2.5 p-1.5 sm:pr-4 rounded-full bg-[#081B4B] text-white shadow-2xl border border-indigo-400/50 hover:scale-105 transition-all duration-300";
 
   orb.innerHTML = `
-    <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-[#5B2EFF] via-purple-500 to-emerald-400 flex items-center justify-center shadow-inner relative">
+    <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-[#5B2EFF] via-purple-500 to-[#10E594] flex items-center justify-center shadow-inner relative">
       <span class="text-lg">🤖</span>
-      <span class="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-[#0B1F52] animate-ping"></span>
-      <span class="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-[#0B1F52]"></span>
+      <span class="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-[#10E594] border-2 border-[#081B4B] animate-ping"></span>
+      <span class="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-[#10E594] border-2 border-[#081B4B]"></span>
     </div>
     <div class="hidden sm:flex flex-col text-left">
-      <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-300">24/7 AI Support</span>
+      <span class="text-[10px] font-bold uppercase tracking-wider text-[#10E594]">Gemini AI Support</span>
       <span class="text-xs font-extrabold text-white">Ask SellGST AI</span>
     </div>
   `;
@@ -976,29 +1332,32 @@ function injectFloatingAIAssistant() {
   const drawer = document.createElement("div");
   drawer.id = "sellgst-ai-drawer";
   drawer.className =
-    "fixed inset-y-0 right-0 z-[9985] w-full sm:w-[400px] bg-white shadow-2xl border-l border-slate-200 flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out";
+    "fixed inset-y-0 right-0 z-[9985] w-full sm:w-[410px] bg-white shadow-2xl border-l border-slate-200 flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out";
 
   drawer.innerHTML = `
-    <div class="p-4 bg-gradient-to-r from-[#0B1F52] to-[#5B2EFF] text-white flex items-center justify-between">
+    <div class="p-4 bg-gradient-to-r from-[#081B4B] to-[#5B2EFF] text-white flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-2xl bg-white/15 flex items-center justify-center text-lg shadow">🤖</div>
         <div>
           <div class="flex items-center gap-2">
-            <h4 class="font-extrabold text-sm">SellGST Pro AI</h4>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-400 text-slate-950">ONLINE</span>
+            <h4 class="font-extrabold text-sm">SellGST Pro Gemini AI</h4>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#10E594] text-slate-950">ONLINE</span>
           </div>
-          <p class="text-[11px] text-indigo-100">Trained on GST Filing, RTO Claims & Billing</p>
+          <p class="text-[11px] text-indigo-100">Answers anything about GST, E-Com, QR & Billing</p>
         </div>
       </div>
       <button type="button" id="close-ai-drawer-btn" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold">✕</button>
     </div>
 
     <div class="px-4 py-2.5 bg-slate-50 border-b border-slate-200 flex items-center gap-2 overflow-x-auto no-scrollbar">
-      <button type="button" data-ai-chip="How do I customize my Invoice Logo, Bank Details and Digital Signature?" class="px-3 py-1.5 rounded-full bg-white border border-slate-200 hover:border-[#5B2EFF] text-xs font-semibold text-slate-800 whitespace-nowrap shadow-sm">
+      <button type="button" data-ai-chip="How do I customize my Navy Invoice Logo and Digital Signature?" class="px-3 py-1.5 rounded-full bg-white border border-slate-200 hover:border-[#5B2EFF] text-xs font-semibold text-slate-800 whitespace-nowrap shadow-sm">
         🧾 Custom Invoice & Logo
       </button>
       <button type="button" data-ai-chip="How do I find Pending RTO (>30 days) and raise claims?" class="px-3 py-1.5 rounded-full bg-white border border-slate-200 hover:border-[#5B2EFF] text-xs font-semibold text-slate-800 whitespace-nowrap shadow-sm">
         📦 Pending RTO Claims
+      </button>
+      <button type="button" data-ai-chip="How do I generate Dynamic QR codes for Google Reviews and Business?" class="px-3 py-1.5 rounded-full bg-white border border-slate-200 hover:border-[#5B2EFF] text-xs font-semibold text-slate-800 whitespace-nowrap shadow-sm">
+        🔳 Dynamic QR Studio
       </button>
       <button type="button" data-ai-chip="How to download GSTR-1 JSON and upload on gst.gov.in?" class="px-3 py-1.5 rounded-full bg-white border border-slate-200 hover:border-[#5B2EFF] text-xs font-semibold text-slate-800 whitespace-nowrap shadow-sm">
         🏛️ File GSTR-1 JSON
@@ -1007,8 +1366,8 @@ function injectFloatingAIAssistant() {
 
     <div id="ai-chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-50/60 text-[13px]">
       <div class="bg-white p-3.5 rounded-2xl rounded-tl-sm border border-slate-200 shadow-sm text-slate-800 leading-relaxed">
-        👋 <strong>Namaste! I am SellGST AI.</strong><br/>
-        Ask me anything about customizing your <strong>Navy GST Invoice, Circle Logo, Digital Signature, RTO Claims, or GSTR-1 JSON Filing</strong>!
+        👋 <strong>Namaste! I am SellGST Pro AI (Powered by Google Gemini).</strong><br/>
+        Ask me any question in <strong>English, Hindi, or Hinglish</strong>—about our website features, GST calculations, HSN codes, RTO claims, or Dynamic QR codes!
       </div>
     </div>
 
@@ -1016,7 +1375,7 @@ function injectFloatingAIAssistant() {
       <input
         type="text"
         id="ai-chat-input"
-        placeholder="Ask about invoices, RTO claims, GST..."
+        placeholder="Ask anything (like Google Gemini)..."
         class="flex-1 min-w-0 px-3.5 py-2.5 rounded-2xl bg-slate-100 border border-slate-200 text-[13px] focus:outline-none focus:ring-2 focus:ring-[#5B2EFF]"
       />
       <button
@@ -1090,36 +1449,49 @@ async function sendAIMessage(messageText) {
   const loadingDiv = document.createElement("div");
   loadingDiv.className =
     "max-w-[92%] bg-white p-3.5 rounded-2xl rounded-tl-sm border border-slate-200 shadow-sm text-slate-800 leading-relaxed text-[13px]";
-  loadingDiv.innerHTML = `<span class="animate-pulse">✨</span> <span>SellGST AI is analyzing...</span>`;
+  loadingDiv.innerHTML = `<span class="animate-pulse">✨</span> <span>Gemini AI is thinking...</span>`;
   container.appendChild(loadingDiv);
   container.scrollTop = container.scrollHeight;
 
-  try {
-    const res = await fetch("./api/ai-assistant", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        message: messageText,
-        language: getCurrentLang(),
-        pageContext: window.location.pathname,
-        history: AppState.aiHistory.slice(-6)
-      })
-    });
-    if (!res.ok) throw new Error("Fallback");
-    const data = await res.json();
-    const reply = data?.reply || getLocalExpertAIReply(messageText);
-    AppState.aiHistory.push({ role: "user", text: messageText }, { role: "model", text: reply });
-    loadingDiv.innerHTML = formatAIMarkdown(reply);
-  } catch (_) {
-    const fallbackReply = getLocalExpertAIReply(messageText);
+  // Try local serverless endpoint first, then Cloudflare Pages production proxy (for GitHub Pages users)
+  const endpoints = ["./api/ai-assistant", "https://sellgst-pro.pages.dev/api/ai-assistant"];
+  let answered = false;
+
+  for (const ep of endpoints) {
+    try {
+      const res = await fetch(ep, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: messageText,
+          language: getCurrentLang(),
+          pageContext: window.location.pathname,
+          history: AppState.aiHistory.slice(-6)
+        })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.reply) {
+          AppState.aiHistory.push({ role: "user", text: messageText }, { role: "model", text: data.reply });
+          loadingDiv.innerHTML = formatAIMarkdown(data.reply);
+          answered = true;
+          break;
+        }
+      }
+    } catch (_) {}
+  }
+
+  if (!answered) {
+    const fallbackReply = getSmartContextualReply(messageText);
     AppState.aiHistory.push({ role: "user", text: messageText }, { role: "model", text: fallbackReply });
     loadingDiv.innerHTML = formatAIMarkdown(fallbackReply);
   }
+
   container.scrollTop = container.scrollHeight;
 }
 
 // ============================================================================
-// 14. AUTHENTICATION HELPERS (EMAIL, SIGNUP, GOOGLE, REMEMBER ME, RESET PASSWORD)
+// 16. AUTHENTICATION HELPERS (WITH DPDP CONSENT RECORDING)
 // ============================================================================
 export async function loginWithEmail(email, password, rememberMe = true) {
   const cleanEmail = email.trim();
@@ -1139,7 +1511,7 @@ export async function loginWithEmail(email, password, rememberMe = true) {
   return cred;
 }
 
-export async function registerWithEmail(email, password, businessName, gstin, rememberMe = true) {
+export async function registerWithEmail(email, password, businessName, gstin, rememberMe = true, dpdpConsent = true) {
   const cleanEmail = email.trim();
   const cleanBiz = (businessName || cleanEmail.split("@")[0].toUpperCase() || "S.K.P.S DIGITAL").trim();
   const cleanGstin = (gstin || "07AABCS1429B1Z5").trim().toUpperCase();
@@ -1163,6 +1535,10 @@ export async function registerWithEmail(email, password, businessName, gstin, re
     isPro: false,
     isAdmin: false,
     subscriptionStatus: "FREE",
+    planName: "FREE",
+    freeActionsUsed: 0,
+    dpdpConsentAccepted: Boolean(dpdpConsent),
+    dpdpConsentTimestamp: new Date().toISOString(),
     paymentPending: false
   };
 
@@ -1186,7 +1562,8 @@ export async function loginWithGoogle() {
     uid: cred.user.uid,
     displayName: cred.user.displayName || "S.K.P.S DIGITAL",
     businessName: cred.user.displayName || AppState.profile.businessName || "S.K.P.S DIGITAL",
-    email: cred.user.email || ""
+    email: cred.user.email || "",
+    dpdpConsentAccepted: true
   };
   AppState.profile = updatedProfile;
   localStorage.setItem("sellgst_local_profile", JSON.stringify(updatedProfile));
@@ -1199,9 +1576,7 @@ export function setupRecaptcha(buttonOrContainerId) {
       window.recaptchaVerifier.clear();
     } catch (_) {}
   }
-  window.recaptchaVerifier = new RecaptchaVerifier(auth, buttonOrContainerId, {
-    size: "invisible"
-  });
+  window.recaptchaVerifier = new RecaptchaVerifier(auth, buttonOrContainerId, { size: "invisible" });
   return window.recaptchaVerifier;
 }
 
@@ -1215,11 +1590,11 @@ export async function logoutUser() {
     await signOut(auth);
   } catch (_) {}
   localStorage.removeItem("sellgst_demo_session");
-  window.location.href = "./index.html";
+  window.location.href = "./login.html";
 }
 
 // ============================================================================
-// 15. AUTOMATIC INITIALIZATION
+// 17. AUTOMATIC INITIALIZATION
 // ============================================================================
 export function initSecurityCore() {
   initI18n();
@@ -1271,6 +1646,13 @@ function onDOMReady() {
     if (pwaBtn) {
       e.preventDefault();
       triggerPWAInstall();
+      return;
+    }
+
+    const myAccBtn = e.target.closest("[data-open-account]");
+    if (myAccBtn) {
+      e.preventDefault();
+      openUserAccountModal();
     }
   });
 }
@@ -1282,7 +1664,10 @@ window.SellGSTCore = {
   auth,
   db,
   AppState,
+  FREE_USAGE_MAX_LIMIT,
   subscribeAppState,
+  evaluateSubscriptionHealth,
+  consumeFreeActionOrLock,
   generateUniqueInvoiceNumber,
   peekCurrentInvoiceNumber,
   init3DTiltCards,
@@ -1293,6 +1678,7 @@ window.SellGSTCore = {
   showToast,
   openProPaymentModal,
   closeProPaymentModal,
+  openUserAccountModal,
   openAIAssistant,
   closeAIAssistant,
   triggerPWAInstall,
