@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-  <title>SellGST Pro — 3D Financial Audit, Custom GST Billing & Compliance Super-App</title>
-  <meta name="description" content="3D Financial Valuation, E-Commerce RTO/Weight Audit, Custom Navy GST Invoice Maker & 1-Click GSTR-1 JSON Filing." />
+  <title>SellGST Pro — 3D Store Valuation, Custom GST Billing, E-Com Audit & Dynamic QR Super-App</title>
+  <meta name="description" content="3D Financial Valuation, E-Commerce RTO/Weight Audit, Custom S.K.P.S Style Navy GST Invoice Maker, Dynamic QR Generator & 1-Click GSTR-1 JSON Filing." />
   <meta name="theme-color" content="#081B4B" />
   <link rel="manifest" href="./manifest.json" />
 
   <!-- 0.1s Instant Module Preload & Speculative Prefetch (Zero 404 Relative Paths) -->
   <link rel="modulepreload" href="./assets/js/security-core.js" />
   <link rel="modulepreload" href="./assets/js/i18n.js" />
+  <link rel="prefetch" href="./login.html" as="document" />
   <link rel="prefetch" href="./app.html" as="document" />
   <link rel="prefetch" href="./invoice.html" as="document" />
-  <link rel="prefetch" href="./ecom-audit.html" as="document" />
-  <link rel="prefetch" href="./gst-filing.html" as="document" />
+  <link rel="prefetch" href="./qr-studio.html" as="document" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -44,7 +44,6 @@
     html, body {
       max-width: 100vw;
       overflow-x: hidden;
-      /* Exact Lavender-Blue to Aqua-Mint 3D Pastel Canvas from 1000173803.jpg */
       background: linear-gradient(135deg, #DDE3FF 0%, #EEF2FF 48%, #D6F5F8 100%);
       color: #0F172A;
       font-family: 'Plus Jakarta Sans', sans-serif;
@@ -55,51 +54,20 @@
       background: rgba(255, 255, 255, 0.94);
       backdrop-filter: blur(16px);
       border-radius: 26px;
-      border: 1px solid rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.9);
       box-shadow: 0 20px 45px -15px rgba(91, 46, 255, 0.14), 0 4px 12px rgba(15, 23, 42, 0.04);
-      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+      transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease;
       transform-style: preserve-3d;
       will-change: transform;
       min-width: 0;
     }
-    /* Navy Auth Card Input Underline Styling from 1000173806.png */
-    .navy-input {
-      background: transparent;
-      border: none;
-      border-bottom: 1.5px solid rgba(255, 255, 255, 0.25);
-      color: #FFFFFF;
-      padding: 8px 2px;
-      width: 100%;
-      font-size: 14px;
-      transition: border-color 0.2s ease;
+    .purple-3d-card {
+      background: linear-gradient(135deg, #6A3BFF 0%, #5B2EFF 55%, #3F16C4 100%);
+      border-radius: 26px;
+      box-shadow: 0 22px 45px -12px rgba(91, 46, 255, 0.38);
+      transform-style: preserve-3d;
+      min-width: 0;
     }
-    .navy-input:focus {
-      outline: none;
-      border-bottom-color: #10E594;
-    }
-    .navy-input::placeholder {
-      color: rgba(255, 255, 255, 0.55);
-    }
-    .light-input {
-      background: transparent;
-      border: none;
-      border-bottom: 1.5px solid #CBD5E1;
-      color: #081B4B;
-      padding: 8px 2px;
-      width: 100%;
-      font-size: 14px;
-      font-weight: 600;
-      transition: border-color 0.2s ease;
-    }
-    .light-input:focus {
-      outline: none;
-      border-bottom-color: #5B2EFF;
-    }
-    .light-input::placeholder {
-      color: #94A3B8;
-      font-weight: 400;
-    }
-    /* 3D Floating Animation for Valuation Graphics */
     @keyframes float3d {
       0%, 100% { transform: translateY(0px); }
       50% { transform: translateY(-5px); }
@@ -107,7 +75,6 @@
     .float-3d {
       animation: float3d 4s ease-in-out infinite;
     }
-    /* 7-Second Countdown Bar Animation */
     @keyframes shrink7s {
       from { width: 100%; }
       to { width: 0%; }
@@ -115,13 +82,20 @@
     .pwa-timer-bar {
       animation: shrink7s 7s linear forwards;
     }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
   </style>
 </head>
-<body class="min-h-screen w-full overflow-x-hidden flex flex-col justify-between pb-10">
+<body class="min-h-screen w-full overflow-x-hidden flex flex-col justify-between pb-24 lg:pb-10">
 
-  <!-- TOP FLOATING 3D NAVBAR (WITH 7-SECOND AUTO-HIDING PWA INSTALL BUTTON) -->
+  <!-- CLEAN TOP FLOATING NAVBAR (WITH 7-SECOND AUTO-HIDING PWA INSTALL BUTTON) -->
   <header class="sticky top-2.5 z-40 px-3 sm:px-6 max-w-7xl mx-auto w-full">
-    <nav class="bg-white/90 backdrop-blur-xl border border-white rounded-3xl sm:rounded-full px-3.5 sm:px-6 py-2.5 shadow-lg shadow-indigo-500/10 flex flex-wrap items-center justify-between gap-2">
+    <nav class="bg-white/95 backdrop-blur-xl border border-white rounded-3xl sm:rounded-full px-3.5 sm:px-6 py-2.5 shadow-lg shadow-indigo-500/10 flex flex-wrap items-center justify-between gap-2">
       <!-- Brand Identity -->
       <a href="./index.html" class="flex items-center gap-2.5 shrink-0">
         <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-[#081B4B] via-[#5B2EFF] to-[#10E594] text-white flex items-center justify-center font-black text-sm shadow-md">
@@ -132,26 +106,16 @@
             <span class="font-extrabold text-[15px] tracking-tight text-[#081B4B]">SellGST</span>
             <span class="px-2 py-0.5 text-[10px] font-extrabold rounded-full bg-[#5B2EFF] text-white shadow-sm">3D PRO</span>
           </div>
-          <p class="text-[11px] text-slate-500 hidden md:block">Valuation • Custom Navy Invoice • 1-Click GSTR-1</p>
+          <p class="text-[11px] text-slate-500 hidden md:block">3D Valuation • Navy Invoice • Dynamic QR • GSTR-1</p>
         </div>
       </a>
 
-      <!-- Center Quick Navigation Links -->
-      <div class="hidden xl:flex items-center gap-5 text-[13px] font-bold text-slate-600">
-        <a href="#valuation-section" class="hover:text-[#5B2EFF] transition">3D Store Valuation</a>
-        <a href="./invoice.html" class="hover:text-[#5B2EFF] transition">Navy GST Invoice</a>
-        <a href="./ecom-audit.html" class="hover:text-[#5B2EFF] transition">RTO & Weight Audit</a>
-        <button type="button" data-open-ai="How does SellGST Pro increase my store valuation and recover RTO losses?" class="text-[#5B2EFF] hover:text-indigo-800 flex items-center gap-1">
-          <span>🤖 24/7 AI Help</span>
-        </button>
-      </div>
-
-      <!-- Right Controls: Language, 7-Second Install Button & Open App -->
-      <div class="flex items-center gap-2 flex-wrap justify-end ml-auto">
+      <!-- Right Controls: Language, 7s Install Button, My Account, Dedicated Login Page -->
+      <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-end ml-auto">
         <select
           data-lang-switcher
           aria-label="Select Language"
-          class="px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 focus:outline-none cursor-pointer max-w-[95px] sm:max-w-none truncate"
+          class="px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 focus:outline-none cursor-pointer max-w-[92px] sm:max-w-none truncate"
         ></select>
 
         <!-- 7-SECOND AUTO-HIDING PWA INSTALL BUTTON -->
@@ -159,432 +123,94 @@
           type="button"
           id="pwa-install-btn"
           data-pwa-install
-          class="relative overflow-hidden px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#081B4B] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap flex items-center gap-1.5"
+          class="relative overflow-hidden px-3 py-1.5 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#081B4B] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap flex items-center gap-1.5"
         >
           <span>📲 Install App</span>
           <span id="pwa-sec-badge" class="px-1.5 py-0.2 rounded-full bg-white/20 text-[10px] font-mono">7s</span>
           <span class="absolute bottom-0 left-0 h-0.5 bg-[#10E594] pwa-timer-bar"></span>
         </button>
 
+        <!-- User Personal Account & DPDP Privacy Drawer Trigger -->
+        <button
+          type="button"
+          data-open-account
+          class="px-3 py-1.5 rounded-full bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] text-xs font-extrabold border border-indigo-100 transition whitespace-nowrap"
+        >
+          👤 My Account
+        </button>
+
+        <!-- Dedicated Separate Login / Signup Page Link -->
         <a
-          href="./app.html"
+          href="./login.html"
           class="px-3.5 py-1.5 rounded-full bg-[#081B4B] hover:bg-[#5B2EFF] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap"
         >
-          Open Dashboard →
+          🔐 Login / Signup
         </a>
       </div>
     </nav>
   </header>
 
-  <!-- MAIN 12-COLUMN 3D BENTO WORKSPACE -->
+  <!-- MOBILE FLOATING BOTTOM DOCK (NO ADMIN ICON FOR REGULAR USERS) -->
+  <nav class="lg:hidden fixed bottom-2.5 inset-x-3 bg-white/95 backdrop-blur-xl text-slate-700 rounded-3xl px-2 py-2.5 shadow-2xl border border-indigo-100 z-40 flex items-center justify-around">
+    <a href="./index.html" class="flex flex-col items-center gap-0.5 text-[#5B2EFF] font-extrabold text-[10px]">
+      <span class="text-base">🏠</span>
+      <span>Home</span>
+    </a>
+    <a href="./app.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">📊</span>
+      <span>3D Analytics</span>
+    </a>
+    <a href="./invoice.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">🧾</span>
+      <span>Navy Bill</span>
+    </a>
+    <a href="./qr-studio.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">🔳</span>
+      <span>Dynamic QR</span>
+    </a>
+    <button type="button" data-open-account class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">👤</span>
+      <span>Account</span>
+    </button>
+  </nav>
+
+  <!-- MAIN 12-COLUMN 3D WORKSPACE -->
   <main class="max-w-7xl mx-auto w-full px-3 sm:px-6 mt-5 space-y-6 overflow-x-hidden">
 
-    <!-- TOP ROW: NAVY CURVED-WAVE LOGIN/SIGNUP (LEFT/RIGHT) + 3D FINANCIAL VALUATION SHOWCASE -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    <!-- TOP ROW: 3D STORE VALUATION HERO (7 COLS) + 3D GAUGE & DONUT ANALYTICS (5 COLS) -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
 
-      <!-- ================================================================= -->
-      <!-- COLUMN 1 (5 COLS): EXACT 1000173806.png NAVY & WHITE CURVED-WAVE  -->
-      <!-- LOGIN / SIGNUP / WELCOME / YEAH CARD WITH GOOGLE LOGIN            -->
-      <!-- ================================================================= -->
-      <div class="lg:col-span-5 flex justify-center w-full order-1 lg:order-2">
-        <div
-          data-3d-tilt
-          class="w-full max-w-[400px] rounded-[32px] overflow-hidden shadow-2xl border-4 border-white/90 bg-white relative transition-all duration-300"
-          style="box-shadow: 0 28px 60px -15px rgba(8, 27, 75, 0.35);"
-        >
+      <!-- LEFT 7 COLS: HERO VALUE PROPOSITION + INTERACTIVE 3D VALUATION SLIDER -->
+      <div data-3d-tilt class="bento-card p-5 sm:p-7 lg:col-span-7 flex flex-col justify-between relative overflow-hidden">
+        <div class=" -top-12 -right-12 w-44 h-44 rounded-full bg-gradient-to-br from-[#5B2EFF]/20 to-[#10E594]/25 blur-2xl pointer-events-none absolute"></div>
 
-          <!-- ============================================================= -->
-          <!-- VIEW 1: SPLIT NAVY LOGIN + CURVED WAVE + WHITE SIGNUP         -->
-          <!-- ============================================================= -->
-          <div id="auth-split-view" class="flex flex-col">
-
-            <!-- TOP HALF: DEEP NAVY LOGIN SECTION (#081B4B) -->
-            <div id="navy-login-panel" class="bg-[#081B4B] text-white px-6 pt-6 pb-10 relative transition-all duration-300">
-              <div class="flex items-center justify-between mb-4">
-                <div>
-                  <h2 data-i18n="login_title" class="text-xl font-extrabold tracking-tight text-white">Login</h2>
-                  <p class="text-xs text-indigo-200/80 mt-0.5">Access your 3D Financial & GST Suite</p>
-                </div>
-                <span class="px-2.5 py-1 rounded-full bg-white/10 text-[#10E594] font-mono text-[11px] font-bold">
-                  🔐 Zero-Trust
-                </span>
-              </div>
-
-              <form id="auth-email-form" class="space-y-3.5">
-                <div>
-                  <label class="block text-xs font-semibold text-indigo-200/90">Email address</label>
-                  <input
-                    type="email"
-                    id="login-email"
-                    required
-                    placeholder="seller@yourstore.in"
-                    class="navy-input"
-                  />
-                </div>
-
-                <div>
-                  <label class="block text-xs font-semibold text-indigo-200/90">Password</label>
-                  <input
-                    type="password"
-                    id="login-password"
-                    required
-                    minlength="6"
-                    placeholder="••••••••••••"
-                    class="navy-input"
-                  />
-                </div>
-
-                <div class="flex items-center justify-between pt-1 text-xs">
-                  <button
-                    type="button"
-                    id="forgot-password-btn"
-                    class="text-indigo-300 hover:text-[#10E594] font-medium transition"
-                  >
-                    Forgot Password?
-                  </button>
-                  <button
-                    type="button"
-                    id="open-phone-otp-modal-btn"
-                    class="text-[#10E594] hover:underline font-semibold"
-                  >
-                    📲 Login via OTP
-                  </button>
-                </div>
-
-                <button
-                  type="submit"
-                  id="email-login-submit"
-                  class="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#5B2EFF] to-[#38BDF8] hover:opacity-95 text-white font-extrabold text-[13px] shadow-lg transition mt-2"
-                >
-                  Login to Account →
-                </button>
-              </form>
-
-              <!-- 1-CLICK DIRECT GOOGLE LOGIN INSIDE NAVY PANEL -->
-              <button
-                type="button"
-                id="google-login-top-btn"
-                class="mt-3 w-full py-2 px-3 rounded-xl bg-white hover:bg-slate-100 text-[#081B4B] font-bold text-xs shadow transition flex items-center justify-center gap-2"
-              >
-                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-                  <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/>
-                  <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"/>
-                  <path fill="#FBBC05" d="M5.3 14.8c-.2-.8-.4-1.6-.4-2.5s.2-1.7.4-2.5L1.6 7C.6 9 0 11.2 0 13.5s.6 4.5 1.6 6.5l3.7-2.9z"/>
-                  <path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.1-6.7-5l-3.7 2.8C3.5 21.4 7.4 24 12 24z"/>
-                </svg>
-                <span>Continue with Google</span>
-              </button>
-
-              <!-- INTERLOCKING CURVED WAVE TOGGLE BUTTONS (^ and v from 1000173806.png) -->
-              <div class="absolute -bottom-6 right-5 flex items-center gap-2 z-20">
-                <!-- Up Circle (Focus Login) -->
-                <button
-                  type="button"
-                  id="wave-up-btn"
-                  title="Focus Login"
-                  class="w-11 h-11 rounded-full bg-white text-[#081B4B] shadow-lg border-4 border-white flex items-center justify-center font-black text-base hover:scale-105 transition"
-                >
-                  ⌃
-                </button>
-                <!-- Down Circle (Focus Signup) -->
-                <button
-                  type="button"
-                  id="wave-down-btn"
-                  title="Focus Signup"
-                  class="w-11 h-11 rounded-full bg-[#081B4B] text-white shadow-lg border-4 border-white flex items-center justify-center font-black text-base hover:scale-105 transition"
-                >
-                  ⌄
-                </button>
-              </div>
-            </div>
-
-            <!-- BOTTOM HALF: CRISP WHITE SIGNUP SECTION (#FFFFFF) -->
-            <div id="white-signup-panel" class="bg-white text-[#081B4B] px-6 pt-7 pb-6 transition-all duration-300">
-              <div class="flex items-center justify-between mb-3">
-                <h2 class="text-xl font-extrabold tracking-tight text-[#081B4B]">Signup</h2>
-                <span class="text-[11px] font-bold text-[#5B2EFF]">New Seller Registration</span>
-              </div>
-
-              <form id="auth-register-form" class="space-y-3">
-                <div>
-                  <label class="block text-xs font-semibold text-slate-400">Business / Store Name</label>
-                  <input
-                    type="text"
-                    id="reg-business-name"
-                    required
-                    placeholder="e.g. S.K.P.S DIGITAL"
-                    class="light-input"
-                  />
-                </div>
-
-                <div>
-                  <label class="block text-xs font-semibold text-slate-400">Email address</label>
-                  <input
-                    type="email"
-                    id="reg-email"
-                    required
-                    placeholder="owner@yourstore.in"
-                    class="light-input"
-                  />
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                  <div>
-                    <label class="block text-xs font-semibold text-slate-400">Password</label>
-                    <input
-                      type="password"
-                      id="reg-password"
-                      required
-                      minlength="6"
-                      placeholder="••••••••"
-                      class="light-input"
-                    />
-                  </div>
-                  <div>
-                    <label class="block text-xs font-semibold text-slate-400">GSTIN (Optional)</label>
-                    <input
-                      type="text"
-                      id="reg-gstin"
-                      maxlength="15"
-                      placeholder="07AABCS1429B1Z5"
-                      class="light-input font-mono uppercase"
-                    />
-                  </div>
-                </div>
-
-                <div class="flex items-center justify-between pt-1">
-                  <label class="inline-flex items-center gap-2 text-xs text-slate-500 font-medium cursor-pointer">
-                    <input type="checkbox" id="reg-remember-me" checked class="w-3.5 h-3.5 accent-[#081B4B] rounded" />
-                    <span>Remember Me</span>
-                  </label>
-                  <button
-                    type="button"
-                    id="guest-sandbox-btn"
-                    class="text-xs font-extrabold text-[#5B2EFF] hover:underline"
-                  >
-                    ⚡ Instant Demo
-                  </button>
-                </div>
-
-                <button
-                  type="submit"
-                  id="reg-submit-btn"
-                  class="w-full py-2.5 rounded-xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-[13px] shadow-md transition mt-1"
-                >
-                  Create Seller Account →
-                </button>
-              </form>
-
-              <!-- Direct Google Signup Option -->
-              <button
-                type="button"
-                id="google-login-bottom-btn"
-                class="mt-2.5 w-full py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#081B4B] font-bold text-xs transition flex items-center justify-center gap-2"
-              >
-                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-                  <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/>
-                  <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"/>
-                  <path fill="#FBBC05" d="M5.3 14.8c-.2-.8-.4-1.6-.4-2.5s.2-1.7.4-2.5L1.6 7C.6 9 0 11.2 0 13.5s.6 4.5 1.6 6.5l3.7-2.9z"/>
-                  <path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.1-6.7-5l-3.7 2.8C3.5 21.4 7.4 24 12 24z"/>
-                </svg>
-                <span>Quick Signup with Google</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- ============================================================= -->
-          <!-- VIEW 2: "Welcome.!" SCREEN (MIDDLE PANEL OF 1000173806.png)   -->
-          <!-- ============================================================= -->
-          <div id="auth-welcome-view" class="hidden bg-[#081B4B] text-white min-h-[490px] flex flex-col justify-between p-7 relative">
-            <div class="my-auto text-center space-y-3">
-              <!-- Circular 3D Avatar Badge -->
-              <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-[#38BDF8] to-[#5B2EFF] p-1 mx-auto shadow-xl">
-                <div class="w-full h-full rounded-full bg-[#081B4B] flex items-center justify-center text-4xl">
-                  👨‍💼
-                </div>
-              </div>
-              <h2 class="text-2xl font-extrabold italic tracking-wide text-white pt-2">Welcome.!</h2>
-              <p id="welcome-user-label" class="text-[13px] text-indigo-200">Thanks for Logging-in</p>
-              <div class="pt-3">
-                <a
-                  href="./app.html"
-                  class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#10E594] text-[#081B4B] font-extrabold text-xs shadow-lg hover:scale-105 transition"
-                >
-                  <span>Enter 3D Dashboard →</span>
-                </a>
-              </div>
-            </div>
-
-            <!-- Bottom Curved Wave Bar with Home & Close Icons -->
-            <div class="pt-4 border-t border-white/10 flex items-center justify-end gap-3">
-              <a
-                href="./app.html"
-                title="Go Home"
-                class="w-11 h-11 rounded-full bg-white text-[#081B4B] flex items-center justify-center text-lg shadow-md hover:scale-105 transition"
-              >
-                🏠
-              </a>
-              <button
-                type="button"
-                id="close-welcome-view-btn"
-                title="Back"
-                class="w-11 h-11 rounded-full bg-white/10 text-white flex items-center justify-center text-sm font-bold hover:bg-white/20 transition"
-              >
-                ✕
-              </button>
-            </div>
-          </div>
-
-          <!-- ============================================================= -->
-          <!-- VIEW 3: "Yeah..!" SCREEN (RIGHT PANEL OF 1000173806.png)      -->
-          <!-- ============================================================= -->
-          <div id="auth-yeah-view" class="hidden bg-white text-[#081B4B] min-h-[490px] flex flex-col justify-between relative">
-            <!-- Top Navy Wave Header -->
-            <div class="bg-[#081B4B] h-16 px-5 flex items-center justify-end gap-2.5">
-              <button
-                type="button"
-                id="close-yeah-view-btn"
-                class="w-9 h-9 rounded-full bg-white text-[#081B4B] flex items-center justify-center font-bold text-xs shadow"
-              >
-                ✕
-              </button>
-              <div class="w-9 h-9 rounded-full bg-white/15 text-white flex items-center justify-center text-sm">
-                👤
-              </div>
-            </div>
-
-            <div class="my-auto text-center px-6 space-y-2.5">
-              <h2 class="text-2xl font-extrabold italic text-[#081B4B]">Yeah..!</h2>
-              <p class="text-[13px] text-slate-500 leading-relaxed">
-                Signup successfully.!<br />
-                Your seller account & cloud ledger are ready.
-              </p>
-            </div>
-
-            <div class="pb-8 text-center">
-              <a
-                href="./app.html"
-                class="inline-flex flex-col items-center gap-1 text-[#081B4B] hover:text-[#5B2EFF] transition group"
-              >
-                <span class="w-12 h-12 rounded-2xl bg-indigo-50 group-hover:bg-[#5B2EFF] group-hover:text-white flex items-center justify-center text-xl shadow-sm transition">
-                  🏠
-                </span>
-                <span class="text-xs font-extrabold">Home</span>
-              </a>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ================================================================= -->
-      <!-- COLUMN 2 (7 COLS): 3D PURPLE-MINT FINANCIAL ANALYSIS & VALUATION  -->
-      <!-- SHOWCASE (INSPIRED BY 1000173803.jpg)                             -->
-      <!-- ================================================================= -->
-      <div id="valuation-section" class="lg:col-span-7 flex flex-col gap-5 min-w-0 order-2 lg:order-1">
-
-        <!-- 3D HERO & BUSINESS VALUATION CARD -->
-        <div data-3d-tilt class="bento-card p-5 sm:p-7 relative overflow-hidden">
-          <!-- Decorative 3D Glow Orb -->
-          <div class=" -top-12 -right-12 w-44 h-44 rounded-full bg-gradient-to-br from-[#5B2EFF]/20 to-[#10E594]/25 blur-2xl pointer-events-none absolute"></div>
-
+        <div>
           <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-[#5B2EFF] text-xs font-extrabold">
-              <span>💎 3D FINANCIAL VALUATION & GST SUPER-APP</span>
+              <span>💎 INDIA'S #1 3D E-COM VALUATION, AUDIT &amp; GST SUPER-APP</span>
             </span>
-            <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-mono text-xs font-bold">
-              ⚡ 0.1s Cloud Engine
-            </span>
+            <button
+              type="button"
+              data-pro-badge
+              data-unlock-pro="MONTHLY"
+              class="px-3 py-1 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#4318FF] text-white text-xs font-bold shadow-sm"
+            >
+              Unlock Pro ⚡
+            </button>
           </div>
 
-          <h1 data-i18n="hero_heading" class="text-xl sm:text-2xl font-extrabold text-[#081B4B] tracking-tight leading-snug">
-            Track Your Store Valuation in 3D, Recover Lost RTO Payouts & Send Custom Navy GST Bills.
+          <h1 data-i18n="hero_heading" class="text-xl sm:text-2xl lg:text-[26px] font-extrabold text-[#081B4B] tracking-tight leading-snug">
+            Stop Losing 12% of Your E-Commerce Payouts. Track Store Valuation in 3D &amp; Send Custom Navy GST Bills.
           </h1>
 
           <p data-i18n="hero_subtext" class="text-[13px] sm:text-sm text-slate-600 mt-2.5 leading-relaxed">
-            Built for <strong>Amazon, Flipkart & Meesho</strong> sellers: 100% RAM CSV Audit, Custom S.K.P.S Style Navy GST Invoices with Circle Logo & Digital Signature, plus 1-Click <code>gst.gov.in</code> JSON Filing.
+            100% RAM CSV Audit for <strong>Amazon, Flipkart &amp; Meesho</strong> + S.K.P.S Style Navy GST Invoices with Circle Logo &amp; Digital Signature + Business &amp; Google Review Dynamic QR Generator.
           </p>
 
-          <!-- 3D PURPLE FINANCIAL VALUATION WIDGET (EXACT 1000173803.jpg STYLE) -->
-          <div class="mt-5 grid grid-cols-1 sm:grid-cols-12 gap-4 items-stretch">
-
-            <!-- Left 6 Cols: Royal Purple 3D Valuation Card -->
-            <div class="sm:col-span-6 rounded-3xl bg-gradient-to-br from-[#6336FF] via-[#5B2EFF] to-[#3B17B5] text-white p-5 shadow-xl relative overflow-hidden flex flex-col justify-between">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-semibold text-indigo-100">Financial Analysis • Valuation</span>
-                <span class="px-2 py-0.5 rounded-full bg-white/15 text-[#10E594] font-mono text-[10px] font-bold">ACTIVE CARD</span>
-              </div>
-
-              <div class="my-3">
-                <div class="text-[11px] uppercase tracking-wider text-indigo-200">Estimated Business Valuation</div>
-                <div id="live-3d-valuation" class="text-2xl font-black font-mono tracking-tight text-white mt-0.5">
-                  ₹21,60,000
-                </div>
-              </div>
-
-              <!-- Inner White Floating Pill Card (Expenses vs Profit from 1000173803.jpg) -->
-              <div class="bg-white text-[#081B4B] rounded-2xl p-3 shadow-md grid grid-cols-2 gap-2 text-center">
-                <div class="border-r border-slate-100 pr-1">
-                  <div class="text-[10px] font-bold text-slate-400">RTO & Weight Leak</div>
-                  <div id="val-card-leak" class="text-[13px] font-extrabold text-rose-600 font-mono mt-0.5">₹27,150</div>
-                </div>
-                <div class="pl-1">
-                  <div class="text-[10px] font-bold text-slate-400">Monthly Net Sales</div>
-                  <div id="val-card-sales" class="text-[13px] font-extrabold text-[#5B2EFF] font-mono mt-0.5">₹4,50,000</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Right 6 Cols: 3D Speedometer Gauge & Donut Analytics Card (1000173803.jpg) -->
-            <div class="sm:col-span-6 rounded-3xl bg-slate-50 border border-slate-200/80 p-4 flex flex-col justify-between">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-extrabold text-[#081B4B]">3D Profit & Audit Gauge</span>
-                <span class="px-2.5 py-0.5 rounded-full bg-[#5B2EFF] text-white text-[10px] font-bold">All Tasks</span>
-              </div>
-
-              <!-- 3D SVG Speedometer Arc + Donut Ring -->
-              <div class="flex items-center justify-around my-2">
-                <!-- Speedometer -->
-                <div class="text-center">
-                  <svg viewBox="0 0 120 75" class="w-28 h-20 overflow-visible float-3d">
-                    <defs>
-                      <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="0">
-                        <stop offset="0%" stop-color="#5B2EFF" />
-                        <stop offset="100%" stop-color="#10E594" />
-                      </linearGradient>
-                    </defs>
-                    <path d="M 15 62 A 45 45 0 0 1 105 62" fill="none" stroke="#E2E8F0" stroke-width="10" stroke-linecap="round" />
-                    <path d="M 15 62 A 45 45 0 0 1 98 36" fill="none" stroke="url(#gaugeGrad)" stroke-width="10" stroke-linecap="round" />
-                    <!-- Needle -->
-                    <polygon points="60,62 56,62 60,24 64,62" fill="#5B2EFF" transform="rotate(28 60 62)" />
-                    <circle cx="60" cy="62" r="5" fill="#081B4B" />
-                  </svg>
-                  <div class="text-[11px] font-extrabold text-[#081B4B] -mt-1">94.8% Audit Score</div>
-                </div>
-
-                <!-- 3D Donut Ring -->
-                <div class="text-center">
-                  <svg viewBox="0 0 80 80" class="w-16 h-16 float-3d">
-                    <circle cx="40" cy="40" r="28" fill="none" stroke="#E2E8F0" stroke-width="10" />
-                    <circle cx="40" cy="40" r="28" fill="none" stroke="#5B2EFF" stroke-width="10" stroke-dasharray="115 175" stroke-linecap="round" transform="rotate(-90 40 40)" />
-                    <circle cx="40" cy="40" r="28" fill="none" stroke="#10E594" stroke-width="10" stroke-dasharray="45 175" stroke-dashoffset="-120" stroke-linecap="round" transform="rotate(-90 40 40)" />
-                    <text x="40" y="44" text-anchor="middle" class="font-mono font-bold text-[12px]" fill="#081B4B">96%</text>
-                  </svg>
-                  <div class="text-[11px] font-extrabold text-emerald-600 mt-1">GST Compliant</div>
-                </div>
-              </div>
-
-              <div class="flex items-center justify-between text-[11px] text-slate-500 border-t border-slate-200 pt-2">
-                <span>100% RAM Isolation</span>
-                <span class="font-bold text-[#5B2EFF]">12x Annual Multiplier</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Interactive Slider for Valuation & Leak Recovery -->
-          <div class="mt-4 p-4 rounded-2xl bg-indigo-50/60 border border-indigo-100 space-y-2.5">
+          <!-- Interactive 3D Valuation & Profit Leak Slider -->
+          <div class="mt-5 p-4 rounded-2xl bg-indigo-50/60 border border-indigo-100 space-y-3">
             <div class="flex justify-between items-center text-xs font-bold text-[#081B4B]">
-              <span>Monthly Orders (Drag to test 3D Valuation & RTO Recovery)</span>
+              <span>Monthly Marketplace Orders (Drag to test 3D Store Valuation)</span>
               <span id="calc-orders-label" class="font-mono text-[13px] text-[#5B2EFF] font-extrabold">1,500 Orders / mo</span>
             </div>
             <input
@@ -596,180 +222,254 @@
               value="1500"
               class="w-full accent-[#5B2EFF] cursor-pointer h-2 bg-indigo-200 rounded-lg"
             />
-            <div class="grid grid-cols-3 gap-2 pt-1 text-center">
-              <div class="bg-white p-2.5 rounded-xl border border-indigo-100">
-                <div class="text-[10px] text-slate-500 font-semibold">RTO Claim (&gt;30d)</div>
-                <div id="calc-rto-val" class="text-[13px] font-black text-[#081B4B] font-mono">₹18,750</div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1 text-center">
+              <div class="bg-white p-3 rounded-xl border border-indigo-100 shadow-sm">
+                <div class="text-[10px] text-slate-500 font-semibold">Unreturned RTO (&gt;30d)</div>
+                <div id="calc-rto-val" class="text-sm font-black text-rose-600 font-mono mt-0.5">₹18,750</div>
               </div>
-              <div class="bg-white p-2.5 rounded-xl border border-indigo-100">
-                <div class="text-[10px] text-slate-500 font-semibold">Weight Fraud</div>
-                <div id="calc-weight-val" class="text-[13px] font-black text-[#081B4B] font-mono">₹8,400</div>
+              <div class="bg-white p-3 rounded-xl border border-indigo-100 shadow-sm">
+                <div class="text-[10px] text-slate-500 font-semibold">Weight Slab Overcharge</div>
+                <div id="calc-weight-val" class="text-sm font-black text-amber-600 font-mono mt-0.5">₹8,400</div>
               </div>
-              <div class="bg-[#10E594]/25 p-2.5 rounded-xl border border-emerald-400/50">
-                <div class="text-[10px] text-slate-800 font-bold">Yearly Recovery</div>
-                <div id="calc-yearly-val" class="text-[13px] font-black text-[#081B4B] font-mono">₹3,25,800</div>
+              <div class="bg-[#10E594]/25 p-3 rounded-xl border border-emerald-400/50 shadow-sm">
+                <div class="text-[10px] text-slate-800 font-bold">Est. Yearly Recovery</div>
+                <div id="calc-yearly-val" class="text-sm font-black text-[#081B4B] font-mono mt-0.5">₹3,25,800</div>
               </div>
             </div>
           </div>
+        </div>
 
-          <!-- Quick Action Buttons -->
-          <div class="mt-4 flex flex-wrap items-center gap-2.5">
-            <a
-              href="./invoice.html"
-              class="px-5 py-2.5 rounded-2xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow-md transition"
-            >
-              🧾 Create Custom Navy GST Invoice
-            </a>
-            <a
-              href="./ecom-audit.html"
-              class="px-4 py-2.5 rounded-2xl bg-[#5B2EFF] hover:bg-indigo-700 text-white font-extrabold text-xs shadow-md transition"
-            >
-              🔍 Scan Marketplace CSV
-            </a>
-            <button
-              type="button"
-              id="instant-demo-btn"
-              class="px-4 py-2.5 rounded-2xl bg-white hover:bg-slate-100 text-[#081B4B] font-bold text-xs border border-slate-200 transition"
-            >
-              🚀 Launch 3D Dashboard
-            </button>
+        <!-- Primary Action Buttons (Clean Navigation to Separate Login, Dashboard, Invoice & QR Studio) -->
+        <div class="mt-5 pt-4 border-t border-slate-100 flex flex-wrap items-center gap-2.5">
+          <a
+            href="./app.html"
+            class="px-5 py-3 rounded-2xl bg-[#5B2EFF] hover:bg-indigo-700 text-white font-extrabold text-xs sm:text-[13px] shadow-lg transition flex items-center gap-2"
+          >
+            <span>📊 Open 3D Financial Dashboard</span>
+          </a>
+          <a
+            href="./invoice.html"
+            class="px-4 py-3 rounded-2xl bg-[#081B4B] hover:bg-slate-900 text-white font-extrabold text-xs sm:text-[13px] shadow-md transition flex items-center gap-2"
+          >
+            <span>🧾 Create Navy GST Invoice</span>
+          </a>
+          <a
+            href="./qr-studio.html"
+            class="px-4 py-3 rounded-2xl bg-[#10E594] hover:bg-emerald-300 text-[#081B4B] font-extrabold text-xs sm:text-[13px] shadow-sm transition flex items-center gap-1.5"
+          >
+            <span>🔳 Dynamic QR &amp; Google Reviews</span>
+          </a>
+          <a
+            href="./login.html"
+            class="px-4 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-[#081B4B] font-bold text-xs border border-slate-200 transition"
+          >
+            🔐 Login / Create Account →
+          </a>
+        </div>
+      </div>
+
+      <!-- RIGHT 5 COLS: 3D ROYAL PURPLE VALUATION CARD + SPEEDOMETER GAUGE & DONUT RING -->
+      <div class="lg:col-span-5 flex flex-col gap-5 min-w-0">
+
+        <!-- Royal Purple 3D Store Valuation Card -->
+        <div data-3d-tilt class="purple-3d-card text-white p-5 sm:p-6 relative overflow-hidden flex flex-col justify-between">
+          <div class=" -top-10 -right-10 w-36 h-36 rounded-full bg-white/10 pointer-events-none absolute"></div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-indigo-100">Financial Analysis • Live Valuation</span>
+            <span class="px-2.5 py-0.5 rounded-full bg-[#10E594] text-[#081B4B] font-mono text-[10px] font-extrabold">12x MULTIPLE</span>
+          </div>
+
+          <div class="my-3.5">
+            <div class="text-[11px] uppercase tracking-wider text-indigo-200">Estimated Business Valuation</div>
+            <div id="live-3d-valuation" class="text-2xl sm:text-3xl font-black font-mono tracking-tight text-white mt-0.5">
+              ₹21,60,000.00
+            </div>
+          </div>
+
+          <!-- Inner White Floating Split Card -->
+          <div class="bg-white text-[#081B4B] rounded-2xl p-3.5 shadow-lg grid grid-cols-2 gap-2 text-center">
+            <div class="border-r border-slate-100 pr-2">
+              <div class="text-[10px] font-bold text-slate-400">Monthly Leak Risk</div>
+              <div id="val-card-leak" class="text-sm font-black text-rose-600 font-mono mt-0.5">₹27,150.00</div>
+            </div>
+            <div class="pl-2">
+              <div class="text-[10px] font-bold text-slate-400">Monthly GMV Sales</div>
+              <div id="val-card-sales" class="text-sm font-black text-[#5B2EFF] font-mono mt-0.5">₹4,50,000.00</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3D Speedometer Profit Gauge + Concentric Donut Ring Card -->
+        <div data-3d-tilt class="bento-card p-5 flex-1 flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold text-[#081B4B]">3D Profit &amp; Compliance Gauge</span>
+            <span class="px-2.5 py-0.5 rounded-full bg-[#5B2EFF] text-white text-[10px] font-bold">All Tasks</span>
+          </div>
+
+          <div class="flex items-center justify-around my-2">
+            <!-- 3D Speedometer -->
+            <div class="text-center">
+              <svg viewBox="0 0 130 80" class="w-32 h-20 overflow-visible float-3d">
+                <defs>
+                  <linearGradient id="homeGaugeGrad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#5B2EFF" />
+                    <stop offset="100%" stop-color="#10E594" />
+                  </linearGradient>
+                </defs>
+                <path d="M 15 66 A 50 50 0 0 1 115 66" fill="none" stroke="#E2E8F0" stroke-width="11" stroke-linecap="round" />
+                <path d="M 15 66 A 50 50 0 0 1 108 38" fill="none" stroke="url(#homeGaugeGrad)" stroke-width="11" stroke-linecap="round" />
+                <polygon id="home-gauge-needle" points="65,66 61,66 65,24 69,66" fill="#5B2EFF" transform="rotate(26 65 66)" style="transition: transform 0.3s ease;" />
+                <circle cx="65" cy="66" r="5.5" fill="#081B4B" />
+              </svg>
+              <div class="text-xs font-extrabold text-[#081B4B] -mt-1">94.8% Audit Score</div>
+            </div>
+
+            <!-- 3D Donut Ring -->
+            <div class="text-center">
+              <svg viewBox="0 0 90 90" class="w-20 h-20 float-3d">
+                <circle cx="45" cy="45" r="32" fill="none" stroke="#E2E8F0" stroke-width="10" />
+                <circle cx="45" cy="45" r="32" fill="none" stroke="#5B2EFF" stroke-width="11" stroke-dasharray="125 200" stroke-linecap="round" transform="rotate(-90 45 45)" />
+                <circle cx="45" cy="45" r="32" fill="none" stroke="#10E594" stroke-width="9" stroke-dasharray="50 200" stroke-dashoffset="-130" stroke-linecap="round" transform="rotate(-90 45 45)" />
+                <text x="45" y="48" text-anchor="middle" class="font-mono font-black text-xs" fill="#081B4B">900</text>
+              </svg>
+              <div class="text-xs font-extrabold text-emerald-600 mt-0.5">Index Prime</div>
+            </div>
+          </div>
+
+          <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+            <span>DPDP Act 2023 Compliant</span>
+            <a href="./app.html" class="font-extrabold text-[#5B2EFF] hover:underline">Full 3D Analytics →</a>
           </div>
         </div>
 
       </div>
-    </div>
+    </section>
 
-    <!-- SECOND ROW: 4 INTERACTIVE 3D FEATURE MODULES -->
-    <section id="features-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    <!-- SECOND ROW: 5 INTERACTIVE 3D SUPER-APP MODULES (INCLUDING DYNAMIC QR GENERATOR) -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+
+      <!-- Module 1: Custom S.K.P.S Navy Invoice -->
       <a href="./invoice.html" data-3d-tilt class="bento-card p-5 flex flex-col justify-between group">
         <div>
           <div class="w-11 h-11 rounded-2xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-lg mb-3 shadow-sm">
             🧾
           </div>
-          <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#5B2EFF]">Module 01 • Custom Navy Bill</span>
-          <h3 class="text-[15px] font-extrabold text-[#081B4B] mt-1 group-hover:text-[#5B2EFF] transition">
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#5B2EFF]">Module 01 • Navy Bill</span>
+          <h3 class="text-sm font-extrabold text-[#081B4B] mt-1 group-hover:text-[#5B2EFF] transition">
             S.K.P.S Style GST Invoice + Circle Logo
           </h3>
           <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">
-            Upload your circular brand logo, edit every bank/tax field, add digital signature & auto-promote SellGST Pro.
+            Upload your circular logo, edit every bank/tax field, add digital signature &amp; infinity IDs.
           </p>
         </div>
         <div class="mt-4 pt-2.5 border-t border-slate-100 text-xs font-extrabold text-[#081B4B] flex items-center justify-between">
-          <span>Open Invoice Maker</span>
+          <span>Create Bill</span>
           <span class="text-[#5B2EFF]">→</span>
         </div>
       </a>
 
+      <!-- Module 2: E-Com RTO & Weight Audit -->
       <a href="./ecom-audit.html" data-3d-tilt class="bento-card p-5 flex flex-col justify-between group">
         <div>
           <div class="w-11 h-11 rounded-2xl bg-rose-50 border border-rose-200 flex items-center justify-center text-lg mb-3 shadow-sm">
             📦
           </div>
-          <span class="text-[10px] font-extrabold uppercase tracking-wider text-rose-600">Module 02 • 0.1s RAM Scanner</span>
-          <h3 class="text-[15px] font-extrabold text-[#081B4B] mt-1 group-hover:text-[#5B2EFF] transition">
-            Pending RTO (&gt;30 Days) & Weight Fraud
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-rose-600">Module 02 • RAM Scanner</span>
+          <h3 class="text-sm font-extrabold text-[#081B4B] mt-1 group-hover:text-[#5B2EFF] transition">
+            Pending RTO (&gt;30d) &amp; Weight Fraud
           </h3>
           <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">
-            Drop your Meesho, Flipkart, or Amazon CSV. Spot unreturned RTOs and courier slab overcharges in 0.1s.
+            Drop Meesho, Flipkart, or Amazon CSV. Spot unreturned RTOs &amp; weight fraud in 0.1s.
           </p>
         </div>
         <div class="mt-4 pt-2.5 border-t border-slate-100 text-xs font-extrabold text-[#081B4B] flex items-center justify-between">
-          <span>Open Audit Scanner</span>
+          <span>Scan CSV</span>
           <span class="text-[#5B2EFF]">→</span>
         </div>
       </a>
 
+      <!-- Module 3: 1-Click GSTR-1 JSON -->
       <a href="./gst-filing.html" data-3d-tilt class="bento-card p-5 flex flex-col justify-between group">
         <div>
           <div class="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-lg mb-3 shadow-sm">
             🏛️
           </div>
-          <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">Module 03 • Portal Schema</span>
-          <h3 class="text-[15px] font-extrabold text-[#081B4B] mt-1 group-hover:text-[#5B2EFF] transition">
-            1-Click GSTR-1 (.JSON) & GSTR-3B Copy
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">Module 03 • Portal JSON</span>
+          <h3 class="text-sm font-extrabold text-[#081B4B] mt-1 group-hover:text-[#5B2EFF] transition">
+            1-Click GSTR-1 (.JSON) &amp; GSTR-3B
           </h3>
           <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">
-            Generate official <code>gst.gov.in</code> offline JSON files (B2B, B2CS, HSN) and file returns in 60 seconds.
+            Generate official <code>gst.gov.in</code> offline JSON files (B2B, B2CS, HSN) in 60 seconds.
           </p>
         </div>
         <div class="mt-4 pt-2.5 border-t border-slate-100 text-xs font-extrabold text-[#081B4B] flex items-center justify-between">
-          <span>Prepare GSTR-1 JSON</span>
+          <span>File GSTR-1</span>
           <span class="text-[#5B2EFF]">→</span>
         </div>
       </a>
 
-      <a href="./ecom-audit.html#label-cropper-section" data-3d-tilt class="bento-card p-5 flex flex-col justify-between group bg-gradient-to-br from-white to-emerald-50/70">
+      <!-- Module 4: 4x6 Thermal Label Cropper -->
+      <a href="./ecom-audit.html#label-cropper-section" data-3d-tilt class="bento-card p-5 flex flex-col justify-between group">
         <div>
-          <div class="w-11 h-11 rounded-2xl bg-white border border-emerald-300 flex items-center justify-center text-lg mb-3 shadow-sm">
+          <div class="w-11 h-11 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-lg mb-3 shadow-sm">
             🏷️
           </div>
-          <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-800">Module 04 • Warehouse Tool</span>
-          <h3 class="text-[15px] font-extrabold text-[#081B4B] mt-1 group-hover:text-[#5B2EFF] transition">
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-amber-700">Module 04 • Warehouse</span>
+          <h3 class="text-sm font-extrabold text-[#081B4B] mt-1 group-hover:text-[#5B2EFF] transition">
             4x6 Thermal Shipping Label Cropper
           </h3>
-          <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">
-            Auto-crop A4 marketplace shipping sheets into crisp 4x6 thermal labels with SKU pick-list stamp.
+          <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">
+            Auto-crop A4 shipping sheets into 4x6 inch thermal labels with SKU pick-list footer.
           </p>
         </div>
-        <div class="mt-4 pt-2.5 border-t border-emerald-200/60 text-xs font-extrabold text-[#081B4B] flex items-center justify-between">
-          <span>Launch Label Cropper</span>
+        <div class="mt-4 pt-2.5 border-t border-slate-100 text-xs font-extrabold text-[#081B4B] flex items-center justify-between">
+          <span>Crop Labels</span>
           <span class="text-[#5B2EFF]">→</span>
         </div>
       </a>
+
+      <!-- Module 5: Business & Google Review Dynamic QR Generator (5 Limit Lock) -->
+      <a href="./qr-studio.html" data-3d-tilt class="bento-card p-5 flex flex-col justify-between group bg-gradient-to-br from-white via-indigo-50/40 to-emerald-50/70 border-indigo-200">
+        <div>
+          <div class="w-11 h-11 rounded-2xl bg-[#081B4B] text-[#10E594] flex items-center justify-center text-lg mb-3 shadow-md">
+            🔳
+          </div>
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#5B2EFF]">Module 05 • QR Studio</span>
+          <h3 class="text-sm font-extrabold text-[#081B4B] mt-1 group-hover:text-[#5B2EFF] transition">
+            Business &amp; Google Review Dynamic QR
+          </h3>
+          <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">
+            Create custom UPI, Business &amp; 5-Star Google Review QR codes (5 Free Limit, then Pro Lock).
+          </p>
+        </div>
+        <div class="mt-4 pt-2.5 border-t border-indigo-100 text-xs font-extrabold text-[#5B2EFF] flex items-center justify-between">
+          <span>Open QR Studio</span>
+          <span>→</span>
+        </div>
+      </a>
+
     </section>
   </main>
 
-  <!-- PHONE OTP MODAL -->
-  <div id="phone-otp-modal" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-white rounded-3xl border border-indigo-100 max-w-sm w-full p-6 shadow-2xl space-y-4">
-      <div class="flex items-center justify-between">
-        <h3 class="text-base font-extrabold text-[#081B4B]">📲 Sign In via Mobile OTP</h3>
-        <button type="button" id="close-phone-modal-btn" class="w-8 h-8 rounded-full bg-slate-100 font-bold text-xs">✕</button>
-      </div>
-      <form id="auth-phone-form" class="space-y-3 text-xs">
-        <div>
-          <label class="block font-bold text-slate-600 mb-1">10-Digit Mobile Number</label>
-          <div class="flex">
-            <span class="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-slate-200 bg-slate-100 text-slate-700 font-mono font-bold">+91</span>
-            <input type="tel" id="phone-number-input" maxlength="10" placeholder="9876543210" class="w-full px-3.5 py-2.5 rounded-r-xl bg-slate-50 border border-slate-200 font-mono text-sm" />
-          </div>
-        </div>
-        <div id="otp-verify-box" class="hidden space-y-2">
-          <label class="block font-bold text-slate-600">Enter 6-Digit SMS OTP</label>
-          <input type="text" id="phone-otp-input" maxlength="6" placeholder="123456" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-mono text-center text-sm tracking-widest" />
-        </div>
-        <div id="recaptcha-container"></div>
-        <button type="submit" id="phone-otp-submit" class="w-full py-3 rounded-2xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow transition">
-          Send Verification OTP
-        </button>
-      </form>
-    </div>
-  </div>
-
-  <!-- FOOTER -->
+  <!-- FOOTER (NO MASTER ADMIN LINK FOR REGULAR USERS) -->
   <footer class="max-w-7xl mx-auto w-full px-4 sm:px-6 mt-10 pt-5 border-t border-indigo-200/60 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-600">
     <div>
-      <strong>SellGST Pro 3D</strong> • E-Commerce Valuation, Audit & Custom GST Billing Super-App
+      <strong>SellGST Pro 3D</strong> • DPDP Act 2023 Compliant • Powered by AGNI VOLT Cloud Architecture
     </div>
     <div class="flex flex-wrap items-center gap-4 font-bold text-[#081B4B]">
+      <a href="./login.html" class="hover:text-[#5B2EFF]">Login / Signup</a>
       <a href="./app.html" class="hover:text-[#5B2EFF]">3D Dashboard</a>
       <a href="./invoice.html" class="hover:text-[#5B2EFF]">Navy GST Invoice</a>
-      <a href="./ecom-audit.html" class="hover:text-[#5B2EFF]">E-Com Audit</a>
-      <a href="./gst-filing.html" class="hover:text-[#5B2EFF]">GSTR-1 JSON</a>
-      <a href="./admin.html" class="hover:text-[#5B2EFF]">Admin Console</a>
+      <a href="./qr-studio.html" class="hover:text-[#5B2EFF]">Dynamic QR Studio</a>
+      <button type="button" data-open-account class="hover:text-[#5B2EFF]">My Account &amp; Privacy</button>
+      <!-- Hidden unless logged-in user has isAdmin == true -->
+      <a href="./admin.html" data-admin-only class="hidden text-rose-600 hover:underline">🛡️ Master Admin</a>
     </div>
   </footer>
 
-  <!-- MODULE LOGIC -->
+  <!-- HOME PAGE MODULE LOGIC -->
   <script type="module">
     import {
-      loginWithEmail,
-      registerWithEmail,
-      resetUserPassword,
-      loginWithGoogle,
-      setupRecaptcha,
-      sendPhoneOTP,
-      showToast,
       formatINR,
       init3DTiltCards
     } from "./assets/js/security-core.js";
@@ -797,6 +497,7 @@
     const liveValuation = document.getElementById("live-3d-valuation");
     const cardLeak = document.getElementById("val-card-leak");
     const cardSales = document.getElementById("val-card-sales");
+    const needle = document.getElementById("home-gauge-needle");
 
     let calcPending = false;
     function update3DValuation() {
@@ -820,212 +521,14 @@
         liveValuation.textContent = formatINR(storeValuation);
         cardLeak.textContent = formatINR(monthlyLeak);
         cardSales.textContent = formatINR(monthlyGmv);
+
+        // Rotate 3D gauge needle smoothly based on order volume
+        const angle = Math.min(58, Math.max(-35, Math.round((orders / 20000) * 85 - 20)));
+        needle?.setAttribute("transform", `rotate(${angle} 65 66)`);
       });
     }
     slider?.addEventListener("input", update3DValuation, { passive: true });
     update3DValuation();
-
-    // 3. Curved Wave ^ and v Toggle Animation (From 1000173806.png)
-    const navyPanel = document.getElementById("navy-login-panel");
-    const whitePanel = document.getElementById("white-signup-panel");
-    document.getElementById("wave-up-btn")?.addEventListener("click", () => {
-      navyPanel.scrollIntoView({ behavior: "smooth", block: "center" });
-      document.getElementById("login-email")?.focus();
-    });
-    document.getElementById("wave-down-btn")?.addEventListener("click", () => {
-      whitePanel.scrollIntoView({ behavior: "smooth", block: "center" });
-      document.getElementById("reg-business-name")?.focus();
-    });
-
-    // 4. Show "Welcome.!" or "Yeah..!" Screen Helper (From 1000173806.png)
-    const splitView = document.getElementById("auth-split-view");
-    const welcomeView = document.getElementById("auth-welcome-view");
-    const yeahView = document.getElementById("auth-yeah-view");
-
-    function showWelcomeScreen(name = "") {
-      splitView.classList.add("hidden");
-      yeahView.classList.add("hidden");
-      welcomeView.classList.remove("hidden");
-      if (name) {
-        document.getElementById("welcome-user-label").textContent = `Thanks for Logging-in, ${name}!`;
-      }
-      setTimeout(() => {
-        window.location.href = "./app.html";
-      }, 1400);
-    }
-
-    function showYeahScreen() {
-      splitView.classList.add("hidden");
-      welcomeView.classList.add("hidden");
-      yeahView.classList.remove("hidden");
-      setTimeout(() => {
-        window.location.href = "./app.html";
-      }, 1500);
-    }
-
-    document.getElementById("close-welcome-view-btn")?.addEventListener("click", () => {
-      welcomeView.classList.add("hidden");
-      splitView.classList.remove("hidden");
-    });
-
-    document.getElementById("close-yeah-view-btn")?.addEventListener("click", () => {
-      yeahView.classList.add("hidden");
-      splitView.classList.remove("hidden");
-    });
-
-    function enterDemoSandbox(customName = "S.K.P.S DIGITAL", customGstin = "07AABCS1429B1Z5") {
-      localStorage.setItem("sellgst_demo_session", "ACTIVE");
-      const existing = JSON.parse(localStorage.getItem("sellgst_local_profile") || "{}");
-      localStorage.setItem(
-        "sellgst_local_profile",
-        JSON.stringify({
-          ...existing,
-          uid: existing.uid || "demo-seller-01",
-          displayName: customName,
-          businessName: customName,
-          gstin: customGstin
-        })
-      );
-      showWelcomeScreen(customName);
-    }
-
-    // 5. Email Login Handler
-    document.getElementById("auth-email-form")?.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const btn = document.getElementById("email-login-submit");
-      const email = document.getElementById("login-email").value.trim();
-      const password = document.getElementById("login-password").value;
-
-      btn.disabled = true;
-      btn.textContent = "Authenticating...";
-      try {
-        await loginWithEmail(email, password, true);
-        showWelcomeScreen(email.split("@")[0].toUpperCase());
-      } catch (err) {
-        if (
-          err.code === "auth/user-not-found" ||
-          err.code === "auth/invalid-credential" ||
-          err.code === "auth/invalid-login-credentials"
-        ) {
-          try {
-            const storeName = email.split("@")[0].toUpperCase();
-            await registerWithEmail(email, password, storeName, "07AABCS1429B1Z5", true);
-            showWelcomeScreen(storeName);
-            return;
-          } catch (_) {}
-        }
-        enterDemoSandbox(email.split("@")[0].toUpperCase());
-      }
-    });
-
-    // 6. Signup Handler -> Triggers "Yeah..!" Screen
-    document.getElementById("auth-register-form")?.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const btn = document.getElementById("reg-submit-btn");
-      const bizName = document.getElementById("reg-business-name").value.trim();
-      const email = document.getElementById("reg-email").value.trim();
-      const password = document.getElementById("reg-password").value;
-      const gstin = document.getElementById("reg-gstin").value.trim().toUpperCase();
-      const remember = document.getElementById("reg-remember-me").checked;
-
-      btn.disabled = true;
-      btn.textContent = "Creating Account...";
-      try {
-        await registerWithEmail(email, password, bizName, gstin, remember);
-        showYeahScreen();
-      } catch (_) {
-        localStorage.setItem(
-          "sellgst_local_profile",
-          JSON.stringify({
-            uid: "seller-" + Date.now(),
-            displayName: bizName,
-            businessName: bizName,
-            gstin: gstin || "07AABCS1429B1Z5",
-            email
-          })
-        );
-        showYeahScreen();
-      }
-    });
-
-    // 7. Forgot Password Handler
-    document.getElementById("forgot-password-btn")?.addEventListener("click", async () => {
-      const email = document.getElementById("login-email").value.trim();
-      if (!email) {
-        showToast("Please enter your Email address first to reset password.", "warning");
-        document.getElementById("login-email").focus();
-        return;
-      }
-      try {
-        await resetUserPassword(email);
-        showToast(`Password reset link sent to ${email}!`, "success");
-      } catch (_) {
-        showToast(`If ${email} is registered, a reset link has been dispatched.`, "info");
-      }
-    });
-
-    // 8. Direct Google Login Handlers (Top & Bottom)
-    async function handleGoogleAuth() {
-      try {
-        const cred = await loginWithGoogle();
-        showWelcomeScreen(cred.user?.displayName || "Seller");
-      } catch (_) {
-        showToast("Signing into Instant Seller Workspace...", "info");
-        enterDemoSandbox();
-      }
-    }
-    document.getElementById("google-login-top-btn")?.addEventListener("click", handleGoogleAuth);
-    document.getElementById("google-login-bottom-btn")?.addEventListener("click", handleGoogleAuth);
-
-    // 9. Phone OTP Modal
-    const phoneModal = document.getElementById("phone-otp-modal");
-    document.getElementById("open-phone-otp-modal-btn")?.addEventListener("click", () => {
-      phoneModal.classList.remove("hidden");
-      phoneModal.classList.add("flex");
-    });
-    document.getElementById("close-phone-modal-btn")?.addEventListener("click", () => {
-      phoneModal.classList.add("hidden");
-      phoneModal.classList.remove("flex");
-    });
-
-    let confirmationResult = null;
-    document.getElementById("auth-phone-form")?.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const phoneInput = document.getElementById("phone-number-input").value.trim();
-      const otpInput = document.getElementById("phone-otp-input").value.trim();
-      const otpBox = document.getElementById("otp-verify-box");
-      const btn = document.getElementById("phone-otp-submit");
-
-      if (!confirmationResult) {
-        if (phoneInput.replace(/\D/g, "").length !== 10) {
-          showToast("Enter valid 10-digit mobile number.", "warning");
-          return;
-        }
-        btn.disabled = true;
-        btn.textContent = "Sending OTP...";
-        try {
-          const verifier = setupRecaptcha("recaptcha-container");
-          confirmationResult = await sendPhoneOTP(phoneInput, verifier);
-          otpBox.classList.remove("hidden");
-          btn.disabled = false;
-          btn.textContent = "✅ Verify OTP";
-        } catch (_) {
-          phoneModal.classList.add("hidden");
-          enterDemoSandbox("Seller +91" + phoneInput);
-        }
-      } else {
-        try {
-          await confirmationResult.confirm(otpInput);
-          phoneModal.classList.add("hidden");
-          showWelcomeScreen("+91 " + phoneInput);
-        } catch (_) {
-          showToast("Invalid OTP.", "error");
-        }
-      }
-    });
-
-    document.getElementById("instant-demo-btn")?.addEventListener("click", () => enterDemoSandbox());
-    document.getElementById("guest-sandbox-btn")?.addEventListener("click", () => enterDemoSandbox());
   </script>
 </body>
 </html>
