@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en" class="overflow-x-hidden scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>Dynamic QR & Google Review Studio — SellGST Pro</title>
+  <meta name="description" content="Create Dynamic Business QR, Google 5-Star Review Standees & UPI QR Codes with 5-Free Limit Lock." />
+  <meta name="theme-color" content="#081B4B" />
+  <link rel="manifest" href="./manifest.json" />
+
+  <!-- 0.1s Instant Module Preload & Speculative Prefetch -->
+  <link rel="modulepreload" href="./assets/js/security-core.js" />
+  <link rel="modulepreload" href="./assets/js/i18n.js" />
+  <link rel="prefetch" href="./index.html" as="document" />
+  <link rel="prefetch" href="./app.html" as="document" />
+  <link rel="prefetch" href="./invoice.html" as="document" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          },
+          colors: {
+            navy: '#081B4B',
+            royal: '#5B2EFF',
+            mint: '#10E594'
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    html, body {
+      max-width: 100vw;
+      overflow-x: hidden;
+      background: linear-gradient(135deg, #DDE3FF 0%, #EEF2FF 48%, #D6F5F8 100%);
+      color: #0F172A;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .bento-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(16px);
+      border-radius: 26px;
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 18px 40px -15px rgba(91, 46, 255, 0.14), 0 4px 12px rgba(15, 23, 42, 0.04);
+      transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease;
+      transform-style: preserve-3d;
+      will-change: transform;
+      min-width: 0;
+    }
+    .purple-3d-card {
+      background: linear-gradient(135deg, #6A3BFF 0%, #5B2EFF 55%, #3F16C4 100%);
+      border-radius: 26px;
+      box-shadow: 0 22px 45px -12px rgba(91, 46, 255, 0.38);
+      transform-style: preserve-3d;
+      min-width: 0;
+    }
+    @keyframes shrink7s {
+      from { width: 100%; }
+      to { width: 0%; }
+    }
+    .pwa-timer-bar {
+      animation: shrink7s 7s linear forwards;
+    }
+  </style>
+</head>
+<body class="min-h-screen w-full overflow-x-hidden pb-24 lg:pb-12 lg:pl-24">
+
+  <!-- DESKTOP FLOATING 3D LEFT PILL SIDEBAR (NO ADMIN BUTTON FOR NORMAL USERS) -->
+  <aside class="hidden lg:flex fixed left-4 top-4 bottom-4 w-16 bg-white/95 backdrop-blur-xl border border-white rounded-full shadow-xl shadow-indigo-500/10 flex-col items-center justify-between py-5 z-40">
+    <a href="./index.html" title="Home" class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#081B4B] via-[#5B2EFF] to-[#10E594] text-white flex items-center justify-center font-black text-sm shadow-md">
+      🏠
+    </a>
+    <nav class="flex flex-col items-center gap-3">
+      <a href="./app.html" title="3D Analytics Dashboard" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+        📊
+      </a>
+      <a href="./invoice.html" title="Custom Navy GST Invoice" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+        🧾
+      </a>
+      <a href="./ecom-audit.html" title="E-Com Audit & 4x6 Labels" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+        📦
+      </a>
+      <a href="./gst-filing.html" title="1-Click GSTR-1 JSON" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+        🏛️
+      </a>
+      <a href="./qr-studio.html" title="Dynamic QR & Google Reviews" class="w-11 h-11 rounded-2xl bg-[#5B2EFF] text-white flex items-center justify-center text-base shadow-md transition">
+        🔳
+      </a>
+    </nav>
+    <div class="flex flex-col items-center gap-2">
+      <button type="button" data-open-account title="My Account & DPDP Privacy" class="w-10 h-10 rounded-full bg-indigo-50 text-[#5B2EFF] flex items-center justify-center text-sm shadow-sm">
+        👤
+      </button>
+    </div>
+  </aside>
+
+  <!-- MOBILE FLOATING BOTTOM DOCK (SHOWS CURRENT PAGE ACTIVE, NO ADMIN FOR REGULAR USERS) -->
+  <nav class="lg:hidden fixed bottom-2.5 inset-x-3 bg-white/95 backdrop-blur-xl text-slate-700 rounded-3xl px-2 py-2.5 shadow-2xl border border-indigo-100 z-40 flex items-center justify-around">
+    <a href="./app.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">📊</span>
+      <span>Dashboard</span>
+    </a>
+    <a href="./invoice.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">🧾</span>
+      <span>GST Bill</span>
+    </a>
+    <a href="./ecom-audit.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">📦</span>
+      <span>Audit</span>
+    </a>
+    <a href="./qr-studio.html" class="flex flex-col items-center gap-0.5 text-[#5B2EFF] font-extrabold text-[10px]">
+      <span class="text-base">🔳</span>
+      <span>QR Studio</span>
+    </a>
+    <button type="button" data-open-account class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">👤</span>
+      <span>Account</span>
+    </button>
+  </nav>
+
+  <!-- MAIN CONTAINER -->
+  <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-3 sm:pt-4 space-y-5 overflow-x-hidden">
+
+    <!-- CLEAN TOP HEADER BAR (ONLY HOME OPTION + 7s INSTALL BUTTON + ACCOUNT/PRO) -->
+    <header class="bg-white/90 backdrop-blur-xl rounded-3xl border border-white px-4 sm:px-6 py-3 shadow-lg shadow-indigo-500/5 flex flex-wrap items-center justify-between gap-2.5">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <!-- Direct Home Button as Requested -->
+        <a
+          href="./index.html"
+          class="px-3.5 py-2 rounded-2xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow-sm transition flex items-center gap-1.5 shrink-0"
+        >
+          <span>🏠 Home</span>
+        </a>
+        <div class="min-w-0">
+          <h1 class="font-extrabold text-sm sm:text-[15px] text-[#081B4B] truncate">Dynamic QR &amp; Google Review Studio</h1>
+          <p class="text-[11px] text-slate-500 truncate">5 Free QR Generations • Google 5-Star Reviews • Business &amp; UPI Standees</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 flex-wrap justify-end ml-auto">
+        <select
+          data-lang-switcher
+          aria-label="Language"
+          class="px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none max-w-[95px] truncate"
+        ></select>
+
+        <!-- 7-SECOND AUTO-HIDING PWA INSTALL BUTTON -->
+        <button
+          type="button"
+          id="pwa-install-btn"
+          data-pwa-install
+          class="relative overflow-hidden px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#081B4B] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap flex items-center gap-1.5"
+        >
+          <span>📲 Install App</span>
+          <span id="pwa-sec-badge" class="px-1.5 py-0.2 rounded-full bg-white/20 text-[10px] font-mono">7s</span>
+          <span class="absolute bottom-0 left-0 h-0.5 bg-[#10E594] pwa-timer-bar"></span>
+        </button>
+
+        <button
+          type="button"
+          data-open-account
+          class="px-3 py-1.5 rounded-full bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] text-xs font-extrabold border border-indigo-100 transition whitespace-nowrap"
+        >
+          👤 My Account
+        </button>
+
+        <button
+          type="button"
+          data-pro-badge
+          data-unlock-pro="MONTHLY"
+          class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-[#5B2EFF] to-[#4318FF] text-white shadow-md whitespace-nowrap"
+        >
+          Unlock Pro ⚡
+        </button>
+      </div>
+    </header>
+
+    <!-- =================================================================== -->
+    <!-- DEDICATED PORTAL BANNER FOR YOUR DYNAMIC QR GENERATOR WEBSITE       -->
+    <!-- =================================================================== -->
+    <section data-3d-tilt class="purple-3d-card text-white p-5 sm:p-6 flex flex-wrap items-center justify-between gap-4 relative overflow-hidden">
+      <div class=" -top-12 -right-12 w-40 h-40 rounded-full bg-white/10 pointer-events-none absolute"></div>
+      <div class="space-y-1 max-w-2xl">
+        <div class="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-white/15 text-[#10E594] text-[11px] font-extrabold">
+          <span>✨ OFFICIAL DYNAMIC QR PORTAL</span>
+          <span>•</span>
+          <span id="qr-quota-pill" class="font-mono text-white">5/5 Free Uses Left</span>
+        </div>
+        <h2 class="text-base sm:text-lg font-extrabold text-white">
+          Need Advanced Multi-Link Dynamic QR Codes or Google Review Standees?
+        </h2>
+        <p class="text-xs sm:text-[13px] text-indigo-100 leading-relaxed">
+          Use the 3D Standee Studio below or launch our full <strong>Dynamic QR Generator Portal</strong> (includes 5 free QR creations before Pro subscription lock).
+        </p>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+        <button
+          type="button"
+          id="open-external-qr-portal-btn"
+          class="px-5 py-3 rounded-2xl bg-[#10E594] hover:bg-emerald-300 text-[#081B4B] font-extrabold text-xs sm:text-[13px] shadow-xl transition flex items-center gap-2"
+        >
+          <span>🚀 Launch Full Dynamic QR Portal →</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- MAIN 3D QR STUDIO WORKSPACE (WITH 5-USE HARD LOCK OVERLAY)          -->
+    <!-- =================================================================== -->
+    <section class="relative">
+
+      <!-- HARD PAYWALL LOCK OVERLAY WHEN 5 FREE QR USES ARE EXHAUSTED -->
+      <div
+        id="qr-hard-lock-overlay"
+        class="hidden absolute inset-0 z-30 rounded-3xl bg-[#081B4B]/90 backdrop-blur-md text-white p-6 flex-col items-center justify-center text-center space-y-4 border-2 border-[#5B2EFF]"
+      >
+        <div class="w-16 h-16 rounded-3xl bg-gradient-to-tr from-[#5B2EFF] to-[#10E594] flex items-center justify-center text-3xl shadow-2xl">
+          🔒
+        </div>
+        <span class="px-3.5 py-1 rounded-full bg-rose-500/20 border border-rose-400/40 text-rose-200 font-mono text-xs font-extrabold">
+          5 / 5 FREE DYNAMIC QR LIMIT REACHED
+        </span>
+        <h3 class="text-xl sm:text-2xl font-extrabold text-white max-w-md">
+          Unlock Unlimited Dynamic Business &amp; Google Review QR Codes!
+        </h3>
+        <p class="text-xs sm:text-sm text-indigo-200 max-w-md leading-relaxed">
+          You have used all 5 free QR generations. Activate <strong>SellGST Pro</strong> via Instant UPI to unlock unlimited Dynamic QR codes, Google Review standees, RTO Audit Order IDs, and custom GST invoices.
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+          <button
+            type="button"
+            data-unlock-pro="MONTHLY"
+            class="px-6 py-3.5 rounded-2xl bg-[#10E594] hover:bg-emerald-300 text-[#081B4B] font-extrabold text-xs sm:text-sm shadow-xl transition"
+          >
+            ⚡ Unlock Pro Now via UPI →
+          </button>
+          <a
+            href="https://ritikraj3405328-web.github.io/Dynamic-Qr-generator-/#home"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="px-5 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm border border-white/15 transition"
+          >
+            🌐 Visit Dynamic-Qr-Generator Website
+          </a>
+        </div>
+      </div>
+
+      <!-- QR GENERATOR & LIVE 3D STANDEE GRID -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+        <!-- LEFT 6 COLS: QR BUILDER CONTROLS -->
+        <div data-3d-tilt class="bento-card p-5 sm:p-6 lg:col-span-6 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+              <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#5B2EFF]">3D QR Standee Builder</span>
+              <h2 class="text-base font-extrabold text-[#081B4B]">Configure Your Business or Google Review QR</h2>
+            </div>
+            <span id="qr-uses-badge" class="px-3 py-1 rounded-full bg-indigo-50 text-[#5B2EFF] font-mono text-xs font-extrabold">
+              Uses: 0 / 5
+            </span>
+          </div>
+
+          <!-- QR Category Tabs -->
+          <div class="grid grid-cols-3 gap-2 p-1 bg-slate-100 rounded-2xl text-xs font-bold">
+            <button type="button" data-qr-type="REVIEW" class="qr-type-btn py-2 rounded-xl bg-[#5B2EFF] text-white shadow-sm transition">
+              ⭐ Google Review
+            </button>
+            <button type="button" data-qr-type="UPI" class="qr-type-btn py-2 rounded-xl text-slate-600 hover:text-[#081B4B] transition">
+              ₹ UPI Payment
+            </button>
+            <button type="button" data-qr-type="WEBSITE" class="qr-type-btn py-2 rounded-xl text-slate-600 hover:text-[#081B4B] transition">
+              🌐 Website / Store
+            </button>
+          </div>
+
+          <form id="qr-builder-form" class="space-y-3.5 text-xs">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Business / Shop Name (Printed on Standee) *</label>
+              <input
+                type="text"
+                id="qr-biz-name"
+                required
+                value="S.K.P.S DIGITAL"
+                placeholder="e.g. S.K.P.S DIGITAL"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-bold text-[#081B4B] focus:outline-none focus:ring-2 focus:ring-[#5B2EFF]"
+              />
+            </div>
+
+            <!-- Dynamic Input based on selected tab -->
+            <div id="qr-input-container">
+              <label id="qr-target-label" class="block font-bold text-slate-700 mb-1">
+                Google Maps Review Link or Business URL *
+              </label>
+              <input
+                type="text"
+                id="qr-target-value"
+                required
+                value="https://g.page/r/skps-digital-review"
+                placeholder="Paste your Google Review link, UPI ID, or Website URL"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-mono text-[#081B4B] focus:outline-none focus:ring-2 focus:ring-[#5B2EFF]"
+              />
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Call-to-Action Headline</label>
+                <input
+                  type="text"
+                  id="qr-cta-title"
+                  value="RATE US 5 STARS ON GOOGLE ⭐⭐⭐⭐⭐"
+                  class="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 font-semibold text-[#081B4B]"
+                />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Upload Circle Brand Logo (Optional)</label>
+                <input
+                  type="file"
+                  id="qr-logo-upload"
+                  accept="image/*"
+                  class="w-full text-[11px] file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[11px] file:font-bold file:bg-[#081B4B] file:text-white cursor-pointer"
+                />
+              </div>
+            </div>
+
+            <div class="pt-2 flex flex-wrap items-center gap-2.5">
+              <button
+                type="submit"
+                id="generate-qr-btn"
+                class="flex-1 py-3 px-5 rounded-2xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs sm:text-[13px] shadow-lg transition"
+              >
+                ✨ Generate 3D QR Standee (Consumes 1 Free Use)
+              </button>
+              <button
+                type="button"
+                id="download-qr-png-btn"
+                class="px-4 py-3 rounded-2xl bg-[#10E594] hover:bg-emerald-300 text-[#081B4B] font-extrabold text-xs sm:text-[13px] shadow-sm transition"
+              >
+                ⬇ Download Standee PNG
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- RIGHT 6 COLS: LIVE 3D PRINTABLE QR STANDEE CANVAS -->
+        <div data-3d-tilt class="bento-card p-5 sm:p-6 lg:col-span-6 flex flex-col items-center justify-center bg-slate-50/80">
+          <div class="text-[11px] font-mono font-bold text-[#5B2EFF] mb-2 text-center">
+            LIVE 3D PRINTABLE BUSINESS &amp; GOOGLE REVIEW STANDEE
+          </div>
+          <canvas
+            id="qr-standee-canvas"
+            width="400"
+            height="540"
+            class="bg-white rounded-3xl shadow-2xl border-2 border-[#081B4B] max-w-full h-auto"
+          ></canvas>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- QR STUDIO SCRIPT (WITH STRICT 5-USE LIMIT LOCK) -->
+  <script type="module">
+    import {
+      AppState,
+      subscribeAppState,
+      showToast,
+      openProPaymentModal,
+      init3DTiltCards
+    } from "./assets/js/security-core.js";
+
+    init3DTiltCards();
+
+    const MAX_FREE_QR = 5;
+
+    // 1. 7-Second Countdown Badge on Install App Button
+    const secBadge = document.getElementById("pwa-sec-badge");
+    let remainingSec = 7;
+    const secInterval = setInterval(() => {
+      remainingSec -= 1;
+      if (secBadge && remainingSec > 0) {
+        secBadge.textContent = `${remainingSec}s`;
+      } else {
+        clearInterval(secInterval);
+      }
+    }, 1000);
+
+    function getQrUsedCount() {
+      return Number(localStorage.getItem("sellgst_qr_count") || "0");
+    }
+
+    function updateQrLockUI() {
+      const isPro = Boolean(AppState.profile.isPro);
+      const used = getQrUsedCount();
+      const left = Math.max(0, MAX_FREE_QR - used);
+
+      const badge = document.getElementById("qr-uses-badge");
+      const pill = document.getElementById("qr-quota-pill");
+      const lockOverlay = document.getElementById("qr-hard-lock-overlay");
+
+      if (isPro) {
+        if (badge) badge.textContent = "UNLIMITED PRO ✨";
+        if (pill) pill.textContent = "UNLIMITED PRO ACTIVE";
+        lockOverlay?.classList.add("hidden");
+        lockOverlay?.classList.remove("flex");
+      } else {
+        if (badge) badge.textContent = `Free Uses: ${used} / ${MAX_FREE_QR}`;
+        if (pill) pill.textContent = `${left} / ${MAX_FREE_QR} Free Uses Left`;
+        if (used >= MAX_FREE_QR) {
+          lockOverlay?.classList.remove("hidden");
+          lockOverlay?.classList.add("flex");
+        } else {
+          lockOverlay?.classList.add("hidden");
+          lockOverlay?.classList.remove("flex");
+        }
+      }
+    }
+
+    function consumeOneQrQuota() {
+      if (AppState.profile.isPro) return true;
+      let used = getQrUsedCount();
+      if (used >= MAX_FREE_QR) {
+        updateQrLockUI();
+        showToast("🔒 5/5 Free Dynamic QR limit reached! Unlock SellGST Pro to continue.", "warning", 5000);
+        openProPaymentModal("MONTHLY");
+        return false;
+      }
+      used += 1;
+      localStorage.setItem("sellgst_qr_count", String(used));
+      updateQrLockUI();
+      if (used >= MAX_FREE_QR) {
+        showToast("⚠️ 5/5 Free QR limit completed! Upgrade to Pro for unlimited Dynamic QRs.", "warning", 5000);
+      } else {
+        showToast(`QR Generated! (${MAX_FREE_QR - used} free uses remaining)`, "success");
+      }
+      return true;
+    }
+
+    // 2. External Dynamic-Qr-generator Website Launcher (Also enforces 5-limit lock)
+    document.getElementById("open-external-qr-portal-btn")?.addEventListener("click", () => {
+      if (!AppState.profile.isPro && getQrUsedCount() >= MAX_FREE_QR) {
+        showToast("🔒 5 Free QR limit reached! Please unlock Pro to access the Dynamic QR Portal.", "warning");
+        openProPaymentModal("MONTHLY");
+        return;
+      }
+      consumeOneQrQuota();
+      window.open("https://ritikraj3405328-web.github.io/Dynamic-Qr-generator-/#home", "_blank", "noopener,noreferrer");
+    });
+
+    // 3. QR Type Tab Switching
+    let currentQrType = "REVIEW";
+    document.querySelectorAll("[data-qr-type]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        currentQrType = btn.getAttribute("data-qr-type");
+        document.querySelectorAll(".qr-type-btn").forEach((b) => {
+          b.className = "qr-type-btn py-2 rounded-xl text-slate-600 hover:text-[#081B4B] transition";
+        });
+        btn.className = "qr-type-btn py-2 rounded-xl bg-[#5B2EFF] text-white shadow-sm transition";
+
+        const label = document.getElementById("qr-target-label");
+        const input = document.getElementById("qr-target-value");
+        const cta = document.getElementById("qr-cta-title");
+
+        if (currentQrType === "REVIEW") {
+          label.textContent = "Google Maps Review Link *";
+          input.value = "https://g.page/r/skps-digital-review";
+          cta.value = "RATE US 5 STARS ON GOOGLE ⭐⭐⭐⭐⭐";
+        } else if (currentQrType === "UPI") {
+          label.textContent = "Business Merchant UPI ID *";
+          input.value = AppState.profile.upiId || "9661692365@ybl";
+          cta.value = "SCAN & PAY VIA ANY UPI APP 📱";
+        } else {
+          label.textContent = "Business Website / WhatsApp Store URL *";
+          input.value = "https://ritikraj3405328-web.github.io/Dynamic-Qr-generator-/#home";
+          cta.value = "SCAN TO VISIT OUR ONLINE STORE 🌐";
+        }
+        drawStandeeCanvas();
+      });
+    });
+
+    // 4. Live 3D Standee Canvas Renderer
+    const canvas = document.getElementById("qr-standee-canvas");
+    const ctx = canvas.getContext("2d");
+    let customLogoImg = null;
+
+    document.getElementById("qr-logo-upload")?.addEventListener("change", (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const img = new Image();
+      img.onload = () => {
+        customLogoImg = img;
+        drawStandeeCanvas();
+      };
+      img.src = URL.createObjectURL(file);
+    });
+
+    function drawStandeeCanvas() {
+      const bizName = (document.getElementById("qr-biz-name").value.trim() || "S.K.P.S DIGITAL").toUpperCase();
+      const rawTarget = document.getElementById("qr-target-value").value.trim() || "https://sellgst-pro.pages.dev";
+      const ctaTitle = document.getElementById("qr-cta-title").value.trim() || "SCAN QR CODE";
+
+      const qrPayload =
+        currentQrType === "UPI" && !rawTarget.startsWith("upi://")
+          ? `upi://pay?pa=${encodeURIComponent(rawTarget)}&pn=${encodeURIComponent(bizName)}&cu=INR`
+          : rawTarget;
+
+      // Background
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Top Navy Curved Header
+      ctx.fillStyle = "#081B4B";
+      ctx.fillRect(0, 0, canvas.width, 130);
+
+      // Circular Logo Badge in Top Center
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(200, 50, 32, 0, Math.PI * 2);
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#10E594";
+      ctx.stroke();
+      ctx.clip();
+      if (customLogoImg) {
+        ctx.drawImage(customLogoImg, 168, 18, 64, 64);
+      } else {
+        ctx.fillStyle = "#081B4B";
+        ctx.font = "bold 20px 'Plus Jakarta Sans', sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(bizName.slice(0, 2), 200, 57);
+      }
+      ctx.restore();
+
+      // Business Title
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = "800 20px 'Plus Jakarta Sans', sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(bizName.slice(0, 26), 200, 112);
+
+      // CTA Pill
+      ctx.fillStyle = "#5B2EFF";
+      ctx.fillRect(30, 148, 340, 36);
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = "bold 13px 'Plus Jakarta Sans', sans-serif";
+      ctx.fillText(ctaTitle.slice(0, 38), 200, 171);
+
+      // Load & Draw Scannable QR Image
+      const qrImg = new Image();
+      qrImg.crossOrigin = "anonymous";
+      qrImg.onload = () => {
+        ctx.strokeStyle = "#E2E8F0";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(75, 202, 250, 250);
+        ctx.drawImage(qrImg, 85, 212, 230, 230);
+
+        // Footer Branding (Promotes SellGST Pro & Dynamic QR Generator)
+        ctx.fillStyle = "#081B4B";
+        ctx.fillRect(0, 480, canvas.width, 60);
+        ctx.fillStyle = "#10E594";
+        ctx.font = "bold 12px 'Plus Jakarta Sans', sans-serif";
+        ctx.fillText("⚡ POWERED BY SELLGST PRO & DYNAMIC QR STUDIO", 200, 505);
+        ctx.fillStyle = "#CBD5E1";
+        ctx.font = "11px 'JetBrains Mono', monospace";
+        ctx.fillText("Scan with Google Lens, PhonePe, GPay or Camera", 200, 524);
+      };
+      qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&margin=6&data=${encodeURIComponent(qrPayload)}`;
+    }
+
+    document.getElementById("qr-builder-form")?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (!consumeOneQrQuota()) return;
+      drawStandeeCanvas();
+    });
+
+    document.getElementById("download-qr-png-btn")?.addEventListener("click", () => {
+      if (!consumeOneQrQuota()) return;
+      const a = document.createElement("a");
+      a.href = canvas.toDataURL("image/png");
+      a.download = `Dynamic-QR-Standee-${Date.now()}.png`;
+      a.click();
+    });
+
+    subscribeAppState(() => {
+      updateQrLockUI();
+    });
+
+    updateQrLockUI();
+    drawStandeeCanvas();
+  </script>
+</body>
+</html>
