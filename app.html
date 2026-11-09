@@ -10,10 +10,11 @@
   <!-- 0.1s Instant Module Preload & Speculative Tool Prefetch (Zero 404 Relative Paths) -->
   <link rel="modulepreload" href="./assets/js/security-core.js" />
   <link rel="modulepreload" href="./assets/js/i18n.js" />
+  <link rel="prefetch" href="./index.html" as="document" />
   <link rel="prefetch" href="./invoice.html" as="document" />
   <link rel="prefetch" href="./ecom-audit.html" as="document" />
   <link rel="prefetch" href="./gst-filing.html" as="document" />
-  <link rel="prefetch" href="./admin.html" as="document" />
+  <link rel="prefetch" href="./qr-studio.html" as="document" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -43,7 +44,6 @@
     html, body {
       max-width: 100vw;
       overflow-x: hidden;
-      /* Exact 3D Lavender-Blue to Aqua-Mint Pastel Canvas from 1000173803.jpg */
       background: linear-gradient(135deg, #DDE3FF 0%, #EEF2FF 48%, #D6F5F8 100%);
       color: #0F172A;
       font-family: 'Plus Jakarta Sans', sans-serif;
@@ -59,13 +59,6 @@
       transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease;
       transform-style: preserve-3d;
       will-change: transform;
-      min-width: 0;
-    }
-    .purple-3d-banner {
-      background: linear-gradient(135deg, #6A3BFF 0%, #5B2EFF 55%, #3F16C4 100%);
-      border-radius: 26px;
-      box-shadow: 0 22px 45px -12px rgba(91, 46, 255, 0.38);
-      transform-style: preserve-3d;
       min-width: 0;
     }
     .purple-credit-card {
@@ -108,10 +101,10 @@
 </head>
 <body class="min-h-screen w-full overflow-x-hidden pb-24 lg:pb-10 lg:pl-24">
 
-  <!-- DESKTOP FLOATING 3D LEFT PILL SIDEBAR (ZERO-404 RELATIVE LINKS) -->
+  <!-- DESKTOP FLOATING 3D LEFT PILL SIDEBAR (ADMIN ISOLATED FROM REGULAR USERS) -->
   <aside class="hidden lg:flex fixed left-4 top-4 bottom-4 w-16 bg-white/95 backdrop-blur-xl border border-white rounded-full shadow-xl shadow-indigo-500/10 flex-col items-center justify-between py-5 z-40">
-    <a href="./app.html" title="SellGST Pro 3D" class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#081B4B] via-[#5B2EFF] to-[#10E594] text-white flex items-center justify-center font-black text-sm shadow-md">
-      S₹
+    <a href="./index.html" title="Home Page" class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#081B4B] via-[#5B2EFF] to-[#10E594] text-white flex items-center justify-center font-black text-sm shadow-md">
+      🏠
     </a>
 
     <nav class="flex flex-col items-center gap-3">
@@ -127,62 +120,67 @@
       <a href="./gst-filing.html" title="1-Click GSTR-1 JSON" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
         🏛️
       </a>
-      <a href="./admin.html" title="Admin Console" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+      <a href="./qr-studio.html" title="Dynamic QR & Google Reviews" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+        🔳
+      </a>
+      <!-- Visible ONLY if logged-in user has isAdmin == true -->
+      <a href="./admin.html" data-admin-only title="Master Admin Console" class="hidden w-11 h-11 rounded-2xl bg-rose-50 text-rose-600 hover:bg-rose-100 flex items-center justify-center text-base transition">
         🛡️
       </a>
     </nav>
 
     <div class="flex flex-col items-center gap-2">
-      <button type="button" id="open-profile-modal-btn" title="Store Settings" class="w-10 h-10 rounded-full bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] flex items-center justify-center text-sm">
-        ⚙️
+      <button type="button" data-open-account title="My Personal Account & DPDP Privacy" class="w-10 h-10 rounded-full bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] flex items-center justify-center text-sm">
+        👤
       </button>
-      <button type="button" id="sidebar-logout-btn" title="Sign Out" class="w-10 h-10 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center text-sm">
+      <button type="button" id="sidebar-logout-btn" title="Logout" class="w-10 h-10 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center text-sm">
         ⏻
       </button>
     </div>
   </aside>
 
-  <!-- MOBILE FLOATING BOTTOM DOCK (MATCHING 1000173803.jpg SOFT WHITE/PURPLE DOCK) -->
+  <!-- MOBILE FLOATING BOTTOM DOCK (SHOWS ACTIVE PAGE, NO ADMIN FOR REGULAR USERS) -->
   <nav class="lg:hidden fixed bottom-2.5 inset-x-3 bg-white/95 backdrop-blur-xl text-slate-700 rounded-3xl px-2 py-2.5 shadow-2xl border border-indigo-100 z-40 flex items-center justify-around">
     <a href="./app.html" class="flex flex-col items-center gap-0.5 text-[#5B2EFF] font-extrabold text-[10px]">
       <span class="text-base">📊</span>
-      <span data-i18n="nav_dashboard">Analytics</span>
+      <span>Dashboard</span>
     </a>
     <a href="./invoice.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
       <span class="text-base">🧾</span>
-      <span data-i18n="nav_invoice">Navy Bill</span>
+      <span>GST Bill</span>
     </a>
     <a href="./ecom-audit.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
       <span class="text-base">📦</span>
-      <span data-i18n="nav_audit">Audit</span>
+      <span>E-Com Audit</span>
     </a>
     <a href="./gst-filing.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
       <span class="text-base">🏛️</span>
-      <span data-i18n="nav_gst">GSTR-1</span>
+      <span>GSTR-1</span>
     </a>
-    <a href="./admin.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
-      <span class="text-base">🛡️</span>
-      <span>Admin</span>
+    <a href="./qr-studio.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">🔳</span>
+      <span>QR Studio</span>
     </a>
   </nav>
 
   <!-- MAIN CONTENT CONTAINER -->
   <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-3 sm:pt-4 space-y-5 overflow-x-hidden">
 
-    <!-- TOP HEADER BAR (WITH 7-SECOND AUTO-HIDING PWA BUTTON) -->
+    <!-- CLEAN TOP HEADER BAR (ONLY HOME OPTION + 7s INSTALL BUTTON + MY ACCOUNT + PRO TIER) -->
     <header class="bg-white/90 backdrop-blur-xl rounded-3xl border border-white px-4 sm:px-6 py-3 shadow-lg shadow-indigo-500/5 flex flex-wrap items-center justify-between gap-2.5">
-      <div class="flex items-center gap-3 min-w-0">
-        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#5B2EFF] to-[#38BDF8] text-white flex items-center justify-center font-extrabold text-sm shadow-md shrink-0">
-          👨‍💼
-        </div>
+      <div class="flex items-center gap-2.5 min-w-0">
+        <!-- Direct Home Button as Requested -->
+        <a
+          href="./index.html"
+          class="px-3.5 py-2 rounded-2xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow-sm transition flex items-center gap-1.5 shrink-0"
+        >
+          <span>🏠 Home</span>
+        </a>
         <div class="min-w-0">
           <div class="flex items-center gap-2">
-            <h1 data-user-name class="font-extrabold text-sm sm:text-[15px] text-[#081B4B] truncate max-w-[145px] sm:max-w-xs">
+            <h1 data-user-name class="font-extrabold text-sm sm:text-[15px] text-[#081B4B] truncate max-w-[140px] sm:max-w-xs">
               S.K.P.S DIGITAL
             </h1>
-            <button type="button" id="edit-store-inline-btn" class="text-[11px] text-[#5B2EFF] font-bold hover:underline shrink-0">
-              Edit Store
-            </button>
           </div>
           <div class="text-[11px] text-slate-500 font-mono truncate">
             GSTIN: <span data-user-gstin class="font-semibold text-slate-700">07AABCS1429B1Z5</span>
@@ -190,25 +188,12 @@
         </div>
       </div>
 
-      <!-- Center: AI Search Trigger Bar -->
-      <button
-        type="button"
-        data-open-ai=""
-        class="hidden xl:flex items-center gap-3 flex-1 max-w-md mx-4 px-4 py-2 rounded-2xl bg-indigo-50/70 hover:bg-indigo-100/70 border border-indigo-100 text-left transition"
-      >
-        <span class="text-sm">🤖</span>
-        <span data-i18n="ai_search_placeholder" class="text-xs text-slate-600 truncate flex-1 font-medium">
-          Ask SellGST AI: Check 3D valuation, claim RTO &gt;30d or file GSTR-1...
-        </span>
-        <span class="px-2 py-0.5 rounded-full bg-[#5B2EFF] text-[10px] font-mono font-bold text-white">24/7 AI</span>
-      </button>
-
-      <!-- Right: Language Switcher, 7-Second Install Button & Pro Unlock Badge -->
-      <div class="flex items-center gap-2 flex-wrap justify-end ml-auto">
+      <!-- Right: Language Switcher, 7-Second Install Button, My Account & Smart Tier Badge -->
+      <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-end ml-auto">
         <select
           data-lang-switcher
           aria-label="Language"
-          class="px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none max-w-[95px] sm:max-w-none truncate"
+          class="px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none max-w-[92px] sm:max-w-none truncate"
         ></select>
 
         <!-- 7-SECOND AUTO-HIDING PWA INSTALL BUTTON -->
@@ -216,13 +201,25 @@
           type="button"
           id="pwa-install-btn"
           data-pwa-install
-          class="relative overflow-hidden px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#081B4B] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap flex items-center gap-1.5"
+          class="relative overflow-hidden px-3 py-1.5 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#081B4B] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap flex items-center gap-1.5"
         >
           <span>📲 Install App</span>
           <span id="pwa-sec-badge" class="px-1.5 py-0.2 rounded-full bg-white/20 text-[10px] font-mono">7s</span>
           <span class="absolute bottom-0 left-0 h-0.5 bg-[#10E594] pwa-timer-bar"></span>
         </button>
 
+        <button
+          type="button"
+          data-open-account
+          class="px-3 py-1.5 rounded-full bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] text-xs font-extrabold border border-indigo-100 transition whitespace-nowrap"
+        >
+          👤 My Account
+        </button>
+
+        <!-- Smart Pro Badge:
+             - Free: "Unlock Pro ⚡ (5/5 Free)"
+             - Monthly (₹99): "⏳ 29d left • Upgrade ₹499/yr ⚡"
+             - Yearly (₹499): "YEARLY PRO ✨" (No upgrade prompts) -->
         <button
           type="button"
           data-pro-badge
@@ -235,15 +232,15 @@
     </header>
 
     <!-- =================================================================== -->
-    <!-- ROW 1: THE 3 CORE 3D FINANCIAL ANALYSIS CARDS FROM 1000173803.jpg   -->
+    <!-- ROW 1: THE 3 CORE 3D FINANCIAL ANALYSIS CARDS                       -->
     <!-- =================================================================== -->
     <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
 
-      <!-- CARD 1 (4 COLS): "My Card" + Active Toggle + 4 Action Tiles (Screen 1 of 1000173803.jpg) -->
+      <!-- CARD 1 (4 COLS): "My Card" + Active Toggle + 4 Action Tiles -->
       <div data-3d-tilt class="bento-card p-5 lg:col-span-4 flex flex-col justify-between">
         <div>
           <div class="flex items-center justify-between mb-3">
-            <h2 class="text-[15px] font-extrabold text-[#081B4B]">My GST & Valuation Card</h2>
+            <h2 class="text-[15px] font-extrabold text-[#081B4B]">My GST &amp; Valuation Card</h2>
             <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-[#5B2EFF] font-mono text-[11px] font-bold">3D PASS</span>
           </div>
 
@@ -252,22 +249,22 @@
             <div class=" -right-6 -top-6 w-24 h-24 rounded-full bg-white/10 pointer-events-none absolute"></div>
             <div class="flex items-center justify-between text-[11px]">
               <span class="px-2 py-0.5 rounded-md bg-white/15 font-semibold">Customization</span>
-              <span class="text-[#10E594] font-bold">GSTN Verified</span>
+              <span class="text-[#10E594] font-bold">DPDP Verified</span>
             </div>
 
             <div data-user-gstin class="font-mono text-sm sm:text-[15px] font-bold tracking-widest text-white my-4 truncate">
-              07AA •••• 1429 ••••
+              07AABCS1429B1Z5
             </div>
 
             <div class="flex items-center justify-between text-[11px] text-indigo-100 uppercase tracking-wider">
               <span data-user-name class="font-bold text-white truncate max-w-[160px]">S.K.P.S DIGITAL</span>
-              <span class="font-mono">v3.1.6</span>
+              <span class="font-mono">v4.0</span>
             </div>
           </div>
 
           <!-- "The card is active" Pill Toggle Row -->
           <div class="mt-3.5 px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
-            <span class="text-xs font-bold text-slate-700">The valuation & GST pass is active</span>
+            <span class="text-xs font-bold text-slate-700">The card &amp; valuation pass is active</span>
             <button
               type="button"
               id="card-active-switch"
@@ -279,37 +276,36 @@
           </div>
         </div>
 
-        <!-- 4 Soft 3D Action Tiles (Transfers/Bill, History/Audit, Deposit/Udhar, Financial/GSTR) -->
+        <!-- 4 Soft 3D Action Tiles -->
         <div class="grid grid-cols-2 gap-2.5 mt-3.5">
           <a href="./invoice.html" class="p-3 rounded-2xl bg-slate-50 hover:bg-indigo-50/70 border border-slate-200/70 flex flex-col items-center text-center transition group">
             <span class="text-xs font-bold text-[#081B4B] group-hover:text-[#5B2EFF]">Navy GST Bill</span>
-            <span class="text-[11px] text-slate-400 mt-0.5">Create & Print</span>
-            <span class="mt-1.5 text-sm text-[#5B2EFF] font-bold">⇄</span>
+            <span class="text-[11px] text-slate-400 mt-0.5">Logo &amp; Sign</span>
+            <span class="mt-1 text-sm text-[#5B2EFF] font-bold">🧾</span>
           </a>
 
           <a href="./ecom-audit.html" class="p-3 rounded-2xl bg-slate-50 hover:bg-indigo-50/70 border border-slate-200/70 flex flex-col items-center text-center transition group">
             <span class="text-xs font-bold text-[#081B4B] group-hover:text-[#5B2EFF]">RTO History</span>
             <span class="text-[11px] text-slate-400 mt-0.5">&gt;30d Claims</span>
-            <span class="mt-1.5 text-sm text-[#10E594] font-bold">⟳</span>
+            <span class="mt-1 text-sm text-[#10E594] font-bold">📦</span>
           </a>
 
-          <a href="./invoice.html#party-khata-section" class="p-3 rounded-2xl bg-slate-50 hover:bg-indigo-50/70 border border-slate-200/70 flex flex-col items-center text-center transition group">
-            <span class="text-xs font-bold text-[#081B4B] group-hover:text-[#5B2EFF]">Party Deposit</span>
-            <span class="text-[11px] text-slate-400 mt-0.5">Udhar Khata</span>
-            <span class="mt-1.5 text-xs font-mono font-extrabold text-[#5B2EFF]">₹O</span>
+          <a href="./qr-studio.html" class="p-3 rounded-2xl bg-slate-50 hover:bg-indigo-50/70 border border-slate-200/70 flex flex-col items-center text-center transition group">
+            <span class="text-xs font-bold text-[#081B4B] group-hover:text-[#5B2EFF]">Dynamic QR</span>
+            <span class="text-[11px] text-slate-400 mt-0.5">Google Review</span>
+            <span class="mt-1 text-sm text-[#5B2EFF] font-bold">🔳</span>
           </a>
 
           <a href="./gst-filing.html" class="p-3 rounded-2xl bg-slate-50 hover:bg-indigo-50/70 border border-slate-200/70 flex flex-col items-center text-center transition group">
-            <span class="text-xs font-bold text-[#081B4B] group-hover:text-[#5B2EFF]">Financial 1 & 3B</span>
+            <span class="text-xs font-bold text-[#081B4B] group-hover:text-[#5B2EFF]">Financial 1 &amp; 3B</span>
             <span class="text-[11px] text-slate-400 mt-0.5">1-Click JSON</span>
-            <span class="mt-1.5 text-sm text-[#5B2EFF] font-bold">📊</span>
+            <span class="mt-1 text-sm text-[#5B2EFF] font-bold">🏛️</span>
           </a>
         </div>
       </div>
 
-      <!-- CARD 2 (4 COLS): Purple Header Financial Analysis + Store Valuation + Category History (Screen 2 of 1000173803.jpg) -->
+      <!-- CARD 2 (4 COLS): Purple Header Financial Analysis + Store Valuation + Category History -->
       <div data-3d-tilt class="bento-card overflow-hidden lg:col-span-4 flex flex-col justify-between">
-        <!-- Royal Purple Top Banner -->
         <div class="bg-gradient-to-br from-[#6336FF] via-[#5B2EFF] to-[#4318FF] text-white p-5 pb-12 relative">
           <div class="flex items-center justify-between text-xs">
             <span class="font-bold text-indigo-100">Financial Analysis</span>
@@ -318,12 +314,11 @@
           <div class="text-center mt-2">
             <div class="text-[11px] text-indigo-200">Estimated Store Valuation</div>
             <div id="kpi-valuation-val" class="text-2xl font-black font-mono tracking-tight mt-0.5">
-              ₹28,97,700
+              ₹28,97,700.00
             </div>
           </div>
         </div>
 
-        <!-- Overlapping White Pill Card (Expenses / Leaks vs Net GST Profit) -->
         <div class="px-4 -mt-8 relative z-10">
           <div class="bg-white rounded-2xl p-3.5 shadow-lg border border-indigo-50 text-center">
             <div class="w-7 h-7 rounded-full bg-indigo-50 text-[#5B2EFF] flex items-center justify-center text-xs font-bold mx-auto -mt-6 border-2 border-white shadow">
@@ -343,7 +338,6 @@
           </div>
         </div>
 
-        <!-- Colorful Icon History List (From Screen 2 of 1000173803.jpg) -->
         <div class="p-4 pt-3 space-y-2.5 flex-1 flex flex-col justify-end">
           <div class="flex items-center justify-between text-xs">
             <span class="font-extrabold text-[#081B4B]">Live Channel Breakdown</span>
@@ -385,9 +379,8 @@
         </div>
       </div>
 
-      <!-- CARD 3 (4 COLS): Day/Week/Month/Year Bars + 3D Speedometer Gauge (Screen 3 of 1000173803.jpg) -->
+      <!-- CARD 3 (4 COLS): Day/Week/Month/Year Bars + 3D Speedometer Gauge -->
       <div data-3d-tilt class="bento-card p-5 lg:col-span-4 flex flex-col justify-between">
-        <!-- Top Half: Day / Week / Month / Year Progress Bars -->
         <div>
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-1.5">
@@ -432,7 +425,7 @@
           </div>
         </div>
 
-        <!-- Bottom Half: 3D Speedometer Gauge (From Screen 3 of 1000173803.jpg) -->
+        <!-- Bottom Half: 3D Speedometer Gauge -->
         <div class="mt-3.5 bg-slate-50 p-4 rounded-2xl border border-slate-200/70 text-center">
           <div class="flex items-center justify-between text-xs mb-1">
             <span class="font-extrabold text-[#081B4B]">Analytics • Profit Gauge</span>
@@ -447,13 +440,9 @@
                 <stop offset="100%" stop-color="#10E594" />
               </linearGradient>
             </defs>
-            <!-- Background Arc -->
             <path d="M 20 95 A 75 75 0 0 1 180 95" fill="none" stroke="#E2E8F0" stroke-width="12" stroke-linecap="round" />
-            <!-- Active Gradient Arc -->
             <path d="M 20 95 A 75 75 0 0 1 168 62" fill="none" stroke="url(#speedoGrad)" stroke-width="12" stroke-linecap="round" />
-            <!-- Shaded Purple Wedge -->
             <path d="M 100 95 L 68 32 A 75 75 0 0 1 115 22 Z" fill="rgba(91, 46, 255, 0.14)" />
-            <!-- 3D Needle -->
             <g id="speedo-needle" transform="rotate(24 100 95)" style="transition: transform 0.5s ease;">
               <polygon points="100,95 95,95 100,26 105,95" fill="#5B2EFF" />
               <circle cx="100" cy="95" r="7" fill="#081B4B" />
@@ -472,11 +461,11 @@
     </section>
 
     <!-- =================================================================== -->
-    <!-- ROW 2: SCREEN 4 (3D DONUT RING) & SCREEN 5 (SPLINE + 3D PILL BARS)  -->
+    <!-- ROW 2: 3D DONUT RING (`900` Index) + SPLINE & 3D PILL BARS          -->
     <!-- =================================================================== -->
     <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
 
-      <!-- LEFT 5 COLS: 3D CONCENTRIC DONUT CHART (`900` Index) + 50%/25%/75% RINGS (Screen 4 of 1000173803.jpg) -->
+      <!-- LEFT 5 COLS: 3D CONCENTRIC DONUT CHART + 50%/25%/75% RINGS -->
       <div data-3d-tilt class="bento-card p-5 lg:col-span-5 flex flex-col justify-between">
         <div>
           <div class="flex items-center justify-between mb-3">
@@ -487,7 +476,6 @@
             <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-[#5B2EFF] text-[10px] font-bold">All Tasks</span>
           </div>
 
-          <!-- 3 Mini Progress Rings (50%, 25%, 75% from Screen 4 of 1000173803.jpg) -->
           <div class="grid grid-cols-3 gap-2.5 bg-slate-50 p-3 rounded-2xl border border-slate-200/70 text-center">
             <div class="flex items-center justify-center gap-2">
               <svg viewBox="0 0 44 44" class="w-10 h-10 shrink-0">
@@ -524,14 +512,11 @@
           </div>
         </div>
 
-        <!-- Large 3D Concentric Donut Ring ("900" Index from Screen 4 of 1000173803.jpg) -->
         <div class="mt-4 bg-slate-50 p-4 rounded-2xl border border-slate-200/70 flex items-center justify-around gap-3">
           <div class="relative flex items-center justify-center float-3d">
             <svg viewBox="0 0 120 120" class="w-28 h-28">
               <circle cx="60" cy="60" r="44" fill="none" stroke="#E2E8F0" stroke-width="14" />
-              <!-- Purple Segment -->
               <circle cx="60" cy="60" r="44" fill="none" stroke="#5B2EFF" stroke-width="16" stroke-dasharray="165 280" stroke-linecap="round" transform="rotate(-110 60 60)" />
-              <!-- Neon Mint Segment -->
               <circle cx="60" cy="60" r="44" fill="none" stroke="#10E594" stroke-width="12" stroke-dasharray="75 280" stroke-dashoffset="-172" stroke-linecap="round" transform="rotate(-110 60 60)" />
               <text x="60" y="58" text-anchor="middle" class="font-mono font-black text-base" fill="#081B4B">900</text>
               <text x="60" y="72" text-anchor="middle" class="font-sans font-bold text-[8px]" fill="#64748B">INDEX</text>
@@ -556,11 +541,11 @@
         </div>
       </div>
 
-      <!-- RIGHT 7 COLS: PURPLE SPLINE WAVE CHART + 3D VERTICAL PILL BAR CHART (Screen 5 of 1000173803.jpg) -->
+      <!-- RIGHT 7 COLS: PURPLE SPLINE WAVE CHART + 3D VERTICAL PILL BAR CHART -->
       <div data-3d-tilt class="bento-card p-5 lg:col-span-7 flex flex-col justify-between overflow-hidden">
         <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
           <div>
-            <span class="text-[11px] font-extrabold uppercase tracking-wider text-[#5B2EFF]">Financial Analysis • Screen 5</span>
+            <span class="text-[11px] font-extrabold uppercase tracking-wider text-[#5B2EFF]">Financial Analysis • Cashflow</span>
             <h2 class="text-[15px] font-extrabold text-[#081B4B]">3D Revenue Wave &amp; Monthly Pill Bar Comparison</h2>
           </div>
           <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl text-xs font-bold">
@@ -569,7 +554,6 @@
           </div>
         </div>
 
-        <!-- Top Chart: Smooth Purple Spline Wave with Vertical Grid Columns -->
         <div class="relative w-full h-36 bg-slate-50 rounded-2xl p-3 border border-slate-200/70 overflow-hidden">
           <svg id="revenue-spline-svg" viewBox="0 0 700 160" class="w-full h-full overflow-visible">
             <defs>
@@ -578,7 +562,6 @@
                 <stop offset="100%" stop-color="#5B2EFF" stop-opacity="0.0" />
               </linearGradient>
             </defs>
-            <!-- Vertical & Horizontal Grid Lines (Matching Screen 5) -->
             <line x1="90" y1="10" x2="90" y2="145" stroke="#E2E8F0" />
             <line x1="210" y1="10" x2="210" y2="145" stroke="#E2E8F0" />
             <line x1="330" y1="10" x2="330" y2="145" stroke="#E2E8F0" />
@@ -605,7 +588,6 @@
           </svg>
         </div>
 
-        <!-- Bottom Chart: 3D Vertical Capsule Pill Bars (Matching Screen 5 of 1000173803.jpg) -->
         <div class="mt-3.5 bg-slate-50 rounded-2xl p-3.5 border border-slate-200/70">
           <div class="flex items-center justify-between text-xs mb-2">
             <span class="font-extrabold text-[#081B4B]">Monthly Profit vs Claim Recovery Pills</span>
@@ -723,7 +705,7 @@
             data-unlock-pro="MONTHLY"
             class="px-3.5 py-1.5 rounded-xl bg-[#10E594] text-[#081B4B] font-extrabold text-xs whitespace-nowrap shadow"
           >
-            Unlock @ ₹99 →
+            Unlock Pro →
           </button>
         </div>
       </div>
@@ -764,52 +746,46 @@
         </a>
       </div>
     </section>
-  </div>
 
-  <!-- SELLER BUSINESS SETTINGS MODAL -->
-  <div id="store-settings-modal" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-white rounded-3xl border border-indigo-100 max-w-md w-full p-6 shadow-2xl">
-      <div class="flex items-center justify-between mb-4">
-        <h3 class="text-base font-extrabold text-[#081B4B]">Seller GST &amp; UPI Profile</h3>
-        <button type="button" id="close-store-settings" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 font-bold text-xs">✕</button>
+    <!-- =================================================================== -->
+    <!-- BOTTOM PERSONAL ACCOUNT, DPDP PRIVACY & LOGOUT BAR (FOR ALL USERS)  -->
+    <!-- =================================================================== -->
+    <section data-3d-tilt class="bento-card p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-[#5B2EFF] flex items-center justify-center text-base font-bold shrink-0">
+          🛡️
+        </div>
+        <div class="min-w-0">
+          <div class="text-xs font-extrabold text-[#081B4B]">My Personal Data &amp; DPDP Act 2023 Privacy Controls</div>
+          <div class="text-[11px] text-slate-500 truncate">
+            Manage your store GSTIN, view subscription validity, or permanently delete your account &amp; data with confirmation tick (✔️).
+          </div>
+        </div>
       </div>
-      <form id="store-settings-form" class="space-y-3 text-xs">
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">Business Legal / Trade Name</label>
-          <input type="text" id="set-biz-name" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-semibold" />
-        </div>
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">15-Digit GSTIN</label>
-          <input type="text" id="set-gstin" required maxlength="15" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-mono uppercase" />
-        </div>
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">Home State (For CGST+SGST vs IGST Split)</label>
-          <select id="set-state" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-semibold">
-            <option value="07|Delhi">07 - Delhi</option>
-            <option value="10|Bihar">10 - Bihar</option>
-            <option value="09|Uttar Pradesh">09 - Uttar Pradesh</option>
-            <option value="27|Maharashtra">27 - Maharashtra</option>
-            <option value="29|Karnataka">29 - Karnataka</option>
-            <option value="24|Gujarat">24 - Gujarat</option>
-            <option value="33|Tamil Nadu">33 - Tamil Nadu</option>
-            <option value="19|West Bengal">19 - West Bengal</option>
-          </select>
-        </div>
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">Seller Invoice UPI ID (Printed on Bills)</label>
-          <input type="text" id="set-upi" required placeholder="yourstore@ybl" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-mono" />
-        </div>
-        <button type="submit" class="w-full py-3 rounded-2xl bg-[#5B2EFF] hover:bg-indigo-700 text-white font-extrabold shadow-md">
-          💾 Save Business Profile
+
+      <div class="flex flex-wrap items-center gap-2 ml-auto">
+        <button
+          type="button"
+          data-open-account
+          class="px-4 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] font-extrabold text-xs transition"
+        >
+          👤 My Account &amp; Delete Option (✔️)
         </button>
-      </form>
-    </div>
+        <button
+          type="button"
+          id="bottom-logout-btn"
+          class="px-4 py-2 rounded-xl bg-[#081B4B] hover:bg-rose-600 text-white font-extrabold text-xs shadow transition flex items-center gap-1.5"
+        >
+          <span>⏻ Logout</span>
+        </button>
+      </div>
+    </section>
+
   </div>
 
   <!-- 3D DASHBOARD LOGIC -->
   <script type="module">
     import {
-      db,
       AppState,
       subscribeAppState,
       sanitizeHTML,
@@ -819,7 +795,6 @@
       syncProDOMElements,
       init3DTiltCards
     } from "./assets/js/security-core.js";
-    import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     init3DTiltCards();
 
@@ -970,63 +945,9 @@
       });
     });
 
-    // 6. Store Settings Modal
-    const settingsModal = document.getElementById("store-settings-modal");
-    function openStoreSettings() {
-      document.getElementById("set-biz-name").value = AppState.profile.businessName || "S.K.P.S DIGITAL";
-      document.getElementById("set-gstin").value = AppState.profile.gstin || "07AABCS1429B1Z5";
-      document.getElementById("set-upi").value = AppState.profile.upiId || "9661692365@ybl";
-      settingsModal.classList.remove("hidden");
-      settingsModal.classList.add("flex");
-    }
-
-    document.getElementById("open-profile-modal-btn")?.addEventListener("click", openStoreSettings);
-    document.getElementById("edit-store-inline-btn")?.addEventListener("click", openStoreSettings);
-    document.getElementById("close-store-settings")?.addEventListener("click", () => {
-      settingsModal.classList.add("hidden");
-      settingsModal.classList.remove("flex");
-    });
-
-    document.getElementById("store-settings-form")?.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const businessName = document.getElementById("set-biz-name").value.trim();
-      const gstin = document.getElementById("set-gstin").value.trim().toUpperCase();
-      const [stateCode, stateName] = document.getElementById("set-state").value.split("|");
-      const upiId = document.getElementById("set-upi").value.trim();
-
-      const updated = {
-        ...AppState.profile,
-        businessName,
-        displayName: businessName,
-        gstin,
-        stateCode,
-        stateName,
-        upiId
-      };
-      AppState.profile = updated;
-      localStorage.setItem("sellgst_local_profile", JSON.stringify(updated));
-
-      if (AppState.user?.uid) {
-        try {
-          await setDoc(doc(db, "users", AppState.user.uid), {
-            businessName,
-            displayName: businessName,
-            gstin,
-            stateCode,
-            stateName,
-            upiId
-          }, { merge: true });
-        } catch (_) {}
-      }
-
-      syncProDOMElements();
-      renderWidgets();
-      settingsModal.classList.add("hidden");
-      settingsModal.classList.remove("flex");
-      showToast("Business GSTIN & UPI settings saved!", "success");
-    });
-
+    // 6. Logout Handlers
     document.getElementById("sidebar-logout-btn")?.addEventListener("click", logoutUser);
+    document.getElementById("bottom-logout-btn")?.addEventListener("click", logoutUser);
   </script>
 </body>
 </html>
