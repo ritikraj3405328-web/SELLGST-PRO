@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-  <title>Master Admin Console & 1-Click UPI Approval Engine — SellGST Pro</title>
-  <meta name="theme-color" content="#111827" />
+  <title>3D Master Admin Console & 1-Click UPI Approval Engine — SellGST Pro</title>
+  <meta name="theme-color" content="#5B2EFF" />
   <link rel="manifest" href="./manifest.json" />
 
   <!-- 0.1s Instant Module Preload & Speculative Tool Prefetch (Zero 404 Relative Paths) -->
   <link rel="modulepreload" href="./assets/js/security-core.js" />
   <link rel="modulepreload" href="./assets/js/i18n.js" />
   <link rel="prefetch" href="./app.html" as="document" />
-  <link rel="prefetch" href="./ecom-audit.html" as="document" />
   <link rel="prefetch" href="./invoice.html" as="document" />
+  <link rel="prefetch" href="./ecom-audit.html" as="document" />
   <link rel="prefetch" href="./gst-filing.html" as="document" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -28,8 +28,9 @@
             mono: ['"JetBrains Mono"', 'monospace']
           },
           colors: {
-            canvas: '#F4F5F7',
-            mint: '#CBE8BA'
+            navy: '#081B4B',
+            royal: '#5B2EFF',
+            mint: '#10E594'
           }
         }
       }
@@ -42,31 +43,43 @@
     html, body {
       max-width: 100vw;
       overflow-x: hidden;
-      background-color: #F4F5F7;
-      color: #111827;
+      background: linear-gradient(135deg, #DDE3FF 0%, #EEF2FF 48%, #D6F5F8 100%);
+      color: #0F172A;
       font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
       -webkit-tap-highlight-color: transparent;
     }
     .bento-card {
-      background: #FFFFFF;
-      border-radius: 24px;
-      border: 1px solid #E5E7EB;
-      box-shadow: 0 10px 30px -10px rgba(17, 24, 39, 0.05);
-      transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(16px);
+      border-radius: 26px;
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 18px 40px -15px rgba(91, 46, 255, 0.14), 0 4px 12px rgba(15, 23, 42, 0.04);
+      transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease;
+      transform-style: preserve-3d;
       will-change: transform;
       min-width: 0;
     }
-    @media (hover: hover) {
-      .bento-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 18px 35px -12px rgba(17, 24, 39, 0.08);
-      }
-    }
-    .bento-mint {
-      background: #CBE8BA;
-      border-radius: 24px;
-      border: 1px solid #A3D987;
+    .purple-3d-card {
+      background: linear-gradient(135deg, #6A3BFF 0%, #5B2EFF 55%, #3F16C4 100%);
+      border-radius: 26px;
+      box-shadow: 0 22px 45px -12px rgba(91, 46, 255, 0.38);
+      transform-style: preserve-3d;
       min-width: 0;
+    }
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-4px); }
+    }
+    .float-3d {
+      animation: floatSlow 3.8s ease-in-out infinite;
+    }
+    @keyframes shrink7s {
+      from { width: 100%; }
+      to { width: 0%; }
+    }
+    .pwa-timer-bar {
+      animation: shrink7s 7s linear forwards;
     }
     .no-scrollbar::-webkit-scrollbar {
       display: none;
@@ -79,182 +92,223 @@
 </head>
 <body class="min-h-screen w-full overflow-x-hidden pb-24 lg:pb-12 lg:pl-24">
 
-  <!-- DESKTOP FLOATING LEFT PILL SIDEBAR (ALL RELATIVE LINKS ./ FOR ZERO 404) -->
-  <aside class="hidden lg:flex fixed left-4 top-4 bottom-4 w-16 bg-white border border-gray-200 rounded-full shadow-lg flex-col items-center justify-between py-5 z-40">
-    <a href="./app.html" title="SellGST Pro" class="w-11 h-11 rounded-2xl bg-gray-900 text-[#CBE8BA] flex items-center justify-center font-black text-base shadow">
+  <!-- DESKTOP FLOATING 3D LEFT PILL SIDEBAR (ZERO-404 RELATIVE LINKS) -->
+  <aside class="hidden lg:flex fixed left-4 top-4 bottom-4 w-16 bg-white/95 backdrop-blur-xl border border-white rounded-full shadow-xl shadow-indigo-500/10 flex-col items-center justify-between py-5 z-40">
+    <a href="./app.html" title="SellGST Pro 3D" class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#081B4B] via-[#5B2EFF] to-[#10E594] text-white flex items-center justify-center font-black text-sm shadow-md">
       S₹
     </a>
     <nav class="flex flex-col items-center gap-3">
-      <a href="./app.html" title="Dashboard" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+      <a href="./app.html" title="3D Financial Dashboard" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
         📊
       </a>
-      <a href="./invoice.html" title="GST Billing & Khata" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+      <a href="./invoice.html" title="Custom Navy GST Invoice" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
         🧾
       </a>
-      <a href="./ecom-audit.html" title="E-Com Audit & 4x6 Labels" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+      <a href="./ecom-audit.html" title="E-Com Audit & 4x6 Labels" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
         📦
       </a>
-      <a href="./gst-filing.html" title="1-Click GSTR-1 JSON" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+      <a href="./gst-filing.html" title="1-Click GSTR-1 JSON" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
         🏛️
       </a>
-      <a href="./admin.html" title="Admin Console" class="w-11 h-11 rounded-2xl bg-gray-900 text-white flex items-center justify-center text-lg shadow-sm transition">
+      <a href="./admin.html" title="Admin Console" class="w-11 h-11 rounded-2xl bg-[#5B2EFF] text-white flex items-center justify-center text-base shadow-md transition">
         🛡️
       </a>
     </nav>
     <div class="flex flex-col items-center gap-2">
-      <button type="button" id="sound-test-btn" title="Test Sound Alert" class="w-10 h-10 rounded-full bg-[#CBE8BA] text-gray-900 flex items-center justify-center text-sm shadow-sm hover:scale-105 transition">
+      <button type="button" id="sound-test-btn" title="Test Sound Alert" class="w-10 h-10 rounded-full bg-[#10E594]/30 text-[#081B4B] flex items-center justify-center text-sm shadow-sm hover:scale-105 transition">
         🔔
       </button>
     </div>
   </aside>
 
-  <!-- MOBILE FLOATING BOTTOM DOCK (ALL RELATIVE LINKS ./ FOR ZERO 404) -->
-  <nav class="lg:hidden fixed bottom-2.5 inset-x-3 bg-gray-950/95 backdrop-blur-md text-white rounded-3xl px-2 py-2.5 shadow-2xl border border-white/10 z-40 flex items-center justify-around">
-    <a href="./app.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+  <!-- MOBILE FLOATING BOTTOM DOCK -->
+  <nav class="lg:hidden fixed bottom-2.5 inset-x-3 bg-white/95 backdrop-blur-xl text-slate-700 rounded-3xl px-2 py-2.5 shadow-2xl border border-indigo-100 z-40 flex items-center justify-around">
+    <a href="./app.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
       <span class="text-base">📊</span>
-      <span data-i18n="nav_dashboard">Dashboard</span>
+      <span data-i18n="nav_dashboard">Analytics</span>
     </a>
-    <a href="./invoice.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+    <a href="./invoice.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
       <span class="text-base">🧾</span>
-      <span data-i18n="nav_invoice">GST Bill</span>
+      <span data-i18n="nav_invoice">Navy Bill</span>
     </a>
-    <a href="./ecom-audit.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+    <a href="./ecom-audit.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
       <span class="text-base">📦</span>
       <span data-i18n="nav_audit">Audit</span>
     </a>
-    <a href="./gst-filing.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+    <a href="./gst-filing.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
       <span class="text-base">🏛️</span>
       <span data-i18n="nav_gst">GSTR-1</span>
     </a>
-    <a href="./admin.html" class="flex flex-col items-center gap-0.5 text-[#CBE8BA] font-bold text-[10px]">
+    <a href="./admin.html" class="flex flex-col items-center gap-0.5 text-[#5B2EFF] font-extrabold text-[10px]">
       <span class="text-base">🛡️</span>
       <span>Admin</span>
     </a>
   </nav>
 
   <!-- MAIN CONTENT WRAPPER -->
-  <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-3 sm:pt-4 space-y-5 sm:space-y-6 overflow-x-hidden">
+  <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-3 sm:pt-4 space-y-5 overflow-x-hidden">
 
-    <!-- TOP HEADER (WITH ALWAYS-VISIBLE PWA INSTALL BUTTON & ZERO HORIZONTAL OVERFLOW) -->
-    <header class="bg-white rounded-3xl border border-gray-200 px-3.5 sm:px-6 py-3 sm:py-3.5 shadow-sm flex flex-wrap items-center justify-between gap-2.5">
-      <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
-        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gray-900 text-[#CBE8BA] flex items-center justify-center text-base sm:text-lg font-extrabold relative shrink-0">
+    <!-- TOP HEADER (WITH 7-SECOND AUTO-HIDING PWA INSTALL BUTTON) -->
+    <header class="bg-white/90 backdrop-blur-xl rounded-3xl border border-white px-4 sm:px-6 py-3 shadow-lg shadow-indigo-500/5 flex flex-wrap items-center justify-between gap-2.5">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#081B4B] via-[#5B2EFF] to-[#10E594] text-white flex items-center justify-center text-base font-extrabold relative shadow-md shrink-0">
           🛡️
           <span id="header-pending-dot" class="hidden absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-rose-500 border-2 border-white animate-ping"></span>
         </div>
         <div class="min-w-0">
-          <div class="flex items-center gap-1.5 sm:gap-2">
-            <h1 class="font-extrabold text-xs sm:text-base text-gray-900 truncate">Master Admin Console — 1-Click UPI Approval</h1>
-            <span class="px-2 py-0.5 rounded-full bg-[#CBE8BA] text-gray-900 font-extrabold text-[9px] sm:text-[10px] shrink-0">LIVE QUEUE</span>
+          <div class="flex items-center gap-2">
+            <h1 class="font-extrabold text-sm sm:text-[15px] text-[#081B4B] truncate">3D Master Admin Console — 1-Click UPI Approval</h1>
+            <span class="px-2 py-0.5 rounded-full bg-[#10E594]/30 text-[#081B4B] font-extrabold text-[10px] shrink-0">LIVE QUEUE</span>
           </div>
-          <p class="text-[10px] sm:text-[11px] text-gray-500 truncate">
-            Merchant UPI: <code class="font-mono font-bold text-gray-800" id="header-upi-display">9661692365@ybl</code> (AGNI VOLT) • Real-Time <code>onSnapshot</code> Unblur
+          <p class="text-[11px] text-slate-500 truncate">
+            Merchant UPI: <code class="font-mono font-bold text-[#5B2EFF]" id="header-upi-display">9661692365@ybl</code> (AGNI VOLT) • Real-Time <code>onSnapshot</code> Unblur
           </p>
         </div>
       </div>
 
-      <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-end ml-auto">
+      <div class="flex items-center gap-2 flex-wrap justify-end ml-auto">
         <button
           type="button"
           id="simulate-payment-btn"
-          class="px-3 py-1.5 rounded-full bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-[11px] sm:text-xs font-extrabold transition whitespace-nowrap"
+          class="px-3.5 py-1.5 rounded-full bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] border border-indigo-200 text-xs font-extrabold transition whitespace-nowrap"
         >
           ⚡ Simulate UPI Request
         </button>
 
-        <!-- ALWAYS-VISIBLE PWA INSTALL BUTTON -->
+        <!-- 7-SECOND AUTO-HIDING PWA INSTALL BUTTON -->
         <button
           type="button"
           id="pwa-install-btn"
           data-pwa-install
-          class="px-2.5 sm:px-3.5 py-1.5 rounded-full bg-[#CBE8BA] hover:bg-emerald-300 text-gray-950 border border-emerald-400/60 text-[11px] sm:text-xs font-extrabold shadow-sm transition whitespace-nowrap flex items-center gap-1"
+          class="relative overflow-hidden px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#081B4B] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap flex items-center gap-1.5"
         >
           <span>📲 Install App</span>
+          <span id="pwa-sec-badge" class="px-1.5 py-0.2 rounded-full bg-white/20 text-[10px] font-mono">7s</span>
+          <span class="absolute bottom-0 left-0 h-0.5 bg-[#10E594] pwa-timer-bar"></span>
         </button>
 
         <select
           data-lang-switcher
           aria-label="Language"
-          class="px-2.5 sm:px-3 py-1.5 rounded-full bg-[#F4F5F7] border border-gray-200 text-[11px] sm:text-xs font-bold text-gray-800 cursor-pointer focus:outline-none max-w-[92px] sm:max-w-none truncate"
+          class="px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none max-w-[95px] sm:max-w-none truncate"
         ></select>
       </div>
     </header>
 
     <!-- QUICK JUMP BAR -->
     <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 w-full">
-      <a href="#live-approval-queue" class="px-4 py-2 rounded-2xl bg-gray-900 text-white font-extrabold text-xs whitespace-nowrap">
+      <a href="#live-approval-queue" class="px-4 py-2 rounded-2xl bg-[#5B2EFF] text-white font-extrabold text-xs whitespace-nowrap shadow-sm">
         1. Live UPI Approval Queue
       </a>
-      <a href="#merchant-settings-section" class="px-4 py-2 rounded-2xl bg-white border border-gray-200 text-gray-800 font-bold text-xs whitespace-nowrap hover:border-gray-900">
-        2. Merchant UPI & WhatsApp Alert
+      <a href="#merchant-settings-section" class="px-4 py-2 rounded-2xl bg-white border border-indigo-100 text-[#081B4B] font-bold text-xs whitespace-nowrap hover:border-[#5B2EFF]">
+        2. Merchant UPI &amp; WhatsApp Alert
       </a>
-      <a href="#broadcast-banner-section" class="px-4 py-2 rounded-2xl bg-white border border-gray-200 text-gray-800 font-bold text-xs whitespace-nowrap hover:border-gray-900">
-        3. Global Broadcast & Device Tester
+      <a href="#broadcast-banner-section" class="px-4 py-2 rounded-2xl bg-white border border-indigo-100 text-[#081B4B] font-bold text-xs whitespace-nowrap hover:border-[#5B2EFF]">
+        3. Global Broadcast &amp; Device Tester
       </a>
-      <a href="./app.html" class="px-3.5 py-2 rounded-2xl bg-white border border-gray-200 text-gray-600 font-bold text-xs whitespace-nowrap hover:text-gray-900">
-        ← Back to Dashboard
+      <a href="./app.html" class="px-3.5 py-2 rounded-2xl bg-white border border-slate-200 text-slate-600 font-bold text-xs whitespace-nowrap hover:text-[#081B4B]">
+        ← Back to 3D Dashboard
       </a>
     </div>
 
-    <!-- 4 ADMIN KPI CARDS -->
-    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <div class="bento-mint p-5 flex flex-col justify-between">
-        <div class="flex items-center justify-between gap-2">
-          <span class="text-xs font-extrabold text-gray-800">Pending UPI Approvals</span>
-          <span id="kpi-pending-badge" class="px-2.5 py-0.5 rounded-full bg-gray-900 text-[#CBE8BA] text-[10px] font-extrabold shrink-0">
+    <!-- =================================================================== -->
+    <!-- 3D FINANCIAL ANALYTICS ROW: PURPLE REVENUE CARD + DONUT RING        -->
+    <!-- =================================================================== -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+
+      <!-- Left 5 Cols: Royal Purple 3D Subscription Revenue & Pending Action Card -->
+      <div data-3d-tilt class="purple-3d-card text-white p-5 sm:p-6 lg:col-span-5 flex flex-col justify-between relative overflow-hidden">
+        <div class=" -top-10 -right-10 w-36 h-36 rounded-full bg-white/10 pointer-events-none absolute"></div>
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-indigo-100">Financial Analysis • Direct UPI</span>
+          <span id="kpi-pending-badge" class="px-2.5 py-0.5 rounded-full bg-[#10E594] text-[#081B4B] font-mono text-[10px] font-extrabold">
             ACTION NEEDED
           </span>
         </div>
-        <div id="admin-pending-count" class="text-3xl font-black text-gray-950 font-mono my-2">0</div>
-        <div class="text-[11px] font-bold text-gray-800">Verify UTR in Bank & Click Approve</div>
+
+        <div class="my-3">
+          <div class="text-[11px] uppercase tracking-wider text-indigo-200">Approved Pro Subscription Revenue</div>
+          <div id="admin-approved-rev" class="text-2xl sm:text-3xl font-black font-mono tracking-tight text-white mt-0.5">
+            ₹0.00
+          </div>
+        </div>
+
+        <!-- Inner White Floating Split Pill -->
+        <div class="bg-white text-[#081B4B] rounded-2xl p-3.5 shadow-lg grid grid-cols-2 gap-3 text-center">
+          <div class="border-r border-slate-100 pr-2">
+            <div class="text-[10px] font-bold text-slate-400">Pending Approvals</div>
+            <div id="admin-pending-count" class="text-lg font-black text-amber-600 font-mono mt-0.5">0</div>
+            <div class="text-[10px] text-slate-500">Verify UTR &amp; Approve</div>
+          </div>
+          <div class="pl-2">
+            <div class="text-[10px] font-bold text-slate-400">Activated Pro IDs</div>
+            <div id="admin-active-users" class="text-lg font-black text-[#5B2EFF] font-mono mt-0.5">0 Sellers</div>
+            <div class="text-[10px] text-emerald-600 font-bold">Instant Unblur</div>
+          </div>
+        </div>
       </div>
 
-      <div class="bento-card p-5 flex flex-col justify-between">
-        <div class="flex items-center justify-between gap-2">
-          <span class="text-xs font-bold text-gray-500">Approved Pro Revenue</span>
-          <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold shrink-0">100% DIRECT UPI</span>
+      <!-- Right 7 Cols: 3D Concentric Donut Ring + Active Merchant UPI Card -->
+      <div data-3d-tilt class="bento-card p-5 sm:p-6 lg:col-span-7 grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
+        <!-- 3D Donut Ring (6 Cols) -->
+        <div class="sm:col-span-6 bg-slate-50 rounded-2xl p-4 border border-slate-200/80 flex items-center justify-around gap-2">
+          <div class="relative flex items-center justify-center float-3d">
+            <svg viewBox="0 0 110 110" class="w-24 h-24">
+              <circle cx="55" cy="55" r="38" fill="none" stroke="#E2E8F0" stroke-width="12" />
+              <circle cx="55" cy="55" r="38" fill="none" stroke="#5B2EFF" stroke-width="14" stroke-dasharray="160 240" stroke-linecap="round" transform="rotate(-90 55 55)" />
+              <circle cx="55" cy="55" r="38" fill="none" stroke="#10E594" stroke-width="10" stroke-dasharray="60 240" stroke-dashoffset="-165" stroke-linecap="round" transform="rotate(-90 55 55)" />
+              <text x="55" y="54" text-anchor="middle" class="font-mono font-black text-xs" fill="#081B4B">100%</text>
+              <text x="55" y="66" text-anchor="middle" class="font-sans font-bold text-[8px]" fill="#64748B">DIRECT</text>
+            </svg>
+          </div>
+          <div class="space-y-1.5 text-xs">
+            <div class="font-extrabold text-[#081B4B]">Gateway Savings</div>
+            <div class="text-[11px] text-slate-500">0% Commission Fee</div>
+            <div class="px-2.5 py-0.5 rounded-full bg-[#10E594]/30 text-[#081B4B] font-mono text-[10px] font-extrabold inline-block">
+              &lt;1s Sync Speed
+            </div>
+          </div>
         </div>
-        <div id="admin-approved-rev" class="text-2xl font-black text-gray-900 font-mono my-2 truncate">₹0.00</div>
-        <div class="text-[11px] font-bold text-emerald-700">Zero Gateway Commission</div>
+
+        <!-- Active Merchant Receiving Details (6 Cols) -->
+        <div class="sm:col-span-6 bg-slate-50 rounded-2xl p-4 border border-slate-200/80 space-y-2.5 text-xs">
+          <div class="flex items-center justify-between">
+            <span class="font-extrabold text-[#081B4B]">Active Receiving UPI</span>
+            <span class="px-2 py-0.5 rounded-full bg-indigo-50 text-[#5B2EFF] font-mono text-[10px] font-bold">VERIFIED</span>
+          </div>
+          <div id="admin-upi-card" class="text-base font-black text-[#5B2EFF] font-mono truncate">
+            9661692365@ybl
+          </div>
+          <div id="admin-payee-card" class="text-xs font-bold text-[#081B4B]">
+            Payee: AGNI VOLT
+          </div>
+          <div class="pt-1 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-500">
+            <span>Plans: ₹99/mo • ₹499/yr</span>
+            <a href="#merchant-settings-section" class="text-[#5B2EFF] font-bold hover:underline">Edit →</a>
+          </div>
+        </div>
       </div>
 
-      <div class="bento-card p-5 flex flex-col justify-between">
-        <div class="flex items-center justify-between gap-2">
-          <span class="text-xs font-bold text-gray-500">Activated Pro IDs</span>
-          <span class="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-bold shrink-0">INSTANT UNBLUR</span>
-        </div>
-        <div id="admin-active-users" class="text-2xl font-black text-gray-900 font-mono my-2">0 Sellers</div>
-        <div class="text-[11px] font-bold text-gray-500">Synced via <code>users/{uid}</code></div>
-      </div>
-
-      <div class="bento-card p-5 flex flex-col justify-between">
-        <div class="flex items-center justify-between gap-2">
-          <span class="text-xs font-bold text-gray-500">Active Receiving UPI</span>
-          <span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 text-[10px] font-bold shrink-0">VERIFIED</span>
-        </div>
-        <div id="admin-upi-card" class="text-base font-black text-gray-900 font-mono my-2 truncate">9661692365@ybl</div>
-        <div id="admin-payee-card" class="text-[11px] font-bold text-gray-600">Payee: AGNI VOLT</div>
-      </div>
     </section>
 
     <!-- =================================================================== -->
     <!-- SECTION 1: LIVE PENDING UPI PAYMENT REQUESTS QUEUE                  -->
     <!-- =================================================================== -->
-    <section id="live-approval-queue" class="bento-card p-4 sm:p-6 space-y-4 overflow-hidden">
+    <section id="live-approval-queue" data-3d-tilt class="bento-card p-5 sm:p-6 space-y-4 overflow-hidden">
       <div class="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">Step 4 of Semi-Auto Payment Engine</span>
-          <h2 class="text-base sm:text-lg font-extrabold text-gray-900">Live UPI UTR Verification & 1-Click ID Activation Queue</h2>
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#5B2EFF]">Step 4 of Semi-Auto Payment Engine</span>
+          <h2 class="text-base sm:text-[17px] font-extrabold text-[#081B4B]">Live UPI UTR Verification &amp; 1-Click ID Activation Queue</h2>
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
-          <button type="button" data-q-filter="ALL" class="q-filter-btn px-3 py-1.5 rounded-xl bg-gray-900 text-white text-xs font-bold">
+          <button type="button" data-q-filter="ALL" class="q-filter-btn px-3.5 py-1.5 rounded-xl bg-[#5B2EFF] text-white text-xs font-bold shadow-sm">
             All Requests
           </button>
-          <button type="button" data-q-filter="PENDING" class="q-filter-btn px-3 py-1.5 rounded-xl bg-[#F4F5F7] text-gray-700 text-xs font-bold">
+          <button type="button" data-q-filter="PENDING" class="q-filter-btn px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold hover:bg-indigo-50">
             ⏳ Pending Only
           </button>
-          <button type="button" data-q-filter="APPROVED" class="q-filter-btn px-3 py-1.5 rounded-xl bg-[#F4F5F7] text-gray-700 text-xs font-bold">
+          <button type="button" data-q-filter="APPROVED" class="q-filter-btn px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold hover:bg-indigo-50">
             ✅ Approved
           </button>
         </div>
@@ -263,16 +317,16 @@
       <div class="w-full overflow-x-auto">
         <table class="w-full text-left border-collapse text-xs min-w-[580px]">
           <thead>
-            <tr class="border-b border-gray-200 text-gray-400 uppercase text-[10px]">
+            <tr class="border-b border-slate-200 text-slate-400 uppercase text-[10px]">
               <th class="py-2.5">Submitted At</th>
               <th class="py-2.5">Seller Store / UID</th>
-              <th class="py-2.5">Plan & Amount</th>
+              <th class="py-2.5">Plan &amp; Amount</th>
               <th class="py-2.5">12-Digit UPI UTR</th>
               <th class="py-2.5">Status</th>
               <th class="py-2.5 text-right">1-Click Admin Action</th>
             </tr>
           </thead>
-          <tbody id="admin-payment-queue-tbody" class="divide-y divide-gray-100">
+          <tbody id="admin-payment-queue-tbody" class="divide-y divide-slate-100">
             <!-- Populated dynamically in 0.1s from Firestore onSnapshot + Local Queue -->
           </tbody>
         </table>
@@ -282,113 +336,113 @@
     <!-- =================================================================== -->
     <!-- SECTION 2: MERCHANT UPI SETTINGS & GLOBAL BROADCAST MANAGER         -->
     <!-- =================================================================== -->
-    <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-5">
 
       <!-- MERCHANT UPI & WHATSAPP WEBHOOK CONFIG (6 COLS) -->
-      <div id="merchant-settings-section" class="bento-card p-5 sm:p-6 lg:col-span-6 space-y-4">
+      <div id="merchant-settings-section" data-3d-tilt class="bento-card p-5 sm:p-6 lg:col-span-6 space-y-4">
         <div class="flex items-center justify-between">
           <div>
-            <span class="text-[10px] font-extrabold uppercase tracking-wider text-indigo-600">Zero-Trust Cloud Config (<code>system_config/payment_settings</code>)</span>
-            <h3 class="text-base font-extrabold text-gray-900">Merchant UPI & Instant WhatsApp Alert Settings</h3>
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#5B2EFF]">Zero-Trust Cloud Config (<code>system_config/payment_settings</code>)</span>
+            <h3 class="text-base font-extrabold text-[#081B4B]">Merchant UPI &amp; Instant WhatsApp Alert Settings</h3>
           </div>
         </div>
 
         <form id="merchant-config-form" class="space-y-3.5 text-xs">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="block font-bold text-gray-700 mb-1">Merchant UPI ID *</label>
+              <label class="block font-bold text-slate-700 mb-1">Merchant UPI ID *</label>
               <input
                 type="text"
                 id="cfg-upi-id"
                 required
                 value="9661692365@ybl"
-                class="w-full px-3.5 py-2.5 rounded-xl bg-[#F4F5F7] border border-gray-200 font-mono font-bold"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-mono font-bold text-[#081B4B] focus:outline-none focus:ring-2 focus:ring-[#5B2EFF]"
               />
             </div>
             <div>
-              <label class="block font-bold text-gray-700 mb-1">Merchant Payee Name *</label>
+              <label class="block font-bold text-slate-700 mb-1">Merchant Payee Name *</label>
               <input
                 type="text"
                 id="cfg-payee-name"
                 required
                 value="AGNI VOLT"
-                class="w-full px-3.5 py-2.5 rounded-xl bg-[#F4F5F7] border border-gray-200 font-bold"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-bold text-[#081B4B] focus:outline-none focus:ring-2 focus:ring-[#5B2EFF]"
               />
             </div>
             <div>
-              <label class="block font-bold text-gray-700 mb-1">Monthly Pro Price (₹)</label>
+              <label class="block font-bold text-slate-700 mb-1">Monthly Pro Price (₹)</label>
               <input
                 type="number"
                 id="cfg-monthly-price"
                 required
                 min="1"
                 value="99"
-                class="w-full px-3.5 py-2.5 rounded-xl bg-[#F4F5F7] border border-gray-200 font-mono font-bold"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-mono font-bold text-[#081B4B] focus:outline-none focus:ring-2 focus:ring-[#5B2EFF]"
               />
             </div>
             <div>
-              <label class="block font-bold text-gray-700 mb-1">Yearly Pro Price (₹)</label>
+              <label class="block font-bold text-slate-700 mb-1">Yearly Pro Price (₹)</label>
               <input
                 type="number"
                 id="cfg-yearly-price"
                 required
                 min="1"
                 value="499"
-                class="w-full px-3.5 py-2.5 rounded-xl bg-[#F4F5F7] border border-gray-200 font-mono font-bold"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-mono font-bold text-[#081B4B] focus:outline-none focus:ring-2 focus:ring-[#5B2EFF]"
               />
             </div>
           </div>
 
           <div>
-            <label class="block font-bold text-gray-700 mb-1">
+            <label class="block font-bold text-slate-700 mb-1">
               Admin WhatsApp Alert Number (Stored in Firestore <code>system_config</code>, never hardcoded)
             </label>
             <input
               type="tel"
               id="cfg-wa-number"
               placeholder="e.g. 919XXXXXXXXX (With country code 91)"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-[#F4F5F7] border border-gray-200 font-mono"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-mono text-[#081B4B] focus:outline-none focus:ring-2 focus:ring-[#5B2EFF]"
             />
           </div>
 
           <button
             type="submit"
-            class="w-full py-3 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white font-extrabold text-xs shadow transition"
+            class="w-full py-3 rounded-2xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow-md transition"
           >
-            💾 Save Merchant UPI & Alert Config
+            💾 Save Merchant UPI &amp; Alert Config
           </button>
         </form>
       </div>
 
       <!-- GLOBAL BROADCAST BANNER MANAGER (6 COLS) -->
-      <div id="broadcast-banner-section" class="bento-card p-5 sm:p-6 lg:col-span-6 flex flex-col justify-between space-y-4">
+      <div id="broadcast-banner-section" data-3d-tilt class="bento-card p-5 sm:p-6 lg:col-span-6 flex flex-col justify-between space-y-4">
         <div class="space-y-3">
           <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">Real-Time Seller Announcement (<code>system_config/broadcast</code>)</span>
-          <h3 class="text-base font-extrabold text-gray-900">Global Top Broadcast Banner</h3>
-          <p class="text-xs text-gray-500">
+          <h3 class="text-base font-extrabold text-[#081B4B]">Global Top Broadcast Banner</h3>
+          <p class="text-xs text-slate-500">
             Push live GST due-date reminders or festival Pro offers to the top of every seller's screen in real-time.
           </p>
 
           <form id="broadcast-config-form" class="space-y-3 text-xs">
             <div>
-              <label class="block font-bold text-gray-700 mb-1">Announcement Message</label>
+              <label class="block font-bold text-slate-700 mb-1">Announcement Message</label>
               <input
                 type="text"
                 id="broadcast-msg-input"
                 placeholder="📢 GSTR-1 Filing Due on 11th! Download your 1-Click JSON today."
                 value="📢 GSTR-1 Filing Due on 11th! Download your 1-Click JSON in 60 seconds."
-                class="w-full px-3.5 py-2.5 rounded-xl bg-[#F4F5F7] border border-gray-200 font-semibold"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-semibold text-[#081B4B] focus:outline-none focus:ring-2 focus:ring-[#5B2EFF]"
               />
             </div>
 
             <div class="flex items-center gap-2">
-              <input type="checkbox" id="broadcast-active-toggle" class="w-4 h-4 accent-gray-900 rounded" />
-              <label for="broadcast-active-toggle" class="font-bold text-gray-800">Display Broadcast Banner on All Pages</label>
+              <input type="checkbox" id="broadcast-active-toggle" class="w-4 h-4 accent-[#5B2EFF] rounded" />
+              <label for="broadcast-active-toggle" class="font-bold text-slate-800">Display Broadcast Banner on All Pages</label>
             </div>
 
             <button
               type="submit"
-              class="w-full py-3 rounded-2xl bg-[#CBE8BA] hover:bg-emerald-300 text-gray-950 font-extrabold text-xs border border-emerald-400/50 transition"
+              class="w-full py-3 rounded-2xl bg-[#5B2EFF] hover:bg-indigo-700 text-white font-extrabold text-xs shadow-md transition"
             >
               📢 Publish Global Broadcast
             </button>
@@ -396,16 +450,16 @@
         </div>
 
         <!-- Quick Local Test Helper for Current Device -->
-        <div class="p-4 rounded-2xl bg-[#F4F5F7] border border-gray-200 flex flex-wrap items-center justify-between gap-2 text-xs">
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-wrap items-center justify-between gap-2 text-xs">
           <div>
-            <div class="font-extrabold text-gray-900">Current Browser Session Pro Status</div>
-            <div id="local-session-status" class="text-[11px] text-gray-500 font-mono">Checking status...</div>
+            <div class="font-extrabold text-[#081B4B]">Current Browser Session Pro Status</div>
+            <div id="local-session-status" class="text-[11px] text-slate-500 font-mono">Checking status...</div>
           </div>
           <div class="flex flex-wrap items-center gap-2">
-            <button type="button" id="force-activate-self-btn" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px]">
+            <button type="button" id="force-activate-self-btn" class="px-3 py-1.5 rounded-xl bg-[#10E594] hover:bg-emerald-300 text-[#081B4B] font-extrabold text-[11px] shadow-sm">
               ✅ Activate Current Device
             </button>
-            <button type="button" id="force-reset-self-btn" class="px-3 py-1.5 rounded-xl bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold text-[11px]">
+            <button type="button" id="force-reset-self-btn" class="px-3 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-[11px]">
               Reset to Free
             </button>
           </div>
@@ -424,7 +478,8 @@
       formatINR,
       showToast,
       syncProDOMElements,
-      renderPendingPaymentBanner
+      renderPendingPaymentBanner,
+      init3DTiltCards
     } from "./assets/js/security-core.js";
     import {
       collection,
@@ -437,11 +492,25 @@
       serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+    init3DTiltCards();
+
+    // 1. 7-Second Countdown Badge on Install App Button
+    const secBadge = document.getElementById("pwa-sec-badge");
+    let remainingSec = 7;
+    const secInterval = setInterval(() => {
+      remainingSec -= 1;
+      if (secBadge && remainingSec > 0) {
+        secBadge.textContent = `${remainingSec}s`;
+      } else {
+        clearInterval(secInterval);
+      }
+    }, 1000);
+
     let queueFilter = "ALL";
     let firestoreRequests = [];
     let knownPendingCount = 0;
 
-    // 1. Web Audio API Chime for Real-Time New Payment Request Alert
+    // 2. Web Audio API Chime for Real-Time New Payment Request Alert
     function playNotificationChime() {
       try {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -465,7 +534,7 @@
       showToast("🔔 Real-Time Admin Audio Alert Tested!", "info");
     });
 
-    // 2. Seed initial sample payment request if queue is completely empty
+    // 3. Seed initial sample payment request if queue is completely empty
     function getCombinedQueue() {
       let localQueue = JSON.parse(localStorage.getItem("sellgst_local_payment_requests") || "[]");
       if (localQueue.length === 0 && firestoreRequests.length === 0) {
@@ -473,8 +542,8 @@
           {
             id: "req_demo_101",
             uid: AppState.user?.uid || AppState.profile.uid || "demo-seller-01",
-            userName: AppState.profile.businessName || "AgniVolt E-Com Store",
-            userEmail: AppState.profile.email || "seller@agnivolt.in",
+            userName: AppState.profile.businessName || "S.K.P.S DIGITAL",
+            userEmail: AppState.profile.email || "seller@skpsdigital.in",
             planName: "MONTHLY",
             planAmount: 99,
             utrNumber: "431298765412",
@@ -498,7 +567,6 @@
         localStorage.setItem("sellgst_local_payment_requests", JSON.stringify(localQueue));
       }
 
-      // Merge Firestore & Local Queue by ID/UTR
       const map = new Map();
       [...firestoreRequests, ...localQueue].forEach((item) => {
         const key = item.id || item.utrNumber;
@@ -509,19 +577,17 @@
       return Array.from(map.values());
     }
 
-    // 3. Render Live Payment Approval Queue
+    // 4. Render Live Payment Approval Queue
     function renderPaymentQueue() {
       const allItems = getCombinedQueue();
       const pendingItems = allItems.filter((r) => r.status === "PENDING");
       const approvedItems = allItems.filter((r) => r.status === "APPROVED");
 
-      // Play chime if a new pending request arrived
       if (pendingItems.length > knownPendingCount && knownPendingCount !== 0) {
         playNotificationChime();
       }
       knownPendingCount = pendingItems.length;
 
-      // Update KPI Cards
       document.getElementById("admin-pending-count").textContent = String(pendingItems.length);
       document.getElementById("header-pending-dot").classList.toggle("hidden", pendingItems.length === 0);
 
@@ -536,7 +602,7 @@
       if (filtered.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="6" class="py-8 text-center text-gray-400 font-semibold">
+            <td colspan="6" class="py-8 text-center text-slate-400 font-semibold">
               No payment requests in this filter view.
             </td>
           </tr>
@@ -551,28 +617,28 @@
           const isApproved = req.status === "APPROVED";
 
           return `
-            <tr class="${isPending ? "bg-amber-50/40" : ""} hover:bg-[#F4F5F7]/60 transition">
-              <td class="py-3.5 font-mono text-gray-500 text-[11px]">${sanitizeHTML(dateDisplay)}</td>
+            <tr class="${isPending ? "bg-amber-50/40" : ""} hover:bg-indigo-50/40 transition">
+              <td class="py-3.5 font-mono text-slate-500 text-[11px]">${sanitizeHTML(dateDisplay)}</td>
               <td class="py-3.5">
-                <div class="font-extrabold text-gray-900">${sanitizeHTML(req.userName || "Seller Store")}</div>
-                <div class="font-mono text-[10px] text-gray-500">UID: ${sanitizeHTML(req.uid)}</div>
+                <div class="font-extrabold text-[#081B4B]">${sanitizeHTML(req.userName || "S.K.P.S DIGITAL")}</div>
+                <div class="font-mono text-[10px] text-slate-500">UID: ${sanitizeHTML(req.uid)}</div>
               </td>
               <td class="py-3.5">
-                <span class="px-2.5 py-0.5 rounded-full bg-gray-900 text-[#CBE8BA] font-mono font-bold text-[10px]">
+                <span class="px-2.5 py-0.5 rounded-full bg-[#5B2EFF] text-white font-mono font-bold text-[10px]">
                   ${sanitizeHTML(req.planName || "MONTHLY")}
                 </span>
-                <span class="font-mono font-black text-gray-900 ml-1">${formatINR(req.planAmount || 99)}</span>
+                <span class="font-mono font-black text-[#081B4B] ml-1">${formatINR(req.planAmount || 99)}</span>
               </td>
               <td class="py-3.5">
                 <div class="flex items-center gap-1.5">
-                  <code class="px-2.5 py-1 rounded-lg bg-white border border-gray-300 font-mono font-bold text-gray-900">
+                  <code class="px-2.5 py-1 rounded-lg bg-white border border-slate-300 font-mono font-bold text-[#081B4B]">
                     ${sanitizeHTML(req.utrNumber)}
                   </code>
                   <button
                     type="button"
                     data-copy-utr="${sanitizeHTML(req.utrNumber)}"
                     title="Copy UTR"
-                    class="text-gray-400 hover:text-gray-900 text-xs font-bold"
+                    class="text-slate-400 hover:text-[#5B2EFF] text-xs font-bold"
                   >
                     📋
                   </button>
@@ -581,7 +647,7 @@
               <td class="py-3.5">
                 <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold ${
                   isApproved
-                    ? "bg-[#CBE8BA] text-gray-950"
+                    ? "bg-[#10E594]/30 text-[#081B4B]"
                     : req.status === "REJECTED"
                     ? "bg-rose-100 text-rose-800"
                     : "bg-amber-100 text-amber-900"
@@ -601,7 +667,7 @@
                       data-approve-plan="${sanitizeHTML(req.planName || "MONTHLY")}"
                       class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-sm transition whitespace-nowrap"
                     >
-                      ✅ Approve & Activate ID
+                      ✅ Approve &amp; Activate ID
                     </button>
                     <button
                       type="button"
@@ -613,7 +679,7 @@
                     </button>
                   `
                       : `
-                    <span class="text-[11px] font-bold text-gray-400">Processed</span>
+                    <span class="text-[11px] font-bold text-slate-400">Processed</span>
                   `
                   }
                 </div>
@@ -623,7 +689,6 @@
         })
         .join("");
 
-      // Bind Copy UTR
       tbody.querySelectorAll("[data-copy-utr]").forEach((btn) => {
         btn.addEventListener("click", () => {
           const utr = btn.getAttribute("data-copy-utr");
@@ -632,7 +697,6 @@
         });
       });
 
-      // Bind 1-Click "✅ Approve & Activate ID"
       tbody.querySelectorAll("[data-approve-id]").forEach((btn) => {
         btn.addEventListener("click", async () => {
           const reqId = btn.getAttribute("data-approve-id");
@@ -642,7 +706,6 @@
         });
       });
 
-      // Bind 1-Click "❌ Reject"
       tbody.querySelectorAll("[data-reject-id]").forEach((btn) => {
         btn.addEventListener("click", async () => {
           const reqId = btn.getAttribute("data-reject-id");
@@ -652,7 +715,7 @@
       });
     }
 
-    // 4. 1-Click Approval Handler (Updates Firestore `users/{uid}` + `payment_requests/{id}` + Local State)
+    // 5. 1-Click Approval Handler
     async function handleApproveRequest(reqId, targetUid, planName = "MONTHLY") {
       try {
         await updateDoc(doc(db, "payment_requests", reqId), {
@@ -675,14 +738,12 @@
         );
       } catch (_) {}
 
-      // Update Local Storage Queue & Current Profile for instant single-device verification
       const localQueue = JSON.parse(localStorage.getItem("sellgst_local_payment_requests") || "[]");
       localQueue.forEach((r) => {
         if (r.id === reqId) r.status = "APPROVED";
       });
       localStorage.setItem("sellgst_local_payment_requests", JSON.stringify(localQueue));
 
-      // Activate current browser session immediately if matching or testing
       localStorage.removeItem("sellgst_pending_utr");
       AppState.pendingRequest = null;
       AppState.profile.isPro = true;
@@ -699,7 +760,7 @@
       showToast(`✅ Approved! UID ${targetUid} is now PRO ACTIVE in real-time!`, "success", 5000);
     }
 
-    async function handleRejectRequest(reqId, targetUid) {
+    async function handleRejectRequest(reqId) {
       try {
         await updateDoc(doc(db, "payment_requests", reqId), {
           status: "REJECTED",
@@ -719,7 +780,6 @@
       showToast(`Marked request ${reqId} as REJECTED.`, "warning");
     }
 
-    // 5. Subscribe to Live Firestore `payment_requests`
     try {
       const q = query(collection(db, "payment_requests"), limit(50));
       onSnapshot(
@@ -732,33 +792,29 @@
           firestoreRequests = list;
           renderPaymentQueue();
         },
-        () => {
-          renderPaymentQueue();
-        }
+        () => renderPaymentQueue()
       );
     } catch (_) {
       renderPaymentQueue();
     }
 
-    // Filter Buttons
     document.querySelectorAll("[data-q-filter]").forEach((btn) => {
       btn.addEventListener("click", () => {
         queueFilter = btn.getAttribute("data-q-filter");
         document.querySelectorAll(".q-filter-btn").forEach((b) => {
-          b.className = "q-filter-btn px-3 py-1.5 rounded-xl bg-[#F4F5F7] text-gray-700 text-xs font-bold";
+          b.className = "q-filter-btn px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold hover:bg-indigo-50";
         });
-        btn.className = "q-filter-btn px-3 py-1.5 rounded-xl bg-gray-900 text-white text-xs font-bold";
+        btn.className = "q-filter-btn px-3.5 py-1.5 rounded-xl bg-[#5B2EFF] text-white text-xs font-bold shadow-sm";
         renderPaymentQueue();
       });
     });
 
-    // Simulate Incoming UPI Payment Button (for instant live test of sound + queue + 1-click approve)
     document.getElementById("simulate-payment-btn")?.addEventListener("click", () => {
       const randomUtr = "4319" + Math.floor(10000000 + Math.random() * 90000000);
       const mockReq = {
         id: "req_" + Date.now(),
         uid: AppState.user?.uid || AppState.profile.uid || "demo-seller-01",
-        userName: AppState.profile.businessName || "AgniVolt E-Com Store",
+        userName: AppState.profile.businessName || "S.K.P.S DIGITAL",
         userEmail: "seller@store.in",
         planName: "MONTHLY",
         planAmount: 99,
@@ -778,7 +834,6 @@
       showToast(`🔔 New UPI Payment Request (UTR: ${randomUtr}) arrived in queue!`, "info");
     });
 
-    // Save Merchant UPI & WhatsApp Alert Config
     document.getElementById("merchant-config-form")?.addEventListener("submit", async (e) => {
       e.preventDefault();
       const upiId = document.getElementById("cfg-upi-id").value.trim();
@@ -818,7 +873,6 @@
       showToast("Merchant UPI & WhatsApp Alert settings saved!", "success");
     });
 
-    // Publish Global Broadcast Banner
     document.getElementById("broadcast-config-form")?.addEventListener("submit", async (e) => {
       e.preventDefault();
       const message = document.getElementById("broadcast-msg-input").value.trim();
@@ -837,7 +891,7 @@
         if (!el) {
           el = document.createElement("div");
           el.id = "sellgst-global-broadcast";
-          el.className = "w-full bg-gray-900 text-[#CBE8BA] px-4 py-2 text-xs sm:text-sm font-semibold text-center tracking-wide z-40";
+          el.className = "w-full bg-gradient-to-r from-[#081B4B] via-[#5B2EFF] to-[#081B4B] text-white px-4 py-2 text-[13px] font-semibold text-center tracking-wide z-40";
           document.body.prepend(el);
         }
         el.textContent = message;
@@ -848,7 +902,6 @@
       }
     });
 
-    // Local Device Quick Pro Toggle
     function updateLocalSessionStatus() {
       const statusEl = document.getElementById("local-session-status");
       if (AppState.profile.isPro) {
@@ -856,7 +909,7 @@
         statusEl.className = "text-[11px] text-emerald-700 font-mono font-bold";
       } else {
         statusEl.textContent = "Status: FREE TIER 🔒 (Order IDs Masked as ORD-XXXXXXX)";
-        statusEl.className = "text-[11px] text-gray-500 font-mono";
+        statusEl.className = "text-[11px] text-slate-500 font-mono";
       }
     }
 
