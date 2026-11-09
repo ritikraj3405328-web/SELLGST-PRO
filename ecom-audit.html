@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-  <title>E-Com CSV Audit & 4x6 Thermal Label Cropper — SellGST Pro</title>
-  <meta name="theme-color" content="#111827" />
+  <title>3D E-Com CSV Audit & 4x6 Thermal Label Cropper — SellGST Pro</title>
+  <meta name="theme-color" content="#5B2EFF" />
   <link rel="manifest" href="./manifest.json" />
 
   <!-- 0.1s Instant Module Preload & Speculative Tool Prefetch (Zero 404 Relative Paths) -->
@@ -13,6 +13,7 @@
   <link rel="prefetch" href="./app.html" as="document" />
   <link rel="prefetch" href="./invoice.html" as="document" />
   <link rel="prefetch" href="./gst-filing.html" as="document" />
+  <link rel="prefetch" href="./admin.html" as="document" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -29,8 +30,9 @@
             mono: ['"JetBrains Mono"', 'monospace']
           },
           colors: {
-            canvas: '#F4F5F7',
-            mint: '#CBE8BA'
+            navy: '#081B4B',
+            royal: '#5B2EFF',
+            mint: '#10E594'
           }
         }
       }
@@ -43,30 +45,43 @@
     html, body {
       max-width: 100vw;
       overflow-x: hidden;
-      background-color: #F4F5F7;
-      color: #111827;
+      background: linear-gradient(135deg, #DDE3FF 0%, #EEF2FF 48%, #D6F5F8 100%);
+      color: #0F172A;
       font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
       -webkit-tap-highlight-color: transparent;
     }
     .bento-card {
-      background: #FFFFFF;
-      border-radius: 24px;
-      border: 1px solid #E5E7EB;
-      box-shadow: 0 10px 30px -10px rgba(17, 24, 39, 0.05);
-      transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(16px);
+      border-radius: 26px;
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 18px 40px -15px rgba(91, 46, 255, 0.14), 0 4px 12px rgba(15, 23, 42, 0.04);
+      transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease;
+      transform-style: preserve-3d;
+      will-change: transform;
       min-width: 0;
     }
-    @media (hover: hover) {
-      .bento-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 18px 35px -12px rgba(17, 24, 39, 0.08);
-      }
-    }
-    .bento-mint {
-      background: #CBE8BA;
-      border-radius: 24px;
-      border: 1px solid #A3D987;
+    .purple-3d-card {
+      background: linear-gradient(135deg, #6A3BFF 0%, #5B2EFF 55%, #3F16C4 100%);
+      border-radius: 26px;
+      box-shadow: 0 22px 45px -12px rgba(91, 46, 255, 0.38);
+      transform-style: preserve-3d;
       min-width: 0;
+    }
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-4px); }
+    }
+    .float-3d {
+      animation: floatSlow 3.8s ease-in-out infinite;
+    }
+    @keyframes shrink7s {
+      from { width: 100%; }
+      to { width: 0%; }
+    }
+    .pwa-timer-bar {
+      animation: shrink7s 7s linear forwards;
     }
     .no-scrollbar::-webkit-scrollbar {
       display: none;
@@ -79,96 +94,98 @@
 </head>
 <body class="min-h-screen w-full overflow-x-hidden pb-24 lg:pb-12 lg:pl-24">
 
-  <!-- DESKTOP FLOATING LEFT PILL SIDEBAR (ALL RELATIVE LINKS ./ FOR ZERO 404) -->
-  <aside class="hidden lg:flex fixed left-4 top-4 bottom-4 w-16 bg-white border border-gray-200 rounded-full shadow-lg flex-col items-center justify-between py-5 z-40">
-    <a href="./app.html" title="SellGST Pro" class="w-11 h-11 rounded-2xl bg-gray-900 text-[#CBE8BA] flex items-center justify-center font-black text-base shadow">
+  <!-- DESKTOP FLOATING 3D LEFT PILL SIDEBAR (ZERO-404 RELATIVE LINKS) -->
+  <aside class="hidden lg:flex fixed left-4 top-4 bottom-4 w-16 bg-white/95 backdrop-blur-xl border border-white rounded-full shadow-xl shadow-indigo-500/10 flex-col items-center justify-between py-5 z-40">
+    <a href="./app.html" title="SellGST Pro 3D" class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#081B4B] via-[#5B2EFF] to-[#10E594] text-white flex items-center justify-center font-black text-sm shadow-md">
       S₹
     </a>
     <nav class="flex flex-col items-center gap-3">
-      <a href="./app.html" title="Dashboard" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+      <a href="./app.html" title="3D Financial Dashboard" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
         📊
       </a>
-      <a href="./invoice.html" title="GST Billing & Khata" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+      <a href="./invoice.html" title="Custom Navy GST Invoice" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
         🧾
       </a>
-      <a href="./ecom-audit.html" title="E-Com Audit & 4x6 Labels" class="w-11 h-11 rounded-2xl bg-gray-900 text-white flex items-center justify-center text-lg shadow-sm transition">
+      <a href="./ecom-audit.html" title="E-Com Audit & 4x6 Labels" class="w-11 h-11 rounded-2xl bg-[#5B2EFF] text-white flex items-center justify-center text-base shadow-md transition">
         📦
       </a>
-      <a href="./gst-filing.html" title="1-Click GSTR-1 JSON" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+      <a href="./gst-filing.html" title="1-Click GSTR-1 JSON" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
         🏛️
       </a>
-      <a href="./admin.html" title="Admin Console" class="w-11 h-11 rounded-2xl text-gray-500 hover:bg-[#F4F5F7] hover:text-gray-900 flex items-center justify-center text-lg transition">
+      <a href="./admin.html" title="Admin Console" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
         🛡️
       </a>
     </nav>
     <div class="flex flex-col items-center gap-2">
-      <button type="button" data-open-ai="How do I export Meesho, Flipkart & Amazon CSV files for RTO and Weight Fraud audit?" title="Ask AI" class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm">
+      <button type="button" data-open-ai="How do I export Meesho, Flipkart & Amazon CSV files for RTO and Weight Fraud audit?" title="Ask AI" class="w-10 h-10 rounded-full bg-indigo-50 text-[#5B2EFF] flex items-center justify-center text-sm shadow-sm">
         🤖
       </button>
     </div>
   </aside>
 
-  <!-- MOBILE FLOATING BOTTOM DOCK (ALL RELATIVE LINKS ./ FOR ZERO 404) -->
-  <nav class="lg:hidden fixed bottom-2.5 inset-x-3 bg-gray-950/95 backdrop-blur-md text-white rounded-3xl px-2 py-2.5 shadow-2xl border border-white/10 z-40 flex items-center justify-around">
-    <a href="./app.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+  <!-- MOBILE FLOATING BOTTOM DOCK -->
+  <nav class="lg:hidden fixed bottom-2.5 inset-x-3 bg-white/95 backdrop-blur-xl text-slate-700 rounded-3xl px-2 py-2.5 shadow-2xl border border-indigo-100 z-40 flex items-center justify-around">
+    <a href="./app.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
       <span class="text-base">📊</span>
-      <span data-i18n="nav_dashboard">Dashboard</span>
+      <span data-i18n="nav_dashboard">Analytics</span>
     </a>
-    <a href="./invoice.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+    <a href="./invoice.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
       <span class="text-base">🧾</span>
-      <span data-i18n="nav_invoice">GST Bill</span>
+      <span data-i18n="nav_invoice">Navy Bill</span>
     </a>
-    <a href="./ecom-audit.html" class="flex flex-col items-center gap-0.5 text-[#CBE8BA] font-bold text-[10px]">
+    <a href="./ecom-audit.html" class="flex flex-col items-center gap-0.5 text-[#5B2EFF] font-extrabold text-[10px]">
       <span class="text-base">📦</span>
       <span data-i18n="nav_audit">Audit</span>
     </a>
-    <a href="./gst-filing.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+    <a href="./gst-filing.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
       <span class="text-base">🏛️</span>
       <span data-i18n="nav_gst">GSTR-1</span>
     </a>
-    <a href="./admin.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-white font-semibold text-[10px]">
+    <a href="./admin.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
       <span class="text-base">🛡️</span>
       <span>Admin</span>
     </a>
   </nav>
 
   <!-- MAIN CONTAINER -->
-  <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-3 sm:pt-4 space-y-5 sm:space-y-6 overflow-x-hidden">
+  <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-3 sm:pt-4 space-y-5 overflow-x-hidden">
 
-    <!-- TOP HEADER (WITH ALWAYS-VISIBLE PWA INSTALL BUTTON & ZERO HORIZONTAL OVERFLOW) -->
-    <header class="bg-white rounded-3xl border border-gray-200 px-3.5 sm:px-6 py-3 sm:py-3.5 shadow-sm flex flex-wrap items-center justify-between gap-2.5">
-      <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
-        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gray-900 text-[#CBE8BA] flex items-center justify-center text-base sm:text-lg font-extrabold shrink-0">
+    <!-- TOP HEADER (WITH 7-SECOND AUTO-HIDING PWA INSTALL BUTTON) -->
+    <header class="bg-white/90 backdrop-blur-xl rounded-3xl border border-white px-4 sm:px-6 py-3 shadow-lg shadow-indigo-500/5 flex flex-wrap items-center justify-between gap-2.5">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#081B4B] via-[#5B2EFF] to-[#10E594] text-white flex items-center justify-center text-base font-extrabold shadow-md shrink-0">
           📦
         </div>
         <div class="min-w-0">
-          <h1 class="font-extrabold text-xs sm:text-base text-gray-900 truncate">E-Commerce RAM Audit & 4x6 Thermal Label Cropper</h1>
-          <p class="text-[10px] sm:text-[11px] text-gray-500 truncate">100% Browser RAM CSV Processing • Zero Cloud Upload of Buyer Data</p>
+          <h1 class="font-extrabold text-sm sm:text-[15px] text-[#081B4B] truncate">3D E-Commerce RAM Audit &amp; 4x6 Thermal Label Cropper</h1>
+          <p class="text-[11px] text-slate-500 truncate">100% Browser RAM CSV Processing • Zero Cloud Upload of Buyer Data</p>
         </div>
       </div>
 
-      <div class="flex items-center gap-1.5 sm:gap-2.5 flex-wrap justify-end ml-auto">
+      <div class="flex items-center gap-2 flex-wrap justify-end ml-auto">
         <select
           data-lang-switcher
           aria-label="Language"
-          class="px-2.5 sm:px-3 py-1.5 rounded-full bg-[#F4F5F7] border border-gray-200 text-[11px] sm:text-xs font-bold text-gray-800 cursor-pointer focus:outline-none max-w-[92px] sm:max-w-none truncate"
+          class="px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none max-w-[95px] sm:max-w-none truncate"
         ></select>
 
-        <!-- ALWAYS-VISIBLE PWA INSTALL BUTTON -->
+        <!-- 7-SECOND AUTO-HIDING PWA INSTALL BUTTON -->
         <button
           type="button"
           id="pwa-install-btn"
           data-pwa-install
-          class="px-2.5 sm:px-3.5 py-1.5 rounded-full bg-[#CBE8BA] hover:bg-emerald-300 text-gray-950 border border-emerald-400/60 text-[11px] sm:text-xs font-extrabold shadow-sm transition whitespace-nowrap flex items-center gap-1"
+          class="relative overflow-hidden px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#081B4B] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap flex items-center gap-1.5"
         >
           <span>📲 Install App</span>
+          <span id="pwa-sec-badge" class="px-1.5 py-0.2 rounded-full bg-white/20 text-[10px] font-mono">7s</span>
+          <span class="absolute bottom-0 left-0 h-0.5 bg-[#10E594] pwa-timer-bar"></span>
         </button>
 
         <button
           type="button"
           data-pro-badge
           data-unlock-pro="MONTHLY"
-          class="px-3 sm:px-3.5 py-1.5 rounded-full text-[11px] sm:text-xs font-bold bg-gray-900 text-white whitespace-nowrap"
+          class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-[#5B2EFF] to-[#4318FF] text-white shadow-md whitespace-nowrap"
         >
           Unlock Pro ⚡
         </button>
@@ -177,152 +194,183 @@
 
     <!-- QUICK JUMP BAR -->
     <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 w-full">
-      <a href="#csv-scanner-section" class="px-4 py-2 rounded-2xl bg-gray-900 text-white font-extrabold text-xs whitespace-nowrap">
-        1. Marketplace CSV Leak Scanner
+      <a href="#csv-scanner-section" class="px-4 py-2 rounded-2xl bg-[#5B2EFF] text-white font-extrabold text-xs whitespace-nowrap shadow-sm">
+        1. 3D Marketplace CSV Scanner
       </a>
-      <a href="#flagged-orders-section" class="px-4 py-2 rounded-2xl bg-white border border-gray-200 text-gray-800 font-bold text-xs whitespace-nowrap hover:border-gray-900">
-        2. Flagged Orders & Claim Tickets
+      <a href="#flagged-orders-section" class="px-4 py-2 rounded-2xl bg-white border border-indigo-100 text-[#081B4B] font-bold text-xs whitespace-nowrap hover:border-[#5B2EFF]">
+        2. Flagged Orders &amp; Claim Tickets
       </a>
-      <a href="#label-cropper-section" class="px-4 py-2 rounded-2xl bg-[#CBE8BA]/60 border border-emerald-400/50 text-gray-900 font-extrabold text-xs whitespace-nowrap hover:bg-[#CBE8BA]">
+      <a href="#label-cropper-section" class="px-4 py-2 rounded-2xl bg-[#10E594]/25 border border-emerald-400/50 text-[#081B4B] font-extrabold text-xs whitespace-nowrap hover:bg-[#10E594]/40">
         🏷️ 3. 4x6 Thermal Label Cropper
       </a>
-      <a href="./app.html" class="px-3.5 py-2 rounded-2xl bg-white border border-gray-200 text-gray-600 font-bold text-xs whitespace-nowrap hover:text-gray-900">
-        ← Back to Dashboard
+      <a href="./app.html" class="px-3.5 py-2 rounded-2xl bg-white border border-slate-200 text-slate-600 font-bold text-xs whitespace-nowrap hover:text-[#081B4B]">
+        ← Back to 3D Dashboard
       </a>
     </div>
 
     <!-- =================================================================== -->
-    <!-- SECTION 1: CSV UPLOAD ZONE + 4 AUDIT KPI SUMMARY CARDS              -->
+    <!-- SECTION 1: CSV UPLOAD ZONE + 3D PURPLE VALUATION & DONUT ANALYTICS  -->
     <!-- =================================================================== -->
-    <section id="csv-scanner-section" class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-stretch">
+    <section id="csv-scanner-section" class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
 
       <!-- CSV DROPZONE (5 COLS) -->
-      <div class="bento-card p-5 sm:p-6 lg:col-span-5 flex flex-col justify-between">
+      <div data-3d-tilt class="bento-card p-5 sm:p-6 lg:col-span-5 flex flex-col justify-between">
         <div>
           <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
-            <span class="px-2.5 py-1 rounded-full bg-[#CBE8BA] text-gray-900 font-extrabold text-[10px]">
+            <span class="px-2.5 py-1 rounded-full bg-indigo-50 text-[#5B2EFF] font-extrabold text-[11px]">
               🔒 100% CLIENT-SIDE RAM
             </span>
             <button
               type="button"
               data-open-ai="Where do I download the CSV report from Meesho, Flipkart, and Amazon?"
-              class="text-xs font-bold text-indigo-600 hover:underline"
+              class="text-xs font-bold text-[#5B2EFF] hover:underline"
             >
               Where to get CSV? 🤖
             </button>
           </div>
-          <h2 class="text-base sm:text-lg font-extrabold text-gray-900">Upload Marketplace Settlement / Return CSV</h2>
-          <p class="text-xs text-gray-500 mt-1">
+          <h2 class="text-base sm:text-[17px] font-extrabold text-[#081B4B]">Upload Marketplace Settlement / Return CSV</h2>
+          <p class="text-xs text-slate-500 mt-1">
             Supports <strong>Meesho</strong>, <strong>Flipkart</strong>, and <strong>Amazon</strong> order/payment CSV exports.
           </p>
 
           <label
             for="csv-file-input"
-            class="mt-4 border-2 border-dashed border-gray-300 hover:border-gray-900 bg-[#F4F5F7]/70 rounded-2xl p-5 flex flex-col items-center justify-center text-center cursor-pointer transition"
+            class="mt-4 border-2 border-dashed border-indigo-200 hover:border-[#5B2EFF] bg-indigo-50/40 rounded-2xl p-5 flex flex-col items-center justify-center text-center cursor-pointer transition group"
           >
-            <span class="text-2xl mb-1">📂</span>
-            <span class="text-xs font-extrabold text-gray-900">Click to Select CSV File or Drag & Drop</span>
-            <span id="uploaded-file-name" class="text-[11px] text-gray-500 mt-1 font-mono break-all">No file selected (Demo Data Loaded)</span>
+            <span class="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-2xl mb-2 group-hover:scale-105 transition">📂</span>
+            <span class="text-[13px] font-extrabold text-[#081B4B]">Click to Select CSV File or Drag &amp; Drop</span>
+            <span id="uploaded-file-name" class="text-[11px] text-slate-500 mt-1 font-mono break-all">No file selected (Demo Data Loaded)</span>
             <input type="file" id="csv-file-input" accept=".csv" class="hidden" />
           </label>
         </div>
 
-        <div class="mt-4 pt-3 border-t border-gray-100 flex flex-wrap items-center gap-2">
+        <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center gap-2">
           <button
             type="button"
             id="load-demo-csv-btn"
-            class="flex-1 py-2.5 px-3 sm:px-4 rounded-xl bg-gray-900 hover:bg-gray-800 text-white font-extrabold text-xs transition whitespace-nowrap"
+            class="flex-1 py-2.5 px-4 rounded-xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow transition whitespace-nowrap"
           >
             ⚡ Load Realistic Leak Report
           </button>
           <button
             type="button"
             id="download-sample-csv-btn"
-            class="py-2.5 px-3 rounded-xl bg-[#F4F5F7] hover:bg-gray-200 text-gray-700 font-bold text-xs border border-gray-200 whitespace-nowrap"
+            class="py-2.5 px-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#081B4B] font-bold text-xs border border-slate-200 whitespace-nowrap"
           >
             ⬇ Sample CSV
           </button>
         </div>
       </div>
 
-      <!-- 4 AUDIT KPI SUMMARY CARDS (7 COLS) -->
-      <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div class="bento-mint p-5 flex flex-col justify-between">
-          <div class="flex items-center justify-between gap-2">
-            <span class="text-xs font-extrabold text-gray-800">Total Recoverable Payout</span>
-            <span class="px-2.5 py-0.5 rounded-full bg-gray-900 text-[#CBE8BA] text-[10px] font-bold shrink-0">CLAIM READY</span>
+      <!-- 3D PURPLE RECOVERY CARD + 3D CONCENTRIC DONUT RING (7 COLS) -->
+      <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-12 gap-5 items-stretch">
+
+        <!-- Royal Purple 3D Recovery Card (6 Cols) -->
+        <div data-3d-tilt class="purple-3d-card text-white p-5 sm:col-span-6 flex flex-col justify-between relative overflow-hidden">
+          <div class=" -top-10 -right-10 w-32 h-32 rounded-full bg-white/10 pointer-events-none absolute"></div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-indigo-100">Financial Analysis • Claims</span>
+            <span class="px-2.5 py-0.5 rounded-full bg-[#10E594] text-[#081B4B] text-[10px] font-extrabold">CLAIM READY</span>
           </div>
-          <div id="audit-total-recovery" class="text-2xl sm:text-3xl font-black text-gray-950 font-mono my-2 truncate">
-            ₹14,820.00
+
+          <div class="my-3">
+            <div class="text-[11px] uppercase tracking-wider text-indigo-200">Total Recoverable Payout</div>
+            <div id="audit-total-recovery" class="text-2xl sm:text-3xl font-black font-mono tracking-tight text-white mt-0.5">
+              ₹7,860.00
+            </div>
           </div>
-          <div class="text-[11px] font-bold text-gray-800">
-            Across Overdue RTOs + Courier Weight Fraud
+
+          <!-- Inner White Floating Split Pill -->
+          <div class="bg-white text-[#081B4B] rounded-2xl p-3.5 shadow-lg space-y-2.5">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+              <div>
+                <div class="text-[10px] font-bold text-slate-400">Overdue RTO (&gt;30d)</div>
+                <div id="audit-rto-count" class="text-sm font-black text-rose-600 font-mono">4 Orders</div>
+              </div>
+              <div class="text-right">
+                <div class="text-[10px] font-bold text-slate-400">SPF / SAFE-T Value</div>
+                <div id="audit-rto-amt" class="text-xs font-extrabold text-[#081B4B] font-mono">₹7,245.00</div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-[10px] font-bold text-slate-400">Weight Slab Fraud</div>
+                <div id="audit-weight-count" class="text-sm font-black text-amber-600 font-mono">3 Orders</div>
+              </div>
+              <div class="text-right">
+                <div class="text-[10px] font-bold text-slate-400">Excess Shipping</div>
+                <div id="audit-weight-amt" class="text-xs font-extrabold text-[#5B2EFF] font-mono">₹615.00</div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="bento-card p-5 flex flex-col justify-between">
-          <div class="flex items-center justify-between gap-2">
-            <span class="text-xs font-bold text-gray-500">Overdue Pending RTO (&gt;30 Days)</span>
-            <span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 text-[10px] font-bold shrink-0">SPF / SAFE-T</span>
+        <!-- 3D Donut Ring & Mini Progress Rings Card (6 Cols) -->
+        <div data-3d-tilt class="bento-card p-5 sm:col-span-6 flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold text-[#081B4B]">3D Audit Breakdown</span>
+            <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-[#5B2EFF] text-[10px] font-bold">All Tasks</span>
           </div>
-          <div id="audit-rto-count" class="text-2xl font-black text-rose-600 font-mono my-2">
-            4 Orders
+
+          <div class="flex items-center justify-around my-2">
+            <div class="relative flex items-center justify-center float-3d">
+              <svg viewBox="0 0 110 110" class="w-24 h-24">
+                <circle cx="55" cy="55" r="38" fill="none" stroke="#E2E8F0" stroke-width="12" />
+                <circle cx="55" cy="55" r="38" fill="none" stroke="#5B2EFF" stroke-width="14" stroke-dasharray="150 240" stroke-linecap="round" transform="rotate(-90 55 55)" />
+                <circle cx="55" cy="55" r="38" fill="none" stroke="#10E594" stroke-width="10" stroke-dasharray="65 240" stroke-dashoffset="-155" stroke-linecap="round" transform="rotate(-90 55 55)" />
+                <text id="audit-ring-count" x="55" y="54" text-anchor="middle" class="font-mono font-black text-sm" fill="#081B4B">7</text>
+                <text x="55" y="66" text-anchor="middle" class="font-sans font-bold text-[8px]" fill="#64748B">LEAKS</text>
+              </svg>
+            </div>
+
+            <div class="space-y-2 text-xs">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#5B2EFF]"></span>
+                <span class="font-bold text-slate-700">RTO Claims (92%)</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#10E594]"></span>
+                <span class="font-bold text-slate-700">Weight Fraud (8%)</span>
+              </div>
+              <div class="pt-1 border-t border-slate-100">
+                <div class="text-[10px] text-slate-400">Negative Settlement</div>
+                <div id="audit-neg-count" class="font-mono font-extrabold text-indigo-600 text-xs">2 Orders (₹940)</div>
+              </div>
+            </div>
           </div>
-          <div id="audit-rto-amt" class="text-xs font-bold text-gray-600">
-            Recoverable Value: ₹7,245.00
+
+          <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/70 flex items-center justify-between text-[11px]">
+            <span class="font-bold text-slate-600">Audit Win Probability</span>
+            <span class="px-2 py-0.5 rounded-full bg-[#10E594]/30 text-[#081B4B] font-mono font-extrabold">98.4% High</span>
           </div>
         </div>
 
-        <div class="bento-card p-5 flex flex-col justify-between">
-          <div class="flex items-center justify-between gap-2">
-            <span class="text-xs font-bold text-gray-500">Courier Weight Slab Fraud</span>
-            <span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[10px] font-bold shrink-0">SLAB MISMATCH</span>
-          </div>
-          <div id="audit-weight-count" class="text-2xl font-black text-amber-600 font-mono my-2">
-            3 Orders
-          </div>
-          <div id="audit-weight-amt" class="text-xs font-bold text-gray-600">
-            Excess Shipping Billed: ₹615.00
-          </div>
-        </div>
-
-        <div class="bento-card p-5 flex flex-col justify-between">
-          <div class="flex items-center justify-between gap-2">
-            <span class="text-xs font-bold text-gray-500">Negative Settlement / Penalty</span>
-            <span class="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-bold shrink-0">REVERSE FEE</span>
-          </div>
-          <div id="audit-neg-count" class="text-2xl font-black text-indigo-600 font-mono my-2">
-            2 Orders
-          </div>
-          <div id="audit-neg-amt" class="text-xs font-bold text-gray-600">
-            Net Deduction: ₹940.00
-          </div>
-        </div>
       </div>
     </section>
 
     <!-- =================================================================== -->
     <!-- SECTION 2: FLAGGED ORDERS TABLE WITH REAL-TIME ONSNAPSHOT UNBLUR    -->
     <!-- =================================================================== -->
-    <section id="flagged-orders-section" class="bento-card p-4 sm:p-6 space-y-4 overflow-hidden">
+    <section id="flagged-orders-section" data-3d-tilt class="bento-card p-5 sm:p-6 space-y-4 overflow-hidden">
       <div class="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <span class="text-[10px] font-extrabold uppercase tracking-wider text-rose-600">Discrepancy Breakdown</span>
-          <h2 class="text-base sm:text-lg font-extrabold text-gray-900">Flagged Marketplace Orders & 1-Click Claim Generator</h2>
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#5B2EFF]">Discrepancy Breakdown</span>
+          <h2 class="text-base sm:text-[17px] font-extrabold text-[#081B4B]">Flagged Marketplace Orders &amp; 1-Click Claim Generator</h2>
         </div>
 
         <!-- Filter Pills & Export -->
         <div class="flex flex-wrap items-center gap-2">
-          <button type="button" data-audit-filter="ALL" class="audit-filter-btn px-3 py-1.5 rounded-xl bg-gray-900 text-white text-xs font-bold">
+          <button type="button" data-audit-filter="ALL" class="audit-filter-btn px-3.5 py-1.5 rounded-xl bg-[#5B2EFF] text-white text-xs font-bold shadow-sm">
             All Leaks
           </button>
-          <button type="button" data-audit-filter="RTO_OVERDUE" class="audit-filter-btn px-3 py-1.5 rounded-xl bg-[#F4F5F7] text-gray-700 text-xs font-bold hover:bg-gray-200">
+          <button type="button" data-audit-filter="RTO_OVERDUE" class="audit-filter-btn px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold hover:bg-indigo-50">
             Pending RTO (&gt;30d)
           </button>
-          <button type="button" data-audit-filter="WEIGHT_FRAUD" class="audit-filter-btn px-3 py-1.5 rounded-xl bg-[#F4F5F7] text-gray-700 text-xs font-bold hover:bg-gray-200">
+          <button type="button" data-audit-filter="WEIGHT_FRAUD" class="audit-filter-btn px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold hover:bg-indigo-50">
             Weight Fraud
           </button>
-          <button type="button" id="export-claims-csv-btn" class="px-3.5 py-1.5 rounded-xl bg-[#CBE8BA] text-gray-900 text-xs font-extrabold border border-emerald-400/50">
+          <button type="button" id="export-claims-csv-btn" class="px-3.5 py-1.5 rounded-xl bg-[#10E594] text-[#081B4B] text-xs font-extrabold shadow-sm">
             ⬇ Export Claim Sheet (.CSV)
           </button>
         </div>
@@ -331,21 +379,21 @@
       <!-- Paywall Notice (Automatically disappears in 1 second when Admin approves UPI!) -->
       <div
         data-pro-lock-overlay
-        class="p-4 rounded-2xl bg-gray-900 text-white flex flex-wrap items-center justify-between gap-3"
+        class="p-4 rounded-2xl bg-gradient-to-r from-[#081B4B] via-[#5B2EFF] to-[#081B4B] text-white flex flex-wrap items-center justify-between gap-3 shadow-lg"
       >
         <div class="flex items-center gap-3 min-w-0">
           <span class="text-xl shrink-0">🔒</span>
           <div class="text-xs min-w-0">
-            <div class="font-extrabold text-[#CBE8BA]">Free Tier Preview: Order IDs are Masked (<code>ORD-XXXXXXX</code>)</div>
-            <div class="text-gray-300 mt-0.5">
-              Unlock SellGST Pro (₹99/mo via UPI <code>9661692365@ybl</code>) to reveal all Order IDs & copy 1-Click SPF/SAFE-T Claim Tickets in real-time.
+            <div class="font-extrabold text-[#10E594]">Free Tier Preview: Order IDs are Masked (<code>ORD-XXXXXXX</code>)</div>
+            <div class="text-indigo-100 mt-0.5">
+              Unlock SellGST Pro (₹99/mo via UPI <code>9661692365@ybl</code>) to reveal all Order IDs &amp; copy 1-Click SPF/SAFE-T Claim Tickets in real-time.
             </div>
           </div>
         </div>
         <button
           type="button"
           data-unlock-pro="MONTHLY"
-          class="px-4 py-2 rounded-xl bg-[#CBE8BA] hover:bg-emerald-300 text-gray-950 font-extrabold text-xs whitespace-nowrap"
+          class="px-4 py-2 rounded-xl bg-[#10E594] hover:bg-emerald-300 text-[#081B4B] font-extrabold text-xs whitespace-nowrap shadow"
         >
           Unlock All Order IDs @ ₹99 →
         </button>
@@ -355,7 +403,7 @@
       <div class="w-full overflow-x-auto">
         <table class="w-full text-left border-collapse text-xs min-w-[580px]">
           <thead>
-            <tr class="border-b border-gray-200 text-gray-400 uppercase text-[10px]">
+            <tr class="border-b border-slate-200 text-slate-400 uppercase text-[10px]">
               <th class="py-2.5">Order ID</th>
               <th class="py-2.5">Channel</th>
               <th class="py-2.5">SKU / Product</th>
@@ -365,7 +413,7 @@
               <th class="py-2.5 text-right">Action</th>
             </tr>
           </thead>
-          <tbody id="audit-results-tbody" class="divide-y divide-gray-100">
+          <tbody id="audit-results-tbody" class="divide-y divide-slate-100">
             <!-- Populated dynamically in 0.1s -->
           </tbody>
         </table>
@@ -375,53 +423,53 @@
     <!-- =================================================================== -->
     <!-- SECTION 3: 4x6 THERMAL SHIPPING LABEL CROPPER                       -->
     <!-- =================================================================== -->
-    <section id="label-cropper-section" class="bento-card p-5 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center overflow-hidden">
+    <section id="label-cropper-section" data-3d-tilt class="bento-card p-5 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center overflow-hidden">
       <div class="lg:col-span-6 space-y-4 min-w-0">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#CBE8BA] text-gray-900 font-extrabold text-[10px]">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-[#5B2EFF] font-extrabold text-[11px]">
           <span>🏷️ WAREHOUSE AUTOMATION</span>
         </div>
-        <h2 class="text-lg sm:text-xl font-extrabold text-gray-900">4x6 Thermal Shipping Label Cropper (Meesho, Flipkart & Amazon)</h2>
-        <p class="text-xs text-gray-600 leading-relaxed">
+        <h2 class="text-lg sm:text-xl font-extrabold text-[#081B4B]">4x6 Thermal Shipping Label Cropper (Meesho, Flipkart &amp; Amazon)</h2>
+        <p class="text-[13px] text-slate-600 leading-relaxed">
           Convert A4 marketplace shipping sheets into crisp <strong>4×6 inch (101.6mm × 152.4mm)</strong> thermal barcode labels for Zebra, TSC, and Xprinter rolls—complete with an automatic <strong>SKU + Qty Pick-List Footer</strong> at the bottom so your packing staff never packs the wrong item.
         </p>
 
         <!-- Marketplace Preset & Options -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
           <div>
-            <label class="block font-bold text-gray-700 mb-1">Marketplace Crop Preset</label>
-            <select id="crop-preset-select" class="w-full px-3 py-2.5 rounded-xl bg-[#F4F5F7] border border-gray-200 font-bold">
-              <option value="MEESHO">Meesho (A4 Top Half -> 4x6 Thermal)</option>
+            <label class="block font-bold text-slate-700 mb-1">Marketplace Crop Preset</label>
+            <select id="crop-preset-select" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-bold text-[#081B4B]">
+              <option value="MEESHO">Meesho (A4 Top Half -&gt; 4x6 Thermal)</option>
               <option value="FLIPKART">Flipkart (Center Label Crop + SKU Footer)</option>
               <option value="AMAZON">Amazon EasyShip (4x6 Barcode Frame)</option>
             </select>
           </div>
           <div>
-            <label class="block font-bold text-gray-700 mb-1">Stamp SKU Pick-List on Label Bottom</label>
+            <label class="block font-bold text-slate-700 mb-1">Stamp SKU Pick-List on Label Bottom</label>
             <input
               type="text"
               id="label-sku-stamp"
               value="SKU: RT-AUTO-01 | QTY: 1 | RoyalTank Kit"
-              class="w-full px-3 py-2.5 rounded-xl bg-[#F4F5F7] border border-gray-200 font-mono"
+              class="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-mono text-[#081B4B]"
             />
           </div>
         </div>
 
         <div class="flex flex-wrap items-center gap-2.5 pt-2">
-          <label class="px-4 py-2.5 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white font-extrabold text-xs cursor-pointer transition">
+          <label class="px-4 py-2.5 rounded-2xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs cursor-pointer shadow transition">
             <span>📤 Upload Label Image / Sheet</span>
             <input type="file" id="label-upload-input" accept="image/*" class="hidden" />
           </label>
           <button
             type="button"
             id="generate-demo-label-btn"
-            class="px-4 py-2.5 rounded-2xl bg-[#F4F5F7] hover:bg-gray-200 text-gray-800 font-bold text-xs border border-gray-200"
+            class="px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-[#081B4B] font-bold text-xs border border-slate-200"
           >
             🔄 Refresh Sample 4x6 Label
           </button>
           <button
             type="button"
             id="download-cropped-label-btn"
-            class="px-4 py-2.5 rounded-2xl bg-[#CBE8BA] hover:bg-emerald-300 text-gray-950 font-extrabold text-xs border border-emerald-400/50"
+            class="px-4 py-2.5 rounded-2xl bg-[#10E594] hover:bg-emerald-300 text-[#081B4B] font-extrabold text-xs shadow-sm"
           >
             🖨️ Download / Print 4x6 PNG
           </button>
@@ -429,40 +477,40 @@
       </div>
 
       <!-- Right 6 Cols: Live 4x6 Thermal Canvas Preview -->
-      <div class="lg:col-span-6 flex flex-col items-center justify-center bg-[#F4F5F7] rounded-3xl p-4 sm:p-5 border border-gray-200 min-w-0">
-        <div class="text-[10px] sm:text-[11px] font-mono font-bold text-gray-500 mb-2 text-center">
+      <div class="lg:col-span-6 flex flex-col items-center justify-center bg-slate-50 rounded-3xl p-4 sm:p-5 border border-slate-200 min-w-0">
+        <div class="text-[11px] font-mono font-bold text-[#5B2EFF] mb-2 text-center">
           LIVE 4×6 INCH (101.6mm × 152.4mm) THERMAL ROLL PREVIEW
         </div>
         <canvas
           id="thermal-label-canvas"
           width="380"
           height="560"
-          class="bg-white rounded-xl shadow-lg border border-gray-300 max-w-full h-auto"
+          class="bg-white rounded-xl shadow-xl border border-slate-300 max-w-full h-auto"
         ></canvas>
       </div>
     </section>
   </div>
 
   <!-- CLAIM TICKET GENERATOR MODAL -->
-  <div id="claim-ticket-modal" class="fixed inset-0 z-50 bg-gray-950/60 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-white rounded-3xl border border-gray-200 max-w-lg w-full p-5 sm:p-6 shadow-2xl space-y-4">
+  <div id="claim-ticket-modal" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl border border-indigo-100 max-w-lg w-full p-5 sm:p-6 shadow-2xl space-y-4">
       <div class="flex items-center justify-between gap-2">
         <div>
-          <span class="px-2.5 py-0.5 rounded-full bg-[#CBE8BA] text-gray-900 font-extrabold text-[10px]">SPF / SAFE-T / MEESHO CLAIM</span>
-          <h3 class="text-base sm:text-lg font-extrabold text-gray-900 mt-1">Ready-to-Submit Marketplace Claim Ticket</h3>
+          <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-[#5B2EFF] font-extrabold text-[10px]">SPF / SAFE-T / MEESHO CLAIM</span>
+          <h3 class="text-base sm:text-lg font-extrabold text-[#081B4B] mt-1">Ready-to-Submit Marketplace Claim Ticket</h3>
         </div>
-        <button type="button" id="close-claim-modal" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 font-bold shrink-0">✕</button>
+        <button type="button" id="close-claim-modal" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 font-bold shrink-0">✕</button>
       </div>
 
       <textarea
         id="claim-ticket-textarea"
         rows="9"
         readonly
-        class="w-full p-3.5 rounded-2xl bg-[#F4F5F7] border border-gray-200 font-mono text-xs text-gray-800 focus:outline-none"
+        class="w-full p-3.5 rounded-2xl bg-slate-50 border border-slate-200 font-mono text-xs text-slate-800 focus:outline-none"
       ></textarea>
 
       <div class="flex items-center justify-end gap-2.5">
-        <button type="button" id="copy-claim-ticket-btn" class="px-5 py-2.5 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white font-extrabold text-xs">
+        <button type="button" id="copy-claim-ticket-btn" class="px-5 py-2.5 rounded-2xl bg-[#5B2EFF] hover:bg-indigo-700 text-white font-extrabold text-xs shadow">
           📋 Copy Claim Ticket Text
         </button>
       </div>
@@ -479,8 +527,23 @@
       formatINR,
       showToast,
       openProPaymentModal,
-      syncProDOMElements
+      syncProDOMElements,
+      init3DTiltCards
     } from "./assets/js/security-core.js";
+
+    init3DTiltCards();
+
+    // 1. 7-Second Countdown Badge on Install App Button
+    const secBadge = document.getElementById("pwa-sec-badge");
+    let remainingSec = 7;
+    const secInterval = setInterval(() => {
+      remainingSec -= 1;
+      if (secBadge && remainingSec > 0) {
+        secBadge.textContent = `${remainingSec}s`;
+      } else {
+        clearInterval(secInterval);
+      }
+    }, 1000);
 
     // Realistic Multi-Channel Audit Dataset
     const DEMO_AUDIT_ROWS = [
@@ -594,7 +657,6 @@
           ? currentAuditRows
           : currentAuditRows.filter((r) => r.issueType === activeFilter);
 
-      // Update KPI Cards
       const rtoRows = currentAuditRows.filter((r) => r.issueType === "RTO_OVERDUE");
       const weightRows = currentAuditRows.filter((r) => r.issueType === "WEIGHT_FRAUD");
       const rtoSum = rtoRows.reduce((a, b) => a + (Number(b.claimAmount) || 0), 0);
@@ -603,26 +665,27 @@
 
       document.getElementById("audit-total-recovery").textContent = formatINR(totalSum);
       document.getElementById("audit-rto-count").textContent = `${rtoRows.length} Orders`;
-      document.getElementById("audit-rto-amt").textContent = `Recoverable Value: ${formatINR(rtoSum)}`;
+      document.getElementById("audit-rto-amt").textContent = formatINR(rtoSum);
       document.getElementById("audit-weight-count").textContent = `${weightRows.length} Orders`;
-      document.getElementById("audit-weight-amt").textContent = `Excess Shipping Billed: ${formatINR(weightSum)}`;
+      document.getElementById("audit-weight-amt").textContent = formatINR(weightSum);
+      const ringCount = document.getElementById("audit-ring-count");
+      if (ringCount) ringCount.textContent = String(currentAuditRows.length);
 
-      // Cap rendered DOM rows to 200 at a time so even 50,000-row CSVs render in 0.1s with zero browser lag
       const displaySlice = filtered.slice(0, 200);
 
       tbody.innerHTML = displaySlice
         .map(
           (row, idx) => `
-        <tr class="hover:bg-[#F4F5F7]/60 transition">
+        <tr class="hover:bg-indigo-50/40 transition">
           <td class="py-3.5">
             <span data-order-id="${sanitizeCSVCell(row.orderId)}" class="font-mono font-bold">
               ${AppState.profile.isPro ? sanitizeCSVCell(row.orderId) : row.orderId.slice(0, 4) + "-XXXXXXX"}
             </span>
           </td>
-          <td class="py-3.5 font-bold text-gray-800">${sanitizeCSVCell(row.channel)}</td>
-          <td class="py-3.5 font-mono text-gray-600">${sanitizeCSVCell(row.sku)}</td>
-          <td class="py-3.5 font-mono text-gray-500">
-            ${sanitizeCSVCell(row.orderDate)} <span class="text-[10px] font-bold text-gray-800">(${row.daysOld}d)</span>
+          <td class="py-3.5 font-bold text-[#081B4B]">${sanitizeCSVCell(row.channel)}</td>
+          <td class="py-3.5 font-mono text-slate-600">${sanitizeCSVCell(row.sku)}</td>
+          <td class="py-3.5 font-mono text-slate-500">
+            ${sanitizeCSVCell(row.orderDate)} <span class="text-[10px] font-bold text-[#5B2EFF]">(${row.daysOld}d)</span>
           </td>
           <td class="py-3.5">
             <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold ${
@@ -631,12 +694,12 @@
               ${sanitizeCSVCell(row.issueLabel)}
             </span>
           </td>
-          <td class="py-3.5 text-right font-mono font-black text-gray-900">${formatINR(row.claimAmount)}</td>
+          <td class="py-3.5 text-right font-mono font-black text-[#081B4B]">${formatINR(row.claimAmount)}</td>
           <td class="py-3.5 text-right">
             <button
               type="button"
               data-claim-idx="${idx}"
-              class="px-3 py-1.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-white font-bold text-[11px] transition whitespace-nowrap"
+              class="px-3 py-1.5 rounded-xl bg-[#5B2EFF] hover:bg-indigo-700 text-white font-bold text-[11px] shadow-sm transition whitespace-nowrap"
             >
               📋 Claim Ticket
             </button>
@@ -646,10 +709,8 @@
         )
         .join("");
 
-      // Sync Real-Time Pro Masking
       syncProDOMElements();
 
-      // Bind Claim Ticket Buttons
       tbody.querySelectorAll("[data-claim-idx]").forEach((btn) => {
         btn.addEventListener("click", () => {
           const row = displaySlice[Number(btn.getAttribute("data-claim-idx"))];
@@ -666,8 +727,8 @@
     function openClaimTicketModal(row) {
       const modal = document.getElementById("claim-ticket-modal");
       const textarea = document.getElementById("claim-ticket-textarea");
-      const sellerName = AppState.profile.businessName || "AgniVolt E-Com Store";
-      const gstin = AppState.profile.gstin || "10AABCA8921K1Z5";
+      const sellerName = AppState.profile.businessName || "S.K.P.S DIGITAL";
+      const gstin = AppState.profile.gstin || "07AABCS1429B1Z5";
 
       const ticketText =
         row.issueType === "RTO_OVERDUE"
@@ -696,14 +757,13 @@
       btn.addEventListener("click", () => {
         activeFilter = btn.getAttribute("data-audit-filter");
         document.querySelectorAll(".audit-filter-btn").forEach((b) => {
-          b.className = "audit-filter-btn px-3 py-1.5 rounded-xl bg-[#F4F5F7] text-gray-700 text-xs font-bold hover:bg-gray-200";
+          b.className = "audit-filter-btn px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold hover:bg-indigo-50";
         });
-        btn.className = "audit-filter-btn px-3 py-1.5 rounded-xl bg-gray-900 text-white text-xs font-bold";
+        btn.className = "audit-filter-btn px-3.5 py-1.5 rounded-xl bg-[#5B2EFF] text-white text-xs font-bold shadow-sm";
         renderAuditTable();
       });
     });
 
-    // Process Parsed CSV Rows
     function processParsedRows(rows = []) {
       const parsedLeaks = [];
       const now = Date.now();
@@ -767,7 +827,6 @@
       }
     }
 
-    // PapaParse 100% Client-Side RAM CSV Upload Handler (Multi-Threaded Web Worker Enabled)
     document.getElementById("csv-file-input")?.addEventListener("change", (e) => {
       const file = e.target.files?.[0];
       if (!file) return;
@@ -782,11 +841,8 @@
         header: true,
         skipEmptyLines: true,
         worker: true,
-        complete: (results) => {
-          processParsedRows(results.data || []);
-        },
+        complete: (results) => processParsedRows(results.data || []),
         error: () => {
-          // Automatic fallback if browser restricts worker blob
           window.Papa.parse(file, {
             header: true,
             skipEmptyLines: true,
@@ -796,14 +852,12 @@
       });
     });
 
-    // Load Demo CSV Button
     document.getElementById("load-demo-csv-btn")?.addEventListener("click", () => {
       currentAuditRows = [...DEMO_AUDIT_ROWS];
       renderAuditTable();
       showToast("Loaded 7 high-value RTO & Weight Fraud orders in RAM!", "success");
     });
 
-    // Download Sample CSV Template
     document.getElementById("download-sample-csv-btn")?.addEventListener("click", () => {
       const sampleCsv =
         "Order ID,Channel,SKU,Order Date,Status,RTO Delivered,Actual Weight (g),Billed Weight (g),Claim Amount\n" +
@@ -811,14 +865,12 @@
         "OD4299001122,Flipkart,EXT-3PIN-09,2026-10-12,DELIVERED,NA,450,1500,210\n" +
         "402-8819201-331,Amazon,LCD-BOX-02,2026-09-10,RTO_IN_TRANSIT,NO,220,1000,1290\n";
       const blob = new Blob([sampleCsv], { type: "text/csv;charset=utf-8;" });
-      const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
-      a.href = url;
+      a.href = URL.createObjectURL(blob);
       a.download = "sellgst-sample-marketplace-report.csv";
       a.click();
     });
 
-    // Export Claim Sheet CSV
     document.getElementById("export-claims-csv-btn")?.addEventListener("click", () => {
       if (!AppState.profile.isPro) {
         showToast("Please unlock SellGST Pro (₹99/mo) to export unmasked Order IDs!", "warning");
@@ -866,69 +918,62 @@
       ctx.fillStyle = "#FFFFFF";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Outer 4x6 Thermal Border
-      ctx.strokeStyle = "#111827";
+      ctx.strokeStyle = "#081B4B";
       ctx.lineWidth = 3;
       ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
 
       if (uploadedImg) {
-        // Crop top shipping region of uploaded sheet into 4x6 frame
         ctx.drawImage(uploadedImg, 0, 0, uploadedImg.width, uploadedImg.height * 0.55, 16, 16, canvas.width - 32, canvas.height - 95);
       } else {
-        // Crisp Vector Shipping Label Simulation
-        ctx.fillStyle = "#111827";
+        ctx.fillStyle = "#081B4B";
         ctx.font = "bold 16px 'Plus Jakarta Sans', sans-serif";
         ctx.fillText(`${preset} EXPRESS LOGISTICS — PREPAID`, 24, 42);
 
         ctx.font = "bold 12px 'JetBrains Mono', monospace";
         ctx.fillText("AWB: 14908273645192", 24, 64);
 
-        // Simulated Barcode Bars
         for (let x = 24; x < 340; x += 6) {
           ctx.fillRect(x, 76, x % 18 === 0 ? 4 : 2, 48);
         }
 
-        ctx.strokeStyle = "#D1D5DB";
+        ctx.strokeStyle = "#CBD5E1";
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(20, 140);
         ctx.lineTo(360, 140);
         ctx.stroke();
 
-        // Ship To Address
-        ctx.fillStyle = "#111827";
+        ctx.fillStyle = "#081B4B";
         ctx.font = "bold 13px 'Plus Jakarta Sans', sans-serif";
-        ctx.fillText("SHIP TO: RAHUL VERMA", 24, 168);
+        ctx.fillText("SHIP TO: NAZIM KHAN", 24, 168);
         ctx.font = "12px 'Plus Jakarta Sans', sans-serif";
-        ctx.fillText("Flat 402, Boring Road Crossing, Near Pani Tanki", 24, 190);
-        ctx.fillText("Patna, Bihar — PIN: 800001", 24, 210);
+        ctx.fillText("Sector-200, Noida, Gautam Buddha Nagar", 24, 190);
+        ctx.fillText("Uttar Pradesh — PIN: 201301", 24, 210);
         ctx.font = "bold 12px 'JetBrains Mono', monospace";
-        ctx.fillText("DEST CODE: PAT-N-04   |   WEIGHT: 0.45 KG", 24, 238);
+        ctx.fillText("DEST CODE: DEL-N-04   |   WEIGHT: 0.45 KG", 24, 238);
 
         ctx.beginPath();
         ctx.moveTo(20, 258);
         ctx.lineTo(360, 258);
         ctx.stroke();
 
-        // Return Address & Seller Info
         ctx.font = "bold 11px 'Plus Jakarta Sans', sans-serif";
-        ctx.fillText(`RETURN TO: ${AppState.profile.businessName || "AGNI VOLT E-COM STORE"}`, 24, 282);
+        ctx.fillText(`RETURN TO: ${AppState.profile.businessName || "S.K.P.S DIGITAL"}`, 24, 282);
         ctx.font = "11px 'JetBrains Mono', monospace";
-        ctx.fillText(`GSTIN: ${AppState.profile.gstin || "10AABCA8921K1Z5"}`, 24, 302);
-        ctx.fillText("Order ID: MSH-894120984   |   Invoice: INV-2026-001", 24, 322);
+        ctx.fillText(`GSTIN: ${AppState.profile.gstin || "07AABCS1429B1Z5"}`, 24, 302);
+        ctx.fillText("Order ID: MSH-894120984   |   Invoice: 4649845", 24, 322);
 
-        // Secondary Routing Barcode
         for (let x = 24; x < 280; x += 5) {
           ctx.fillRect(x, 345, x % 15 === 0 ? 3 : 1.5, 38);
         }
       }
 
       // Stamp High-Contrast Pick-List Footer at bottom of 4x6 Label
-      ctx.fillStyle = "#111827";
+      ctx.fillStyle = "#081B4B";
       ctx.fillRect(14, canvas.height - 68, canvas.width - 28, 52);
-      ctx.fillStyle = "#CBE8BA";
-      ctx.font = "bold 11px 'JetBrains Mono', monospace";
-      ctx.fillText("PACKING PICK-LIST STAMP (SELLGST PRO 4x6):", 24, canvas.height - 46);
+      ctx.fillStyle = "#10E594";
+      ctx.font = "bold 10px 'JetBrains Mono', monospace";
+      ctx.fillText("PACKING PICK-LIST STAMP • POWERED BY SELLGST PRO:", 24, canvas.height - 46);
       ctx.fillStyle = "#FFFFFF";
       ctx.font = "bold 12px 'JetBrains Mono', monospace";
       ctx.fillText(skuStamp.slice(0, 42), 24, canvas.height - 26);
