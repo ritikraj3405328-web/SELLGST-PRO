@@ -14,6 +14,8 @@
   <link rel="prefetch" href="./index.html" as="document" />
   <link rel="prefetch" href="./app.html" as="document" />
   <link rel="prefetch" href="./invoice.html" as="document" />
+  <link rel="prefetch" href="./ecom-audit.html" as="document" />
+  <link rel="prefetch" href="./gst-filing.html" as="document" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -99,10 +101,17 @@
       <a href="./qr-studio.html" title="Dynamic QR & Google Reviews" class="w-11 h-11 rounded-2xl bg-[#5B2EFF] text-white flex items-center justify-center text-base shadow-md transition">
         🔳
       </a>
+      <!-- Visible ONLY if logged-in user has isAdmin == true -->
+      <a href="./admin.html" data-admin-only title="Master Admin Console" class="hidden w-11 h-11 rounded-2xl bg-rose-50 text-rose-600 hover:bg-rose-100 flex items-center justify-center text-base transition">
+        🛡️
+      </a>
     </nav>
     <div class="flex flex-col items-center gap-2">
-      <button type="button" data-open-account title="My Account & DPDP Privacy" class="w-10 h-10 rounded-full bg-indigo-50 text-[#5B2EFF] flex items-center justify-center text-sm shadow-sm">
+      <button type="button" data-open-account title="My Account & DPDP Privacy" class="w-10 h-10 rounded-full bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] flex items-center justify-center text-sm shadow-sm">
         👤
+      </button>
+      <button type="button" id="sidebar-logout-btn" title="Logout" class="w-10 h-10 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center text-sm">
+        ⏻
       </button>
     </div>
   </aside>
@@ -119,16 +128,16 @@
     </a>
     <a href="./ecom-audit.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
       <span class="text-base">📦</span>
-      <span>Audit</span>
+      <span>E-Com Audit</span>
+    </a>
+    <a href="./gst-filing.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">🏛️</span>
+      <span>GSTR-1</span>
     </a>
     <a href="./qr-studio.html" class="flex flex-col items-center gap-0.5 text-[#5B2EFF] font-extrabold text-[10px]">
       <span class="text-base">🔳</span>
       <span>QR Studio</span>
     </a>
-    <button type="button" data-open-account class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
-      <span class="text-base">👤</span>
-      <span>Account</span>
-    </button>
   </nav>
 
   <!-- MAIN CONTAINER -->
@@ -342,7 +351,7 @@
                 id="generate-qr-btn"
                 class="flex-1 py-3 px-5 rounded-2xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs sm:text-[13px] shadow-lg transition"
               >
-                ✨ Generate 3D QR Standee (Consumes 1 Free Use)
+                ✨ Generate 3D QR Standee (1 Free Use)
               </button>
               <button
                 type="button"
@@ -371,21 +380,60 @@
       </div>
     </section>
 
+    <!-- =================================================================== -->
+    <!-- BOTTOM PERSONAL ACCOUNT, DPDP PRIVACY (✔️) & LOGOUT BAR             -->
+    <!-- =================================================================== -->
+    <section data-3d-tilt class="bento-card p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-[#5B2EFF] flex items-center justify-center text-base font-bold shrink-0">
+          🛡️
+        </div>
+        <div class="min-w-0">
+          <div class="text-xs font-extrabold text-[#081B4B]">My Personal Data &amp; DPDP Act 2023 Privacy Controls</div>
+          <div class="text-[11px] text-slate-500 truncate">
+            Manage your store GSTIN, view subscription validity, or permanently delete your account &amp; data with confirmation tick (✔️).
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2 ml-auto">
+        <button
+          type="button"
+          data-open-account
+          class="px-4 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] font-extrabold text-xs transition"
+        >
+          👤 My Account &amp; Delete Option (✔️)
+        </button>
+        <button
+          type="button"
+          id="bottom-logout-btn"
+          class="px-4 py-2 rounded-xl bg-[#081B4B] hover:bg-rose-600 text-white font-extrabold text-xs shadow transition flex items-center gap-1.5"
+        >
+          <span>⏻ Logout</span>
+        </button>
+      </div>
+    </section>
+
   </div>
 
-  <!-- QR STUDIO SCRIPT (WITH STRICT 5-USE LIMIT LOCK) -->
+  <!-- QR STUDIO SCRIPT (WITH UNIFIED 5-USE LIMIT LOCK & ZERO DOUBLE-DEDUCTION BUG) -->
   <script type="module">
     import {
       AppState,
       subscribeAppState,
+      evaluateSubscriptionHealth,
       showToast,
       openProPaymentModal,
+      logoutUser,
+      syncProDOMElements,
       init3DTiltCards
     } from "./assets/js/security-core.js";
 
     init3DTiltCards();
 
     const MAX_FREE_QR = 5;
+    let currentQrType = "REVIEW";
+    let lastChargedQrSignature = "";
 
     // 1. 7-Second Countdown Badge on Install App Button
     const secBadge = document.getElementById("pwa-sec-badge");
@@ -400,11 +448,21 @@
     }, 1000);
 
     function getQrUsedCount() {
-      return Number(localStorage.getItem("sellgst_qr_count") || "0");
+      const qrStored = Number(localStorage.getItem("sellgst_qr_count") || "0");
+      const profStored = Number(AppState.profile?.freeActionsUsed || "0");
+      return Math.max(qrStored, profStored);
+    }
+
+    function getCurrentQrSignature() {
+      const biz = document.getElementById("qr-biz-name")?.value.trim() || "";
+      const target = document.getElementById("qr-target-value")?.value.trim() || "";
+      const cta = document.getElementById("qr-cta-title")?.value.trim() || "";
+      return `${currentQrType}|${biz}|${target}|${cta}`;
     }
 
     function updateQrLockUI() {
-      const isPro = Boolean(AppState.profile.isPro);
+      const health = evaluateSubscriptionHealth();
+      const isPro = Boolean(health.isPro);
       const used = getQrUsedCount();
       const left = Math.max(0, MAX_FREE_QR - used);
 
@@ -418,7 +476,7 @@
         lockOverlay?.classList.add("hidden");
         lockOverlay?.classList.remove("flex");
       } else {
-        if (badge) badge.textContent = `Free Uses: ${used} / ${MAX_FREE_QR}`;
+        if (badge) badge.textContent = `Free Uses: ${Math.min(used, MAX_FREE_QR)} / ${MAX_FREE_QR}`;
         if (pill) pill.textContent = `${left} / ${MAX_FREE_QR} Free Uses Left`;
         if (used >= MAX_FREE_QR) {
           lockOverlay?.classList.remove("hidden");
@@ -428,10 +486,19 @@
           lockOverlay?.classList.remove("flex");
         }
       }
+
+      syncProDOMElements();
     }
 
-    function consumeOneQrQuota() {
+    function consumeOneQrQuota(forceNewCharge = false) {
       if (AppState.profile.isPro) return true;
+
+      const sig = getCurrentQrSignature();
+      // Prevent double charging when the user clicks "Generate" and then clicks "Download PNG" for the exact same QR
+      if (!forceNewCharge && sig === lastChargedQrSignature && lastChargedQrSignature !== "") {
+        return true;
+      }
+
       let used = getQrUsedCount();
       if (used >= MAX_FREE_QR) {
         updateQrLockUI();
@@ -439,30 +506,35 @@
         openProPaymentModal("MONTHLY");
         return false;
       }
+
       used += 1;
+      lastChargedQrSignature = sig;
       localStorage.setItem("sellgst_qr_count", String(used));
+      AppState.profile.freeActionsUsed = used;
+      localStorage.setItem("sellgst_local_profile", JSON.stringify(AppState.profile));
+
       updateQrLockUI();
+
       if (used >= MAX_FREE_QR) {
         showToast("⚠️ 5/5 Free QR limit completed! Upgrade to Pro for unlimited Dynamic QRs.", "warning", 5000);
       } else {
-        showToast(`QR Generated! (${MAX_FREE_QR - used} free uses remaining)`, "success");
+        showToast(`✅ 3D QR Standee Ready! (${MAX_FREE_QR - used} free uses remaining)`, "success");
       }
       return true;
     }
 
-    // 2. External Dynamic-Qr-generator Website Launcher (Also enforces 5-limit lock)
+    // 2. External Dynamic-Qr-generator Website Launcher (Enforces 5-limit lock)
     document.getElementById("open-external-qr-portal-btn")?.addEventListener("click", () => {
       if (!AppState.profile.isPro && getQrUsedCount() >= MAX_FREE_QR) {
         showToast("🔒 5 Free QR limit reached! Please unlock Pro to access the Dynamic QR Portal.", "warning");
         openProPaymentModal("MONTHLY");
         return;
       }
-      consumeOneQrQuota();
+      if (!consumeOneQrQuota(true)) return;
       window.open("https://ritikraj3405328-web.github.io/Dynamic-Qr-generator-/#home", "_blank", "noopener,noreferrer");
     });
 
     // 3. QR Type Tab Switching
-    let currentQrType = "REVIEW";
     document.querySelectorAll("[data-qr-type]").forEach((btn) => {
       btn.addEventListener("click", () => {
         currentQrType = btn.getAttribute("data-qr-type");
@@ -496,6 +568,17 @@
     const canvas = document.getElementById("qr-standee-canvas");
     const ctx = canvas.getContext("2d");
     let customLogoImg = null;
+
+    // Restore custom circle logo from Invoice if already uploaded by seller
+    const savedInvoiceLogo = localStorage.getItem("sellgst_custom_circle_logo");
+    if (savedInvoiceLogo) {
+      const preImg = new Image();
+      preImg.onload = () => {
+        customLogoImg = preImg;
+        drawStandeeCanvas();
+      };
+      preImg.src = savedInvoiceLogo;
+    }
 
     document.getElementById("qr-logo-upload")?.addEventListener("change", (e) => {
       const file = e.target.files?.[0];
@@ -568,7 +651,7 @@
         ctx.strokeRect(75, 202, 250, 250);
         ctx.drawImage(qrImg, 85, 212, 230, 230);
 
-        // Footer Branding (Promotes SellGST Pro & Dynamic QR Generator)
+        // Footer Branding (Promotes SellGST Pro & Dynamic QR Studio)
         ctx.fillStyle = "#081B4B";
         ctx.fillRect(0, 480, canvas.width, 60);
         ctx.fillStyle = "#10E594";
@@ -581,21 +664,38 @@
       qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&margin=6&data=${encodeURIComponent(qrPayload)}`;
     }
 
+    // Live Preview as Seller Types (When under free limit or Pro)
+    let previewTimer = null;
+    ["qr-biz-name", "qr-target-value", "qr-cta-title"].forEach((id) => {
+      document.getElementById(id)?.addEventListener("input", () => {
+        if (!AppState.profile.isPro && getQrUsedCount() >= MAX_FREE_QR) return;
+        if (previewTimer) clearTimeout(previewTimer);
+        previewTimer = setTimeout(drawStandeeCanvas, 180);
+      });
+    });
+
     document.getElementById("qr-builder-form")?.addEventListener("submit", (e) => {
       e.preventDefault();
-      if (!consumeOneQrQuota()) return;
+      if (!consumeOneQrQuota(false)) return;
       drawStandeeCanvas();
     });
 
     document.getElementById("download-qr-png-btn")?.addEventListener("click", () => {
-      if (!consumeOneQrQuota()) return;
+      // Does NOT double-deduct if the user just clicked "Generate" for the same QR!
+      if (!consumeOneQrQuota(false)) return;
       const a = document.createElement("a");
       a.href = canvas.toDataURL("image/png");
       a.download = `Dynamic-QR-Standee-${Date.now()}.png`;
       a.click();
     });
 
+    document.getElementById("sidebar-logout-btn")?.addEventListener("click", logoutUser);
+    document.getElementById("bottom-logout-btn")?.addEventListener("click", logoutUser);
+
     subscribeAppState(() => {
+      if (AppState.profile?.businessName && document.getElementById("qr-biz-name").value === "S.K.P.S DIGITAL") {
+        document.getElementById("qr-biz-name").value = AppState.profile.businessName;
+      }
       updateQrLockUI();
     });
 
