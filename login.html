@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-  <title>Login & Signup — SellGST Pro</title>
-  <meta name="description" content="Secure Zero-Trust Login, 2-Minute Guest Preview & DPDP Act Compliant Seller Registration." />
+  <title>Signup & Login — SellGST Pro</title>
+  <meta name="description" content="Animated 3D Signup-First & Sliding Login Drawer for SellGST Pro." />
   <meta name="theme-color" content="#071C50" />
   <link rel="manifest" href="./manifest.json" />
 
-  <!-- 0.1s Instant Module Preload & Speculative Prefetch -->
+  <!-- 0.1s Instant Module Preload -->
   <link rel="modulepreload" href="./assets/js/security-core.js" />
   <link rel="modulepreload" href="./assets/js/i18n.js" />
   <link rel="prefetch" href="./index.html" as="document" />
@@ -55,9 +55,10 @@
       width: 220px;
       height: 220px;
       border-radius: 9999px;
-      background: #F4C41A;
+      background: linear-gradient(135deg, #FACC15, #F59E0B);
       z-index: 0;
       pointer-events: none;
+      box-shadow: 0 20px 50px rgba(245, 158, 11, 0.3);
     }
     .yellow-orb-br {
       position: fixed;
@@ -66,33 +67,34 @@
       width: 260px;
       height: 260px;
       border-radius: 9999px;
-      background: #F4C41A;
+      background: linear-gradient(135deg, #FACC15, #F59E0B);
       z-index: 0;
       pointer-events: none;
+      box-shadow: 0 20px 50px rgba(245, 158, 11, 0.3);
     }
     .navy-line-input {
       width: 100%;
       background: transparent;
       border: none;
-      border-bottom: 1.5px solid rgba(255, 255, 255, 0.22);
+      border-bottom: 1.5px solid rgba(255, 255, 255, 0.25);
       color: #FFFFFF;
-      padding: 7px 0;
+      padding: 8px 0;
       font-size: 14px;
-      font-weight: 500;
+      font-weight: 600;
       transition: border-color 0.2s ease;
     }
     .navy-line-input:focus {
       outline: none;
-      border-bottom-color: #FFFFFF;
+      border-bottom-color: #10E594;
     }
     .navy-line-input::placeholder {
-      color: rgba(255, 255, 255, 0.7);
+      color: rgba(255, 255, 255, 0.65);
     }
     .white-line-input {
       width: 100%;
       background: transparent;
       border: none;
-      border-bottom: 1.5px solid #E2E8F0;
+      border-bottom: 1.5px solid #CBD5E1;
       color: #071C50;
       padding: 7px 0;
       font-size: 14px;
@@ -101,15 +103,67 @@
     }
     .white-line-input:focus {
       outline: none;
-      border-bottom-color: #071C50;
+      border-bottom-color: #5B2EFF;
     }
     .white-line-input::placeholder {
       color: #64748B;
       font-weight: 500;
     }
-    .signup-highlight-ring {
-      box-shadow: 0 0 0 4px #10E594, 0 25px 50px -12px rgba(7, 28, 80, 0.35) !important;
+
+    /* ===================================================================== */
+    /* 60FPS VERTICAL SLIDING DRAWER ANIMATION (SIGNUP FIRST -> SLIDE UP LOGIN) */
+    /* ===================================================================== */
+    .auth-stage-viewport {
+      position: relative;
+      height: 590px;
+      width: 100%;
+      overflow: hidden;
+      background: #FFFFFF;
     }
+    .signup-base-layer {
+      position: absolute;
+      inset: 0;
+      padding: 24px 26px 96px 26px;
+      background: #FFFFFF;
+      z-index: 10;
+      transition: transform 0.58s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.45s ease;
+    }
+    .auth-stage-viewport.login-active .signup-base-layer {
+      transform: scale(0.94) translateY(-18px);
+      opacity: 0.35;
+      pointer-events: none;
+    }
+    .login-sliding-sheet {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(165deg, #071C50 0%, #0D2B76 60%, #1E1B4B 100%);
+      color: #FFFFFF;
+      z-index: 20;
+      border-top-left-radius: 32px;
+      border-top-right-radius: 32px;
+      box-shadow: 0 -18px 45px rgba(7, 28, 80, 0.38);
+      /* Default State: Tucked at the bottom so SIGNUP is visible first! */
+      transform: translateY(calc(100% - 76px));
+      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), border-radius 0.4s ease;
+      will-change: transform;
+      display: flex;
+      flex-direction: column;
+    }
+    .auth-stage-viewport.login-active .login-sliding-sheet {
+      /* Active State: Slides all the way UP to show Login Page! */
+      transform: translateY(0%);
+      border-top-left-radius: 0px;
+      border-top-right-radius: 0px;
+    }
+
+    @keyframes pulseBounceUp {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    .animate-up-hint {
+      animation: pulseBounceUp 2s infinite ease-in-out;
+    }
+
     @keyframes shrink7s {
       from { width: 100%; }
       to { width: 0%; }
@@ -125,16 +179,17 @@
   <div class="yellow-orb-tl"></div>
   <div class="yellow-orb-br"></div>
 
-  <!-- CLEAN TOP NAVIGATION BAR (RESTORED TOP-LEFT 🏠 HOME BUTTON + LANGUAGE + 7s INSTALL BUTTON) -->
+  <!-- CLEAN TOP NAVIGATION BAR -->
   <header class="relative z-30 max-w-5xl mx-auto w-full">
-    <nav class="bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-full px-4 py-2 shadow-sm flex items-center justify-between gap-2">
-      <!-- Top-Left Home Button (Starts 2-min Guest Preview if not logged in yet) -->
+    <nav class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-full px-4 py-2 shadow-sm flex items-center justify-between gap-2">
+      <!-- Top-Left Home Button -->
       <a
         href="./index.html"
         id="top-home-nav-btn"
+        data-i18n="nav_home"
         class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#071C50] hover:bg-[#5B2EFF] text-white text-xs font-extrabold shadow-sm transition"
       >
-        <span>🏠 Home</span>
+        🏠 Home
       </a>
 
       <div class="flex items-center gap-2">
@@ -151,7 +206,7 @@
           data-pwa-install
           class="relative overflow-hidden px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#071C50] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap flex items-center gap-1.5"
         >
-          <span>📲 Install App</span>
+          <span data-i18n="install_app_btn">📲 Install App</span>
           <span id="pwa-sec-badge" class="px-1.5 py-0.2 rounded-full bg-white/20 text-[10px] font-mono">7s</span>
           <span class="absolute bottom-0 left-0 h-0.5 bg-[#10E594] pwa-timer-bar"></span>
         </button>
@@ -162,10 +217,10 @@
   <!-- 2-MINUTE GUEST TIMEOUT NOTICE BANNER -->
   <div
     id="guest-timeout-alert"
-    class="hidden relative z-30 max-w-[375px] mx-auto mt-3 p-3.5 rounded-2xl bg-[#071C50] text-white border-2 border-[#10E594] shadow-xl text-xs text-center"
+    class="hidden relative z-30 max-w-[385px] mx-auto mt-3 p-3.5 rounded-2xl bg-[#071C50] text-white border-2 border-[#10E594] shadow-xl text-xs text-center"
   >
     ⏳ <strong class="text-[#10E594]">2-Minute Guest Preview Completed!</strong><br />
-    Aapne website ka preview dekh liya hai. Aage continue karne ke liye kripya niche <strong>Signup</strong> ya <strong>Google Login</strong> karein!
+    Please complete <strong>Signup</strong> below or slide up to <strong>Login</strong> to continue.
   </div>
 
   <!-- CENTER AUTHENTICATION CONTAINER -->
@@ -174,186 +229,260 @@
     <div
       id="auth-main-card"
       data-3d-tilt
-      class="w-full max-w-[375px] bg-white rounded-[28px] overflow-hidden shadow-2xl border border-slate-200/80 transition-all duration-300"
-      style="box-shadow: 0 30px 65px -15px rgba(7, 28, 80, 0.28);"
+      class="w-full max-w-[385px] bg-white rounded-[32px] overflow-hidden shadow-2xl border border-white transition-all duration-300"
+      style="box-shadow: 0 30px 65px -15px rgba(7, 28, 80, 0.32);"
     >
 
       <!-- ================================================================= -->
-      <!-- PANEL 1: SPLIT NAVY LOGIN + INTERLOCKING WAVE + WHITE SIGNUP      -->
+      <!-- INTERACTIVE SLIDING STAGE: 1st SIGNUP (DEFAULT) <-> 2nd LOGIN     -->
       <!-- ================================================================= -->
-      <div id="panel-split-auth" class="flex flex-col">
+      <div id="panel-split-auth" class="auth-stage-viewport">
 
-        <!-- TOP HALF: DEEP NAVY BLUE LOGIN (#071C50) -->
-        <div id="navy-login-section" class="bg-[#071C50] text-white px-7 pt-7 pb-12 relative">
-          <h1 class="text-[24px] font-extrabold tracking-tight text-white mb-4">Login</h1>
+        <!-- =============================================================== -->
+        <!-- SCREEN 1 (VISIBLE FIRST BY DEFAULT): WHITE SIGNUP SCREEN        -->
+        <!-- =============================================================== -->
+        <div id="white-signup-section" class="signup-base-layer flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-[#5B2EFF] font-extrabold text-[10px] uppercase tracking-wider">
+                  STEP 01 • NEW SELLER
+                </span>
+                <h1 data-i18n="signup_title" class="text-[26px] font-extrabold tracking-tight text-[#071C50] mt-0.5">
+                  Signup
+                </h1>
+              </div>
 
-          <form id="login-form" class="space-y-4">
-            <div>
-              <label class="block text-[12px] font-medium text-slate-400">Email address</label>
-              <input
-                type="email"
-                id="login-email"
-                required
-                placeholder="Aakashsarvaiya007@gmail.com"
-                class="navy-line-input"
-              />
-            </div>
-
-            <div>
-              <label class="block text-[12px] font-medium text-slate-400">Password</label>
-              <input
-                type="password"
-                id="login-password"
-                required
-                minlength="6"
-                placeholder="••••••••••••••"
-                class="navy-line-input tracking-widest"
-              />
-            </div>
-
-            <div class="flex items-center justify-between pt-1">
+              <!-- Quick Top Pill to Slide Up to Login -->
               <button
                 type="button"
-                id="forgot-pass-btn"
-                class="text-[12px] text-slate-400 hover:text-white transition"
+                id="top-switch-to-login-btn"
+                class="px-3 py-1.5 rounded-full bg-slate-100 hover:bg-indigo-50 text-[#071C50] font-extrabold text-[11px] border border-slate-200 transition"
               >
-                Forgot Password?
+                Login ↑
+              </button>
+            </div>
+
+            <form id="signup-form" class="space-y-3">
+              <div>
+                <label data-i18n="email_label" class="block text-[11px] font-bold text-slate-500">Email address</label>
+                <input
+                  type="email"
+                  id="signup-email"
+                  required
+                  placeholder="seller@store.com"
+                  class="white-line-input"
+                />
+              </div>
+
+              <div>
+                <label data-i18n="password_label" class="block text-[11px] font-bold text-slate-500">Password</label>
+                <input
+                  type="password"
+                  id="signup-password"
+                  required
+                  minlength="6"
+                  placeholder="••••••••••••••"
+                  class="white-line-input tracking-widest"
+                />
+              </div>
+
+              <div>
+                <label data-i18n="store_name_label" class="block text-[11px] font-bold text-slate-500">Business / Store Name (Optional)</label>
+                <input
+                  type="text"
+                  id="signup-business"
+                  placeholder="S.K.P.S DIGITAL"
+                  class="white-line-input"
+                />
+              </div>
+
+              <div class="pt-1 flex items-center justify-between">
+                <label class="inline-flex items-center gap-2 text-xs text-slate-600 font-semibold cursor-pointer">
+                  <input type="checkbox" id="signup-remember" checked class="w-3.5 h-3.5 accent-[#071C50] rounded" />
+                  <span data-i18n="remember_me">Remember Me</span>
+                </label>
+
+                <button
+                  type="submit"
+                  id="signup-submit-btn"
+                  class="px-6 py-2.5 rounded-full bg-[#071C50] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow-lg transition"
+                >
+                  Signup →
+                </button>
+              </div>
+
+              <!-- MANDATORY DPDP ACT 2023 CONSENT TICK ✔️ -->
+              <label class="flex items-start gap-2 pt-1.5 cursor-pointer text-[10.5px] text-slate-600 leading-snug bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                <input
+                  type="checkbox"
+                  id="dpdp-consent-checkbox"
+                  required
+                  checked
+                  class="mt-0.5 w-4 h-4 accent-[#071C50] rounded shrink-0"
+                />
+                <span>
+                  <strong>✔️ DPDP Act 2023 Consent:</strong> I consent to process my business data for GST billing &amp; audit. I can delete my account anytime.
+                </span>
+              </label>
+            </form>
+
+            <!-- DIRECT GOOGLE LOGIN & 2-MINUTE GUEST PREVIEW BUTTONS -->
+            <div class="mt-3.5 pt-3 border-t border-slate-100 space-y-2">
+              <button
+                type="button"
+                id="google-direct-login-btn"
+                class="w-full py-2.5 px-4 rounded-2xl bg-white hover:bg-slate-50 text-[#071C50] font-extrabold text-xs border-2 border-slate-200 shadow-sm transition flex items-center justify-center gap-2"
+              >
+                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                  <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/>
+                  <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"/>
+                  <path fill="#FBBC05" d="M5.3 14.8c-.2-.8-.4-1.6-.4-2.5s.2-1.7.4-2.5L1.6 7C.6 9 0 11.2 0 13.5s.6 4.5 1.6 6.5l3.7-2.9z"/>
+                  <path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.1-6.7-5l-3.7 2.8C3.5 21.4 7.4 24 12 24z"/>
+                </svg>
+                <span data-i18n="google_login_btn">Direct Login with Google</span>
               </button>
 
               <button
-                type="submit"
-                id="login-submit-btn"
-                class="px-5 py-2 rounded-full bg-white text-[#071C50] hover:bg-[#10E594] font-extrabold text-xs shadow-md transition"
+                type="button"
+                id="guest-preview-login-btn"
+                data-i18n="guest_login_btn"
+                class="w-full py-2 px-4 rounded-2xl bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] font-extrabold text-xs border border-indigo-200 transition flex items-center justify-center gap-2"
               >
-                Login →
+                👀 Guest Login (2 Min Website Preview)
               </button>
             </div>
-          </form>
-
-          <!-- EXACT INTERLOCKING S-CURVE WAVE WITH ^ AND v BUTTONS -->
-          <div class="absolute left-0 right-0 -bottom-7 h-14 pointer-events-none flex items-center justify-end pr-5 z-20">
-            <button
-              type="button"
-              id="wave-focus-login"
-              title="Login Section"
-              class="pointer-events-auto w-12 h-12 rounded-full bg-white text-[#071C50] flex items-center justify-center shadow-md hover:scale-105 transition mr-1"
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
-              </svg>
-            </button>
-
-            <button
-              type="button"
-              id="wave-focus-signup"
-              title="Signup Section"
-              class="pointer-events-auto w-12 h-12 rounded-full bg-[#071C50] text-white border-4 border-white flex items-center justify-center shadow-md hover:scale-105 transition"
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
           </div>
         </div>
 
-        <!-- BOTTOM HALF: WHITE SIGNUP SECTION + DPDP CONSENT TICK + GOOGLE & GUEST LOGIN -->
-        <div id="white-signup-section" class="bg-white text-[#071C50] px-7 pt-9 pb-7 transition-colors duration-300">
-          <div class="flex items-center justify-between mb-3">
-            <h2 class="text-[24px] font-extrabold tracking-tight text-[#071C50]">Signup</h2>
-            <span id="signup-badge-pill" class="hidden px-2.5 py-0.5 rounded-full bg-[#10E594] text-[#071C50] font-extrabold text-[10px]">
-              CREATE ACCOUNT
-            </span>
-          </div>
+        <!-- =============================================================== -->
+        <!-- SCREEN 2 (SLIDING UP DRAWER): NAVY LOGIN SCREEN                 -->
+        <!-- =============================================================== -->
+        <div id="navy-login-section" class="login-sliding-sheet">
 
-          <form id="signup-form" class="space-y-3.5">
-            <div>
-              <label class="block text-[12px] font-medium text-slate-400">Email address</label>
-              <input
-                type="email"
-                id="signup-email"
-                required
-                placeholder="Aakashsarvaiya007@gmail.com"
-                class="white-line-input"
-              />
-            </div>
-
-            <div>
-              <label class="block text-[12px] font-medium text-slate-400">Password</label>
-              <input
-                type="password"
-                id="signup-password"
-                required
-                minlength="6"
-                placeholder="••••••••••••••"
-                class="white-line-input tracking-widest"
-              />
-            </div>
-
-            <div>
-              <label class="block text-[12px] font-medium text-slate-400">Business / Store Name (Optional)</label>
-              <input
-                type="text"
-                id="signup-business"
-                placeholder="S.K.P.S DIGITAL"
-                class="white-line-input"
-              />
-            </div>
-
-            <div class="pt-1 flex items-center justify-between">
-              <label class="inline-flex items-center gap-2 text-xs text-slate-400 font-medium cursor-pointer">
-                <input type="checkbox" id="signup-remember" checked class="w-3.5 h-3.5 accent-[#071C50] rounded" />
-                <span>Remember Me</span>
-              </label>
-
-              <button
-                type="submit"
-                id="signup-submit-btn"
-                class="px-5 py-2 rounded-full bg-[#071C50] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow-md transition"
+          <!-- INTERACTIVE SLIDE HANDLE BAR WITH WORKING ^ (UP) AND v (DOWN) BUTTONS -->
+          <div
+            id="slide-handle-bar"
+            class="h-[76px] px-6 flex items-center justify-between cursor-pointer select-none border-b border-white/10 shrink-0"
+          >
+            <div class="min-w-0">
+              <div class="w-10 h-1 rounded-full bg-white/30 mb-1.5"></div>
+              <span
+                id="slide-hint-label"
+                data-i18n="slide_up_login"
+                class="text-xs font-extrabold text-[#10E594] block truncate"
               >
-                Signup →
+                Already have an account? Slide Up for Login ↑
+              </span>
+            </div>
+
+            <!-- Working Animated ^ (Up = Open Login) & v (Down = Back to Signup) Buttons -->
+            <div class="flex items-center gap-2 shrink-0">
+              <!-- UP Button (Opens Login Drawer) -->
+              <button
+                type="button"
+                id="wave-slide-up-login"
+                title="Slide Up to Login"
+                aria-label="Slide Up to Login"
+                class="w-11 h-11 rounded-full bg-white text-[#071C50] flex items-center justify-center shadow-lg animate-up-hint hover:scale-110 transition"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.8" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+                </svg>
+              </button>
+
+              <!-- DOWN Button (Slides Back Down to Signup) -->
+              <button
+                type="button"
+                id="wave-slide-down-signup"
+                title="Slide Down to Signup"
+                aria-label="Slide Down to Signup"
+                class="w-11 h-11 rounded-full bg-[#5B2EFF] text-white border-2 border-white flex items-center justify-center shadow-lg hover:scale-110 transition"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.8" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
               </button>
             </div>
-
-            <!-- MANDATORY DPDP ACT 2023 CONSENT TICK ✔️ -->
-            <label class="flex items-start gap-2 pt-2 cursor-pointer text-[11px] text-slate-600 leading-snug bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-              <input
-                type="checkbox"
-                id="dpdp-consent-checkbox"
-                required
-                checked
-                class="mt-0.5 w-4 h-4 accent-[#071C50] rounded shrink-0"
-              />
-              <span>
-                <strong>✔️ DPDP Act 2023 Consent:</strong> I consent to the processing of my business &amp; personal data for GST billing and audit. I can erase/delete my account anytime.
-              </span>
-            </label>
-          </form>
-
-          <!-- BOTTOM DIRECT GOOGLE LOGIN + 2-MINUTE GUEST PREVIEW BUTTON -->
-          <div class="mt-4 pt-4 border-t border-slate-100 space-y-2.5">
-            <button
-              type="button"
-              id="google-direct-login-btn"
-              class="w-full py-2.5 px-4 rounded-2xl bg-white hover:bg-slate-50 text-[#071C50] font-extrabold text-[13px] border-2 border-[#071C50]/15 shadow-sm transition flex items-center justify-center gap-2.5"
-            >
-              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-                <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/>
-                <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"/>
-                <path fill="#FBBC05" d="M5.3 14.8c-.2-.8-.4-1.6-.4-2.5s.2-1.7.4-2.5L1.6 7C.6 9 0 11.2 0 13.5s.6 4.5 1.6 6.5l3.7-2.9z"/>
-                <path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.1-6.7-5l-3.7 2.8C3.5 21.4 7.4 24 12 24z"/>
-              </svg>
-              <span>Direct Login with Google</span>
-            </button>
-
-            <!-- GUEST LOGIN (2 MINUTE WEBSITE PREVIEW) -->
-            <button
-              type="button"
-              id="guest-preview-login-btn"
-              class="w-full py-2.5 px-4 rounded-2xl bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] font-extrabold text-xs border border-indigo-200 transition flex items-center justify-center gap-2"
-            >
-              <span>👀 Guest Login (2 Min Website Preview)</span>
-            </button>
           </div>
+
+          <!-- FULL LOGIN FORM BODY (REVEALED WHEN SLID UP) -->
+          <div class="p-7 flex-1 flex flex-col justify-between overflow-y-auto">
+            <div>
+              <span class="px-3 py-1 rounded-full bg-white/10 text-[#10E594] font-extrabold text-[10px] uppercase tracking-wider">
+                EXISTING SELLER ACCOUNT
+              </span>
+              <h2 data-i18n="login_title" class="text-[28px] font-extrabold tracking-tight text-white mt-2 mb-6">
+                Login
+              </h2>
+
+              <form id="login-form" class="space-y-5">
+                <div>
+                  <label data-i18n="email_label" class="block text-xs font-semibold text-indigo-200">Email address</label>
+                  <input
+                    type="email"
+                    id="login-email"
+                    required
+                    placeholder="seller@store.com"
+                    class="navy-line-input"
+                  />
+                </div>
+
+                <div>
+                  <label data-i18n="password_label" class="block text-xs font-semibold text-indigo-200">Password</label>
+                  <input
+                    type="password"
+                    id="login-password"
+                    required
+                    minlength="6"
+                    placeholder="••••••••••••••"
+                    class="navy-line-input tracking-widest"
+                  />
+                </div>
+
+                <div class="flex items-center justify-between pt-2">
+                  <button
+                    type="button"
+                    id="forgot-pass-btn"
+                    data-i18n="forgot_pass"
+                    class="text-xs text-indigo-200 hover:text-white transition"
+                  >
+                    Forgot Password?
+                  </button>
+
+                  <button
+                    type="submit"
+                    id="login-submit-btn"
+                    class="px-7 py-2.5 rounded-full bg-[#10E594] text-[#071C50] font-extrabold text-xs shadow-xl transition"
+                  >
+                    Login →
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Bottom Quick Actions inside Login Drawer -->
+            <div class="pt-5 border-t border-white/15 space-y-3 text-center">
+              <button
+                type="button"
+                id="google-login-btn-2"
+                class="w-full py-2.5 px-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-extrabold text-xs border border-white/20 transition flex items-center justify-center gap-2"
+              >
+                <span>🌐</span>
+                <span data-i18n="google_login_btn">Direct Login with Google</span>
+              </button>
+
+              <button
+                type="button"
+                id="back-to-signup-link"
+                data-i18n="slide_down_signup"
+                class="text-xs font-bold text-[#10E594] hover:underline block w-full pt-1"
+              >
+                New Seller? Slide Down for Signup ↓
+              </button>
+            </div>
+          </div>
+
         </div>
 
       </div>
@@ -361,7 +490,7 @@
       <!-- ================================================================= -->
       <!-- PANEL 2: "Welcome.!" SCREEN                                       -->
       <!-- ================================================================= -->
-      <div id="panel-welcome" class="hidden bg-[#071C50] text-white min-h-[540px] flex flex-col justify-between relative overflow-hidden">
+      <div id="panel-welcome" class="hidden bg-[#071C50] text-white min-h-[560px] flex flex-col justify-between relative overflow-hidden">
         <div class="my-auto text-center px-6 space-y-3">
           <div class="w-24 h-24 rounded-full bg-[#1D7AFC] border-4 border-[#041030] mx-auto flex items-center justify-center shadow-xl overflow-hidden">
             <svg viewBox="0 0 100 100" class="w-20 h-20">
@@ -403,7 +532,7 @@
       <!-- ================================================================= -->
       <!-- PANEL 3: "Yeah..!" SCREEN                                         -->
       <!-- ================================================================= -->
-      <div id="panel-yeah" class="hidden bg-white text-[#071C50] min-h-[540px] flex flex-col justify-between relative overflow-hidden">
+      <div id="panel-yeah" class="hidden bg-white text-[#071C50] min-h-[560px] flex flex-col justify-between relative overflow-hidden">
         <div class="bg-[#071C50] h-14 relative flex items-center justify-end px-4">
           <button
             type="button"
@@ -423,7 +552,7 @@
           <h2 class="text-2xl font-extrabold italic text-[#071C50]">Yeah..!</h2>
           <p class="text-xs italic text-slate-400 leading-relaxed">
             Signup successfully.!<br />
-            Please check your Email.
+            Welcome to SellGST Pro.
           </p>
         </div>
 
@@ -447,7 +576,7 @@
     Protected under <strong>DPDP Act 2023</strong> • Zero-Trust Firebase Security (<code>sellgstpro</code>)
   </footer>
 
-  <!-- LOGIN, SIGNUP & 2-MINUTE GUEST PREVIEW SCRIPT -->
+  <!-- ANIMATED SIGNUP-FIRST & SLIDING LOGIN DRAWER SCRIPT -->
   <script type="module">
     import {
       loginWithEmail,
@@ -457,14 +586,87 @@
       isUserPermanentlyLoggedIn,
       startGuestPreviewSession,
       showToast,
-      init3DTiltCards
+      init3DTiltCards,
+      t
     } from "./assets/js/security-core.js";
 
     init3DTiltCards();
 
     let redirectTimer = null;
+    const stageViewport = document.getElementById("panel-split-auth");
+    const slideHintLabel = document.getElementById("slide-hint-label");
 
-    // 1. 7-Second Countdown Badge on Install App Button
+    // =========================================================================
+    // 1. REAL 60FPS UP/DOWN SLIDING DRAWER CONTROLLER (SIGNUP FIRST -> LOGIN UP)
+    // =========================================================================
+    function slideUpToLogin() {
+      stageViewport?.classList.add("login-active");
+      if (slideHintLabel) {
+        slideHintLabel.setAttribute("data-i18n", "slide_down_signup");
+        slideHintLabel.textContent = t("slide_down_signup", "New Seller? Slide Down for Signup ↓");
+      }
+      setTimeout(() => document.getElementById("login-email")?.focus(), 350);
+    }
+
+    function slideDownToSignup() {
+      stageViewport?.classList.remove("login-active");
+      if (slideHintLabel) {
+        slideHintLabel.setAttribute("data-i18n", "slide_up_login");
+        slideHintLabel.textContent = t("slide_up_login", "Already have an account? Slide Up for Login ↑");
+      }
+      setTimeout(() => document.getElementById("signup-email")?.focus(), 350);
+    }
+
+    // Bind `^` (Up) button -> Slides Login UP
+    document.getElementById("wave-slide-up-login")?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      slideUpToLogin();
+    });
+
+    // Bind `v` (Down) button -> Slides Login DOWN to reveal Signup
+    document.getElementById("wave-slide-down-signup")?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      slideDownToSignup();
+    });
+
+    document.getElementById("top-switch-to-login-btn")?.addEventListener("click", slideUpToLogin);
+    document.getElementById("back-to-signup-link")?.addEventListener("click", slideDownToSignup);
+
+    // Clicking the handle bar toggles the sliding drawer smoothly
+    document.getElementById("slide-handle-bar")?.addEventListener("click", () => {
+      if (stageViewport?.classList.contains("login-active")) {
+        slideDownToSignup();
+      } else {
+        slideUpToLogin();
+      }
+    });
+
+    // Real Mobile Touch Swipe Up / Down Gesture Support on the Login Handle Bar
+    let touchStartY = 0;
+    const handleBar = document.getElementById("slide-handle-bar");
+    handleBar?.addEventListener(
+      "touchstart",
+      (e) => {
+        touchStartY = e.touches[0].clientY;
+      },
+      { passive: true }
+    );
+    handleBar?.addEventListener(
+      "touchend",
+      (e) => {
+        const deltaY = e.changedTouches[0].clientY - touchStartY;
+        if (deltaY < -25) {
+          slideUpToLogin(); // User swiped UP -> Open Login
+        } else if (deltaY > 25) {
+          slideDownToSignup(); // User swiped DOWN -> Show Signup
+        }
+      },
+      { passive: true }
+    );
+
+    // =========================================================================
+    // 2. 7-SECOND COUNTDOWN BADGE ON INSTALL APP BUTTON
+    // =========================================================================
     const secBadge = document.getElementById("pwa-sec-badge");
     let remainingSec = 7;
     const secInterval = setInterval(() => {
@@ -476,7 +678,7 @@
       }
     }, 1000);
 
-    // 2. Top-Left 🏠 Home Button: If not logged in yet, automatically starts 2-Min Guest Preview
+    // 3. Top-Left 🏠 Home Button: Starts 2-Min Guest Preview if not logged in yet
     document.getElementById("top-home-nav-btn")?.addEventListener("click", (e) => {
       if (!isUserPermanentlyLoggedIn()) {
         e.preventDefault();
@@ -484,36 +686,22 @@
       }
     });
 
-    // 3. Check if redirected after 2-Minute Guest Preview Timeout (?mode=signup)
+    // 4. Check URL Params (?mode=login or ?reason=guest_timeout)
     const params = new URLSearchParams(window.location.search);
-    if (params.get("mode") === "signup" || window.location.hash === "#signup") {
-      document.getElementById("signup-badge-pill")?.classList.remove("hidden");
-      document.getElementById("auth-main-card")?.classList.add("signup-highlight-ring");
-      if (params.get("reason") === "guest_timeout") {
-        document.getElementById("guest-timeout-alert")?.classList.remove("hidden");
-        showToast("⏳ 2-Minute Guest Preview poora ho gaya! Aage badhne ke liye Signup karein.", "warning", 6000);
-      }
-      setTimeout(() => {
-        document.getElementById("white-signup-section")?.scrollIntoView({ behavior: "smooth", block: "center" });
-        document.getElementById("signup-email")?.focus();
-      }, 250);
+    if (params.get("mode") === "login") {
+      slideUpToLogin();
+    } else if (params.get("reason") === "guest_timeout") {
+      slideDownToSignup();
+      document.getElementById("guest-timeout-alert")?.classList.remove("hidden");
+      showToast("⏳ 2-Minute Guest Preview completed! Please Signup below to continue.", "warning", 6000);
     }
 
-    // 4. Wave Buttons Focus
-    document.getElementById("wave-focus-login")?.addEventListener("click", () => {
-      document.getElementById("login-email")?.focus();
-    });
-    document.getElementById("wave-focus-signup")?.addEventListener("click", () => {
-      document.getElementById("signup-email")?.focus();
-    });
-
-    // 5. Screen Transitions (With Cancellable Redirect Timer)
-    const splitPanel = document.getElementById("panel-split-auth");
+    // 5. Screen Transitions (Welcome.! & Yeah..!)
     const welcomePanel = document.getElementById("panel-welcome");
     const yeahPanel = document.getElementById("panel-yeah");
 
     function showWelcomeView() {
-      splitPanel.classList.add("hidden");
+      stageViewport.classList.add("hidden");
       yeahPanel.classList.add("hidden");
       welcomePanel.classList.remove("hidden");
       if (redirectTimer) clearTimeout(redirectTimer);
@@ -523,7 +711,7 @@
     }
 
     function showYeahView() {
-      splitPanel.classList.add("hidden");
+      stageViewport.classList.add("hidden");
       welcomePanel.classList.add("hidden");
       yeahPanel.classList.remove("hidden");
       if (redirectTimer) clearTimeout(redirectTimer);
@@ -535,13 +723,13 @@
     document.getElementById("close-welcome-btn")?.addEventListener("click", () => {
       if (redirectTimer) clearTimeout(redirectTimer);
       welcomePanel.classList.add("hidden");
-      splitPanel.classList.remove("hidden");
+      stageViewport.classList.remove("hidden");
     });
 
     document.getElementById("close-yeah-btn")?.addEventListener("click", () => {
       if (redirectTimer) clearTimeout(redirectTimer);
       yeahPanel.classList.add("hidden");
-      splitPanel.classList.remove("hidden");
+      stageViewport.classList.remove("hidden");
     });
 
     // 6. Login Form Submit
@@ -567,13 +755,13 @@
           const storeName = email.split("@")[0].toUpperCase();
           await registerWithEmail(email, pass, storeName, "07AABCS1429B1Z5", true, true);
           showWelcomeView();
-        } catch (regErr) {
-          showToast("⚠️ Invalid email or password. Please check your credentials or use Signup below.", "error");
+        } catch (_) {
+          showToast("⚠️ Invalid email or password. Slide down to Signup if you are a new user.", "error");
         }
       }
     });
 
-    // 7. Signup Form Submit (Enforces Mandatory DPDP Act Consent Tick ✔️)
+    // 7. Signup Form Submit (Default First Screen)
     document.getElementById("signup-form")?.addEventListener("submit", async (e) => {
       e.preventDefault();
       const dpdpTick = document.getElementById("dpdp-consent-checkbox");
@@ -602,9 +790,9 @@
           } catch (_) {
             btn.disabled = false;
             btn.textContent = "Signup →";
-            showToast("This email is already registered! Please log in at the top.", "warning");
+            showToast("This email is already registered! Sliding up to Login...", "info");
             document.getElementById("login-email").value = email;
-            document.getElementById("login-password").focus();
+            slideUpToLogin();
             return;
           }
         }
@@ -640,15 +828,17 @@
       }
     });
 
-    // 9. Bottom Direct Google Login Handler
-    document.getElementById("google-direct-login-btn")?.addEventListener("click", async () => {
+    // 9. Direct Google Login Handlers
+    const handleGoogleAuth = async () => {
       try {
         await loginWithGoogle();
         showWelcomeView();
-      } catch (err) {
-        showToast("Please ensure sellgst-pro.pages.dev is added in Firebase Auth -> Settings -> Authorized Domains.", "warning", 5000);
+      } catch (_) {
+        showToast("Please ensure your domain is added in Firebase Auth -> Settings -> Authorized Domains.", "warning", 5000);
       }
-    });
+    };
+    document.getElementById("google-direct-login-btn")?.addEventListener("click", handleGoogleAuth);
+    document.getElementById("google-login-btn-2")?.addEventListener("click", handleGoogleAuth);
 
     // 10. Guest Login (2-Minute Website Preview) Handler
     document.getElementById("guest-preview-login-btn")?.addEventListener("click", () => {
