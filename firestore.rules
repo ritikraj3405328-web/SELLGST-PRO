@@ -23,7 +23,7 @@ service cloud.firestore {
       return val is string && val.size() >= minLen && val.size() <= maxLen;
     }
 
-    // Prevent privilege escalation on user profile creation
+    // Prevent privilege escalation on new user profile creation
     function hasSafeInitialUserFields() {
       let data = request.resource.data;
       return (!('isAdmin' in data) || data.isAdmin == false) &&
@@ -31,16 +31,26 @@ service cloud.firestore {
              (!('subscriptionStatus' in data) || data.subscriptionStatus == 'FREE');
     }
 
-    // Prevent regular users from modifying restricted privilege fields
-    function doesNotModifyProtectedUserFields() {
+    // Prevent regular users from upgrading themselves to Pro or Admin,
+    // while allowing automatic background expiry downgrade to FREE/EXPIRED.
+    function doesNotEscalateUserPrivileges() {
       let incoming = request.resource.data;
       let existing = resource.data;
-      return incoming.get('isAdmin', false) == existing.get('isAdmin', false) &&
-             incoming.get('isPro', false) == existing.get('isPro', false) &&
-             incoming.get('subscriptionStatus', 'FREE') == existing.get('subscriptionStatus', 'FREE') &&
-             incoming.get('approvedAt', null) == existing.get('approvedAt', null) &&
-             incoming.get('planAmount', 0) == existing.get('planAmount', 0) &&
-             incoming.get('planExpiry', null) == existing.get('planExpiry', null);
+
+      let adminUnchanged = incoming.get('isAdmin', false) == existing.get('isAdmin', false);
+
+      let proUnchanged =
+        incoming.get('isPro', false) == existing.get('isPro', false) &&
+        incoming.get('subscriptionStatus', 'FREE') == existing.get('subscriptionStatus', 'FREE') &&
+        incoming.get('planName', 'FREE') == existing.get('planName', 'FREE') &&
+        incoming.get('planExpiryISO', null) == existing.get('planExpiryISO', null);
+
+      let isSafeExpiryDowngrade =
+        incoming.get('isPro', false) == false &&
+        incoming.get('planName', 'FREE') == 'FREE' &&
+        (incoming.get('subscriptionStatus', 'FREE') == 'EXPIRED' || incoming.get('subscriptionStatus', 'FREE') == 'FREE');
+
+      return adminUnchanged && (proUnchanged || isSafeExpiryDowngrade);
     }
 
     // =========================================================================
@@ -52,12 +62,12 @@ service cloud.firestore {
       // New user signup: strictly force Free & Non-Admin tier
       allow create: if isOwner(uid) && hasSafeInitialUserFields();
 
-      // Profile updates: Users can update business info, GSTIN, state, language,
-      // and paymentPending flag, but NEVER isPro, isAdmin, or subscriptionStatus.
-      // Admins can update any field (for 1-Click Approval & Pro Activation).
-      allow update: if isAdmin() || (isOwner(uid) && doesNotModifyProtectedUserFields());
+      // Profile updates: Users can update store info, GSTIN, freeActionsUsed,
+      // and paymentPending flag, but NEVER upgrade isPro or isAdmin themselves.
+      allow update: if isAdmin() || (isOwner(uid) && doesNotEscalateUserPrivileges());
 
-      allow delete: if isAdmin();
+      // DPDP Act 2023 Right to Erasure: Owner can delete their own account & data
+      allow delete: if isOwner(uid) || isAdmin();
 
       // -----------------------------------------------------------------------
       // USER SUBCOLLECTIONS: Invoices, Parties (Udhar), Inventory Stock, Audits
@@ -74,7 +84,8 @@ service cloud.firestore {
         allow read, write: if isOwner(uid) || isAdmin();
       }
 
-      match /audit_ summaries/{summaryId} {
+      // FIXED SYNTAX BUG: Removed space in `audit_summaries`
+      match /audit_summaries/{summaryId} {
         allow read, write: if isOwner(uid) || isAdmin();
       }
 
@@ -89,11 +100,8 @@ service cloud.firestore {
     // 2. SEMI-AUTOMATIC UPI PAYMENT REQUESTS (/payment_requests/{requestId})
     // =========================================================================
     match /payment_requests/{requestId} {
-      // Users can read only their own payment requests to show live status banner;
-      // Admins can read all requests in the live queue.
       allow read: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
 
-      // Users can submit a new UPI payment verification request ONLY in "PENDING" status
       allow create: if isSignedIn() &&
         request.resource.data.uid == request.auth.uid &&
         request.resource.data.status == "PENDING" &&
@@ -102,20 +110,14 @@ service cloud.firestore {
         isValidString(request.resource.data.utrNumber, 6, 36);
 
       // STRICT RULE: Only Admin can update status to "APPROVED" or "REJECTED"
-      allow update: if isAdmin();
-
-      allow delete: if isAdmin();
+      allow update, delete: if isAdmin();
     }
 
     // =========================================================================
     // 3. SYSTEM SETTINGS & BROADCAST BANNERS (/system_config/{docId})
     // =========================================================================
     match /system_config/{docId} {
-      // All authenticated users can read merchant UPI settings (UPI ID, Payee Name)
-      // and global broadcast announcements.
       allow read: if true;
-
-      // Only Admin can modify Merchant UPI ID, Payee Name, WhatsApp Alert Config, or Broadcasts
       allow write: if isAdmin();
     }
 
