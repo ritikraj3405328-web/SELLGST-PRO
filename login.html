@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <title>Login & Signup — SellGST Pro</title>
-  <meta name="description" content="Secure Zero-Trust Login & DPDP Act Compliant Seller Registration for SellGST Pro." />
+  <meta name="description" content="Secure Zero-Trust Login, 2-Minute Guest Preview & DPDP Act Compliant Seller Registration." />
   <meta name="theme-color" content="#071C50" />
   <link rel="manifest" href="./manifest.json" />
 
@@ -48,7 +48,6 @@
       font-size: 14px;
       -webkit-tap-highlight-color: transparent;
     }
-    /* Decorative Yellow Circles from Reference Image 1000173806_2.png */
     .yellow-orb-tl {
       position: fixed;
       top: -65px;
@@ -71,7 +70,6 @@
       z-index: 0;
       pointer-events: none;
     }
-    /* Minimal Underline Inputs Matching 1000173806_2.png */
     .navy-line-input {
       width: 100%;
       background: transparent;
@@ -109,6 +107,9 @@
       color: #64748B;
       font-weight: 500;
     }
+    .signup-highlight-ring {
+      box-shadow: 0 0 0 4px #10E594, 0 25px 50px -12px rgba(7, 28, 80, 0.35) !important;
+    }
     @keyframes shrink7s {
       from { width: 100%; }
       to { width: 0%; }
@@ -120,22 +121,22 @@
 </head>
 <body class="min-h-screen w-full overflow-x-hidden flex flex-col justify-between relative py-3 px-3 sm:px-6">
 
-  <!-- Decorative Background Orbs Matching 1000173806_2.png -->
+  <!-- Decorative Background Orbs -->
   <div class="yellow-orb-tl"></div>
   <div class="yellow-orb-br"></div>
 
-  <!-- CLEAN TOP NAVIGATION BAR (ONLY HOME BUTTON + LANGUAGE + 7s INSTALL BUTTON) -->
+  <!-- CLEAN TOP NAVIGATION BAR (RESTORED TOP-LEFT 🏠 HOME BUTTON + LANGUAGE + 7s INSTALL BUTTON) -->
   <header class="relative z-30 max-w-5xl mx-auto w-full">
     <nav class="bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-full px-4 py-2 shadow-sm flex items-center justify-between gap-2">
-      <!-- Top-Left Home Button -->
+      <!-- Top-Left Home Button (Starts 2-min Guest Preview if not logged in yet) -->
       <a
         href="./index.html"
+        id="top-home-nav-btn"
         class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#071C50] hover:bg-[#5B2EFF] text-white text-xs font-extrabold shadow-sm transition"
       >
         <span>🏠 Home</span>
       </a>
 
-      <!-- Right Controls: Language + 7-Second Auto-Hide Install Button -->
       <div class="flex items-center gap-2">
         <select
           data-lang-switcher
@@ -158,10 +159,20 @@
     </nav>
   </header>
 
-  <!-- CENTER AUTHENTICATION CONTAINER (EXACT 1000173806_2.png REPLICA) -->
-  <main class="relative z-20 my-auto py-5 flex items-center justify-center w-full">
+  <!-- 2-MINUTE GUEST TIMEOUT NOTICE BANNER -->
+  <div
+    id="guest-timeout-alert"
+    class="hidden relative z-30 max-w-[375px] mx-auto mt-3 p-3.5 rounded-2xl bg-[#071C50] text-white border-2 border-[#10E594] shadow-xl text-xs text-center"
+  >
+    ⏳ <strong class="text-[#10E594]">2-Minute Guest Preview Completed!</strong><br />
+    Aapne website ka preview dekh liya hai. Aage continue karne ke liye kripya niche <strong>Signup</strong> ya <strong>Google Login</strong> karein!
+  </div>
+
+  <!-- CENTER AUTHENTICATION CONTAINER -->
+  <main class="relative z-20 my-auto py-4 flex items-center justify-center w-full">
 
     <div
+      id="auth-main-card"
       data-3d-tilt
       class="w-full max-w-[375px] bg-white rounded-[28px] overflow-hidden shadow-2xl border border-slate-200/80 transition-all duration-300"
       style="box-shadow: 0 30px 65px -15px rgba(7, 28, 80, 0.28);"
@@ -173,8 +184,8 @@
       <div id="panel-split-auth" class="flex flex-col">
 
         <!-- TOP HALF: DEEP NAVY BLUE LOGIN (#071C50) -->
-        <div id="navy-login-section" class="bg-[#071C50] text-white px-7 pt-8 pb-12 relative">
-          <h1 class="text-[24px] font-extrabold tracking-tight text-white mb-5">Login</h1>
+        <div id="navy-login-section" class="bg-[#071C50] text-white px-7 pt-7 pb-12 relative">
+          <h1 class="text-[24px] font-extrabold tracking-tight text-white mb-4">Login</h1>
 
           <form id="login-form" class="space-y-4">
             <div>
@@ -219,9 +230,8 @@
             </div>
           </form>
 
-          <!-- EXACT INTERLOCKING S-CURVE WAVE WITH ^ AND v BUTTONS (1000173806_2.png) -->
+          <!-- EXACT INTERLOCKING S-CURVE WAVE WITH ^ AND v BUTTONS -->
           <div class="absolute left-0 right-0 -bottom-7 h-14 pointer-events-none flex items-center justify-end pr-5 z-20">
-            <!-- Left White Bulge (Up Arrow ^) -->
             <button
               type="button"
               id="wave-focus-login"
@@ -233,7 +243,6 @@
               </svg>
             </button>
 
-            <!-- Right Navy Bulge (Down Arrow v) -->
             <button
               type="button"
               id="wave-focus-signup"
@@ -247,9 +256,14 @@
           </div>
         </div>
 
-        <!-- BOTTOM HALF: WHITE SIGNUP SECTION + DPDP CONSENT TICK + BOTTOM GOOGLE LOGIN -->
-        <div id="white-signup-section" class="bg-white text-[#071C50] px-7 pt-9 pb-7">
-          <h2 class="text-[24px] font-extrabold tracking-tight text-[#071C50] mb-4">Signup</h2>
+        <!-- BOTTOM HALF: WHITE SIGNUP SECTION + DPDP CONSENT TICK + GOOGLE & GUEST LOGIN -->
+        <div id="white-signup-section" class="bg-white text-[#071C50] px-7 pt-9 pb-7 transition-colors duration-300">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-[24px] font-extrabold tracking-tight text-[#071C50]">Signup</h2>
+            <span id="signup-badge-pill" class="hidden px-2.5 py-0.5 rounded-full bg-[#10E594] text-[#071C50] font-extrabold text-[10px]">
+              CREATE ACCOUNT
+            </span>
+          </div>
 
           <form id="signup-form" class="space-y-3.5">
             <div>
@@ -285,7 +299,6 @@
               />
             </div>
 
-            <!-- Remember Me Checkbox (From 1000173806_2.png) -->
             <div class="pt-1 flex items-center justify-between">
               <label class="inline-flex items-center gap-2 text-xs text-slate-400 font-medium cursor-pointer">
                 <input type="checkbox" id="signup-remember" checked class="w-3.5 h-3.5 accent-[#071C50] rounded" />
@@ -316,8 +329,8 @@
             </label>
           </form>
 
-          <!-- BOTTOM DIRECT GOOGLE LOGIN BUTTON (AS REQUESTED) -->
-          <div class="mt-5 pt-4 border-t border-slate-100">
+          <!-- BOTTOM DIRECT GOOGLE LOGIN + 2-MINUTE GUEST PREVIEW BUTTON -->
+          <div class="mt-4 pt-4 border-t border-slate-100 space-y-2.5">
             <button
               type="button"
               id="google-direct-login-btn"
@@ -331,17 +344,25 @@
               </svg>
               <span>Direct Login with Google</span>
             </button>
+
+            <!-- GUEST LOGIN (2 MINUTE WEBSITE PREVIEW) -->
+            <button
+              type="button"
+              id="guest-preview-login-btn"
+              class="w-full py-2.5 px-4 rounded-2xl bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] font-extrabold text-xs border border-indigo-200 transition flex items-center justify-center gap-2"
+            >
+              <span>👀 Guest Login (2 Min Website Preview)</span>
+            </button>
           </div>
         </div>
 
       </div>
 
       <!-- ================================================================= -->
-      <!-- PANEL 2: "Welcome.!" SCREEN (MIDDLE SCREEN OF 1000173806_2.png)   -->
+      <!-- PANEL 2: "Welcome.!" SCREEN                                       -->
       <!-- ================================================================= -->
       <div id="panel-welcome" class="hidden bg-[#071C50] text-white min-h-[540px] flex flex-col justify-between relative overflow-hidden">
         <div class="my-auto text-center px-6 space-y-3">
-          <!-- Circular Illustrated Avatar matching middle screen -->
           <div class="w-24 h-24 rounded-full bg-[#1D7AFC] border-4 border-[#041030] mx-auto flex items-center justify-center shadow-xl overflow-hidden">
             <svg viewBox="0 0 100 100" class="w-20 h-20">
               <circle cx="50" cy="36" r="18" fill="#FDBA74" />
@@ -357,12 +378,11 @@
           <p id="welcome-sub-label" class="text-xs italic text-slate-300">Thanks for Logging-in</p>
         </div>
 
-        <!-- Bottom White Curved Wave Bar with Home & X Icons (Exact 1000173806_2.png) -->
         <div class="relative h-20 bg-white flex items-center justify-end px-5 gap-3">
           <div class="absolute -top-6 right-16 w-14 h-14 rounded-full bg-white flex items-center justify-center shadow">
             <a
-              href="./app.html"
-              title="Go to Dashboard"
+              href="./index.html"
+              title="Go to Home"
               class="w-10 h-10 rounded-full flex items-center justify-center text-[#071C50] hover:scale-110 transition"
             >
               <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -381,10 +401,9 @@
       </div>
 
       <!-- ================================================================= -->
-      <!-- PANEL 3: "Yeah..!" SCREEN (RIGHT SCREEN OF 1000173806_2.png)      -->
+      <!-- PANEL 3: "Yeah..!" SCREEN                                         -->
       <!-- ================================================================= -->
       <div id="panel-yeah" class="hidden bg-white text-[#071C50] min-h-[540px] flex flex-col justify-between relative overflow-hidden">
-        <!-- Top Navy Bar with Interlocking X and User Icon (Exact 1000173806_2.png) -->
         <div class="bg-[#071C50] h-14 relative flex items-center justify-end px-4">
           <button
             type="button"
@@ -400,7 +419,6 @@
           </div>
         </div>
 
-        <!-- Center "Yeah..!" Message -->
         <div class="my-auto text-center px-7 space-y-2">
           <h2 class="text-2xl font-extrabold italic text-[#071C50]">Yeah..!</h2>
           <p class="text-xs italic text-slate-400 leading-relaxed">
@@ -409,10 +427,9 @@
           </p>
         </div>
 
-        <!-- Bottom Home Icon (Exact 1000173806_2.png) -->
         <div class="pb-8 text-center">
           <a
-            href="./app.html"
+            href="./index.html"
             class="inline-flex flex-col items-center gap-1 text-[#071C50] hover:text-[#5B2EFF] transition"
           >
             <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
@@ -426,23 +443,26 @@
     </div>
   </main>
 
-  <!-- MINIMAL FOOTER -->
   <footer class="relative z-20 text-center text-[11px] text-slate-500 pb-2">
     Protected under <strong>DPDP Act 2023</strong> • Zero-Trust Firebase Security (<code>sellgstpro</code>)
   </footer>
 
-  <!-- LOGIN / SIGNUP MODULE SCRIPT -->
+  <!-- LOGIN, SIGNUP & 2-MINUTE GUEST PREVIEW SCRIPT -->
   <script type="module">
     import {
       loginWithEmail,
       registerWithEmail,
       resetUserPassword,
       loginWithGoogle,
+      isUserPermanentlyLoggedIn,
+      startGuestPreviewSession,
       showToast,
       init3DTiltCards
     } from "./assets/js/security-core.js";
 
     init3DTiltCards();
+
+    let redirectTimer = null;
 
     // 1. 7-Second Countdown Badge on Install App Button
     const secBadge = document.getElementById("pwa-sec-badge");
@@ -456,7 +476,30 @@
       }
     }, 1000);
 
-    // 2. Wave Buttons Focus
+    // 2. Top-Left 🏠 Home Button: If not logged in yet, automatically starts 2-Min Guest Preview
+    document.getElementById("top-home-nav-btn")?.addEventListener("click", (e) => {
+      if (!isUserPermanentlyLoggedIn()) {
+        e.preventDefault();
+        startGuestPreviewSession("./index.html");
+      }
+    });
+
+    // 3. Check if redirected after 2-Minute Guest Preview Timeout (?mode=signup)
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("mode") === "signup" || window.location.hash === "#signup") {
+      document.getElementById("signup-badge-pill")?.classList.remove("hidden");
+      document.getElementById("auth-main-card")?.classList.add("signup-highlight-ring");
+      if (params.get("reason") === "guest_timeout") {
+        document.getElementById("guest-timeout-alert")?.classList.remove("hidden");
+        showToast("⏳ 2-Minute Guest Preview poora ho gaya! Aage badhne ke liye Signup karein.", "warning", 6000);
+      }
+      setTimeout(() => {
+        document.getElementById("white-signup-section")?.scrollIntoView({ behavior: "smooth", block: "center" });
+        document.getElementById("signup-email")?.focus();
+      }, 250);
+    }
+
+    // 4. Wave Buttons Focus
     document.getElementById("wave-focus-login")?.addEventListener("click", () => {
       document.getElementById("login-email")?.focus();
     });
@@ -464,7 +507,7 @@
       document.getElementById("signup-email")?.focus();
     });
 
-    // 3. Screen Transitions (Split <-> Welcome.! <-> Yeah..!)
+    // 5. Screen Transitions (With Cancellable Redirect Timer)
     const splitPanel = document.getElementById("panel-split-auth");
     const welcomePanel = document.getElementById("panel-welcome");
     const yeahPanel = document.getElementById("panel-yeah");
@@ -473,31 +516,35 @@
       splitPanel.classList.add("hidden");
       yeahPanel.classList.add("hidden");
       welcomePanel.classList.remove("hidden");
-      setTimeout(() => {
-        window.location.href = "./app.html";
-      }, 1300);
+      if (redirectTimer) clearTimeout(redirectTimer);
+      redirectTimer = setTimeout(() => {
+        window.location.replace("./index.html");
+      }, 1100);
     }
 
     function showYeahView() {
       splitPanel.classList.add("hidden");
       welcomePanel.classList.add("hidden");
       yeahPanel.classList.remove("hidden");
-      setTimeout(() => {
-        window.location.href = "./app.html";
-      }, 1500);
+      if (redirectTimer) clearTimeout(redirectTimer);
+      redirectTimer = setTimeout(() => {
+        window.location.replace("./index.html");
+      }, 1300);
     }
 
     document.getElementById("close-welcome-btn")?.addEventListener("click", () => {
+      if (redirectTimer) clearTimeout(redirectTimer);
       welcomePanel.classList.add("hidden");
       splitPanel.classList.remove("hidden");
     });
 
     document.getElementById("close-yeah-btn")?.addEventListener("click", () => {
+      if (redirectTimer) clearTimeout(redirectTimer);
       yeahPanel.classList.add("hidden");
       splitPanel.classList.remove("hidden");
     });
 
-    // 4. Login Form Submit
+    // 6. Login Form Submit
     document.getElementById("login-form")?.addEventListener("submit", async (e) => {
       e.preventDefault();
       const btn = document.getElementById("login-submit-btn");
@@ -510,34 +557,23 @@
         await loginWithEmail(email, pass, true);
         showWelcomeView();
       } catch (err) {
-        if (
-          err.code === "auth/user-not-found" ||
-          err.code === "auth/invalid-credential" ||
-          err.code === "auth/invalid-login-credentials"
-        ) {
-          try {
-            const storeName = email.split("@")[0].toUpperCase();
-            await registerWithEmail(email, pass, storeName, "07AABCS1429B1Z5", true, true);
-            showWelcomeView();
-            return;
-          } catch (_) {}
+        btn.disabled = false;
+        btn.textContent = "Login →";
+        if (err.code === "auth/wrong-password") {
+          showToast("⚠️ Incorrect password! Please enter the right password or click Forgot Password.", "error");
+          return;
         }
-        // Fallback local session so user never gets stuck
-        localStorage.setItem(
-          "sellgst_local_profile",
-          JSON.stringify({
-            uid: "seller-" + Date.now(),
-            displayName: email.split("@")[0].toUpperCase(),
-            businessName: email.split("@")[0].toUpperCase(),
-            email,
-            dpdpConsentAccepted: true
-          })
-        );
-        showWelcomeView();
+        try {
+          const storeName = email.split("@")[0].toUpperCase();
+          await registerWithEmail(email, pass, storeName, "07AABCS1429B1Z5", true, true);
+          showWelcomeView();
+        } catch (regErr) {
+          showToast("⚠️ Invalid email or password. Please check your credentials or use Signup below.", "error");
+        }
       }
     });
 
-    // 5. Signup Form Submit (Enforces Mandatory DPDP Act Consent Tick ✔️)
+    // 7. Signup Form Submit (Enforces Mandatory DPDP Act Consent Tick ✔️)
     document.getElementById("signup-form")?.addEventListener("submit", async (e) => {
       e.preventDefault();
       const dpdpTick = document.getElementById("dpdp-consent-checkbox");
@@ -557,7 +593,23 @@
       try {
         await registerWithEmail(email, pass, biz, "07AABCS1429B1Z5", remember, true);
         showYeahView();
-      } catch (_) {
+      } catch (err) {
+        if (err.code === "auth/email-already-in-use") {
+          try {
+            await loginWithEmail(email, pass, remember);
+            showWelcomeView();
+            return;
+          } catch (_) {
+            btn.disabled = false;
+            btn.textContent = "Signup →";
+            showToast("This email is already registered! Please log in at the top.", "warning");
+            document.getElementById("login-email").value = email;
+            document.getElementById("login-password").focus();
+            return;
+          }
+        }
+        localStorage.setItem("sellgst_auth_logged_in", "1");
+        localStorage.removeItem("sellgst_guest_start_ts");
         localStorage.setItem(
           "sellgst_local_profile",
           JSON.stringify({
@@ -572,7 +624,7 @@
       }
     });
 
-    // 6. Forgot Password
+    // 8. Forgot Password
     document.getElementById("forgot-pass-btn")?.addEventListener("click", async () => {
       const email = document.getElementById("login-email").value.trim();
       if (!email) {
@@ -588,15 +640,22 @@
       }
     });
 
-    // 7. Bottom Direct Google Login Handler
+    // 9. Bottom Direct Google Login Handler
     document.getElementById("google-direct-login-btn")?.addEventListener("click", async () => {
       try {
         await loginWithGoogle();
         showWelcomeView();
-      } catch (_) {
-        showToast("Signing in via Google Seller Session...", "info");
-        showWelcomeView();
+      } catch (err) {
+        showToast("Please ensure sellgst-pro.pages.dev is added in Firebase Auth -> Settings -> Authorized Domains.", "warning", 5000);
       }
+    });
+
+    // 10. Guest Login (2-Minute Website Preview) Handler
+    document.getElementById("guest-preview-login-btn")?.addEventListener("click", () => {
+      showToast("👀 Starting 2-Minute Guest Preview! You will be redirected to Signup after 2 minutes.", "info", 3500);
+      setTimeout(() => {
+        startGuestPreviewSession("./index.html");
+      }, 300);
     });
   </script>
 </body>
