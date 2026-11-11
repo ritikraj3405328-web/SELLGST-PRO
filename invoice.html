@@ -201,7 +201,7 @@
         </a>
         <div class="min-w-0">
           <h1 class="font-extrabold text-sm sm:text-[15px] text-[#0B1F52] truncate">S.K.P.S Style Custom Navy GST Invoice</h1>
-          <p class="text-[11px] text-slate-500 truncate">Click Any Box on the Bill to Edit • Circle Logo • Digital Signature • App Branding</p>
+          <p class="text-[11px] text-slate-500 truncate">Click Any Box on the Bill to Edit • Auto-Saves Your Store &amp; Bank Details</p>
         </div>
       </div>
 
@@ -295,8 +295,8 @@
     </section>
 
     <!-- =================================================================== -->
-    <!-- EXACT S.K.P.S DIGITAL NAVY CURVED WAVE INVOICE (1000173801.jpg)     -->
-    <!-- EVERY SINGLE SECTION IS DIRECTLY EDITABLE BY THE CLIENT             -->
+    <!-- EXACT S.K.P.S DIGITAL NAVY CURVED WAVE INVOICE                      -->
+    <!-- EVERY SINGLE SECTION IS DIRECTLY EDITABLE & AUTO-SAVED              -->
     <!-- =================================================================== -->
     <section class="flex justify-center w-full">
       <div
@@ -345,7 +345,7 @@
                 </div>
               </div>
 
-              <!-- CLICKABLE CIRCULAR LOGO IN CENTER-LEFT OF CURVE (As Requested) -->
+              <!-- CLICKABLE CIRCULAR LOGO IN CENTER-LEFT OF CURVE -->
               <label
                 for="logo-file-input"
                 title="Click to Upload Your Circular Brand Logo"
@@ -372,7 +372,7 @@
           </div>
         </div>
 
-        <!-- 2. BILL TO & SHIP TO BOXES (EXACT 1000173801.jpg TABLE BORDERS) -->
+        <!-- 2. BILL TO & SHIP TO BOXES -->
         <div class="px-4 sm:px-6 py-4 grid grid-cols-1 sm:grid-cols-2 gap-5 bg-white">
 
           <!-- BILL TO BOX -->
@@ -388,7 +388,7 @@
                 <input type="text" id="bill-to-addr" value="Sector-200, Noida, U.P." placeholder="Street Address" class="skps-cell-input font-semibold" />
               </div>
               <div class="p-1">
-                <input type="text" id="bill-to-state" value="Uttar Pradesh" placeholder="State" class="skps-cell-input font-semibold" />
+                <input type="text" id="bill-to-state" value="Uttar Pradesh" placeholder="State (e.g. Bihar, Delhi, Uttar Pradesh)" class="skps-cell-input font-semibold" />
               </div>
               <div class="p-1 flex items-center">
                 <span class="px-2 font-bold text-slate-700 shrink-0">Phone :</span>
@@ -793,7 +793,7 @@ To be paid in full in maximum 7 days after receiving the invoice.</textarea>
 
   </div>
 
-  <!-- INVOICE & CONVERSATIONAL AI UPGRADE SCRIPT -->
+  <!-- INVOICE ENGINE SCRIPT (WITH SELLER TEMPLATE AUTO-PERSISTENCE & GSTR-1 STATE SYNC) -->
   <script type="module">
     import {
       AppState,
@@ -805,158 +805,11 @@ To be paid in full in maximum 7 days after receiving the invoice.</textarea>
       generateUniqueInvoiceNumber,
       peekCurrentInvoiceNumber,
       logoutUser,
-      syncProDOMElements,
-      getCurrentLang
+      syncProDOMElements
     } from "./assets/js/security-core.js";
 
     // =========================================================================
-    // 1. CONVERSATIONAL PROBLEM-SOLVING GEMINI AI UPGRADE (NO CANNED SPAM ON "HI")
-    // =========================================================================
-    function upgradeAIAssistantToConversationalGemini() {
-      const form = document.getElementById("ai-chat-form");
-      const messagesBox = document.getElementById("ai-chat-messages");
-      if (!form || !messagesBox || form.dataset.conversationalUpgraded === "1") return;
-      form.dataset.conversationalUpgraded = "1";
-
-      // Replace initial greeting with a natural, helpful conversational greeting
-      messagesBox.innerHTML = `
-        <div class="bg-white p-3.5 rounded-2xl rounded-tl-sm border border-slate-200 shadow-sm text-slate-800 leading-relaxed">
-          👋 <strong>Hi! Main aapka SellGST Pro AI Helper hoon.</strong><br/>
-          Aap mujhse <strong>Hindi, Hinglish ya English</strong> mein koi bhi problem puch sakte hain—chahe GST tax calculation ho, HSN code ho, RTO claim ho, ya business problem! Bataiye, aaj main aapki kya help kar sakta hoon?
-        </div>
-      `;
-
-      // Clone form to replace the old static listener cleanly
-      const newForm = form.cloneNode(true);
-      form.parentNode.replaceChild(newForm, form);
-
-      function solveUserQueryConversationally(rawQuery = "") {
-        const q = rawQuery.trim();
-        const lower = q.toLowerCase();
-
-        // 1. Natural Conversational Greetings ("Hi", "Hello", "Hey", "Kaise ho", "Namaste")
-        if (/^(hi+|hello+|hey+|namaste|hlo|hola|kaise ho|kya haal hai|good morning|good evening)[\s!?.]*$/i.test(lower)) {
-          return "Hi! 👋 Main bilkultheek hoon. Bataiye, aaj main aapki kya madad kar sakta hoon? Aap mujhse koi bhi GST calculation, invoice customization, e-commerce RTO claim, ya apne business se juda sawal puch sakte hain!";
-        }
-
-        // 2. Live Math / GST Percentage Calculation Problem Solver (e.g. "15000 par 18% GST kitna hoga")
-        const numMatch = lower.match(/(\d+(?:\.\d+)?)/g);
-        if (numMatch && (lower.includes("gst") || lower.includes("tax") || lower.includes("%") || lower.includes("kitna"))) {
-          const amount = Number(numMatch[0]) || 0;
-          const rate = numMatch[1] ? Number(numMatch[1]) : 18;
-          const gstAmt = (amount * rate) / 100;
-          const total = amount + gstAmt;
-          return (
-            `📊 **GST Calculation for ₹${amount.toLocaleString("en-IN")} @ ${rate}%:**\n\n` +
-            `• **Taxable Amount:** ₹${amount.toFixed(2)}\n` +
-            `• **CGST (${rate / 2}%):** ₹${(gstAmt / 2).toFixed(2)}\n` +
-            `• **SGST (${rate / 2}%):** ₹${(gstAmt / 2).toFixed(2)}\n` +
-            `• **Total GST (${rate}%):** ₹${gstAmt.toFixed(2)}\n` +
-            `• **Grand Total (Payable):** **₹${total.toFixed(2)}**\n\n` +
-            `Kya aap chahte hain ki main iska bill banane mein aapki madad karoon?`
-          );
-        }
-
-        // 3. Specific Problem Solving based on what the user actually asked
-        if (lower.includes("logo") || lower.includes("sign") || lower.includes("edit") || lower.includes("bill") || lower.includes("invoice")) {
-          return (
-            "🧾 **Invoice Customization Help:**\n" +
-            "• **Logo badalne ke liye:** Upar gol `LOGO` circle par click karein aur apni gallery se photo chunein.\n" +
-            "• **Koi bhi naam/address/bank badalne ke liye:** Bill ke upar kisi bhi text par seedha click karke apna data likh dein.\n" +
-            "• **Digital Signature ke liye:** Niche `Authorized Sign.` ke paas `Draw Sign ✍️` par click karke ungli se sign karein ya `Type Sign` mein naam likhein.\n\n" +
-            "Aur koi dikkat aa rahi hai bill mein to mujhe bataiye!"
-          );
-        }
-
-        if (lower.includes("rto") || lower.includes("claim") || lower.includes("meesho") || lower.includes("flipkart") || lower.includes("amazon") || lower.includes("loss")) {
-          return (
-            "📦 **RTO & Marketplace Claim Solution:**\n" +
-            "Agar aapka RTO parcel 30 din se zyada samay se wapas nahi aaya hai, ya courier ne zyada weight slab ka paisa kaata hai:\n" +
-            "1. Apna Order CSV report scan karein.\n" +
-            "2. Flagged order ke samne **Claim Ticket** copy karke Seller Support (SPF / SAFE-T) mein ticket raise karein—100% reimbursement milta hai.\n\n" +
-            "Bataiye, kis marketplace (Meesho, Flipkart ya Amazon) mein aapko problem aa rahi hai?"
-          );
-        }
-
-        // 4. Default Empathetic Conversational Helper (Never repeats raw .html file names!)
-        return (
-          `Main aapki baat samajh gaya! Aapne pucha: **"${sanitizeHTML(q)}"**\n\n` +
-          `Main aapki ismein poori madad kar sakta hoon. Kya aap mujhe thoda aur detail batayenge ki aapko exact kya error ya confusion aa raha hai—taaki main aapko step-by-step sahi solution de sakoon?`
-        );
-      }
-
-      async function handleConversationalSend(msgText) {
-        const userBubble = document.createElement("div");
-        userBubble.className = "ml-auto max-w-[85%] bg-[#5B2EFF] text-white p-3 rounded-2xl rounded-tr-sm shadow-sm text-[13px] break-words";
-        userBubble.textContent = msgText;
-        messagesBox.appendChild(userBubble);
-
-        const botBubble = document.createElement("div");
-        botBubble.className = "max-w-[92%] bg-white p-3.5 rounded-2xl rounded-tl-sm border border-slate-200 shadow-sm text-slate-800 leading-relaxed text-[13px]";
-        botBubble.innerHTML = `<span class="animate-pulse">✨</span> <span>Thinking...</span>`;
-        messagesBox.appendChild(botBubble);
-        messagesBox.scrollTop = messagesBox.scrollHeight;
-
-        // First try serverless Gemini backend if available and not a simple "Hi"
-        const isSimpleGreeting = /^(hi+|hello+|hey+|namaste|hlo)[\s!?.]*$/i.test(msgText.trim());
-        let replyText = "";
-
-        if (!isSimpleGreeting) {
-          const endpoints = ["./api/ai-assistant", "https://sellgst-pro.pages.dev/api/ai-assistant"];
-          for (const ep of endpoints) {
-            try {
-              const res = await fetch(ep, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  message: msgText,
-                  language: getCurrentLang(),
-                  pageContext: "invoice-helper"
-                })
-              });
-              if (res.ok) {
-                const data = await res.json();
-                if (data?.reply && !data.reply.includes("Regarding your question:")) {
-                  replyText = data.reply;
-                  break;
-                }
-              }
-            } catch (_) {}
-          }
-        }
-
-        if (!replyText) {
-          replyText = solveUserQueryConversationally(msgText);
-        }
-
-        botBubble.innerHTML = sanitizeHTML(replyText)
-          .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-          .replace(/\n/g, "<br/>");
-        messagesBox.scrollTop = messagesBox.scrollHeight;
-      }
-
-      newForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const inp = newForm.querySelector("#ai-chat-input");
-        const val = inp?.value.trim();
-        if (!val) return;
-        inp.value = "";
-        handleConversationalSend(val);
-      });
-
-      document.querySelectorAll("[data-ai-chip]").forEach((chip) => {
-        const newChip = chip.cloneNode(true);
-        chip.parentNode.replaceChild(newChip, chip);
-        newChip.addEventListener("click", () => {
-          handleConversationalSend(newChip.getAttribute("data-ai-chip"));
-        });
-      });
-    }
-
-    setTimeout(upgradeAIAssistantToConversationalGemini, 150);
-
-    // =========================================================================
-    // 2. 7-SECOND COUNTDOWN BADGE ON INSTALL APP BUTTON
+    // 1. 7-SECOND COUNTDOWN BADGE ON INSTALL APP BUTTON
     // =========================================================================
     const secBadge = document.getElementById("pwa-sec-badge");
     let remainingSec = 7;
@@ -970,7 +823,136 @@ To be paid in full in maximum 7 days after receiving the invoice.</textarea>
     }, 1000);
 
     // =========================================================================
-    // 3. S.K.P.S DIGITAL INVOICE ENGINE (LOGO, INFINITE ID, SIGNATURE, TOTALS)
+    // 2. INDIAN STATE NAME TO 2-DIGIT GST STATE CODE MAPPER (FOR GSTR-1 SYNC)
+    // =========================================================================
+    const GST_STATE_CODE_MAP = {
+      "jammu": "01-Jammu & Kashmir",
+      "himachal": "02-Himachal Pradesh",
+      "punjab": "03-Punjab",
+      "chandigarh": "04-Chandigarh",
+      "uttarakhand": "05-Uttarakhand",
+      "haryana": "06-Haryana",
+      "delhi": "07-Delhi",
+      "rajasthan": "08-Rajasthan",
+      "uttar pradesh": "09-Uttar Pradesh",
+      "up": "09-Uttar Pradesh",
+      "noida": "09-Uttar Pradesh",
+      "bihar": "10-Bihar",
+      "patna": "10-Bihar",
+      "sikkim": "11-Sikkim",
+      "arunachal": "12-Arunachal Pradesh",
+      "nagaland": "13-Nagaland",
+      "manipur": "14-Manipur",
+      "mizoram": "15-Mizoram",
+      "tripura": "16-Tripura",
+      "meghalaya": "17-Meghalaya",
+      "assam": "18-Assam",
+      "west bengal": "19-West Bengal",
+      "kolkata": "19-West Bengal",
+      "jharkhand": "20-Jharkhand",
+      "odisha": "21-Odisha",
+      "chhattisgarh": "22-Chhattisgarh",
+      "madhya pradesh": "23-Madhya Pradesh",
+      "mp": "23-Madhya Pradesh",
+      "gujarat": "24-Gujarat",
+      "maharashtra": "27-Maharashtra",
+      "mumbai": "27-Maharashtra",
+      "karnataka": "29-Karnataka",
+      "bengaluru": "29-Karnataka",
+      "goa": "30-Goa",
+      "kerala": "32-Kerala",
+      "tamil nadu": "33-Tamil Nadu",
+      "telangana": "36-Telangana",
+      "hyderabad": "36-Telangana",
+      "andhra": "37-Andhra Pradesh"
+    };
+
+    function resolvePlaceOfSupply(buyerGstin = "", stateInput = "") {
+      const cleanGstin = String(buyerGstin || "").trim().toUpperCase();
+      if (/^\d{2}/.test(cleanGstin)) {
+        const code = cleanGstin.slice(0, 2);
+        return `${code}-${stateInput || "State"}`;
+      }
+      const lowerState = String(stateInput || "").trim().toLowerCase();
+      for (const [key, val] of Object.entries(GST_STATE_CODE_MAP)) {
+        if (lowerState.includes(key)) return val;
+      }
+      if (/^\d{2}/.test(lowerState)) return stateInput.trim();
+      return "07-Delhi";
+    }
+
+    // =========================================================================
+    // 3. SELLER TEMPLATE AUTO-SAVE & RESTORE (SO REFRESH NEVER WIPES SELLER DATA)
+    // =========================================================================
+    const SELLER_TEMPLATE_KEY = "sellgst_invoice_seller_template";
+    const SELLER_FIELD_IDS = [
+      "inv-comp-name",
+      "inv-comp-addr1",
+      "inv-comp-addr2",
+      "inv-comp-gstin",
+      "cheque-payable-input",
+      "bank-ac-input",
+      "bank-ifsc-input",
+      "bank-branch-input",
+      "seller-upi-input",
+      "edit-sign-text",
+      "invoice-note-textarea",
+      "footer-contact-line1",
+      "footer-contact-line2"
+    ];
+
+    function saveSellerTemplateToStorage() {
+      try {
+        const data = {};
+        SELLER_FIELD_IDS.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) data[id] = el.value;
+        });
+        localStorage.setItem(SELLER_TEMPLATE_KEY, JSON.stringify(data));
+
+        // Also keep AppState.profile synced with Seller's edited Invoice Name, GSTIN & UPI
+        const compName = document.getElementById("inv-comp-name")?.value.trim();
+        const compGstin = document.getElementById("inv-comp-gstin")?.value.trim().toUpperCase();
+        const sellerUpi = document.getElementById("seller-upi-input")?.value.trim();
+        if (compName) AppState.profile.businessName = compName;
+        if (compGstin) AppState.profile.gstin = compGstin;
+        if (sellerUpi) AppState.profile.upiId = sellerUpi;
+        localStorage.setItem("sellgst_local_profile", JSON.stringify(AppState.profile));
+      } catch (_) {}
+    }
+
+    function restoreSellerTemplateFromStorage() {
+      try {
+        const raw = localStorage.getItem(SELLER_TEMPLATE_KEY);
+        if (raw) {
+          const saved = JSON.parse(raw);
+          SELLER_FIELD_IDS.forEach((id) => {
+            const el = document.getElementById(id);
+            if (el && saved[id] !== undefined && saved[id] !== "") {
+              el.value = saved[id];
+            }
+          });
+        } else if (AppState.profile) {
+          if (AppState.profile.businessName) {
+            document.getElementById("inv-comp-name").value = AppState.profile.businessName;
+            document.getElementById("cheque-payable-input").value = AppState.profile.businessName;
+          }
+          if (AppState.profile.gstin) {
+            document.getElementById("inv-comp-gstin").value = AppState.profile.gstin;
+          }
+          if (AppState.profile.upiId) {
+            document.getElementById("seller-upi-input").value = AppState.profile.upiId;
+          }
+        }
+      } catch (_) {}
+    }
+
+    SELLER_FIELD_IDS.forEach((id) => {
+      document.getElementById(id)?.addEventListener("input", saveSellerTemplateToStorage);
+    });
+
+    // =========================================================================
+    // 4. S.K.P.S DIGITAL INVOICE ENGINE (LOGO, INFINITE ID, SIGNATURE, TOTALS)
     // =========================================================================
     const todayStr = new Date().toISOString().slice(0, 10);
     const dueDateStr = new Date(Date.now() + 7 * 24 * 3600 * 1000).toISOString().slice(0, 10);
@@ -978,7 +960,9 @@ To be paid in full in maximum 7 days after receiving the invoice.</textarea>
     document.getElementById("due-date-input").value = dueDateStr;
     document.getElementById("inv-num-input").value = peekCurrentInvoiceNumber();
 
-    // Restore saved custom Circle Logo & Company profile if present
+    restoreSellerTemplateFromStorage();
+
+    // Restore saved custom Circle Logo if present
     const savedLogo = localStorage.getItem("sellgst_custom_circle_logo");
     if (savedLogo) {
       const img = document.getElementById("header-logo-img");
@@ -998,7 +982,7 @@ To be paid in full in maximum 7 days after receiving the invoice.</textarea>
         img.src = dataUrl;
         img.classList.remove("hidden");
         document.getElementById("header-logo-fallback").classList.add("hidden");
-        showToast("🖼️ Circular Brand Logo updated on Invoice!", "success");
+        showToast("🖼️ Circular Brand Logo updated & saved on Invoice!", "success");
       };
       reader.readAsDataURL(file);
     });
@@ -1023,9 +1007,10 @@ To be paid in full in maximum 7 days after receiving the invoice.</textarea>
     // Sync Company Name with Cheque Payable To
     document.getElementById("inv-comp-name")?.addEventListener("input", (e) => {
       document.getElementById("cheque-payable-input").value = e.target.value;
+      saveSellerTemplateToStorage();
     });
 
-    // Default Line Items matching 1000173801.jpg
+    // Default Line Items
     let lineItems = [
       { id: "r1", desc: "ITEM NAME 2", hsn: "2541", qty: 26, rate: 235.52 },
       { id: "r2", desc: "ITEM NAME 3", hsn: "4944", qty: 2, rate: 658.00 },
@@ -1144,7 +1129,7 @@ To be paid in full in maximum 7 days after receiving the invoice.</textarea>
         document.getElementById("invoice-upi-qr-img").src = `https://api.qrserver.com/v1/create-qr-code/?size=140x140&margin=4&data=${encodeURIComponent(upiUri)}`;
       }
 
-      return { totalGross, discountAmt, taxableAmt, sgstAmt, cgstAmt, igstAmt, payableAmt };
+      return { totalGross, discountAmt, taxableAmt, sgstPct, cgstPct, igstPct, sgstAmt, cgstAmt, igstAmt, payableAmt };
     }
 
     ["discount-pct", "sgst-pct", "cgst-pct", "igst-pct", "seller-upi-input", "inv-comp-name", "inv-num-input"].forEach((id) => {
@@ -1157,7 +1142,7 @@ To be paid in full in maximum 7 days after receiving the invoice.</textarea>
     });
 
     // =========================================================================
-    // 4. INTERACTIVE DIGITAL SIGNATURE PAD (DRAW OR TYPE)
+    // 5. INTERACTIVE DIGITAL SIGNATURE PAD (DRAW OR TYPE + AUTO-PERSISTENCE)
     // =========================================================================
     const sigTypeBtn = document.getElementById("sig-mode-type-btn");
     const sigDrawBtn = document.getElementById("sig-mode-draw-btn");
@@ -1171,25 +1156,52 @@ To be paid in full in maximum 7 days after receiving the invoice.</textarea>
     sigCtx.lineWidth = 2.2;
     sigCtx.lineCap = "round";
 
-    sigTypeBtn?.addEventListener("click", () => {
+    // Restore drawn signature if previously saved
+    const savedDrawnSig = localStorage.getItem("sellgst_drawn_signature");
+    const savedSigMode = localStorage.getItem("sellgst_sig_mode");
+    if (savedDrawnSig) {
+      const sImg = new Image();
+      sImg.onload = () => {
+        sigCtx.drawImage(sImg, 0, 0);
+      };
+      sImg.src = savedDrawnSig;
+    }
+
+    function activateTypeSignatureMode() {
       sigTypeBox.classList.remove("hidden");
       sigCanvas.classList.add("hidden");
       sigClearBtn.classList.add("hidden");
       sigTypeBtn.className = "px-2 py-0.5 rounded bg-[#0B1F52] text-white font-bold";
       sigDrawBtn.className = "px-2 py-0.5 rounded bg-slate-200 text-slate-700 font-bold";
-    });
+      localStorage.setItem("sellgst_sig_mode", "TYPE");
+    }
 
-    sigDrawBtn?.addEventListener("click", () => {
+    function activateDrawSignatureMode() {
       sigTypeBox.classList.add("hidden");
       sigCanvas.classList.remove("hidden");
       sigClearBtn.classList.remove("hidden");
       sigDrawBtn.className = "px-2 py-0.5 rounded bg-[#0B1F52] text-white font-bold";
       sigTypeBtn.className = "px-2 py-0.5 rounded bg-slate-200 text-slate-700 font-bold";
-    });
+      localStorage.setItem("sellgst_sig_mode", "DRAW");
+    }
+
+    if (savedSigMode === "DRAW") {
+      activateDrawSignatureMode();
+    }
+
+    sigTypeBtn?.addEventListener("click", activateTypeSignatureMode);
+    sigDrawBtn?.addEventListener("click", activateDrawSignatureMode);
 
     sigClearBtn?.addEventListener("click", () => {
       sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
+      localStorage.removeItem("sellgst_drawn_signature");
     });
+
+    function persistDrawnSignature() {
+      try {
+        localStorage.setItem("sellgst_drawn_signature", sigCanvas.toDataURL("image/png"));
+      } catch (_) {}
+    }
 
     function getPos(e) {
       const rect = sigCanvas.getBoundingClientRect();
@@ -1210,7 +1222,12 @@ To be paid in full in maximum 7 days after receiving the invoice.</textarea>
       sigCtx.lineTo(p.x, p.y);
       sigCtx.stroke();
     });
-    window.addEventListener("mouseup", () => { isDrawing = false; });
+    window.addEventListener("mouseup", () => {
+      if (isDrawing) {
+        isDrawing = false;
+        persistDrawnSignature();
+      }
+    });
 
     sigCanvas.addEventListener("touchstart", (e) => {
       e.preventDefault();
@@ -1226,20 +1243,34 @@ To be paid in full in maximum 7 days after receiving the invoice.</textarea>
       sigCtx.lineTo(p.x, p.y);
       sigCtx.stroke();
     }, { passive: false });
-    sigCanvas.addEventListener("touchend", () => { isDrawing = false; });
+    sigCanvas.addEventListener("touchend", () => {
+      if (isDrawing) {
+        isDrawing = false;
+        persistDrawnSignature();
+      }
+    });
 
     // =========================================================================
-    // 5. SAVE INVOICE, PDF EXPORT (WITH 5-FREE LIMIT LOCK) & LEDGERS
+    // 6. SAVE INVOICE (WITH GSTR-1 STATE SYNC), PDF EXPORT & LEDGERS
     // =========================================================================
     document.getElementById("save-invoice-btn")?.addEventListener("click", () => {
       if (!consumeFreeActionOrLock("GST Invoice")) return;
 
+      saveSellerTemplateToStorage();
       const calc = calculateInvoiceTotals();
       const invNo = document.getElementById("inv-num-input").value.trim() || generateUniqueInvoiceNumber();
       const orderNo = document.getElementById("order-num-input").value.trim() || "skps164516";
       const date = document.getElementById("inv-date-input").value || todayStr;
       const buyerName = document.getElementById("bill-to-name").value.trim() || "Nazim Khan";
+      const buyerState = document.getElementById("bill-to-state").value.trim() || "Uttar Pradesh";
       const buyerGstin = document.getElementById("bill-to-gstin").value.trim().toUpperCase();
+      const sellerGstin = document.getElementById("inv-comp-gstin").value.trim().toUpperCase() || "07AABCS1429B1Z5";
+
+      const placeOfSupply = resolvePlaceOfSupply(buyerGstin, buyerState);
+      const sellerStateCode = sellerGstin.slice(0, 2) || "07";
+      const buyerStateCode = placeOfSupply.slice(0, 2) || "07";
+      const isInterState = calc.igstAmt > 0 || sellerStateCode !== buyerStateCode;
+      const combinedGstRate = Number((calc.sgstPct + calc.cgstPct + calc.igstPct).toFixed(1)) || 18;
 
       const newInvRecord = {
         id: "inv_" + Date.now(),
@@ -1248,13 +1279,18 @@ To be paid in full in maximum 7 days after receiving the invoice.</textarea>
         date,
         buyerName,
         buyerGstin,
+        placeOfSupply,
+        isInterState,
         taxableTotal: Number(calc.taxableAmt.toFixed(2)),
         cgstTotal: Number(calc.cgstAmt.toFixed(2)),
         sgstTotal: Number(calc.sgstAmt.toFixed(2)),
         igstTotal: Number(calc.igstAmt.toFixed(2)),
         totalTax: Number((calc.sgstAmt + calc.cgstAmt + calc.igstAmt).toFixed(2)),
         grandTotal: Number(calc.payableAmt.toFixed(2)),
-        items: lineItems
+        items: lineItems.map((it) => ({
+          ...it,
+          gstRate: combinedGstRate
+        }))
       };
 
       const saved = JSON.parse(localStorage.getItem("sellgst_invoices") || "[]");
@@ -1265,12 +1301,13 @@ To be paid in full in maximum 7 days after receiving the invoice.</textarea>
       document.getElementById("inv-num-input").value = nextId;
 
       renderLedgersAndDropdowns();
-      showToast(`✅ Invoice No. ${invNo} saved! Next Unique ID: ${nextId}`, "success");
+      showToast(`✅ Invoice No. ${invNo} saved & synced with GSTR-1! Next ID: ${nextId}`, "success");
     });
 
     document.getElementById("download-pdf-btn")?.addEventListener("click", () => {
       if (!consumeFreeActionOrLock("GST Invoice PDF Download")) return;
 
+      saveSellerTemplateToStorage();
       const element = document.getElementById("printable-invoice-area");
       const invNo = document.getElementById("inv-num-input").value.trim() || "Navy-Invoice";
       showToast("Generating S.K.P.S Style Navy GST Invoice PDF...", "info");
@@ -1394,6 +1431,11 @@ To be paid in full in maximum 7 days after receiving the invoice.</textarea>
         document.getElementById("bill-to-name").value = p.name;
         document.getElementById("bill-to-phone").value = p.phone || "";
         document.getElementById("bill-to-gstin").value = p.gstin || "";
+        if (p.gstin && p.gstin.startsWith("10")) {
+          document.getElementById("bill-to-state").value = "Bihar";
+        } else if (p.gstin && p.gstin.startsWith("27")) {
+          document.getElementById("bill-to-state").value = "Maharashtra";
+        }
       }
       e.target.value = "";
     });
