@@ -1,12 +1,13 @@
 {
-  "name": "SellGST Pro — E-Commerce Audit, Billing & GST Compliance Super-App",
+  "name": "SellGST Pro — 3D E-Commerce Audit, Billing, Dynamic QR & GST Super-App",
   "short_name": "SellGST Pro",
-  "start_url": "./app.html",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#F4F5F7",
-  "theme_color": "#111827",
-  "description": "100% Client-Side RAM E-Commerce Audit, GST Invoicing, Party Udhar & 1-Click GSTR-1 JSON Filing.",
+  "orientation": "portrait-primary",
+  "background_color": "#DDE3FF",
+  "theme_color": "#081B4B",
+  "description": "100% Client-Side RAM E-Commerce Audit, S.K.P.S Style Navy GST Invoicing, Dynamic QR Studio, Party Udhar & 1-Click GSTR-1 JSON Filing.",
   "icons": [
     {
       "src": "https://api.qrserver.com/v1/create-qr-code/?size=192x192&data=SellGSTPro",
