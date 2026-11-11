@@ -10,10 +10,11 @@
   <!-- 0.1s Instant Module Preload & Speculative Tool Prefetch (Zero 404 Relative Paths) -->
   <link rel="modulepreload" href="./assets/js/security-core.js" />
   <link rel="modulepreload" href="./assets/js/i18n.js" />
+  <link rel="prefetch" href="./index.html" as="document" />
   <link rel="prefetch" href="./app.html" as="document" />
   <link rel="prefetch" href="./invoice.html" as="document" />
   <link rel="prefetch" href="./ecom-audit.html" as="document" />
-  <link rel="prefetch" href="./admin.html" as="document" />
+  <link rel="prefetch" href="./qr-studio.html" as="document" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -92,10 +93,10 @@
 </head>
 <body class="min-h-screen w-full overflow-x-hidden pb-24 lg:pb-12 lg:pl-24">
 
-  <!-- DESKTOP FLOATING 3D LEFT PILL SIDEBAR (ZERO-404 RELATIVE LINKS) -->
+  <!-- DESKTOP FLOATING 3D LEFT PILL SIDEBAR (ADMIN HIDDEN FROM REGULAR USERS) -->
   <aside class="hidden lg:flex fixed left-4 top-4 bottom-4 w-16 bg-white/95 backdrop-blur-xl border border-white rounded-full shadow-xl shadow-indigo-500/10 flex-col items-center justify-between py-5 z-40">
-    <a href="./app.html" title="SellGST Pro 3D" class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#081B4B] via-[#5B2EFF] to-[#10E594] text-white flex items-center justify-center font-black text-sm shadow-md">
-      S₹
+    <a href="./index.html" title="Home Page" class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#081B4B] via-[#5B2EFF] to-[#10E594] text-white flex items-center justify-center font-black text-sm shadow-md">
+      🏠
     </a>
     <nav class="flex flex-col items-center gap-3">
       <a href="./app.html" title="3D Financial Dashboard" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
@@ -110,61 +111,72 @@
       <a href="./gst-filing.html" title="1-Click GSTR-1 JSON" class="w-11 h-11 rounded-2xl bg-[#5B2EFF] text-white flex items-center justify-center text-base shadow-md transition">
         🏛️
       </a>
-      <a href="./admin.html" title="Admin Console" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+      <a href="./qr-studio.html" title="Dynamic QR & Google Reviews" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+        🔳
+      </a>
+      <!-- Visible ONLY if logged-in user has isAdmin == true -->
+      <a href="./admin.html" data-admin-only title="Master Admin Console" class="hidden w-11 h-11 rounded-2xl bg-rose-50 text-rose-600 hover:bg-rose-100 flex items-center justify-center text-base transition">
         🛡️
       </a>
     </nav>
     <div class="flex flex-col items-center gap-2">
-      <button type="button" data-open-ai="How do I upload the GSTR-1 JSON file on gst.gov.in and file with EVC OTP?" title="Ask AI" class="w-10 h-10 rounded-full bg-indigo-50 text-[#5B2EFF] flex items-center justify-center text-sm shadow-sm">
-        🤖
+      <button type="button" data-open-account title="My Personal Account & DPDP Privacy" class="w-10 h-10 rounded-full bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] flex items-center justify-center text-sm shadow-sm">
+        👤
+      </button>
+      <button type="button" id="sidebar-logout-btn" title="Logout" class="w-10 h-10 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center text-sm">
+        ⏻
       </button>
     </div>
   </aside>
 
-  <!-- MOBILE FLOATING BOTTOM DOCK -->
+  <!-- MOBILE FLOATING BOTTOM DOCK (SHOWS CURRENT PAGE ACTIVE, NO ADMIN FOR REGULAR USERS) -->
   <nav class="lg:hidden fixed bottom-2.5 inset-x-3 bg-white/95 backdrop-blur-xl text-slate-700 rounded-3xl px-2 py-2.5 shadow-2xl border border-indigo-100 z-40 flex items-center justify-around">
     <a href="./app.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
       <span class="text-base">📊</span>
-      <span data-i18n="nav_dashboard">Analytics</span>
+      <span>Dashboard</span>
     </a>
     <a href="./invoice.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
       <span class="text-base">🧾</span>
-      <span data-i18n="nav_invoice">Navy Bill</span>
+      <span>GST Bill</span>
     </a>
     <a href="./ecom-audit.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
       <span class="text-base">📦</span>
-      <span data-i18n="nav_audit">Audit</span>
+      <span>E-Com Audit</span>
     </a>
     <a href="./gst-filing.html" class="flex flex-col items-center gap-0.5 text-[#5B2EFF] font-extrabold text-[10px]">
       <span class="text-base">🏛️</span>
-      <span data-i18n="nav_gst">GSTR-1</span>
+      <span>GSTR-1</span>
     </a>
-    <a href="./admin.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
-      <span class="text-base">🛡️</span>
-      <span>Admin</span>
+    <a href="./qr-studio.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">🔳</span>
+      <span>QR Studio</span>
     </a>
   </nav>
 
   <!-- MAIN CONTENT WRAPPER -->
   <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-3 sm:pt-4 space-y-5 overflow-x-hidden">
 
-    <!-- TOP HEADER (WITH 7-SECOND AUTO-HIDING PWA INSTALL BUTTON) -->
+    <!-- CLEAN TOP HEADER BAR (ONLY HOME BUTTON + 7s INSTALL BUTTON + MY ACCOUNT + PRO TIER) -->
     <header class="bg-white/90 backdrop-blur-xl rounded-3xl border border-white px-4 sm:px-6 py-3 shadow-lg shadow-indigo-500/5 flex flex-wrap items-center justify-between gap-2.5">
-      <div class="flex items-center gap-3 min-w-0">
-        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#081B4B] via-[#5B2EFF] to-[#10E594] text-white flex items-center justify-center text-base font-extrabold shadow-md shrink-0">
-          🏛️
-        </div>
+      <div class="flex items-center gap-2.5 min-w-0">
+        <!-- Direct Home Button as Requested -->
+        <a
+          href="./index.html"
+          class="px-3.5 py-2 rounded-2xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow-sm transition flex items-center gap-1.5 shrink-0"
+        >
+          <span>🏠 Home</span>
+        </a>
         <div class="min-w-0">
           <h1 class="font-extrabold text-sm sm:text-[15px] text-[#081B4B] truncate">1-Click GSTR-1 (.JSON) Generator &amp; 3D GSTR-3B Assistant</h1>
           <p class="text-[11px] text-slate-500 truncate">Strict <code>gst.gov.in</code> Schema v3.1.6 • Zero-CA Self-Filing Engine • E-Com TCS Credit</p>
         </div>
       </div>
 
-      <div class="flex items-center gap-2 flex-wrap justify-end ml-auto">
+      <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-end ml-auto">
         <select
           data-lang-switcher
           aria-label="Language"
-          class="px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none max-w-[95px] sm:max-w-none truncate"
+          class="px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none max-w-[92px] sm:max-w-none truncate"
         ></select>
 
         <!-- 7-SECOND AUTO-HIDING PWA INSTALL BUTTON -->
@@ -172,11 +184,19 @@
           type="button"
           id="pwa-install-btn"
           data-pwa-install
-          class="relative overflow-hidden px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#081B4B] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap flex items-center gap-1.5"
+          class="relative overflow-hidden px-3 py-1.5 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#081B4B] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap flex items-center gap-1.5"
         >
           <span>📲 Install App</span>
           <span id="pwa-sec-badge" class="px-1.5 py-0.2 rounded-full bg-white/20 text-[10px] font-mono">7s</span>
           <span class="absolute bottom-0 left-0 h-0.5 bg-[#10E594] pwa-timer-bar"></span>
+        </button>
+
+        <button
+          type="button"
+          data-open-account
+          class="px-3 py-1.5 rounded-full bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] text-xs font-extrabold border border-indigo-100 transition whitespace-nowrap"
+        >
+          👤 My Account
         </button>
 
         <button
@@ -189,25 +209,6 @@
         </button>
       </div>
     </header>
-
-    <!-- QUICK NAVIGATION PILLS -->
-    <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 w-full">
-      <a href="#gstr1-export-bar" class="px-4 py-2 rounded-2xl bg-[#5B2EFF] text-white font-extrabold text-xs whitespace-nowrap shadow-sm">
-        1. GSTR-1 JSON Export
-      </a>
-      <a href="#gstr3b-assistant-section" class="px-4 py-2 rounded-2xl bg-white border border-indigo-100 text-[#081B4B] font-bold text-xs whitespace-nowrap hover:border-[#5B2EFF]">
-        2. 3D GSTR-3B &amp; ITC/TCS Calculator
-      </a>
-      <a href="#portal-steps-guide" class="px-4 py-2 rounded-2xl bg-white border border-indigo-100 text-[#081B4B] font-bold text-xs whitespace-nowrap hover:border-[#5B2EFF]">
-        3. 4-Step Portal Guide
-      </a>
-      <a href="./invoice.html" class="px-4 py-2 rounded-2xl bg-[#10E594]/25 border border-emerald-400/50 text-[#081B4B] font-extrabold text-xs whitespace-nowrap hover:bg-[#10E594]/40">
-        + Create Custom Navy GST Bill
-      </a>
-      <a href="./app.html" class="px-3.5 py-2 rounded-2xl bg-white border border-slate-200 text-slate-600 font-bold text-xs whitespace-nowrap hover:text-[#081B4B]">
-        ← Back to 3D Dashboard
-      </a>
-    </div>
 
     <!-- PERIOD SELECTOR & PRIMARY EXPORT BAR -->
     <section id="gstr1-export-bar" data-3d-tilt class="bento-card p-5 sm:p-6 flex flex-wrap items-center justify-between gap-4">
@@ -538,6 +539,41 @@
         </div>
       </div>
     </section>
+
+    <!-- =================================================================== -->
+    <!-- BOTTOM PERSONAL ACCOUNT, DPDP PRIVACY (✔️) & LOGOUT BAR             -->
+    <!-- =================================================================== -->
+    <section data-3d-tilt class="bento-card p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-[#5B2EFF] flex items-center justify-center text-base font-bold shrink-0">
+          🛡️
+        </div>
+        <div class="min-w-0">
+          <div class="text-xs font-extrabold text-[#081B4B]">My Personal Data &amp; DPDP Act 2023 Privacy Controls</div>
+          <div class="text-[11px] text-slate-500 truncate">
+            Manage your store GSTIN, view subscription validity, or permanently delete your account &amp; data with confirmation tick (✔️).
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2 ml-auto">
+        <button
+          type="button"
+          data-open-account
+          class="px-4 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] font-extrabold text-xs transition"
+        >
+          👤 My Account &amp; Delete Option (✔️)
+        </button>
+        <button
+          type="button"
+          id="bottom-logout-btn"
+          class="px-4 py-2 rounded-xl bg-[#081B4B] hover:bg-rose-600 text-white font-extrabold text-xs shadow transition flex items-center gap-1.5"
+        >
+          <span>⏻ Logout</span>
+        </button>
+      </div>
+    </section>
+
   </div>
 
   <!-- GSTR-1 JSON & GSTR-3B ENGINE SCRIPT (0.1s ZERO-LAG rAF ENGINE) -->
@@ -545,8 +581,10 @@
     import {
       AppState,
       subscribeAppState,
+      consumeFreeActionOrLock,
       formatINR,
       showToast,
+      logoutUser,
       syncProDOMElements,
       init3DTiltCards
     } from "./assets/js/security-core.js";
@@ -662,10 +700,10 @@
       let totalUnits = 0;
 
       invoices.forEach((inv) => {
-        const posCode = String(inv.placeOfSupply || "07-Delhi").split("-")[0].trim() || "07";
-        const isInter = Boolean(inv.isInterState);
         const rawGstin = String(inv.buyerGstin || "").replace(/GSTIN\s*:\s*/i, "").trim().toUpperCase();
         const hasValidGstin = rawGstin.length === 15;
+        const inferredPos = hasValidGstin ? rawGstin.slice(0, 2) : String(inv.placeOfSupply || "07-Delhi").split("-")[0].trim() || "07";
+        const isInter = Boolean(inv.isInterState || (Number(inv.igstTotal) || 0) > 0);
 
         const invTaxable = Number(inv.taxableTotal) || 0;
         const invTotalTax = Number(inv.totalTax) || 0;
@@ -688,7 +726,7 @@
             inum: String(inv.invNo || "4649845"),
             idt: formatPortalDate(inv.date),
             val: Number((Number(inv.grandTotal) || invTaxable + invTotalTax).toFixed(2)),
-            pos: posCode,
+            pos: inferredPos,
             rchrg: "N",
             inv_typ: "R",
             itms: [
@@ -708,11 +746,11 @@
         } else {
           b2csCount++;
           b2csTaxableSum += invTaxable;
-          const key = `${posCode}_${isInter ? "INTER" : "INTRA"}_18`;
+          const key = `${inferredPos}_${isInter ? "INTER" : "INTRA"}_18`;
           if (!b2csMap.has(key)) {
             b2csMap.set(key, {
               sply_ty: isInter ? "INTER" : "INTRA",
-              pos: posCode,
+              pos: inferredPos,
               typ: "OE",
               rt: 18,
               txval: 0,
@@ -729,7 +767,7 @@
           entry.samt = Number((entry.samt + invSgst).toFixed(2));
         }
 
-        // Aggregate HSN Summary (Compatible with both `desc` and `name` item keys)
+        // Aggregate HSN Summary
         (inv.items || []).forEach((it) => {
           const hsnCode = it.hsn || "8537";
           const itemTitle = it.desc || it.name || "E-Com Goods";
@@ -823,6 +861,7 @@
     });
 
     document.getElementById("download-gstr1-json-btn")?.addEventListener("click", () => {
+      if (!consumeFreeActionOrLock("GSTR-1 JSON Export")) return;
       const payload = buildGSTR1Payload();
       const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
       const a = document.createElement("a");
@@ -833,6 +872,7 @@
     });
 
     document.getElementById("copy-gstr1-json-btn")?.addEventListener("click", () => {
+      if (!consumeFreeActionOrLock("GSTR-1 JSON Copy")) return;
       const text = document.getElementById("gstr1-json-preview").textContent;
       navigator.clipboard.writeText(text);
       showToast("GSTR-1 JSON copied to clipboard!", "success");
@@ -846,6 +886,9 @@
         showToast(`Copied ${val} for GSTR-3B Table 3.1!`, "success");
       });
     });
+
+    document.getElementById("sidebar-logout-btn")?.addEventListener("click", logoutUser);
+    document.getElementById("bottom-logout-btn")?.addEventListener("click", logoutUser);
 
     subscribeAppState(() => {
       syncProDOMElements();
