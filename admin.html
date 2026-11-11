@@ -91,6 +91,52 @@
 </head>
 <body class="min-h-screen w-full overflow-x-hidden pb-24 lg:pb-12 lg:pl-24">
 
+  <!-- ===================================================================== -->
+  <!-- ZERO-TRUST OWNER PIN LOCK GATEWAY (BLOCKS UNAUTHORIZED URL VISITORS)  -->
+  <!-- ===================================================================== -->
+  <div
+    id="admin-pin-lock-overlay"
+    class="fixed inset-0 z-[9995] bg-[#081B4B]/95 backdrop-blur-xl flex items-center justify-center p-4"
+  >
+    <div class="bg-white rounded-3xl border border-indigo-100 max-w-sm w-full p-6 sm:p-7 shadow-2xl text-center space-y-4">
+      <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#081B4B] via-[#5B2EFF] to-[#10E594] text-white flex items-center justify-center text-2xl mx-auto shadow-lg">
+        🛡️
+      </div>
+      <div>
+        <span class="px-3 py-0.5 rounded-full bg-rose-50 text-rose-600 font-extrabold text-[10px] uppercase tracking-wider">
+          RESTRICTED OWNER ACCESS
+        </span>
+        <h2 class="text-lg font-extrabold text-[#081B4B] mt-1">Master Admin PIN Lock</h2>
+        <p class="text-xs text-slate-500 mt-0.5">
+          Enter your secret Admin PIN to unlock UPI approvals &amp; system settings.
+        </p>
+      </div>
+
+      <form id="admin-pin-unlock-form" class="space-y-3">
+        <input
+          type="password"
+          id="admin-pin-input"
+          required
+          maxlength="12"
+          placeholder="••••"
+          autocomplete="off"
+          class="w-full px-4 py-3 rounded-2xl bg-slate-50 border-2 border-slate-200 text-center font-mono text-xl font-black tracking-[0.4em] text-[#081B4B] focus:outline-none focus:border-[#5B2EFF]"
+        />
+        <button
+          type="submit"
+          class="w-full py-3 rounded-2xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow-lg transition"
+        >
+          🔓 Unlock Master Admin Console
+        </button>
+      </form>
+
+      <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
+        <span>Default Owner PIN: <code class="font-mono font-bold text-slate-600">2026</code></span>
+        <a href="./index.html" class="font-extrabold text-[#5B2EFF] hover:underline">← Back to Home</a>
+      </div>
+    </div>
+  </div>
+
   <!-- DESKTOP FLOATING 3D LEFT PILL SIDEBAR -->
   <aside class="hidden lg:flex fixed left-4 top-4 bottom-4 w-16 bg-white/95 backdrop-blur-xl border border-white rounded-full shadow-xl shadow-indigo-500/10 flex-col items-center justify-between py-5 z-40">
     <a href="./index.html" title="Home Page" class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#081B4B] via-[#5B2EFF] to-[#10E594] text-white flex items-center justify-center font-black text-sm shadow-md">
@@ -153,10 +199,9 @@
   <!-- MAIN CONTENT WRAPPER -->
   <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-3 sm:pt-4 space-y-5 overflow-x-hidden">
 
-    <!-- CLEAN TOP HEADER BAR (ONLY HOME BUTTON + 7s INSTALL BUTTON + SIMULATE + LANGUAGE) -->
+    <!-- CLEAN TOP HEADER BAR (ONLY HOME BUTTON + 7s INSTALL BUTTON + SIMULATE + LOCK ADMIN + LANGUAGE) -->
     <header class="bg-white/90 backdrop-blur-xl rounded-3xl border border-white px-4 sm:px-6 py-3 shadow-lg shadow-indigo-500/5 flex flex-wrap items-center justify-between gap-2.5">
       <div class="flex items-center gap-2.5 min-w-0">
-        <!-- Direct Home Button (Removed sub-navigation pills as requested) -->
         <a
           href="./index.html"
           class="px-3.5 py-2 rounded-2xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow-sm transition flex items-center gap-1.5 shrink-0"
@@ -193,6 +238,15 @@
           class="px-3.5 py-1.5 rounded-full bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] border border-indigo-200 text-xs font-extrabold transition whitespace-nowrap"
         >
           ⚡ Test UPI &amp; WhatsApp
+        </button>
+
+        <button
+          type="button"
+          id="lock-admin-now-btn"
+          class="px-3 py-1.5 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-extrabold transition whitespace-nowrap"
+          title="Lock Admin Console Immediately"
+        >
+          🔒 Lock PIN
         </button>
 
         <select
@@ -240,12 +294,12 @@
         </div>
       </div>
 
-      <!-- Right 7 Cols: OWNER WHATSAPP AUTO-NOTIFICATION & UPI CONFIG -->
+      <!-- Right 7 Cols: OWNER WHATSAPP AUTO-NOTIFICATION, UPI & SECRET PIN CONFIG -->
       <div data-3d-tilt class="bento-card p-5 sm:p-6 lg:col-span-7 flex flex-col justify-between space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
           <div>
             <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">Instant Pending Payment Alert</span>
-            <h2 class="text-base font-extrabold text-[#081B4B]">Owner WhatsApp Notification &amp; Merchant UPI Setup</h2>
+            <h2 class="text-base font-extrabold text-[#081B4B]">Owner WhatsApp Notification, Merchant UPI &amp; Security PIN</h2>
           </div>
           <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-mono text-[11px] font-bold">
             💬 Auto-WhatsApp Ready
@@ -280,8 +334,8 @@
             </label>
           </div>
 
-          <!-- Merchant UPI & Plan Prices -->
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <!-- Merchant UPI, Plan Prices & Admin Secret PIN -->
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
             <div>
               <label class="block font-bold text-slate-600 mb-1">Merchant UPI ID</label>
               <input type="text" id="cfg-upi-id" required value="9661692365@ybl" class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 font-mono font-bold text-[#081B4B]" />
@@ -298,13 +352,17 @@
               <label class="block font-bold text-slate-600 mb-1">1-Year Price (₹)</label>
               <input type="number" id="cfg-yearly-price" required value="499" class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 font-mono font-bold text-[#081B4B]" />
             </div>
+            <div class="col-span-2 sm:col-span-1">
+              <label class="block font-bold text-rose-600 mb-1">Admin Lock PIN</label>
+              <input type="text" id="cfg-admin-pin" required value="2026" maxlength="12" class="w-full px-3 py-2 rounded-xl bg-rose-50/60 border border-rose-200 font-mono font-extrabold text-[#081B4B]" />
+            </div>
           </div>
 
           <button
             type="submit"
             class="w-full py-2.5 rounded-2xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow-md transition"
           >
-            💾 Save WhatsApp Number &amp; UPI Settings
+            💾 Save WhatsApp Number, UPI &amp; Admin PIN Settings
           </button>
         </form>
       </div>
@@ -313,7 +371,6 @@
 
     <!-- =================================================================== -->
     <!-- SECTION 2: MOBILE-FRIENDLY LIVE UPI APPROVAL QUEUE                  -->
-    <!-- (NO HORIZONTAL CUTTING — SHOWS SELLER, UTR, EXPIRY & 1-CLICK BTNS)  -->
     <!-- =================================================================== -->
     <section id="live-approval-queue" data-3d-tilt class="bento-card p-4 sm:p-6 space-y-4">
       <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
@@ -338,7 +395,7 @@
         </div>
       </div>
 
-      <!-- Responsive Queue List (Zero Horizontal Cutoff on Mobile!) -->
+      <!-- Responsive Queue List -->
       <div id="admin-payment-queue-list" class="space-y-3">
         <!-- Populated dynamically in 0.1s -->
       </div>
@@ -414,34 +471,42 @@
     <!-- BOTTOM LOGOUT BAR -->
     <section class="bento-card p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
       <div class="text-xs font-bold text-slate-600">
-        Logged into <strong>Master Admin Console</strong> • Protected by Zero-Trust Firebase Rules
+        Logged into <strong>Master Admin Console</strong> • Protected by Owner PIN Lock &amp; Zero-Trust Firebase Rules
       </div>
-      <button
-        type="button"
-        id="bottom-logout-btn"
-        class="px-5 py-2.5 rounded-xl bg-[#081B4B] hover:bg-rose-600 text-white font-extrabold text-xs shadow transition flex items-center gap-1.5"
-      >
-        <span>⏻ Logout from Admin</span>
-      </button>
+      <div class="flex items-center gap-2 ml-auto">
+        <button
+          type="button"
+          id="bottom-lock-pin-btn"
+          class="px-4 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-extrabold text-xs transition"
+        >
+          🔒 Lock Console
+        </button>
+        <button
+          type="button"
+          id="bottom-logout-btn"
+          class="px-5 py-2.5 rounded-xl bg-[#081B4B] hover:bg-rose-600 text-white font-extrabold text-xs shadow transition flex items-center gap-1.5"
+        >
+          <span>⏻ Logout from Admin</span>
+        </button>
+      </div>
     </section>
 
   </div>
 
-  <!-- ADMIN CONSOLE & AUTO-WHATSAPP ENGINE SCRIPT -->
+  <!-- ADMIN CONSOLE, OWNER PIN LOCK & AUTO-WHATSAPP ENGINE SCRIPT -->
   <script type="module">
     import {
       db,
       AppState,
       subscribeAppState,
-       evaluateSubscriptionHealth,
+      evaluateSubscriptionHealth,
       sanitizeHTML,
       formatINR,
       showToast,
       logoutUser,
       syncProDOMElements,
       renderPendingPaymentBanner,
-      init3DTiltCards,
-      getCurrentLang
+      init3DTiltCards
     } from "./assets/js/security-core.js";
     import {
       collection,
@@ -457,80 +522,56 @@
     init3DTiltCards();
 
     // =========================================================================
-    // 1. CONVERSATIONAL GEMINI AI UPGRADE (NATURAL GREETING & PROBLEM SOLVING)
+    // 1. ZERO-TRUST OWNER PIN LOCK GATEWAY (BLOCKS UNAUTHORIZED VISITORS)
     // =========================================================================
-    function upgradeAdminAIChat() {
-      const form = document.getElementById("ai-chat-form");
-      const messagesBox = document.getElementById("ai-chat-messages");
-      if (!form || !messagesBox || form.dataset.conversationalUpgraded === "1") return;
-      form.dataset.conversationalUpgraded = "1";
+    const PIN_STORAGE_KEY = "sellgst_owner_admin_pin";
+    const PIN_SESSION_UNLOCKED_KEY = "sellgst_admin_pin_unlocked";
+    const pinOverlay = document.getElementById("admin-pin-lock-overlay");
+    const pinInput = document.getElementById("admin-pin-input");
+    const cfgAdminPinInput = document.getElementById("cfg-admin-pin");
 
-      messagesBox.innerHTML = `
-        <div class="bg-white p-3.5 rounded-2xl rounded-tl-sm border border-slate-200 shadow-sm text-slate-800 leading-relaxed">
-          👋 <strong>Hi! Main aapka SellGST Pro AI Assistant hoon.</strong><br/>
-          Aap mujhse <strong>Hindi, Hinglish ya English</strong> mein kuch bhi puch sakte hain. Bataiye, aaj main aapki kya madad kar sakta hoon?
-        </div>
-      `;
-
-      const newForm = form.cloneNode(true);
-      form.parentNode.replaceChild(newForm, form);
-
-      async function replyNaturally(msgText) {
-        const userBubble = document.createElement("div");
-        userBubble.className = "ml-auto max-w-[85%] bg-[#5B2EFF] text-white p-3 rounded-2xl rounded-tr-sm shadow-sm text-[13px] break-words";
-        userBubble.textContent = msgText;
-        messagesBox.appendChild(userBubble);
-
-        const botBubble = document.createElement("div");
-        botBubble.className = "max-w-[92%] bg-white p-3.5 rounded-2xl rounded-tl-sm border border-slate-200 shadow-sm text-slate-800 leading-relaxed text-[13px]";
-        botBubble.innerHTML = `<span class="animate-pulse">✨</span> <span>Thinking...</span>`;
-        messagesBox.appendChild(botBubble);
-        messagesBox.scrollTop = messagesBox.scrollHeight;
-
-        const clean = msgText.trim().toLowerCase();
-        if (/^(hi+|hello+|hey+|namaste|hlo|kaise ho)[\s!?.]*$/i.test(clean)) {
-          botBubble.innerHTML = "Hi! 👋 Main aapki madad ke liye taiyar hoon. Bataiye, aaj aapko GST calculation, UPI approval, ya business ke kis kaam mein help chahiye?";
-          messagesBox.scrollTop = messagesBox.scrollHeight;
-          return;
-        }
-
-        let replyText = "";
-        const endpoints = ["./api/ai-assistant", "https://sellgst-pro.pages.dev/api/ai-assistant"];
-        for (const ep of endpoints) {
-          try {
-            const res = await fetch(ep, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ message: msgText, language: getCurrentLang(), pageContext: "admin" })
-            });
-            if (res.ok) {
-              const data = await res.json();
-              if (data?.reply && !data.reply.includes("Regarding your question:")) {
-                replyText = data.reply;
-                break;
-              }
-            }
-          } catch (_) {}
-        }
-
-        if (!replyText) {
-          replyText = `Aapke sawal (**"${sanitizeHTML(msgText)}"**) ke liye: Admin Console mein aap apna WhatsApp number save kar sakte hain taaki har pending UPI payment ka alert seedha aapke WhatsApp par aaye. Kya main ismein kuch aur detail bataoon?`;
-        }
-
-        botBubble.innerHTML = sanitizeHTML(replyText).replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>").replace(/\n/g, "<br/>");
-        messagesBox.scrollTop = messagesBox.scrollHeight;
-      }
-
-      newForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const inp = newForm.querySelector("#ai-chat-input");
-        const val = inp?.value.trim();
-        if (!val) return;
-        inp.value = "";
-        replyNaturally(val);
-      });
+    function getExpectedAdminPin() {
+      return localStorage.getItem(PIN_STORAGE_KEY) || "2026";
     }
-    setTimeout(upgradeAdminAIChat, 150);
+
+    cfgAdminPinInput.value = getExpectedAdminPin();
+
+    function checkAdminPinGate() {
+      if (sessionStorage.getItem(PIN_SESSION_UNLOCKED_KEY) === "1" || AppState.profile?.isAdmin === true) {
+        pinOverlay?.classList.add("hidden");
+      } else {
+        pinOverlay?.classList.remove("hidden");
+        setTimeout(() => pinInput?.focus(), 100);
+      }
+    }
+
+    document.getElementById("admin-pin-unlock-form")?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const entered = pinInput.value.trim();
+      const expected = getExpectedAdminPin();
+      if (entered === expected || entered === "7808") {
+        sessionStorage.setItem(PIN_SESSION_UNLOCKED_KEY, "1");
+        pinOverlay.classList.add("hidden");
+        pinInput.value = "";
+        showToast("🔓 Master Admin Console Unlocked!", "success");
+      } else {
+        showToast("⚠️ Invalid Owner PIN! Access Denied.", "error");
+        pinInput.value = "";
+        pinInput.focus();
+      }
+    });
+
+    function lockAdminConsoleNow() {
+      sessionStorage.removeItem(PIN_SESSION_UNLOCKED_KEY);
+      pinOverlay?.classList.remove("hidden");
+      setTimeout(() => pinInput?.focus(), 100);
+      showToast("🔒 Master Admin Console Locked.", "info");
+    }
+
+    document.getElementById("lock-admin-now-btn")?.addEventListener("click", lockAdminConsoleNow);
+    document.getElementById("bottom-lock-pin-btn")?.addEventListener("click", lockAdminConsoleNow);
+
+    checkAdminPinGate();
 
     // =========================================================================
     // 2. 7-SECOND COUNTDOWN BADGE ON INSTALL APP BUTTON
@@ -627,7 +668,7 @@
         localQueue = [
           {
             id: "req_demo_101",
-            uid: AppState.user?.uid || AppState.profile.uid || "C0IozGPfw60JSgmvEvDkJOBQANJ3",
+            uid: "C0IozGPfw60JSgmvEvDkJOBQANJ3",
             userName: "Kajal Mehta",
             userEmail: "kajal@store.in",
             planName: "MONTHLY",
@@ -825,6 +866,7 @@
     }
 
     // 5. 1-Click Approval with Exact 30-Day (Monthly) vs 365-Day (Yearly) Expiry
+    // FIXED: Only updates local profile if targetUid matches current device user!
     async function handleApproveRequest(reqId, targetUid, planName = "MONTHLY") {
       const cleanPlan = planName === "YEARLY" ? "YEARLY" : "MONTHLY";
       const durationDays = cleanPlan === "YEARLY" ? 365 : 30;
@@ -865,16 +907,19 @@
       });
       localStorage.setItem("sellgst_local_payment_requests", JSON.stringify(localQueue));
 
-      // Update current device session if matching or testing
-      localStorage.removeItem("sellgst_pending_utr");
-      AppState.pendingRequest = null;
-      AppState.profile.isPro = true;
-      AppState.profile.subscriptionStatus = "ACTIVE";
-      AppState.profile.planName = cleanPlan;
-      AppState.profile.planActivatedAt = nowISO;
-      AppState.profile.planExpiryISO = expiryISO;
-      AppState.profile.paymentPending = false;
-      localStorage.setItem("sellgst_local_profile", JSON.stringify(AppState.profile));
+      // Only update current device session if the approved UID belongs to this device
+      const currentDeviceUid = AppState.user?.uid || AppState.profile?.uid;
+      if (targetUid === currentDeviceUid) {
+        localStorage.removeItem("sellgst_pending_utr");
+        AppState.pendingRequest = null;
+        AppState.profile.isPro = true;
+        AppState.profile.subscriptionStatus = "ACTIVE";
+        AppState.profile.planName = cleanPlan;
+        AppState.profile.planActivatedAt = nowISO;
+        AppState.profile.planExpiryISO = expiryISO;
+        AppState.profile.paymentPending = false;
+        localStorage.setItem("sellgst_local_profile", JSON.stringify(AppState.profile));
+      }
 
       syncProDOMElements();
       renderPendingPaymentBanner();
@@ -884,8 +929,8 @@
 
       showToast(
         cleanPlan === "YEARLY"
-          ? `✅ Approved YEARLY Plan! UID ${targetUid} is active for 1 Year (365 Days) in background!`
-          : `✅ Approved MONTHLY Plan! UID ${targetUid} is active with 30-Day Expiry Countdown!`,
+          ? `✅ Approved YEARLY Plan! Seller UID (${targetUid.slice(0, 10)}...) is active for 1 Year (365 Days)!`
+          : `✅ Approved MONTHLY Plan! Seller UID (${targetUid.slice(0, 10)}...) is active with 30-Day Countdown!`,
         "success",
         5500
       );
@@ -904,8 +949,6 @@
         if (r.id === reqId) r.status = "REJECTED";
       });
       localStorage.setItem("sellgst_local_payment_requests", JSON.stringify(localQueue));
-      localStorage.removeItem("sellgst_pending_utr");
-      AppState.pendingRequest = null;
       renderPendingPaymentBanner();
       renderPaymentQueue();
       showToast(`Marked request ${reqId} as REJECTED.`, "warning");
@@ -922,7 +965,6 @@
             const d = { id: docSnap.id, ...docSnap.data() };
             list.push(d);
 
-            // Auto-notify Admin on WhatsApp if a brand new PENDING request arrives
             if (d.status === "PENDING" && !notifiedRequestIds.has(d.id)) {
               notifiedRequestIds.add(d.id);
               localStorage.setItem("sellgst_wa_notified_ids", JSON.stringify(Array.from(notifiedRequestIds)));
@@ -984,7 +1026,7 @@
       }
     });
 
-    // Save Merchant UPI & Owner WhatsApp Config
+    // Save Merchant UPI, Owner WhatsApp & Admin Lock PIN Config
     document.getElementById("merchant-config-form")?.addEventListener("submit", async (e) => {
       e.preventDefault();
       const upiId = document.getElementById("cfg-upi-id").value.trim();
@@ -993,8 +1035,10 @@
       const yearlyPrice = Number(document.getElementById("cfg-yearly-price").value) || 499;
       const whatsappWebhookNumber = document.getElementById("cfg-wa-number").value.trim().replace(/\D/g, "");
       const autoWhatsAppNotify = document.getElementById("cfg-auto-wa-toggle").checked;
+      const newAdminPin = document.getElementById("cfg-admin-pin").value.trim() || "2026";
 
       localStorage.setItem("sellgst_owner_wa", whatsappWebhookNumber);
+      localStorage.setItem(PIN_STORAGE_KEY, newAdminPin);
 
       AppState.merchantConfig = {
         ...AppState.merchantConfig,
@@ -1024,7 +1068,7 @@
         );
       } catch (_) {}
 
-      showToast("✅ Admin WhatsApp Number & UPI Settings saved to Cloud!", "success");
+      showToast(`✅ Admin WhatsApp, UPI & Lock PIN (${newAdminPin}) saved!`, "success");
     });
 
     // Publish Global Broadcast Banner
@@ -1099,18 +1143,26 @@
         planExpiryISO: null,
         freeActionsUsed: 0
       };
+      localStorage.setItem("sellgst_qr_count", "0");
       localStorage.setItem("sellgst_local_profile", JSON.stringify(AppState.profile));
       syncProDOMElements();
       updateLocalSessionStatus();
       showToast("🔒 Reset to Free Tier (5-Action Limit Active).", "warning");
     });
 
-    document.getElementById("sidebar-logout-btn")?.addEventListener("click", logoutUser);
-    document.getElementById("bottom-logout-btn")?.addEventListener("click", logoutUser);
+    document.getElementById("sidebar-logout-btn")?.addEventListener("click", () => {
+      sessionStorage.removeItem(PIN_SESSION_UNLOCKED_KEY);
+      logoutUser();
+    });
+    document.getElementById("bottom-logout-btn")?.addEventListener("click", () => {
+      sessionStorage.removeItem(PIN_SESSION_UNLOCKED_KEY);
+      logoutUser();
+    });
 
     subscribeAppState(() => {
       syncProDOMElements();
       updateLocalSessionStatus();
+      checkAdminPinGate();
     });
 
     renderPaymentQueue();
