@@ -1,11 +1,12 @@
 /**
- * SellGST Pro — Zero-Trust Cloudflare Pages Serverless Gemini AI Backend
+ * SellGST Pro — Zero-Trust Cloudflare Pages Serverless Gemini AI Backend v5.2
  * Path: /functions/api/ai-assistant.js (Automatically serves POST /api/ai-assistant)
  *
- * Security & Behavior:
- * 1. NEVER exposes the API key in frontend code or public GitHub. Reads `env.GEMINI_API_KEY` from Cloudflare Environment Variables.
- * 2. Full CORS support so both `sellgst-pro.pages.dev` and `ritikraj3405328-web.github.io` work seamlessly.
- * 3. Acts as a natural, conversational Problem-Solving Assistant (like Google Gemini) — never dumps repetitive feature lists when a user says "Hi".
+ * Security & Reliability Upgrades:
+ * 1. Reads `env.GEMINI_API_KEY` strictly from Cloudflare Environment Variables (100% hidden from public GitHub).
+ * 2. Triple-Model Automatic Fallback (`gemini-2.5-flash` -> `gemini-2.0-flash` -> `gemini-1.5-flash`).
+ * 3. Full CORS support for both `sellgst-pro.pages.dev` and `ritikraj3405328-web.github.io`.
+ * 4. Natural, conversational Problem-Solving Assistant (like Google Gemini) — never dumps raw .html lists on "Hi".
  */
 
 const CORS_HEADERS = {
@@ -23,13 +24,13 @@ CRITICAL CONVERSATIONAL RULES:
 3. SOLVE PROBLEMS DIRECTLY:
    - If the user asks a math or GST tax question (e.g., "12000 ka 18% GST kitna hoga"), calculate the exact CGST, SGST, IGST, and Grand Total step-by-step.
    - If the user asks about HSN codes, GSTR-1, GSTR-3B, ITC, e-commerce RTO claims, courier weight discrepancy, or business strategy, give clear, practical, accurate advice.
-   - Only mention SellGST Pro pages (like Navy GST Invoice Maker, E-Com CSV Audit, 1-Click GSTR-1 JSON, or Dynamic QR Studio) when directly relevant to solving the user's stated problem.
+   - Only mention SellGST Pro tools (Navy GST Invoice Maker, E-Com CSV Audit, 1-Click GSTR-1 JSON, or Dynamic QR Studio) when directly relevant to solving the user's stated problem.
 4. LANGUAGE ADAPTATION: Match the user's language naturally (Hindi, Hinglish, English, or regional Indian languages). Keep formatting clean and concise.`;
 
 /**
  * Intelligent conversational problem-solver fallback if API key is not yet configured in Cloudflare env
  */
-function buildConversationalFallback(userMessage = "", history = []) {
+function buildConversationalFallback(userMessage = "") {
   const msg = String(userMessage || "").trim();
   const lower = msg.toLowerCase();
 
@@ -43,21 +44,26 @@ function buildConversationalFallback(userMessage = "", history = []) {
     return "Main aapka **SellGST Pro AI Helper** hoon! Main aapke business, GST tax calculation, HSN codes, e-commerce RTO/weight fraud claims, aur billing se judi har problem solve karne ke liye banaya gaya hoon. Bataiye, abhi aapko kis cheez mein help chahiye?";
   }
 
-  // 3. Live GST & Discount Math Solver
+  // 3. Live GST & Reverse-GST Math Solver
   const numbers = lower.match(/(\d+(?:\.\d+)?)/g);
-  if (numbers && (lower.includes("gst") || lower.includes("tax") || lower.includes("%") || lower.includes("hisab") || lower.includes("calculate"))) {
+  if (numbers && (lower.includes("gst") || lower.includes("tax") || lower.includes("%") || lower.includes("hisab") || lower.includes("calculate") || lower.includes("kitna"))) {
     const baseAmt = Number(numbers[0]) || 0;
     const gstRate = numbers[1] ? Number(numbers[1]) : 18;
     const gstVal = (baseAmt * gstRate) / 100;
     const totalVal = baseAmt + gstVal;
+    const reverseTaxable = baseAmt / (1 + gstRate / 100);
+    const reverseGst = baseAmt - reverseTaxable;
+
     return (
-      `📊 **₹${baseAmt.toLocaleString("en-IN")} par ${gstRate}% GST ka hisab:**\n\n` +
-      `• **Taxable Value:** ₹${baseAmt.toFixed(2)}\n` +
+      `📊 **₹${baseAmt.toLocaleString("en-IN")} par ${gstRate}% GST Calculation:**\n\n` +
+      `**1. Exclusive GST (Agar ₹${baseAmt} Taxable Value hai):**\n` +
       `• **CGST (${gstRate / 2}%):** ₹${(gstVal / 2).toFixed(2)}\n` +
       `• **SGST (${gstRate / 2}%):** ₹${(gstVal / 2).toFixed(2)}\n` +
       `• **Total GST (${gstRate}%):** ₹${gstVal.toFixed(2)}\n` +
-      `• **Total Bill Amount:** **₹${totalVal.toFixed(2)}**\n\n` +
-      `Agar aap chahein to main isme discount ya reverse GST (MRP inclusive) bhi nikal kar bata sakta hoon!`
+      `• **Grand Total Bill:** **₹${totalVal.toFixed(2)}**\n\n` +
+      `**2. Inclusive GST (Agar ₹${baseAmt} MRP mein GST juda hua hai):**\n` +
+      `• **Net Taxable Value:** ₹${reverseTaxable.toFixed(2)}\n` +
+      `• **Included GST (${gstRate}%):** ₹${reverseGst.toFixed(2)}`
     );
   }
 
@@ -118,13 +124,10 @@ export async function onRequestPost(context) {
       );
     }
 
-    // Read API Key strictly from Cloudflare Environment Variables (Never hardcoded in public repo!)
     const apiKey = context.env?.GEMINI_API_KEY || context.env?.GOOGLE_API_KEY || "";
 
     if (apiKey) {
-      // Build multi-turn conversation contents for Gemini
       const contents = [];
-
       history.slice(-6).forEach((turn) => {
         if (turn && turn.text) {
           contents.push({
@@ -139,37 +142,42 @@ export async function onRequestPost(context) {
         parts: [{ text: userMessage }]
       });
 
-      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
+      // Try models in order of speed and availability
+      const models = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
 
-      const geminiRes = await fetch(geminiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          systemInstruction: {
-            parts: [{ text: SYSTEM_PROMPT }]
-          },
-          contents,
-          generationConfig: {
-            temperature: 0.65,
-            maxOutputTokens: 700
+      for (const modelName of models) {
+        try {
+          const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${encodeURIComponent(apiKey)}`;
+          const geminiRes = await fetch(geminiUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              systemInstruction: {
+                parts: [{ text: SYSTEM_PROMPT }]
+              },
+              contents,
+              generationConfig: {
+                temperature: 0.65,
+                maxOutputTokens: 700
+              }
+            })
+          });
+
+          if (geminiRes.ok) {
+            const data = await geminiRes.json();
+            const candidateText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (candidateText) {
+              return new Response(
+                JSON.stringify({ reply: candidateText.trim(), engine: modelName }),
+                { status: 200, headers: CORS_HEADERS }
+              );
+            }
           }
-        })
-      });
-
-      if (geminiRes.ok) {
-        const data = await geminiRes.json();
-        const candidateText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (candidateText) {
-          return new Response(
-            JSON.stringify({ reply: candidateText.trim(), engine: "gemini-2.5-flash" }),
-            { status: 200, headers: CORS_HEADERS }
-          );
-        }
+        } catch (_) {}
       }
     }
 
-    // If API Key is not yet set in Cloudflare Environment Variables or returns an error, use the conversational solver
-    const fallbackReply = buildConversationalFallback(userMessage, history);
+    const fallbackReply = buildConversationalFallback(userMessage);
     return new Response(
       JSON.stringify({ reply: fallbackReply, engine: "sellgst-conversational-ai" }),
       { status: 200, headers: CORS_HEADERS }
