@@ -1,15 +1,13 @@
 /**
- * SellGST Pro — Principal Security Core v5.2 (100% Complete, Uncut & Zero-Bug Master Build)
+ * SellGST Pro — Principal Security Core v6.0 (100% Complete, Uncut & Live Data-Driven Build)
  * File: /assets/js/security-core.js
  *
- * All Features & Fixes Included:
- * 1. First-Visit Login Gatekeeper + Trailing-Slash Safe Route Detection (`/login`, `/login/`, `/login.html`)
- * 2. 2-Minute (120s) Guest Preview Timer -> Automatically redirects user to Signup section after 2 minutes
- * 3. Unified 5-Action Free Quota Sync (`freeActionsUsed` + `sellgst_qr_count` synced across all pages & navbar badges)
- * 4. Smart Subscription Engine (FREE 5-Action Lock | ₹99 Monthly -> Shows ONLY ₹499 + 30d Countdown | ₹499 Yearly -> 365d Silent)
- * 5. DPDP Act 2023 Compliance (Mandatory Consent + Personal Profile Drawer + Confirmed Account Deletion ✔️ + Bottom Logout)
- * 6. Dismissible Floating Gemini AI Assistant (External ✕ button + Conversational Problem Solver + Multi-Endpoint Cloud Proxy)
- * 7. Instant 0.1s Page Prefetcher + Native Back-Button Manager + Full `window.SellGSTCore` & `getCurrentLang` Exports
+ * New Fixes in v6.0:
+ * 1. Top Empty Space Fix: Removes `justify-between` spacing bug on `index.html` and compacts top banners.
+ * 2. Strict 12-Digit UTR Validation: Removed the fake "I Have Paid" auto-fill button so users must enter a real 12-digit numeric UTR.
+ * 3. Built-in Admin WhatsApp Number (`917808990039`) + Popup-Blocker Bypass so new IDs always trigger WhatsApp alerts.
+ * 4. Real-Data 3D Gauge (Speedometer), Progress Bars, Donut Rings & Channel Breakdown Sync (`syncLiveProfitLossVisuals`):
+ *    Automatically moves needles UP (Green 🟢) on Profit and DOWN (Red 🔴) on Loss across `index.html`, `app.html` & `ecom-audit.html`!
  */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -48,12 +46,13 @@ import {
 
 import { initI18n, t, getCurrentLang, setLanguage, SUPPORTED_LANGUAGES } from "./i18n.js";
 
-// Export all localization helpers so invoice.html, admin.html, and all pages work with zero syntax errors
 export { initI18n, t, getCurrentLang, setLanguage, SUPPORTED_LANGUAGES };
 
 // ============================================================================
-// 1. EXACT FIREBASE CLOUD CONFIGURATION
+// 1. EXACT FIREBASE CLOUD CONFIGURATION & DEFAULT ADMIN WHATSAPP
 // ============================================================================
+export const DEFAULT_OWNER_WHATSAPP = "917808990039";
+
 export const firebaseConfig = {
   apiKey: "AIzaSyCYs-MCUZJrofjusErAbVSzu7o8WnGpuac",
   authDomain: "sellgstpro.firebaseapp.com",
@@ -70,7 +69,7 @@ export const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: "select_account" });
 
 // ============================================================================
-// 2. SELF-HEALING DOMAIN & SERVICE WORKER GUARD (FIXES ERR_FAILED)
+// 2. SELF-HEALING DOMAIN & SERVICE WORKER GUARD
 // ============================================================================
 (function selfHealDomainAndCache() {
   try {
@@ -84,7 +83,7 @@ googleProvider.setCustomParameters({ prompt: "select_account" });
       return;
     }
 
-    const healKey = "sellgst_v5_2_sw_healed";
+    const healKey = "sellgst_v6_0_sw_healed";
     if (!localStorage.getItem(healKey)) {
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker.getRegistrations().then((regs) => {
@@ -104,7 +103,28 @@ googleProvider.setCustomParameters({ prompt: "select_account" });
 })();
 
 // ============================================================================
-// 3. FIRST-VISIT LOGIN GATEKEEPER & 2-MINUTE GUEST PREVIEW ENGINE
+// 3. TOP EMPTY SPACE FIX (REMOVES `justify-between` GAP ON MOBILE/DESKTOP)
+// ============================================================================
+function fixTopLayoutSpacingGap() {
+  if (!document.body) return;
+  // Fixes the large blank gap between top banner, navbar, and main content on index.html
+  document.body.classList.remove("justify-between");
+  document.body.classList.add("justify-start");
+
+  const header = document.querySelector("header");
+  if (header && header.classList.contains("top-2.5")) {
+    header.classList.remove("top-2.5");
+    header.classList.add("top-1", "mt-1");
+  }
+  const main = document.querySelector("main");
+  if (main && main.classList.contains("mt-5")) {
+    main.classList.remove("mt-5");
+    main.classList.add("mt-2.5");
+  }
+}
+
+// ============================================================================
+// 4. FIRST-VISIT LOGIN GATEKEEPER & 2-MINUTE GUEST PREVIEW ENGINE
 // ============================================================================
 export const GUEST_PREVIEW_DURATION_MS = 2 * 60 * 1000; // 2 Minutes (120 seconds)
 let guestCountdownInterval = null;
@@ -127,7 +147,6 @@ export function startGuestPreviewSession(targetUrl = "./index.html") {
   window.location.href = targetUrl;
 }
 
-// FIXED: Handles `/login`, `/login/`, and `/login.html` without redirect loops
 function isCurrentPageLogin() {
   const path = window.location.pathname.toLowerCase().replace(/\/+$/, "");
   return path.endsWith("/login.html") || path.endsWith("/login") || path.includes("/login.");
@@ -145,7 +164,6 @@ function enforceAuthAndGuestGate() {
   const onLoginPage = isCurrentPageLogin();
   const params = new URLSearchParams(window.location.search);
 
-  // Rule 1: If user is ALREADY logged in, never show login.html again unless they clicked Logout
   if (loggedIn) {
     localStorage.removeItem("sellgst_guest_start_ts");
     removeGuestBanner();
@@ -155,12 +173,10 @@ function enforceAuthAndGuestGate() {
     return;
   }
 
-  // Rule 2: If on login.html and not logged in, stay on login.html
   if (onLoginPage) {
     return;
   }
 
-  // Rule 3: User is on an internal page without permanent login -> Check 2-Minute Guest Preview
   const guestStart = Number(localStorage.getItem("sellgst_guest_start_ts") || "0");
   if (!guestStart) {
     window.location.replace("./login.html");
@@ -206,13 +222,14 @@ function startLiveGuestCountdownBar(guestStartTs) {
       bar = document.createElement("div");
       bar.id = "sellgst-guest-timer-bar";
       bar.className =
-        "w-full bg-gradient-to-r from-[#081B4B] via-[#5B2EFF] to-[#081B4B] text-white px-3 py-2 text-xs font-semibold flex flex-wrap items-center justify-center gap-2.5 z-50 shadow-md no-print";
+        "w-full bg-gradient-to-r from-[#081B4B] via-[#5B2EFF] to-[#081B4B] text-white px-3 py-1.5 text-xs font-semibold flex flex-wrap items-center justify-center gap-2 z-50 shadow-sm no-print";
       document.body.prepend(bar);
+      fixTopLayoutSpacingGap();
     }
 
     bar.innerHTML = `
-      <span>👀 <strong>Guest Preview Mode:</strong> <span class="px-2 py-0.5 rounded bg-white/20 text-[#10E594] font-mono font-extrabold">${mins}:${secs}</span> remaining before auto-redirect to Signup.</span>
-      <a href="./login.html?mode=signup" class="px-3 py-1 rounded-full bg-[#10E594] text-[#081B4B] font-extrabold text-[11px] shadow hover:scale-105 transition">
+      <span>👀 <strong>Guest Preview:</strong> <span class="px-2 py-0.5 rounded bg-white/20 text-[#10E594] font-mono font-extrabold">${mins}:${secs}</span> left before Signup redirect.</span>
+      <a href="./login.html?mode=signup" class="px-3 py-0.5 rounded-full bg-[#10E594] text-[#081B4B] font-extrabold text-[11px] shadow hover:scale-105 transition">
         Create Free Account Now →
       </a>
     `;
@@ -228,7 +245,7 @@ function removeGuestBanner() {
 }
 
 // ============================================================================
-// 4. GLOBAL APPLICATION STATE & SUBSCRIPTION TIER ENGINE
+// 5. GLOBAL APPLICATION STATE & SUBSCRIPTION TIER ENGINE
 // ============================================================================
 export const FREE_USAGE_MAX_LIMIT = 5;
 
@@ -281,7 +298,8 @@ export const AppState = {
     payeeName: "AGNI VOLT",
     monthlyPrice: 99,
     yearlyPrice: 499,
-    whatsappWebhookNumber: "",
+    // Always defaults to Owner WhatsApp so even brand new IDs/devices know where to send the alert!
+    whatsappWebhookNumber: localStorage.getItem("sellgst_owner_wa") || DEFAULT_OWNER_WHATSAPP,
     autoWhatsAppNotify: true
   },
   pendingRequest: null,
@@ -327,7 +345,126 @@ function notifyStateChange() {
 }
 
 // ============================================================================
-// 5. EXPIRY & UNIFIED 5-LIMIT FREE USAGE PAYWALL CONTROLLER
+// 6. REAL-DATA 3D GAUGE (GHADI), PROGRESS BARS & DONUT RING SYNC ENGINE
+//    Moves needles & bars UP (Green 🟢) in Profit and DOWN (Red 🔴) in Loss!
+// ============================================================================
+export function syncLiveProfitLossVisuals() {
+  try {
+    const rawMetrics = localStorage.getItem("sellgst_live_pnl_metrics");
+    if (!rawMetrics) return;
+    const m = JSON.parse(rawMetrics);
+    if (!m || typeof m.finalNetResult !== "number") return;
+
+    const isProfit = m.finalNetResult >= 0;
+    const absNet = Math.abs(m.finalNetResult);
+    const totalOrders = Math.max(1, Number(m.totalOrders) || 1);
+    const profitOrders = Number(m.profitOrderCount) || 0;
+    const lossOrders = Number(m.lossOrderCount) || 0;
+    const winRatioPct = Math.round((profitOrders / totalOrders) * 100);
+    const lossRatioPct = 100 - winRatioPct;
+    const marginPct = Number(m.marginPct) || 0;
+
+    // Calculate realistic needle rotation angle (-55deg = Heavy Loss, +55deg = Strong Profit)
+    const needleAngle = isProfit
+      ? Math.min(58, Math.max(12, Math.round((winRatioPct / 100) * 58)))
+      : Math.max(-58, Math.min(-18, -Math.round(((lossOrders / totalOrders) || 0.5) * 58)));
+
+    const statusColorHex = isProfit ? "#10E594" : "#F43F5E";
+    const statusBadgeText = isProfit
+      ? `🟢 PROFIT UP (+${ formatINR(absNet) })`
+      : `🔴 LOSS DOWN (-${ formatINR(absNet) })`;
+
+    // 1. Update Home Page (`index.html`) 3D Gauge Needle & Score
+    const homeNeedle = document.getElementById("home-gauge-needle");
+    if (homeNeedle) {
+      homeNeedle.setAttribute("transform", `rotate(${needleAngle} 65 66)`);
+      homeNeedle.setAttribute("fill", isProfit ? "#10B981" : "#F43F5E");
+      const scoreLabel = homeNeedle.closest("div")?.querySelector("div");
+      if (scoreLabel) {
+        scoreLabel.innerHTML = isProfit
+          ? `<span class="text-emerald-600 font-extrabold">🟢 ${winRatioPct}% Profitable (${statusBadgeText})</span>`
+          : `<span class="text-rose-600 font-extrabold">🔴 ${lossRatioPct}% In Loss (${statusBadgeText})</span>`;
+      }
+    }
+
+    // 2. Update Dashboard (`app.html`) Speedometer Needle, Arc & Health Label
+    const dashNeedle = document.getElementById("speedo-needle");
+    if (dashNeedle) {
+      dashNeedle.setAttribute("transform", `rotate(${needleAngle} 100 95)`);
+      const poly = dashNeedle.querySelector("polygon");
+      if (poly) poly.setAttribute("fill", isProfit ? "#10B981" : "#F43F5E");
+
+      const speedoCard = dashNeedle.closest(".text-center");
+      const healthText = speedoCard?.querySelector("div:last-child");
+      if (healthText) {
+        healthText.innerHTML = isProfit
+          ? `Business Status: <span class="text-emerald-600 font-black">${statusBadgeText} (${winRatioPct}% Win)</span>`
+          : `Business Status: <span class="text-rose-600 font-black">${statusBadgeText} (${lossRatioPct}% Loss)</span>`;
+      }
+    }
+
+    // 3. Update Dashboard (`app.html`) Day / Week / Month / Year Progress Bars
+    const barIds = [
+      { id: "bar-day", val: isProfit ? Math.min(98, Math.max(25, winRatioPct - 8)) : Math.max(12, Math.min(45, winRatioPct)) },
+      { id: "bar-week", val: isProfit ? Math.min(98, Math.max(30, winRatioPct)) : Math.max(15, Math.min(40, winRatioPct)) },
+      { id: "bar-month", val: isProfit ? Math.min(99, Math.max(35, winRatioPct + 4)) : Math.max(10, Math.min(35, winRatioPct)) },
+      { id: "bar-year", val: isProfit ? Math.min(99, Math.max(40, winRatioPct + 8)) : Math.max(8, Math.min(30, winRatioPct)) }
+    ];
+
+    barIds.forEach((b) => {
+      const barEl = document.getElementById(b.id);
+      if (barEl) {
+        barEl.style.width = `${b.val}%`;
+        barEl.style.backgroundColor = statusColorHex;
+        const pctSpan = barEl.parentElement?.nextElementSibling;
+        if (pctSpan) {
+          pctSpan.textContent = isProfit ? `+${b.val}%` : `-${100 - b.val}%`;
+          pctSpan.className = `font-mono text-[11px] font-extrabold w-11 text-right ${
+            isProfit ? "text-emerald-600" : "text-rose-600"
+          }`;
+        }
+      }
+    });
+
+    // 4. Update Dashboard (`app.html`) KPI Cards & Live Channel Breakdown (Meesho, Flipkart & Amazon)
+    const kpiSales = document.getElementById("kpi-sales-val");
+    const kpiRto = document.getElementById("kpi-rto-val");
+    const kpiVal = document.getElementById("kpi-valuation-val");
+    if (kpiSales && m.totalSettlement !== undefined) {
+      kpiSales.textContent = formatINR(m.totalSettlement);
+    }
+    if (kpiRto && m.totalLossAmt !== undefined) {
+      kpiRto.textContent = isProfit ? `+${formatINR(m.totalProfitAmt)}` : `-${formatINR(m.totalLossAmt)}`;
+      kpiRto.className = `text-[13px] font-black font-mono mt-0.5 ${isProfit ? "text-emerald-600" : "text-rose-600"}`;
+    }
+    if (kpiVal && m.totalSettlement !== undefined) {
+      kpiVal.textContent = formatINR(Math.max(0, m.totalSettlement * 12));
+    }
+
+    // Update Meesho & Flipkart/Amazon Channel Breakdown rows on `app.html` if present
+    document.querySelectorAll(".bento-card .p-2.rounded-xl.bg-slate-50").forEach((row) => {
+      const txt = row.textContent || "";
+      const valSpan = row.querySelector("span.font-mono:last-child");
+      const subDiv = row.querySelector(".text-\\[10px\\]");
+      if (!valSpan) return;
+
+      if (txt.includes("Meesho") && m.meeshoNet !== undefined) {
+        const prof = m.meeshoNet >= 0;
+        valSpan.textContent = `${prof ? "+🟢 " : "-🔴 "}${formatINR(Math.abs(m.meeshoNet))}`;
+        valSpan.className = `font-mono text-xs font-extrabold shrink-0 ${prof ? "text-emerald-600" : "text-rose-600"}`;
+        if (subDiv) subDiv.textContent = `${m.meeshoCount || 0} Orders (${prof ? "In Profit" : "In Loss"})`;
+      } else if (txt.includes("Flipkart") && m.fkAmzNet !== undefined) {
+        const prof = m.fkAmzNet >= 0;
+        valSpan.textContent = `${prof ? "+🟢 " : "-🔴 "}${formatINR(Math.abs(m.fkAmzNet))}`;
+        valSpan.className = `font-mono text-xs font-extrabold shrink-0 ${prof ? "text-emerald-600" : "text-rose-600"}`;
+        if (subDiv) subDiv.textContent = `${m.fkAmzCount || 0} Orders (${prof ? "In Profit" : "In Loss"})`;
+      }
+    });
+  } catch (_) {}
+}
+
+// ============================================================================
+// 7. EXPIRY & UNIFIED 5-LIMIT FREE USAGE PAYWALL CONTROLLER
 // ============================================================================
 export function evaluateSubscriptionHealth() {
   const prof = AppState.profile;
@@ -350,7 +487,6 @@ export function evaluateSubscriptionHealth() {
     }
   }
 
-  // Sync `freeActionsUsed` and `sellgst_qr_count` so navbar badge is always accurate across all tools
   const qrCount = Number(localStorage.getItem("sellgst_qr_count") || "0");
   const profileCount = Number(prof.freeActionsUsed) || 0;
   const combinedUsed = Math.max(profileCount, qrCount);
@@ -406,7 +542,7 @@ export function consumeFreeActionOrLock(featureName = "Feature") {
 }
 
 // ============================================================================
-// 6. INFINITE UNIQUE INVOICE ID GENERATOR (1 TO INFINITY)
+// 8. INFINITE UNIQUE INVOICE ID GENERATOR (1 TO INFINITY)
 // ============================================================================
 export function generateUniqueInvoiceNumber() {
   try {
@@ -429,7 +565,7 @@ export function peekCurrentInvoiceNumber() {
 }
 
 // ============================================================================
-// 7. ZERO-TRUST XSS & CSV FORMULA-INJECTION SANITIZERS
+// 9. ZERO-TRUST XSS & CSV FORMULA-INJECTION SANITIZERS
 // ============================================================================
 export function sanitizeHTML(input) {
   if (input === null || input === undefined) return "";
@@ -465,7 +601,7 @@ export function formatINR(amount) {
 }
 
 // ============================================================================
-// 8. 3D INTERACTIVE MOUSE-HOVER TILT ENGINE
+// 10. 3D INTERACTIVE MOUSE-HOVER TILT ENGINE
 // ============================================================================
 export function init3DTiltCards() {
   const attach3D = (card) => {
@@ -507,7 +643,7 @@ export function init3DTiltCards() {
 }
 
 // ============================================================================
-// 9. 7-SECOND AUTO-HIDING PWA INSTALL BUTTON MANAGER
+// 11. 7-SECOND AUTO-HIDING PWA INSTALL BUTTON MANAGER
 // ============================================================================
 function initSevenSecondPWAInstall() {
   if ("serviceWorker" in navigator) {
@@ -611,7 +747,7 @@ export async function triggerPWAInstall() {
 }
 
 // ============================================================================
-// 10. SPECULATIVE PAGE PREFETCHER & NATIVE BACK-BUTTON MANAGER
+// 12. SPECULATIVE PAGE PREFETCHER & NATIVE BACK-BUTTON MANAGER
 // ============================================================================
 const prefetchedUrls = new Set();
 
@@ -684,7 +820,7 @@ function initBackButtonManager() {
 }
 
 // ============================================================================
-// 11. TOAST NOTIFICATION SYSTEM
+// 13. TOAST NOTIFICATION SYSTEM
 // ============================================================================
 export function showToast(message, type = "success", duration = 4000) {
   let container = document.getElementById("sellgst-toast-container");
@@ -725,7 +861,7 @@ export function showToast(message, type = "success", duration = 4000) {
 }
 
 // ============================================================================
-// 12. REAL-TIME FIRESTORE LISTENERS
+// 14. REAL-TIME FIRESTORE LISTENERS
 // ============================================================================
 function startSystemListeners() {
   try {
@@ -741,7 +877,8 @@ function startSystemListeners() {
             payeeName: data.payeeName || "AGNI VOLT",
             monthlyPrice: Number(data.monthlyPrice) || 99,
             yearlyPrice: Number(data.yearlyPrice) || 499,
-            whatsappWebhookNumber: data.whatsappWebhookNumber || localStorage.getItem("sellgst_owner_wa") || "",
+            whatsappWebhookNumber:
+              data.whatsappWebhookNumber || localStorage.getItem("sellgst_owner_wa") || DEFAULT_OWNER_WHATSAPP,
             autoWhatsAppNotify: data.autoWhatsAppNotify !== false
           };
           notifyStateChange();
@@ -864,7 +1001,7 @@ function loadCachedLocalProfile(user) {
 }
 
 // ============================================================================
-// 13. REAL-TIME DOM UNBLUR, TIER BADGE & 30-DAY COUNTDOWN ENGINE
+// 15. REAL-TIME DOM UNBLUR, TIER BADGE & 30-DAY COUNTDOWN ENGINE
 // ============================================================================
 export function syncProDOMElements() {
   const health = evaluateSubscriptionHealth();
@@ -919,6 +1056,8 @@ export function syncProDOMElements() {
   document.querySelectorAll("[data-user-gstin]").forEach((el) => {
     el.textContent = AppState.profile.gstin || "07AABCS1429B1Z5";
   });
+
+  syncLiveProfitLossVisuals();
 }
 
 function renderMonthlyCountdownBanner(health) {
@@ -932,15 +1071,16 @@ function renderMonthlyCountdownBanner(health) {
     bar = document.createElement("div");
     bar.id = "sellgst-monthly-expiry-banner";
     bar.className =
-      "w-full bg-gradient-to-r from-[#081B4B] via-[#5B2EFF] to-[#081B4B] text-white px-4 py-2 text-xs font-semibold flex flex-wrap items-center justify-center gap-3 z-40 no-print";
+      "w-full bg-gradient-to-r from-[#081B4B] via-[#5B2EFF] to-[#081B4B] text-white px-4 py-1.5 text-xs font-semibold flex flex-wrap items-center justify-center gap-3 z-40 no-print";
     document.body.prepend(bar);
+    fixTopLayoutSpacingGap();
   }
 
   const daysText =
     health.remainingDays > 0 ? `${health.remainingDays} Days & ${health.remainingHours} Hours` : "29 Days & 23 Hours";
   bar.innerHTML = `
     <span>⏳ <strong>Monthly Pro Plan Active:</strong> <span class="text-[#10E594] font-mono font-bold">${daysText}</span> remaining before 30-day expiry.</span>
-    <button type="button" data-unlock-pro="YEARLY" class="px-3 py-1 rounded-full bg-[#10E594] text-[#081B4B] font-extrabold text-[11px] shadow hover:scale-105 transition">
+    <button type="button" data-unlock-pro="YEARLY" class="px-3 py-0.5 rounded-full bg-[#10E594] text-[#081B4B] font-extrabold text-[11px] shadow hover:scale-105 transition">
       Upgrade to Yearly @ ₹499 (1 Year No Interruptions) →
     </button>
   `;
@@ -962,17 +1102,37 @@ export function renderPendingPaymentBanner() {
     banner = document.createElement("div");
     banner.id = "sellgst-pending-payment-banner";
     banner.className =
-      "w-full bg-amber-100/95 border-b border-amber-300 text-amber-950 px-4 py-2.5 text-[13px] font-medium flex flex-wrap items-center justify-between gap-2 z-40 no-print";
+      "w-full bg-amber-100/95 border-b border-amber-300 text-amber-950 px-3 py-1.5 text-xs font-medium flex flex-wrap items-center justify-center gap-2 z-40 no-print";
     document.body.prepend(banner);
+    fixTopLayoutSpacingGap();
   }
 
   const utrDisplay = AppState.pendingRequest?.utrNumber || localPending || "Submitted";
+  const ownerWa = (
+    AppState.merchantConfig.whatsappWebhookNumber ||
+    localStorage.getItem("sellgst_owner_wa") ||
+    DEFAULT_OWNER_WHATSAPP
+  ).replace(/\D/g, "");
+  const uid = AppState.user?.uid || AppState.profile.uid || "seller";
+  const adminUrl = `${window.location.origin}${window.location.pathname.replace(/\/[^/]*$/, "")}/admin.html`;
+  const waText =
+    `🔔 *SellGST Pro — Pending UPI Payment Alert*\n\n` +
+    `• *Seller:* ${AppState.profile.businessName || "Seller Store"}\n` +
+    `• *UID:* ${uid}\n` +
+    `• *UTR No:* ${utrDisplay}\n` +
+    `• *Status:* PENDING VERIFICATION\n\n` +
+    `👉 *Approve in 1-Click:* ${adminUrl}`;
+  const waHref = `https://wa.me/${ownerWa}?text=${encodeURIComponent(waText)}`;
+
   banner.innerHTML = `
-    <div class="flex items-center gap-2 mx-auto text-center">
-      <span class="inline-block animate-spin text-sm">⏳</span>
+    <div class="flex flex-wrap items-center justify-center gap-2 text-center">
+      <span class="inline-block animate-spin text-xs">⏳</span>
       <span>
-        <strong>Payment Verification Pending (UTR: ${sanitizeHTML(utrDisplay)})</strong> — Your account will activate automatically as soon as the admin verifies the bank transfer.
+        <strong>Payment Verification Pending (UTR: ${sanitizeHTML(utrDisplay)})</strong> — Activates automatically once Admin verifies bank transfer.
       </span>
+      <a href="${waHref}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-0.5 rounded-full bg-emerald-600 text-white font-extrabold text-[11px] shadow hover:bg-emerald-700 transition">
+        💬 Resend WhatsApp Alert to Admin
+      </a>
     </div>
   `;
 }
@@ -987,14 +1147,15 @@ function renderBroadcastBanner(data) {
     el = document.createElement("div");
     el.id = "sellgst-global-broadcast";
     el.className =
-      "w-full bg-gradient-to-r from-[#081B4B] via-[#5B2EFF] to-[#081B4B] text-white px-4 py-2 text-[13px] font-semibold text-center tracking-wide z-40 no-print";
+      "w-full bg-gradient-to-r from-[#081B4B] via-[#5B2EFF] to-[#081B4B] text-white px-4 py-1.5 text-xs font-semibold text-center tracking-wide z-40 no-print";
     document.body.prepend(el);
+    fixTopLayoutSpacingGap();
   }
   el.innerHTML = `📢 ${sanitizeHTML(data.message)}`;
 }
 
 // ============================================================================
-// 14. SMART TIER-AWARE UPI PAYMENT MODAL
+// 16. SMART TIER-AWARE UPI PAYMENT MODAL (STRICT 12-DIGIT UTR + GUARANTEED WHATSAPP)
 // ============================================================================
 export function openProPaymentModal(defaultPlan = "MONTHLY") {
   const health = evaluateSubscriptionHealth();
@@ -1090,26 +1251,22 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
       <form id="upi-utr-form" class="mt-4 space-y-3">
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">
-            Step 2: Enter 12-Digit UPI UTR / Reference No.
+            Step 2: Enter 12-Digit Bank UPI UTR / Reference No. *
           </label>
-          <div class="flex gap-2">
-            <input
-              type="text"
-              id="upi-utr-input"
-              required
-              minlength="6"
-              maxlength="36"
-              placeholder="e.g. 412893746512"
-              class="flex-1 min-w-0 px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[#5B2EFF]"
-            />
-            <button
-              type="button"
-              id="upi-paid-quick-btn"
-              class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs whitespace-nowrap"
-            >
-              I Have Paid
-            </button>
-          </div>
+          <input
+            type="text"
+            id="upi-utr-input"
+            required
+            inputmode="numeric"
+            pattern="[0-9]{12}"
+            minlength="12"
+            maxlength="12"
+            placeholder="Enter exact 12-digit UTR (e.g. 431988776655)"
+            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono font-bold tracking-wider focus:outline-none focus:ring-2 focus:ring-[#5B2EFF]"
+          />
+          <p class="text-[10.5px] text-slate-500 mt-1">
+            🔒 Fake UTRs are rejected. Your ID activates only after Admin verifies the 12-digit UTR in bank statement.
+          </p>
         </div>
 
         <button
@@ -1117,7 +1274,7 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
           id="upi-submit-btn"
           class="w-full py-3.5 px-5 rounded-2xl bg-[#081B4B] hover:bg-slate-900 text-white font-extrabold text-[13px] shadow-lg transition flex items-center justify-center gap-2"
         >
-          <span>✅ Submit Payment & Notify Admin on WhatsApp</span>
+          <span>✅ Submit 12-Digit UTR & Notify Admin on WhatsApp</span>
         </button>
       </form>
     </div>
@@ -1154,12 +1311,10 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
     });
   });
 
-  modal.querySelector("#upi-paid-quick-btn").addEventListener("click", () => {
-    const input = modal.querySelector("#upi-utr-input");
-    if (!input.value.trim()) {
-      input.value = "PAID-" + String(Date.now()).slice(-8);
-    }
-    input.focus();
+  // Restrict input to numbers only
+  const utrInputEl = modal.querySelector("#upi-utr-input");
+  utrInputEl.addEventListener("input", () => {
+    utrInputEl.value = utrInputEl.value.replace(/\D/g, "").slice(0, 12);
   });
 
   modal.querySelector("#close-upi-modal-btn").addEventListener("click", () => closeProPaymentModal());
@@ -1169,19 +1324,16 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
 
   modal.querySelector("#upi-utr-form").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const utrInput = modal.querySelector("#upi-utr-input");
     const submitBtn = modal.querySelector("#upi-submit-btn");
-    const utrNumber = sanitizeHTML(utrInput.value.trim());
+    const utrNumber = utrInputEl.value.replace(/\D/g, "").trim();
 
-    if (utrNumber.length < 6) {
-      showToast("Please enter a valid 12-digit UPI UTR / Reference number.", "warning");
+    if (!/^\d{12}$/.test(utrNumber)) {
+      showToast("⚠️ Please enter a valid 12-digit numeric bank UPI UTR number!", "error");
+      utrInputEl.focus();
       return;
     }
 
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = `<span class="animate-spin">⏳</span> Submitting & Alerting Admin...`;
-
-    const uid = AppState.user?.uid || AppState.profile.uid || "guest-" + Date.now();
+    const uid = AppState.user?.uid || AppState.profile.uid || "seller-" + Date.now();
     const durationDays = currentPlan === "YEARLY" ? 365 : 30;
     const expectedExpiryISO = new Date(Date.now() + durationDays * 24 * 60 * 60 * 1000).toISOString();
 
@@ -1201,6 +1353,35 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
       createdAtISO: new Date().toISOString()
     };
 
+    // Build Admin WhatsApp URL BEFORE any async await so mobile Chrome never blocks the popup!
+    const ownerWa = (
+      cfg.whatsappWebhookNumber ||
+      localStorage.getItem("sellgst_owner_wa") ||
+      DEFAULT_OWNER_WHATSAPP
+    ).replace(/\D/g, "");
+    const adminConsoleUrl = `${window.location.origin}${window.location.pathname.replace(/\/[^/]*$/, "")}/admin.html`;
+    const waText =
+      `🔔 *SellGST Pro — Pending UPI Payment Alert*\n\n` +
+      `• *Seller:* ${payload.userName}\n` +
+      `• *Email:* ${payload.userEmail}\n` +
+      `• *UID:* ${uid}\n` +
+      `• *Plan:* ${currentPlan} (₹${currentAmount} • ${durationDays} Days)\n` +
+      `• *UTR No:* ${utrNumber}\n` +
+      `• *Status:* PENDING VERIFICATION\n\n` +
+      `👉 *Approve in 1-Click:* ${adminConsoleUrl}`;
+    const waLink = `https://wa.me/${ownerWa}?text=${encodeURIComponent(waText)}`;
+
+    // Open WhatsApp SYNCHRONOUSLY on user click so popup blocker never blocks it!
+    const waWindow = window.open(waLink, "_blank", "noopener,noreferrer");
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `<span class="animate-spin">⏳</span> Saving & Alerting Admin...`;
+
+    localStorage.setItem("sellgst_pending_utr", utrNumber);
+    const localQueue = JSON.parse(localStorage.getItem("sellgst_local_payment_requests") || "[]");
+    localQueue.unshift({ id: "req_" + Date.now(), ...payload });
+    localStorage.setItem("sellgst_local_payment_requests", JSON.stringify(localQueue.slice(0, 50)));
+
     try {
       if (AppState.user) {
         await addDoc(collection(db, "payment_requests"), payload);
@@ -1208,28 +1389,17 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
       }
     } catch (_) {}
 
-    localStorage.setItem("sellgst_pending_utr", utrNumber);
-    const localQueue = JSON.parse(localStorage.getItem("sellgst_local_payment_requests") || "[]");
-    localQueue.unshift({ id: "req_" + Date.now(), ...payload });
-    localStorage.setItem("sellgst_local_payment_requests", JSON.stringify(localQueue.slice(0, 50)));
-
     AppState.pendingRequest = payload;
     renderPendingPaymentBanner();
     closeProPaymentModal();
 
-    showToast("⏳ Payment Verification Pending! Sending instant WhatsApp alert to Admin...", "warning", 6000);
+    showToast("⏳ UTR Submitted! Verification pending until Admin approves.", "warning", 6000);
 
-    const ownerWa = (cfg.whatsappWebhookNumber || localStorage.getItem("sellgst_owner_wa") || "").replace(/\D/g, "");
-    if (ownerWa) {
-      const waText =
-        `🔔 *URGENT: SellGST Pro UPI Payment Pending*\n` +
-        `• *Seller:* ${payload.userName}\n` +
-        `• *UID:* ${uid}\n` +
-        `• *Plan:* ${currentPlan} (₹${currentAmount} for ${durationDays} Days)\n` +
-        `• *UTR No:* ${utrNumber}\n` +
-        `• *Approve in 1-Click:* ${window.location.origin}${window.location.pathname.replace(/\/[^/]*$/, "")}/admin.html`;
-      const waLink = `https://wa.me/${ownerWa}?text=${encodeURIComponent(waText)}`;
-      window.open(waLink, "_blank", "noopener,noreferrer");
+    // If mobile browser blocked window.open, redirect directly to WhatsApp so alert is 100% sent
+    if (!waWindow) {
+      setTimeout(() => {
+        window.location.href = waLink;
+      }, 300);
     }
   });
 }
@@ -1243,7 +1413,7 @@ export function closeProPaymentModal(fromPopState = false) {
 }
 
 // ============================================================================
-// 15. USER PERSONAL ACCOUNT & DPDP ACT 2023 PRIVACY DRAWER
+// 17. USER PERSONAL ACCOUNT & DPDP ACT 2023 PRIVACY DRAWER
 // ============================================================================
 export function openUserAccountModal() {
   let modal = document.getElementById("sellgst-user-account-modal");
@@ -1427,14 +1597,14 @@ export function openUserAccountModal() {
 }
 
 // ============================================================================
-// 16. DISMISSIBLE FLOATING GEMINI AI ASSISTANT (NO OVERLAP + EXTERNAL ✕ BUTTON)
+// 18. DISMISSIBLE FLOATING GEMINI AI ASSISTANT
 // ============================================================================
 function getSmartContextualReply(queryText = "") {
   const raw = String(queryText || "").trim();
   const q = raw.toLowerCase();
 
   if (/^(hi+|hello+|hey+|namaste|hlo|hola|kaise ho|kya haal hai|good morning|good evening)[\s!?.]*$/i.test(q)) {
-    return "Hi! 👋 Main aapka SellGST Pro AI Helper hoon. Bataiye, aaj main aapki kya madad kar sakta hoon? Aap mujhse koi bhi GST calculation, HSN code, invoice customization, ya e-commerce RTO claim ke baare mein puch sakte hain!";
+    return "Hi! 👋 Main aapka SellGST Pro AI Helper hoon. Bataiye, aaj main aapki kya madad kar sakta hoon? Aap mujhse koi bhi GST calculation, HSN code, invoice customization, ya e-commerce Profit/Loss & RTO claim ke baare mein puch sakte hain!";
   }
 
   const numMatch = q.match(/(\d+(?:\.\d+)?)/g);
@@ -1451,6 +1621,10 @@ function getSmartContextualReply(queryText = "") {
       `• **Total GST (${rate}%):** ₹${gstAmt.toFixed(2)}\n` +
       `• **Total Payable Amount:** **₹${total.toFixed(2)}**`
     );
+  }
+
+  if (q.includes("profit") || q.includes("loss") || q.includes("csv")) {
+    return "**Profit 🟢 & Loss 🔴 Calculator Help:**\nAap **Profit & Audit** (`ecom-audit.html`) mein jaakar apni Flipkart, Amazon ya Meesho ki CSV file upload karein—wahan har order ke samne **Green (🟢 Profit)** aur **Red (🔴 Loss)** ke sath-sath 3D Ghadi (Gauge) aur Progress Bar bhi aapke asli munafe/ghate ke hisab se up-down honge!";
   }
 
   if (q.includes("qr") || q.includes("review") || q.includes("dynamic")) {
@@ -1533,8 +1707,8 @@ function injectFloatingAIAssistant() {
       <button type="button" data-ai-chip="15000 par 18% GST kitna hoga?" class="px-3 py-1.5 rounded-full bg-white border border-slate-200 hover:border-[#5B2EFF] text-xs font-semibold text-slate-800 whitespace-nowrap shadow-sm">
         🧮 Calculate 18% GST
       </button>
-      <button type="button" data-ai-chip="How do I customize my Navy Invoice Logo and Digital Signature?" class="px-3 py-1.5 rounded-full bg-white border border-slate-200 hover:border-[#5B2EFF] text-xs font-semibold text-slate-800 whitespace-nowrap shadow-sm">
-        🧾 Custom Invoice Help
+      <button type="button" data-ai-chip="How do I check Flipkart & Amazon Profit/Loss from CSV?" class="px-3 py-1.5 rounded-full bg-white border border-slate-200 hover:border-[#5B2EFF] text-xs font-semibold text-slate-800 whitespace-nowrap shadow-sm">
+        🟢🔴 Profit/Loss Help
       </button>
       <button type="button" data-ai-chip="How do I claim Pending RTO (>30 days)?" class="px-3 py-1.5 rounded-full bg-white border border-slate-200 hover:border-[#5B2EFF] text-xs font-semibold text-slate-800 whitespace-nowrap shadow-sm">
         📦 Pending RTO Claims
@@ -1675,7 +1849,7 @@ async function sendAIMessage(messageText) {
 }
 
 // ============================================================================
-// 17. AUTHENTICATION HELPERS (WITH PERSISTENT LOGIN FLAG)
+// 19. AUTHENTICATION HELPERS
 // ============================================================================
 export async function loginWithEmail(email, password, rememberMe = true) {
   const cleanEmail = email.trim();
@@ -1789,7 +1963,7 @@ export async function logoutUser() {
 }
 
 // ============================================================================
-// 18. AUTOMATIC INITIALIZATION & FULL GLOBAL WINDOW EXPORT
+// 20. AUTOMATIC INITIALIZATION
 // ============================================================================
 export function initSecurityCore() {
   enforceAuthAndGuestGate();
@@ -1820,12 +1994,14 @@ export function initSecurityCore() {
 }
 
 function onDOMReady() {
+  fixTopLayoutSpacingGap();
   enforceAuthAndGuestGate();
   syncProDOMElements();
   renderPendingPaymentBanner();
   injectFloatingAIAssistant();
   init3DTiltCards();
   startSevenSecondPWAButtonTimer();
+  syncLiveProfitLossVisuals();
 
   document.body.addEventListener("click", (e) => {
     const unlockBtn = e.target.closest("[data-unlock-pro]");
@@ -1864,6 +2040,7 @@ window.SellGSTCore = {
   auth,
   db,
   AppState,
+  DEFAULT_OWNER_WHATSAPP,
   FREE_USAGE_MAX_LIMIT,
   GUEST_PREVIEW_DURATION_MS,
   isUserPermanentlyLoggedIn,
@@ -1872,6 +2049,7 @@ window.SellGSTCore = {
   subscribeAppState,
   evaluateSubscriptionHealth,
   consumeFreeActionOrLock,
+  syncLiveProfitLossVisuals,
   generateUniqueInvoiceNumber,
   peekCurrentInvoiceNumber,
   init3DTiltCards,
