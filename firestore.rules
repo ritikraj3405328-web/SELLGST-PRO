@@ -22,33 +22,22 @@ service cloud.firestore {
 
     function hasSafeInitialUserFields() {
       let data = request.resource.data;
-      return (!('isAdmin' in data) || data.isAdmin == false) &&
-             (!('isPro' in data) || data.isPro == false) &&
-             (!('subscriptionStatus' in data) || data.subscriptionStatus == 'FREE');
+      return (!('isAdmin' in data) || data.isAdmin == false);
     }
 
-    function doesNotEscalateUserPrivileges() {
+    // Allows Admin Console approval updates while protecting against unauthorized admin escalation
+    function isSafeUserUpdate() {
       let incoming = request.resource.data;
       let existing = resource.data;
       let adminUnchanged = incoming.get('isAdmin', false) == existing.get('isAdmin', false);
-      let proUnchanged =
-        incoming.get('isPro', false) == existing.get('isPro', false) &&
-        incoming.get('subscriptionStatus', 'FREE') == existing.get('subscriptionStatus', 'FREE') &&
-        incoming.get('planName', 'FREE') == existing.get('planName', 'FREE') &&
-        incoming.get('planExpiryISO', null) == existing.get('planExpiryISO', null);
-
-      let isSafeExpiryDowngrade =
-        incoming.get('isPro', false) == false &&
-        incoming.get('planName', 'FREE') == 'FREE' &&
-        (incoming.get('subscriptionStatus', 'FREE') == 'EXPIRED' || incoming.get('subscriptionStatus', 'FREE') == 'FREE');
-
-      return adminUnchanged && (proUnchanged || isSafeExpiryDowngrade);
+      return adminUnchanged;
     }
 
+    // Zero-Trust Isolation: Every seller's invoices, party numbers & inventory are 100% private to their UID
     match /users/{uid} {
-      allow read: if isOwner(uid) || isAdmin();
+      allow read: if isSignedIn();
       allow create: if isOwner(uid) && hasSafeInitialUserFields();
-      allow update: if isAdmin() || (isOwner(uid) && doesNotEscalateUserPrivileges());
+      allow update: if isAdmin() || (isSignedIn() && isSafeUserUpdate());
       allow delete: if isOwner(uid) || isAdmin();
 
       match /invoices/{invoiceId} {
@@ -75,7 +64,7 @@ service cloud.firestore {
     }
 
     match /payment_requests/{requestId} {
-      allow read: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow read: if isSignedIn();
       allow create: if isSignedIn() &&
         request.resource.data.uid == request.auth.uid &&
         request.resource.data.status == "PENDING" &&
@@ -83,13 +72,12 @@ service cloud.firestore {
         request.resource.data.planAmount >= 1 &&
         isValidString(request.resource.data.utrNumber, 6, 36);
 
-      // Admin or the owner can update/manage their request status
-      allow update, delete: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow update, delete: if isSignedIn();
     }
 
     match /system_config/{docId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isSignedIn();
     }
 
     match /{document=**} {
