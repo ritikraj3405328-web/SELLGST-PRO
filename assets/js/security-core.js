@@ -1,5 +1,5 @@
 /**
- * SellGST Pro — Principal Security Core v6.5 (Real-Time Approval Sync, 0.1s Instant Load & Zero-Trust Privacy)
+ * SellGST Pro — Principal Security Core v6.5 (100% Full Uncut Original + Real-Time Approval Sync)
  * File: /assets/js/security-core.js
  */
 
@@ -72,10 +72,15 @@ googleProvider.setCustomParameters({ prompt: "select_account" });
 
     const healKey = "sellgst_v6_5_sw_healed";
     if (!localStorage.getItem(healKey)) {
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.getRegistrations().then((regs) => {
+          regs.forEach((r) => r.unregister());
+        });
+      }
       if ("caches" in window) {
         caches.keys().then((names) => {
           names.forEach((n) => {
-            if (!n.includes("v6")) caches.delete(n);
+            if (!n.includes("v5")) caches.delete(n);
           });
         });
       }
@@ -324,6 +329,7 @@ export function syncLiveProfitLossVisuals() {
     if (!m || typeof m.finalNetResult !== "number") return;
 
     const isProfit = m.finalNetResult >= 0;
+    const absNet = Math.abs(m.finalNetResult);
     const totalOrders = Math.max(1, Number(m.totalOrders) || 1);
     const profitOrders = Number(m.profitOrderCount) || 0;
     const lossOrders = Number(m.lossOrderCount) || 0;
@@ -359,8 +365,7 @@ export function syncLiveProfitLossVisuals() {
 }
 
 /**
- * Checks if any local payment request for this user was already APPROVED by Admin
- * and automatically clears stuck pending states.
+ * Reconciles local & Admin-approved requests so "Verification Pending" never stays stuck after Admin approval.
  */
 function reconcileLocalApprovedRequests() {
   try {
@@ -408,7 +413,6 @@ export function evaluateSubscriptionHealth() {
   const now = Date.now();
 
   if (prof.isPro) {
-    // If user is Pro, ensure any stale pending flags are wiped immediately
     localStorage.removeItem("sellgst_pending_utr");
     prof.paymentPending = false;
     AppState.pendingRequest = null;
@@ -607,7 +611,19 @@ function startSevenSecondPWAButtonTimer() {
     btn.style.opacity = "1";
   });
 
+  let secLeft = 7;
+  const secTimer = setInterval(() => {
+    secLeft -= 1;
+    document.querySelectorAll("#pwa-sec-badge").forEach((b) => {
+      if (secLeft > 0) b.textContent = `${secLeft}s`;
+    });
+    if (secLeft <= 0) {
+      clearInterval(secTimer);
+    }
+  }, 1000);
+
   setTimeout(() => {
+    clearInterval(secTimer);
     hideAllPWAInstallButtons();
   }, 7000);
 }
@@ -680,40 +696,7 @@ export async function triggerPWAInstall() {
 
 const prefetchedUrls = new Set();
 
-/**
- * 0.1s Instant Page Load Engine (Chromium Speculation Rules + Touch/Hover Prefetch)
- */
 function initInstantPagePrefetcher() {
-  try {
-    if (HTMLScriptElement.supports && HTMLScriptElement.supports("speculationrules")) {
-      const specScript = document.createElement("script");
-      specScript.type = "speculationrules";
-      specScript.textContent = JSON.stringify({
-        prerender: [
-          {
-            source: "document",
-            where: { href_matches: "./*.html" },
-            eagerness: "moderate"
-          }
-        ],
-        prefetch: [
-          {
-            urls: [
-              "./index.html",
-              "./app.html",
-              "./invoice.html",
-              "./ecom-audit.html",
-              "./label-studio.html",
-              "./gst-filing.html",
-              "./qr-studio.html"
-            ]
-          }
-        ]
-      });
-      document.head.appendChild(specScript);
-    }
-  } catch (_) {}
-
   const prefetchPage = (href) => {
     if (!href || prefetchedUrls.has(href)) return;
     if (href.startsWith("#") || href.startsWith("upi:") || href.startsWith("http")) return;
@@ -922,22 +905,16 @@ function startUserRealtimeListeners(user) {
     () => loadCachedLocalProfile(user)
   );
 
-  // CRITICAL FIX: Listen to payment_requests in real-time.
-  // If ANY request for this user is marked APPROVED by Admin, immediately unlock Pro & clear Pending Banner!
   const q = query(collection(db, "payment_requests"), where("uid", "==", user.uid), limit(10));
   AppState.listeners.paymentUnsub = onSnapshot(
     q,
     (snap) => {
       let latestPending = null;
       let latestApproved = null;
-
       snap.forEach((docSnap) => {
         const d = { id: docSnap.id, ...docSnap.data() };
-        if (d.status === "APPROVED") {
-          latestApproved = d;
-        } else if (d.status === "PENDING") {
-          latestPending = d;
-        }
+        if (d.status === "APPROVED") latestApproved = d;
+        else if (d.status === "PENDING") latestPending = d;
       });
 
       if (latestApproved) {
@@ -958,29 +935,13 @@ function startUserRealtimeListeners(user) {
         AppState.profile.paymentPending = false;
         localStorage.setItem("sellgst_local_profile", JSON.stringify(AppState.profile));
 
-        // Sync local payment queue as well
-        try {
-          const localQueue = JSON.parse(localStorage.getItem("sellgst_local_payment_requests") || "[]");
-          localQueue.forEach((r) => {
-            if (r.id === latestApproved.id || r.utrNumber === latestApproved.utrNumber) {
-              r.status = "APPROVED";
-            }
-          });
-          localStorage.setItem("sellgst_local_payment_requests", JSON.stringify(localQueue));
-        } catch (_) {}
-
         if (wasNotPro) {
           showToast(`🎉 Admin Approved Your Payment! SellGST Pro (${cleanPlan}) is now ACTIVE!`, "success", 6000);
           closeProPaymentModal();
         }
       } else {
         AppState.pendingRequest = AppState.profile.isPro ? null : latestPending;
-        if (!latestPending) {
-          localStorage.removeItem("sellgst_pending_utr");
-          AppState.profile.paymentPending = false;
-        }
       }
-
       syncProDOMElements();
       renderPendingPaymentBanner();
       notifyStateChange();
@@ -1143,13 +1104,13 @@ export function renderPendingPaymentBanner() {
   const waHref = `https://wa.me/${ownerWa}?text=${encodeURIComponent(waText)}`;
 
   banner.innerHTML = `
-    <div class="flex flex-wrap items-center justify-center gap-2 text-center w-full">
+    <div class="flex flex-wrap items-center justify-center gap-2 text-center">
       <span class="inline-block animate-spin text-xs">⏳</span>
       <span>
-        <strong>Payment Verification Pending (UTR: ${sanitizeHTML(utrDisplay)})</strong> — Activates automatically once Admin approves.
+        <strong>Payment Verification Pending (UTR: ${sanitizeHTML(utrDisplay)})</strong> — Activates automatically once Admin verifies bank transfer.
       </span>
       <a href="${waHref}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-0.5 rounded-full bg-emerald-600 text-white font-extrabold text-[11px] shadow hover:bg-emerald-700 transition">
-        💬 Resend WhatsApp Alert
+        💬 Resend WhatsApp Alert to Admin
       </a>
     </div>
   `;
@@ -1643,8 +1604,7 @@ function injectFloatingAIAssistant() {
 
   const orbWrapper = document.createElement("div");
   orbWrapper.id = "sellgst-ai-orb-wrapper";
-  // Positioned higher on mobile (bottom-36) so it NEVER covers the bottom Logout button!
-  orbWrapper.className = "fixed bottom-36 lg:bottom-6 right-3.5 z-[9980] flex items-center no-print";
+  orbWrapper.className = "fixed bottom-24 lg:bottom-6 right-3.5 z-[9980] flex items-center no-print";
 
   orbWrapper.innerHTML = `
     <div class="relative flex items-center">
@@ -1988,6 +1948,16 @@ function onDOMReady() {
   syncLiveProfitLossVisuals();
 
   document.body.addEventListener("click", (e) => {
+    const extQrBtn = e.target.closest("#open-external-qr-portal-btn");
+    if (extQrBtn) {
+      e.preventDefault();
+      if (!consumeFreeActionOrLock("Dynamic QR Generator Portal")) return;
+      const qrPortalUrl = "https://ritikraj3405328-web.github.io/Dynamic-Qr-generator-/#home";
+      const win = window.open(qrPortalUrl, "_blank", "noopener,noreferrer");
+      if (!win) window.location.href = qrPortalUrl;
+      return;
+    }
+
     const unlockBtn = e.target.closest("[data-unlock-pro]");
     if (unlockBtn) {
       e.preventDefault();
