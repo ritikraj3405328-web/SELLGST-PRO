@@ -3,10 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-  <title>Dynamic QR & Google Review Studio — SellGST Pro</title>
-  <meta name="description" content="Create Dynamic Business QR, Google 5-Star Review Standees & UPI QR Codes with 5-Free Limit Lock." />
+
+  <!-- ===================================================================== -->
+  <!-- 100% SEO-FRIENDLY META TAGS, OPENGRAPH & GOOGLE JSON-LD SCHEMA        -->
+  <!-- ===================================================================== -->
+  <title>Dynamic QR & Google 5-Star Review Standee Generator — SellGST Pro</title>
+  <meta name="description" content="Create Dynamic Business QR Codes, Google 5-Star Review Standees & Custom UPI Payment QR Standees online with SellGST Pro (https://sellgst-pro.pages.dev/qr-studio.html)." />
+  <meta name="keywords" content="dynamic QR code generator India, Google 5 star review QR standee maker, custom UPI QR standee, business QR code generator, SellGST Pro QR studio" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <link rel="canonical" href="https://sellgst-pro.pages.dev/qr-studio.html" />
+
+  <!-- Open Graph / WhatsApp / Social Media Preview -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Dynamic QR & Google 5-Star Review Standee Studio — SellGST Pro" />
+  <meta property="og:description" content="Generate printable 3D Google Review, UPI Payment, and Online Store QR Standees in 1 click." />
+  <meta property="og:url" content="https://sellgst-pro.pages.dev/qr-studio.html" />
   <meta name="theme-color" content="#081B4B" />
   <link rel="manifest" href="./manifest.json" />
+
+  <!-- Structured Data for Google Search Rich Snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SellGST Pro Dynamic QR & Google Review Standee Studio",
+    "url": "https://sellgst-pro.pages.dev/qr-studio.html",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web, Android, iOS, Windows",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "INR"
+    },
+    "description": "Create printable 3D Business QR, UPI Payment QR, and Google 5-Star Review Standees."
+  }
+  </script>
 
   <!-- 0.1s Instant Module Preload & Speculative Prefetch -->
   <link rel="modulepreload" href="./assets/js/security-core.js" />
@@ -217,13 +248,13 @@
       </div>
 
       <div class="flex flex-wrap items-center gap-2.5 shrink-0">
-        <button
-          type="button"
+        <a
+          href="https://ritikraj3405328-web.github.io/Dynamic-Qr-generator-/#home"
           id="open-external-qr-portal-btn"
           class="px-5 py-3 rounded-2xl bg-[#10E594] hover:bg-emerald-300 text-[#081B4B] font-extrabold text-xs sm:text-[13px] shadow-xl transition flex items-center gap-2"
         >
           <span>🚀 Launch Full Dynamic QR Portal →</span>
-        </button>
+        </a>
       </div>
     </section>
 
@@ -416,7 +447,7 @@
 
   </div>
 
-  <!-- QR STUDIO SCRIPT (WITH UNIFIED 5-USE LIMIT LOCK & ZERO DOUBLE-DEDUCTION BUG) -->
+  <!-- QR STUDIO SCRIPT (WITH UNIFIED 5-USE LIMIT LOCK & ZERO NaN / ZERO DOUBLE-DEDUCTION) -->
   <script type="module">
     import {
       AppState,
@@ -448,9 +479,9 @@
     }, 1000);
 
     function getQrUsedCount() {
-      const qrStored = Number(localStorage.getItem("sellgst_qr_count") || "0");
-      const profStored = Number(AppState.profile?.freeActionsUsed || "0");
-      return Math.max(qrStored, profStored);
+      const qrStored = Number(localStorage.getItem("sellgst_qr_count")) || 0;
+      const profStored = Number(AppState.profile?.freeActionsUsed) || 0;
+      return Math.max(0, qrStored, profStored);
     }
 
     function getCurrentQrSignature() {
@@ -494,7 +525,6 @@
       if (AppState.profile.isPro) return true;
 
       const sig = getCurrentQrSignature();
-      // Prevent double charging when the user clicks "Generate" and then clicks "Download PNG" for the exact same QR
       if (!forceNewCharge && sig === lastChargedQrSignature && lastChargedQrSignature !== "") {
         return true;
       }
@@ -523,15 +553,20 @@
       return true;
     }
 
-    // 2. External Dynamic-Qr-generator Website Launcher (Enforces 5-limit lock)
-    document.getElementById("open-external-qr-portal-btn")?.addEventListener("click", () => {
+    // 2. External Dynamic-Qr-generator Website Launcher (Enforces 5-limit lock & mobile popup safety)
+    document.getElementById("open-external-qr-portal-btn")?.addEventListener("click", (e) => {
+      e.preventDefault();
       if (!AppState.profile.isPro && getQrUsedCount() >= MAX_FREE_QR) {
         showToast("🔒 5 Free QR limit reached! Please unlock Pro to access the Dynamic QR Portal.", "warning");
         openProPaymentModal("MONTHLY");
         return;
       }
       if (!consumeOneQrQuota(true)) return;
-      window.open("https://ritikraj3405328-web.github.io/Dynamic-Qr-generator-/#home", "_blank", "noopener,noreferrer");
+      const targetUrl = "https://ritikraj3405328-web.github.io/Dynamic-Qr-generator-/#home";
+      const win = window.open(targetUrl, "_blank", "noopener,noreferrer");
+      if (!win) {
+        window.location.href = targetUrl;
+      }
     });
 
     // 3. QR Type Tab Switching
@@ -569,7 +604,6 @@
     const ctx = canvas.getContext("2d");
     let customLogoImg = null;
 
-    // Restore custom circle logo from Invoice if already uploaded by seller
     const savedInvoiceLogo = localStorage.getItem("sellgst_custom_circle_logo");
     if (savedInvoiceLogo) {
       const preImg = new Image();
@@ -590,6 +624,18 @@
       };
       img.src = URL.createObjectURL(file);
     });
+
+    function drawStandeeFooter() {
+      ctx.fillStyle = "#081B4B";
+      ctx.fillRect(0, 480, canvas.width, 60);
+      ctx.fillStyle = "#10E594";
+      ctx.font = "bold 12px 'Plus Jakarta Sans', sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("⚡ POWERED BY SELLGST PRO & DYNAMIC QR STUDIO", 200, 505);
+      ctx.fillStyle = "#CBD5E1";
+      ctx.font = "11px 'JetBrains Mono', monospace";
+      ctx.fillText("Scan with Google Lens, PhonePe, GPay or Camera", 200, 524);
+    }
 
     function drawStandeeCanvas() {
       const bizName = (document.getElementById("qr-biz-name").value.trim() || "S.K.P.S DIGITAL").toUpperCase();
@@ -642,24 +688,20 @@
       ctx.font = "bold 13px 'Plus Jakarta Sans', sans-serif";
       ctx.fillText(ctaTitle.slice(0, 38), 200, 171);
 
+      // QR Frame & Footer drawn immediately so canvas is never blank even while QR image loads
+      ctx.strokeStyle = "#E2E8F0";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(75, 202, 250, 250);
+      drawStandeeFooter();
+
       // Load & Draw Scannable QR Image
       const qrImg = new Image();
       qrImg.crossOrigin = "anonymous";
       qrImg.onload = () => {
-        ctx.strokeStyle = "#E2E8F0";
-        ctx.lineWidth = 2;
-        ctx.strokeRect(75, 202, 250, 250);
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(77, 204, 246, 246);
         ctx.drawImage(qrImg, 85, 212, 230, 230);
-
-        // Footer Branding (Promotes SellGST Pro & Dynamic QR Studio)
-        ctx.fillStyle = "#081B4B";
-        ctx.fillRect(0, 480, canvas.width, 60);
-        ctx.fillStyle = "#10E594";
-        ctx.font = "bold 12px 'Plus Jakarta Sans', sans-serif";
-        ctx.fillText("⚡ POWERED BY SELLGST PRO & DYNAMIC QR STUDIO", 200, 505);
-        ctx.fillStyle = "#CBD5E1";
-        ctx.font = "11px 'JetBrains Mono', monospace";
-        ctx.fillText("Scan with Google Lens, PhonePe, GPay or Camera", 200, 524);
+        drawStandeeFooter();
       };
       qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&margin=6&data=${encodeURIComponent(qrPayload)}`;
     }
@@ -681,7 +723,6 @@
     });
 
     document.getElementById("download-qr-png-btn")?.addEventListener("click", () => {
-      // Does NOT double-deduct if the user just clicked "Generate" for the same QR!
       if (!consumeOneQrQuota(false)) return;
       const a = document.createElement("a");
       a.href = canvas.toDataURL("image/png");
