@@ -1,13 +1,6 @@
 /**
- * SellGST Pro — Principal Security Core v6.0 (100% Complete, Uncut & Live Data-Driven Build)
+ * SellGST Pro — Principal Security Core v6.2 (Real-Time Firestore Sync & UID Masking)
  * File: /assets/js/security-core.js
- *
- * New Fixes in v6.0:
- * 1. Top Empty Space Fix: Removes `justify-between` spacing bug on `index.html` and compacts top banners.
- * 2. Strict 12-Digit UTR Validation: Removed the fake "I Have Paid" auto-fill button so users must enter a real 12-digit numeric UTR.
- * 3. Built-in Admin WhatsApp Number (`917808990039`) + Popup-Blocker Bypass so new IDs always trigger WhatsApp alerts.
- * 4. Real-Data 3D Gauge (Speedometer), Progress Bars, Donut Rings & Channel Breakdown Sync (`syncLiveProfitLossVisuals`):
- *    Automatically moves needles UP (Green 🟢) on Profit and DOWN (Red 🔴) on Loss across `index.html`, `app.html` & `ecom-audit.html`!
  */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -48,9 +41,6 @@ import { initI18n, t, getCurrentLang, setLanguage, SUPPORTED_LANGUAGES } from ".
 
 export { initI18n, t, getCurrentLang, setLanguage, SUPPORTED_LANGUAGES };
 
-// ============================================================================
-// 1. EXACT FIREBASE CLOUD CONFIGURATION & DEFAULT ADMIN WHATSAPP
-// ============================================================================
 export const DEFAULT_OWNER_WHATSAPP = "917808990039";
 
 export const firebaseConfig = {
@@ -68,9 +58,6 @@ export const db = getFirestore(app);
 export const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: "select_account" });
 
-// ============================================================================
-// 2. SELF-HEALING DOMAIN & SERVICE WORKER GUARD
-// ============================================================================
 (function selfHealDomainAndCache() {
   try {
     const host = window.location.hostname;
@@ -83,7 +70,7 @@ googleProvider.setCustomParameters({ prompt: "select_account" });
       return;
     }
 
-    const healKey = "sellgst_v6_0_sw_healed";
+    const healKey = "sellgst_v6_2_sw_healed";
     if (!localStorage.getItem(healKey)) {
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker.getRegistrations().then((regs) => {
@@ -102,12 +89,8 @@ googleProvider.setCustomParameters({ prompt: "select_account" });
   } catch (_) {}
 })();
 
-// ============================================================================
-// 3. TOP EMPTY SPACE FIX (REMOVES `justify-between` GAP ON MOBILE/DESKTOP)
-// ============================================================================
-function fixTopLayoutSpacingGap() {
+export function fixTopLayoutSpacingGap() {
   if (!document.body) return;
-  // Fixes the large blank gap between top banner, navbar, and main content on index.html
   document.body.classList.remove("justify-between");
   document.body.classList.add("justify-start");
 
@@ -123,10 +106,7 @@ function fixTopLayoutSpacingGap() {
   }
 }
 
-// ============================================================================
-// 4. FIRST-VISIT LOGIN GATEKEEPER & 2-MINUTE GUEST PREVIEW ENGINE
-// ============================================================================
-export const GUEST_PREVIEW_DURATION_MS = 2 * 60 * 1000; // 2 Minutes (120 seconds)
+export const GUEST_PREVIEW_DURATION_MS = 2 * 60 * 1000;
 let guestCountdownInterval = null;
 
 export function isUserPermanentlyLoggedIn() {
@@ -173,9 +153,7 @@ function enforceAuthAndGuestGate() {
     return;
   }
 
-  if (onLoginPage) {
-    return;
-  }
+  if (onLoginPage) return;
 
   const guestStart = Number(localStorage.getItem("sellgst_guest_start_ts") || "0");
   if (!guestStart) {
@@ -244,9 +222,6 @@ function removeGuestBanner() {
   if (bar) bar.remove();
 }
 
-// ============================================================================
-// 5. GLOBAL APPLICATION STATE & SUBSCRIPTION TIER ENGINE
-// ============================================================================
 export const FREE_USAGE_MAX_LIMIT = 5;
 
 const DEFAULT_PROFILE = {
@@ -266,8 +241,7 @@ const DEFAULT_PROFILE = {
   bankBranch: "NEW DELHI MAIN BRANCH",
   logoDataUrl: "",
   signatureText: "Authorized Signatory",
-  invoiceNote:
-    "Please include the Invoice number in your payment notes. To be paid in full in maximum 7 days after receiving the invoice.",
+  invoiceNote: "Please include Invoice number in notes.",
   isPro: false,
   isAdmin: false,
   subscriptionStatus: "FREE",
@@ -298,7 +272,6 @@ export const AppState = {
     payeeName: "AGNI VOLT",
     monthlyPrice: 99,
     yearlyPrice: 499,
-    // Always defaults to Owner WhatsApp so even brand new IDs/devices know where to send the alert!
     whatsappWebhookNumber: localStorage.getItem("sellgst_owner_wa") || DEFAULT_OWNER_WHATSAPP,
     autoWhatsAppNotify: true
   },
@@ -344,10 +317,6 @@ function notifyStateChange() {
   });
 }
 
-// ============================================================================
-// 6. REAL-DATA 3D GAUGE (GHADI), PROGRESS BARS & DONUT RING SYNC ENGINE
-//    Moves needles & bars UP (Green 🟢) in Profit and DOWN (Red 🔴) in Loss!
-// ============================================================================
 export function syncLiveProfitLossVisuals() {
   try {
     const rawMetrics = localStorage.getItem("sellgst_live_pnl_metrics");
@@ -361,111 +330,36 @@ export function syncLiveProfitLossVisuals() {
     const profitOrders = Number(m.profitOrderCount) || 0;
     const lossOrders = Number(m.lossOrderCount) || 0;
     const winRatioPct = Math.round((profitOrders / totalOrders) * 100);
-    const lossRatioPct = 100 - winRatioPct;
-    const marginPct = Number(m.marginPct) || 0;
 
-    // Calculate realistic needle rotation angle (-55deg = Heavy Loss, +55deg = Strong Profit)
     const needleAngle = isProfit
       ? Math.min(58, Math.max(12, Math.round((winRatioPct / 100) * 58)))
       : Math.max(-58, Math.min(-18, -Math.round(((lossOrders / totalOrders) || 0.5) * 58)));
 
-    const statusColorHex = isProfit ? "#10E594" : "#F43F5E";
-    const statusBadgeText = isProfit
-      ? `🟢 PROFIT UP (+${ formatINR(absNet) })`
-      : `🔴 LOSS DOWN (-${ formatINR(absNet) })`;
-
-    // 1. Update Home Page (`index.html`) 3D Gauge Needle & Score
     const homeNeedle = document.getElementById("home-gauge-needle");
     if (homeNeedle) {
       homeNeedle.setAttribute("transform", `rotate(${needleAngle} 65 66)`);
       homeNeedle.setAttribute("fill", isProfit ? "#10B981" : "#F43F5E");
-      const scoreLabel = homeNeedle.closest("div")?.querySelector("div");
-      if (scoreLabel) {
-        scoreLabel.innerHTML = isProfit
-          ? `<span class="text-emerald-600 font-extrabold">🟢 ${winRatioPct}% Profitable (${statusBadgeText})</span>`
-          : `<span class="text-rose-600 font-extrabold">🔴 ${lossRatioPct}% In Loss (${statusBadgeText})</span>`;
-      }
     }
 
-    // 2. Update Dashboard (`app.html`) Speedometer Needle, Arc & Health Label
     const dashNeedle = document.getElementById("speedo-needle");
     if (dashNeedle) {
       dashNeedle.setAttribute("transform", `rotate(${needleAngle} 100 95)`);
       const poly = dashNeedle.querySelector("polygon");
       if (poly) poly.setAttribute("fill", isProfit ? "#10B981" : "#F43F5E");
-
-      const speedoCard = dashNeedle.closest(".text-center");
-      const healthText = speedoCard?.querySelector("div:last-child");
-      if (healthText) {
-        healthText.innerHTML = isProfit
-          ? `Business Status: <span class="text-emerald-600 font-black">${statusBadgeText} (${winRatioPct}% Win)</span>`
-          : `Business Status: <span class="text-rose-600 font-black">${statusBadgeText} (${lossRatioPct}% Loss)</span>`;
-      }
     }
 
-    // 3. Update Dashboard (`app.html`) Day / Week / Month / Year Progress Bars
-    const barIds = [
-      { id: "bar-day", val: isProfit ? Math.min(98, Math.max(25, winRatioPct - 8)) : Math.max(12, Math.min(45, winRatioPct)) },
-      { id: "bar-week", val: isProfit ? Math.min(98, Math.max(30, winRatioPct)) : Math.max(15, Math.min(40, winRatioPct)) },
-      { id: "bar-month", val: isProfit ? Math.min(99, Math.max(35, winRatioPct + 4)) : Math.max(10, Math.min(35, winRatioPct)) },
-      { id: "bar-year", val: isProfit ? Math.min(99, Math.max(40, winRatioPct + 8)) : Math.max(8, Math.min(30, winRatioPct)) }
-    ];
-
-    barIds.forEach((b) => {
-      const barEl = document.getElementById(b.id);
-      if (barEl) {
-        barEl.style.width = `${b.val}%`;
-        barEl.style.backgroundColor = statusColorHex;
-        const pctSpan = barEl.parentElement?.nextElementSibling;
-        if (pctSpan) {
-          pctSpan.textContent = isProfit ? `+${b.val}%` : `-${100 - b.val}%`;
-          pctSpan.className = `font-mono text-[11px] font-extrabold w-11 text-right ${
-            isProfit ? "text-emerald-600" : "text-rose-600"
-          }`;
-        }
-      }
-    });
-
-    // 4. Update Dashboard (`app.html`) KPI Cards & Live Channel Breakdown (Meesho, Flipkart & Amazon)
     const kpiSales = document.getElementById("kpi-sales-val");
     const kpiRto = document.getElementById("kpi-rto-val");
     const kpiVal = document.getElementById("kpi-valuation-val");
-    if (kpiSales && m.totalSettlement !== undefined) {
-      kpiSales.textContent = formatINR(m.totalSettlement);
-    }
+    if (kpiSales && m.totalSettlement !== undefined) kpiSales.textContent = formatINR(m.totalSettlement);
     if (kpiRto && m.totalLossAmt !== undefined) {
       kpiRto.textContent = isProfit ? `+${formatINR(m.totalProfitAmt)}` : `-${formatINR(m.totalLossAmt)}`;
       kpiRto.className = `text-[13px] font-black font-mono mt-0.5 ${isProfit ? "text-emerald-600" : "text-rose-600"}`;
     }
-    if (kpiVal && m.totalSettlement !== undefined) {
-      kpiVal.textContent = formatINR(Math.max(0, m.totalSettlement * 12));
-    }
-
-    // Update Meesho & Flipkart/Amazon Channel Breakdown rows on `app.html` if present
-    document.querySelectorAll(".bento-card .p-2.rounded-xl.bg-slate-50").forEach((row) => {
-      const txt = row.textContent || "";
-      const valSpan = row.querySelector("span.font-mono:last-child");
-      const subDiv = row.querySelector(".text-\\[10px\\]");
-      if (!valSpan) return;
-
-      if (txt.includes("Meesho") && m.meeshoNet !== undefined) {
-        const prof = m.meeshoNet >= 0;
-        valSpan.textContent = `${prof ? "+🟢 " : "-🔴 "}${formatINR(Math.abs(m.meeshoNet))}`;
-        valSpan.className = `font-mono text-xs font-extrabold shrink-0 ${prof ? "text-emerald-600" : "text-rose-600"}`;
-        if (subDiv) subDiv.textContent = `${m.meeshoCount || 0} Orders (${prof ? "In Profit" : "In Loss"})`;
-      } else if (txt.includes("Flipkart") && m.fkAmzNet !== undefined) {
-        const prof = m.fkAmzNet >= 0;
-        valSpan.textContent = `${prof ? "+🟢 " : "-🔴 "}${formatINR(Math.abs(m.fkAmzNet))}`;
-        valSpan.className = `font-mono text-xs font-extrabold shrink-0 ${prof ? "text-emerald-600" : "text-rose-600"}`;
-        if (subDiv) subDiv.textContent = `${m.fkAmzCount || 0} Orders (${prof ? "In Profit" : "In Loss"})`;
-      }
-    });
+    if (kpiVal && m.totalSettlement !== undefined) kpiVal.textContent = formatINR(Math.max(0, m.totalSettlement * 12));
   } catch (_) {}
 }
 
-// ============================================================================
-// 7. EXPIRY & UNIFIED 5-LIMIT FREE USAGE PAYWALL CONTROLLER
-// ============================================================================
 export function evaluateSubscriptionHealth() {
   const prof = AppState.profile;
   const now = Date.now();
@@ -541,9 +435,6 @@ export function consumeFreeActionOrLock(featureName = "Feature") {
   return true;
 }
 
-// ============================================================================
-// 8. INFINITE UNIQUE INVOICE ID GENERATOR (1 TO INFINITY)
-// ============================================================================
 export function generateUniqueInvoiceNumber() {
   try {
     let seq = Number(localStorage.getItem("sellgst_infinite_inv_seq") || "4649844");
@@ -564,9 +455,6 @@ export function peekCurrentInvoiceNumber() {
   }
 }
 
-// ============================================================================
-// 9. ZERO-TRUST XSS & CSV FORMULA-INJECTION SANITIZERS
-// ============================================================================
 export function sanitizeHTML(input) {
   if (input === null || input === undefined) return "";
   return String(input)
@@ -600,9 +488,6 @@ export function formatINR(amount) {
   return inrFormatter.format(Number(amount) || 0);
 }
 
-// ============================================================================
-// 10. 3D INTERACTIVE MOUSE-HOVER TILT ENGINE
-// ============================================================================
 export function init3DTiltCards() {
   const attach3D = (card) => {
     if (card.dataset.tiltBound === "1") return;
@@ -642,9 +527,6 @@ export function init3DTiltCards() {
   document.querySelectorAll(".bento-card, .bento-mint, .card-3d, [data-3d-tilt]").forEach(attach3D);
 }
 
-// ============================================================================
-// 11. 7-SECOND AUTO-HIDING PWA INSTALL BUTTON MANAGER
-// ============================================================================
 function initSevenSecondPWAInstall() {
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
@@ -746,9 +628,6 @@ export async function triggerPWAInstall() {
   modal.querySelector("#got-it-pwa-btn").addEventListener("click", () => closePwaModal());
 }
 
-// ============================================================================
-// 12. SPECULATIVE PAGE PREFETCHER & NATIVE BACK-BUTTON MANAGER
-// ============================================================================
 const prefetchedUrls = new Set();
 
 function initInstantPagePrefetcher() {
@@ -819,9 +698,6 @@ function initBackButtonManager() {
   });
 }
 
-// ============================================================================
-// 13. TOAST NOTIFICATION SYSTEM
-// ============================================================================
 export function showToast(message, type = "success", duration = 4000) {
   let container = document.getElementById("sellgst-toast-container");
   if (!container) {
@@ -860,9 +736,6 @@ export function showToast(message, type = "success", duration = 4000) {
   }, duration);
 }
 
-// ============================================================================
-// 14. REAL-TIME FIRESTORE LISTENERS
-// ============================================================================
 function startSystemListeners() {
   try {
     const configRef = doc(db, "system_config", "payment_settings");
@@ -1000,9 +873,6 @@ function loadCachedLocalProfile(user) {
   } catch (_) {}
 }
 
-// ============================================================================
-// 15. REAL-TIME DOM UNBLUR, TIER BADGE & 30-DAY COUNTDOWN ENGINE
-// ============================================================================
 export function syncProDOMElements() {
   const health = evaluateSubscriptionHealth();
   const isPro = health.isPro;
@@ -1057,6 +927,11 @@ export function syncProDOMElements() {
     el.textContent = AppState.profile.gstin || "07AABCS1429B1Z5";
   });
 
+  const rawUid = AppState.user?.uid || AppState.profile?.uid || "seller-01";
+  document.querySelectorAll("[data-masked-uid]").forEach((el) => {
+    el.textContent = `UID: #${rawUid} (Active Store)`;
+  });
+
   syncLiveProfitLossVisuals();
 }
 
@@ -1102,7 +977,7 @@ export function renderPendingPaymentBanner() {
     banner = document.createElement("div");
     banner.id = "sellgst-pending-payment-banner";
     banner.className =
-      "w-full bg-amber-100/95 border-b border-amber-300 text-amber-950 px-3 py-1.5 text-xs font-medium flex flex-wrap items-center justify-center gap-2 z-40 no-print";
+      "w-full bg-amber-100/95 border-b border-amber-300 text-amber-950 px-3 py-1.5 text-xs font-medium flex flex-wrap items-center justify-between gap-2 z-40 no-print";
     document.body.prepend(banner);
     fixTopLayoutSpacingGap();
   }
@@ -1154,9 +1029,6 @@ function renderBroadcastBanner(data) {
   el.innerHTML = `📢 ${sanitizeHTML(data.message)}`;
 }
 
-// ============================================================================
-// 16. SMART TIER-AWARE UPI PAYMENT MODAL (STRICT 12-DIGIT UTR + GUARANTEED WHATSAPP)
-// ============================================================================
 export function openProPaymentModal(defaultPlan = "MONTHLY") {
   const health = evaluateSubscriptionHealth();
 
@@ -1311,7 +1183,6 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
     });
   });
 
-  // Restrict input to numbers only
   const utrInputEl = modal.querySelector("#upi-utr-input");
   utrInputEl.addEventListener("input", () => {
     utrInputEl.value = utrInputEl.value.replace(/\D/g, "").slice(0, 12);
@@ -1353,7 +1224,6 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
       createdAtISO: new Date().toISOString()
     };
 
-    // Build Admin WhatsApp URL BEFORE any async await so mobile Chrome never blocks the popup!
     const ownerWa = (
       cfg.whatsappWebhookNumber ||
       localStorage.getItem("sellgst_owner_wa") ||
@@ -1371,7 +1241,6 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
       `👉 *Approve in 1-Click:* ${adminConsoleUrl}`;
     const waLink = `https://wa.me/${ownerWa}?text=${encodeURIComponent(waText)}`;
 
-    // Open WhatsApp SYNCHRONOUSLY on user click so popup blocker never blocks it!
     const waWindow = window.open(waLink, "_blank", "noopener,noreferrer");
 
     submitBtn.disabled = true;
@@ -1395,7 +1264,6 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
 
     showToast("⏳ UTR Submitted! Verification pending until Admin approves.", "warning", 6000);
 
-    // If mobile browser blocked window.open, redirect directly to WhatsApp so alert is 100% sent
     if (!waWindow) {
       setTimeout(() => {
         window.location.href = waLink;
@@ -1412,9 +1280,6 @@ export function closeProPaymentModal(fromPopState = false) {
   }
 }
 
-// ============================================================================
-// 17. USER PERSONAL ACCOUNT & DPDP ACT 2023 PRIVACY DRAWER
-// ============================================================================
 export function openUserAccountModal() {
   let modal = document.getElementById("sellgst-user-account-modal");
   if (modal) modal.remove();
@@ -1428,6 +1293,8 @@ export function openUserAccountModal() {
   } else if (health.isPro && health.planName === "MONTHLY") {
     planBadgeText = `MONTHLY PRO ACTIVE (${health.remainingDays}d ${health.remainingHours}h left)`;
   }
+
+  const rawUid = prof.uid || "seller-01";
 
   modal = document.createElement("div");
   modal.id = "sellgst-user-account-modal";
@@ -1517,14 +1384,14 @@ export function openUserAccountModal() {
         ${
           prof.isAdmin
             ? `<a href="./admin.html" class="px-3.5 py-2.5 rounded-xl bg-indigo-50 text-[#5B2EFF] font-extrabold text-xs">🛡️ Master Admin</a>`
-            : `<span class="text-[11px] text-slate-400 font-mono">UID: ${sanitizeHTML(String(prof.uid).slice(0, 10))}...</span>`
+            : `<div class="flex items-center gap-1 min-w-0"><span class="text-[11px] text-slate-500 font-mono font-bold truncate">UID: #${sanitizeHTML(rawUid)}</span><button type="button" id="copy-modal-uid-btn" class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-bold text-slate-700 shrink-0">Copy</button></div>`
         }
         <button
           type="button"
           id="account-drawer-logout-btn"
-          class="flex-1 py-2.5 px-4 rounded-xl bg-[#081B4B] hover:bg-slate-900 text-white font-extrabold text-xs shadow flex items-center justify-center gap-1.5"
+          class="flex-1 py-2.5 px-3 rounded-xl bg-[#081B4B] hover:bg-slate-900 text-white font-extrabold text-xs shadow flex items-center justify-center gap-1.5"
         >
-          <span>⏻ Logout from Account</span>
+          <span>⏻ Logout</span>
         </button>
       </div>
     </div>
@@ -1538,6 +1405,11 @@ export function openUserAccountModal() {
   pushModalState("user-account-modal", () => closeAccModal(true));
 
   modal.querySelector("#close-user-acc-btn").addEventListener("click", () => closeAccModal());
+  modal.querySelector("#copy-modal-uid-btn")?.addEventListener("click", () => {
+    navigator.clipboard.writeText(rawUid);
+    showToast("Copied full UID to clipboard!", "info");
+  });
+
   modal.addEventListener("click", (e) => {
     if (e.target === modal) closeAccModal();
   });
@@ -1596,15 +1468,12 @@ export function openUserAccountModal() {
   });
 }
 
-// ============================================================================
-// 18. DISMISSIBLE FLOATING GEMINI AI ASSISTANT
-// ============================================================================
 function getSmartContextualReply(queryText = "") {
   const raw = String(queryText || "").trim();
   const q = raw.toLowerCase();
 
-  if (/^(hi+|hello+|hey+|namaste|hlo|hola|kaise ho|kya haal hai|good morning|good evening)[\s!?.]*$/i.test(q)) {
-    return "Hi! 👋 Main aapka SellGST Pro AI Helper hoon. Bataiye, aaj main aapki kya madad kar sakta hoon? Aap mujhse koi bhi GST calculation, HSN code, invoice customization, ya e-commerce Profit/Loss & RTO claim ke baare mein puch sakte hain!";
+  if (/^(hi+|hello+|hey+|namaste|hlo|kaise ho|kya haal hai|good morning|good evening)[\s!?.]*$/i.test(q)) {
+    return "Hi! 👋 Main aapka SellGST Pro AI Helper hoon. Bataiye, aaj main aapki kya madad kar sakta hoon?";
   }
 
   const numMatch = q.match(/(\d+(?:\.\d+)?)/g);
@@ -1623,27 +1492,7 @@ function getSmartContextualReply(queryText = "") {
     );
   }
 
-  if (q.includes("profit") || q.includes("loss") || q.includes("csv")) {
-    return "**Profit 🟢 & Loss 🔴 Calculator Help:**\nAap **Profit & Audit** (`ecom-audit.html`) mein jaakar apni Flipkart, Amazon ya Meesho ki CSV file upload karein—wahan har order ke samne **Green (🟢 Profit)** aur **Red (🔴 Loss)** ke sath-sath 3D Ghadi (Gauge) aur Progress Bar bhi aapke asli munafe/ghate ke hisab se up-down honge!";
-  }
-
-  if (q.includes("qr") || q.includes("review") || q.includes("dynamic")) {
-    return "**Dynamic QR & Google Review Help:**\nAap **QR Studio** mein jaakar apne business UPI ya Google 5-Star Review ke liye 3D Standee bana sakte hain (Free users ke liye 5 QR limit hai, uske baad Pro unlock zaroori hai).";
-  }
-
-  if (q.includes("rto") || q.includes("claim") || q.includes("return") || q.includes("meesho") || q.includes("flipkart") || q.includes("amazon") || q.includes("weight")) {
-    return "**RTO & Weight Fraud Claim Solution:**\nAgar aapka RTO parcel 30 din se zyada samay se wapas nahi aaya hai, to **E-Com Audit** mein apna CSV scan karein aur **Claim Ticket** copy karke Seller Support (SPF / SAFE-T) mein paste kar dein—100% reimbursement milta hai.";
-  }
-
-  if (q.includes("gstr") || q.includes("json") || q.includes("gst.gov") || q.includes("3b")) {
-    return "**GSTR-1 (.JSON) & GSTR-3B Help:**\nAap **GST Filing** page se 1-Click mein official `gst.gov.in` schema v3.1.6 wali `.JSON` file download kar sakte hain aur portal ke *Prepare Offline* tab mein upload kar sakte hain.";
-  }
-
-  if (q.includes("invoice") || q.includes("bill") || q.includes("logo") || q.includes("sign")) {
-    return "**Custom Navy Invoice Help:**\nBill ke upar gol `LOGO` circle par click karke apna logo lagayein, kisi bhi text box par click karke naam/GSTIN/bank badlein, aur niche `Draw Sign ✍️` se apna digital signature banayein.";
-  }
-
-  return `Main aapki baat samajh gaya! Aapne pucha: **"${sanitizeHTML(raw)}"**\n\nBataiye, ismein aapko exact kya dikkat aa rahi hai ya aap kya calculate/solve karna chahte hain? Main aapko step-by-step sahi solution dunga!`;
+  return `Main aapki baat samajh gaya! Aapne pucha: **"${sanitizeHTML(raw)}"**\n\nBataiye, ismein aapko exact kya dikkat aa rahi hai? Main aapko step-by-step solution dunga!`;
 }
 
 function injectFloatingAIAssistant() {
@@ -1710,15 +1559,12 @@ function injectFloatingAIAssistant() {
       <button type="button" data-ai-chip="How do I check Flipkart & Amazon Profit/Loss from CSV?" class="px-3 py-1.5 rounded-full bg-white border border-slate-200 hover:border-[#5B2EFF] text-xs font-semibold text-slate-800 whitespace-nowrap shadow-sm">
         🟢🔴 Profit/Loss Help
       </button>
-      <button type="button" data-ai-chip="How do I claim Pending RTO (>30 days)?" class="px-3 py-1.5 rounded-full bg-white border border-slate-200 hover:border-[#5B2EFF] text-xs font-semibold text-slate-800 whitespace-nowrap shadow-sm">
-        📦 Pending RTO Claims
-      </button>
     </div>
 
     <div id="ai-chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-50/60 text-[13px]">
       <div class="bg-white p-3.5 rounded-2xl rounded-tl-sm border border-slate-200 shadow-sm text-slate-800 leading-relaxed">
         👋 <strong>Hi! Main aapka SellGST Pro AI Helper hoon.</strong><br/>
-        Aap mujhse <strong>Hindi, Hinglish ya English</strong> mein koi bhi sawal ya GST calculation puch sakte hain. Bataiye, aaj main aapki kya madad kar sakta hoon?
+        Aap mujhse <strong>Hindi, Hinglish ya English</strong> mein koi bhi sawal ya GST calculation puch sakte hain.
       </div>
     </div>
 
@@ -1726,7 +1572,7 @@ function injectFloatingAIAssistant() {
       <input
         type="text"
         id="ai-chat-input"
-        placeholder="Ask anything (like Google Gemini)..."
+        placeholder="Ask anything..."
         class="flex-1 min-w-0 px-3.5 py-2.5 rounded-2xl bg-slate-100 border border-slate-200 text-[13px] focus:outline-none focus:ring-2 focus:ring-[#5B2EFF]"
       />
       <button
@@ -1848,9 +1694,6 @@ async function sendAIMessage(messageText) {
   container.scrollTop = container.scrollHeight;
 }
 
-// ============================================================================
-// 19. AUTHENTICATION HELPERS
-// ============================================================================
 export async function loginWithEmail(email, password, rememberMe = true) {
   const cleanEmail = email.trim();
   try {
@@ -1962,9 +1805,6 @@ export async function logoutUser() {
   window.location.href = "./login.html";
 }
 
-// ============================================================================
-// 20. AUTOMATIC INITIALIZATION
-// ============================================================================
 export function initSecurityCore() {
   enforceAuthAndGuestGate();
   initI18n();
