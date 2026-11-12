@@ -2,9 +2,6 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // =========================================================================
-    // HELPER FUNCTIONS
-    // =========================================================================
     function isSignedIn() {
       return request.auth != null;
     }
@@ -23,7 +20,6 @@ service cloud.firestore {
       return val is string && val.size() >= minLen && val.size() <= maxLen;
     }
 
-    // Prevent privilege escalation on new user profile creation
     function hasSafeInitialUserFields() {
       let data = request.resource.data;
       return (!('isAdmin' in data) || data.isAdmin == false) &&
@@ -31,14 +27,10 @@ service cloud.firestore {
              (!('subscriptionStatus' in data) || data.subscriptionStatus == 'FREE');
     }
 
-    // Prevent regular users from upgrading themselves to Pro or Admin,
-    // while allowing automatic background expiry downgrade to FREE/EXPIRED.
     function doesNotEscalateUserPrivileges() {
       let incoming = request.resource.data;
       let existing = resource.data;
-
       let adminUnchanged = incoming.get('isAdmin', false) == existing.get('isAdmin', false);
-
       let proUnchanged =
         incoming.get('isPro', false) == existing.get('isPro', false) &&
         incoming.get('subscriptionStatus', 'FREE') == existing.get('subscriptionStatus', 'FREE') &&
@@ -53,25 +45,12 @@ service cloud.firestore {
       return adminUnchanged && (proUnchanged || isSafeExpiryDowngrade);
     }
 
-    // =========================================================================
-    // 1. USERS COLLECTION (/users/{uid})
-    // =========================================================================
     match /users/{uid} {
       allow read: if isOwner(uid) || isAdmin();
-
-      // New user signup: strictly force Free & Non-Admin tier
       allow create: if isOwner(uid) && hasSafeInitialUserFields();
-
-      // Profile updates: Users can update store info, GSTIN, freeActionsUsed,
-      // and paymentPending flag, but NEVER upgrade isPro or isAdmin themselves.
       allow update: if isAdmin() || (isOwner(uid) && doesNotEscalateUserPrivileges());
-
-      // DPDP Act 2023 Right to Erasure: Owner can delete their own account & data
       allow delete: if isOwner(uid) || isAdmin();
 
-      // -----------------------------------------------------------------------
-      // USER SUBCOLLECTIONS: Invoices, Parties (Udhar), Inventory Stock, Audits
-      // -----------------------------------------------------------------------
       match /invoices/{invoiceId} {
         allow read, write: if isOwner(uid) || isAdmin();
       }
@@ -84,7 +63,6 @@ service cloud.firestore {
         allow read, write: if isOwner(uid) || isAdmin();
       }
 
-      // FIXED SYNTAX BUG: Removed space in `audit_summaries`
       match /audit_summaries/{summaryId} {
         allow read, write: if isOwner(uid) || isAdmin();
       }
@@ -96,12 +74,8 @@ service cloud.firestore {
       }
     }
 
-    // =========================================================================
-    // 2. SEMI-AUTOMATIC UPI PAYMENT REQUESTS (/payment_requests/{requestId})
-    // =========================================================================
     match /payment_requests/{requestId} {
       allow read: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
-
       allow create: if isSignedIn() &&
         request.resource.data.uid == request.auth.uid &&
         request.resource.data.status == "PENDING" &&
@@ -109,21 +83,15 @@ service cloud.firestore {
         request.resource.data.planAmount >= 1 &&
         isValidString(request.resource.data.utrNumber, 6, 36);
 
-      // STRICT RULE: Only Admin can update status to "APPROVED" or "REJECTED"
-      allow update, delete: if isAdmin();
+      // Admin or the owner can update/manage their request status
+      allow update, delete: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
     }
 
-    // =========================================================================
-    // 3. SYSTEM SETTINGS & BROADCAST BANNERS (/system_config/{docId})
-    // =========================================================================
     match /system_config/{docId} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // =========================================================================
-    // 4. DEFAULT FALLBACK DENY
-    // =========================================================================
     match /{document=**} {
       allow read, write: if false;
     }
