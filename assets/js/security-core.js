@@ -1,5 +1,5 @@
 /**
- * SellGST Pro — Principal Security Core v6.5 (100% Full Uncut Original + Real-Time Approval Sync)
+ * SellGST Pro — Principal Security Core v6.8 (100% Full Uncut Original + Global ☰ Super Tools Sidebar)
  * File: /assets/js/security-core.js
  */
 
@@ -70,7 +70,7 @@ googleProvider.setCustomParameters({ prompt: "select_account" });
       return;
     }
 
-    const healKey = "sellgst_v6_5_sw_healed";
+    const healKey = "sellgst_v6_8_sw_healed";
     if (!localStorage.getItem(healKey)) {
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker.getRegistrations().then((regs) => {
@@ -326,10 +326,9 @@ export function syncLiveProfitLossVisuals() {
     const rawMetrics = localStorage.getItem("sellgst_live_pnl_metrics");
     if (!rawMetrics) return;
     const m = JSON.parse(rawMetrics);
-    if (!m || typeof m.finalNetResult !== "number") return;
+    if (!m || typeof m.finalNetResult !== "number" || !Number.isFinite(m.finalNetResult)) return;
 
     const isProfit = m.finalNetResult >= 0;
-    const absNet = Math.abs(m.finalNetResult);
     const totalOrders = Math.max(1, Number(m.totalOrders) || 1);
     const profitOrders = Number(m.profitOrderCount) || 0;
     const lossOrders = Number(m.lossOrderCount) || 0;
@@ -435,9 +434,9 @@ export function evaluateSubscriptionHealth() {
     }
   }
 
-  const qrCount = Number(localStorage.getItem("sellgst_qr_count") || "0");
+  const qrCount = Number(localStorage.getItem("sellgst_qr_count")) || 0;
   const profileCount = Number(prof.freeActionsUsed) || 0;
-  const combinedUsed = Math.max(profileCount, qrCount);
+  const combinedUsed = Math.max(0, profileCount, qrCount);
   if (combinedUsed !== profileCount) {
     prof.freeActionsUsed = combinedUsed;
   }
@@ -449,8 +448,8 @@ export function evaluateSubscriptionHealth() {
   return {
     isPro: Boolean(prof.isPro),
     planName: prof.isPro ? (prof.planName === "YEARLY" ? "YEARLY" : "MONTHLY") : "FREE",
-    remainingDays,
-    remainingHours,
+    remainingDays: Number.isFinite(remainingDays) ? remainingDays : 30,
+    remainingHours: Number.isFinite(remainingHours) ? remainingHours : 0,
     freeActionsUsed: combinedUsed,
     freeActionsRemaining: Math.max(0, FREE_USAGE_MAX_LIMIT - combinedUsed)
   };
@@ -492,6 +491,7 @@ export function consumeFreeActionOrLock(featureName = "Feature") {
 export function generateUniqueInvoiceNumber() {
   try {
     let seq = Number(localStorage.getItem("sellgst_infinite_inv_seq") || "4649844");
+    if (!Number.isFinite(seq)) seq = 4649844;
     seq += 1;
     localStorage.setItem("sellgst_infinite_inv_seq", String(seq));
     return String(seq);
@@ -503,7 +503,7 @@ export function generateUniqueInvoiceNumber() {
 export function peekCurrentInvoiceNumber() {
   try {
     const seq = Number(localStorage.getItem("sellgst_infinite_inv_seq") || "4649845");
-    return String(seq);
+    return String(Number.isFinite(seq) ? seq : 4649845);
   } catch (_) {
     return "4649845";
   }
@@ -539,7 +539,8 @@ const inrFormatter = new Intl.NumberFormat("en-IN", {
 });
 
 export function formatINR(amount) {
-  return inrFormatter.format(Number(amount) || 0);
+  const num = Number(amount);
+  return inrFormatter.format(Number.isFinite(num) ? num : 0);
 }
 
 export function init3DTiltCards() {
@@ -756,6 +757,10 @@ function initBackButtonManager() {
       path.includes("ecom-audit") ||
       path.includes("label-studio") ||
       path.includes("gst-filing") ||
+      path.includes("gov-excel-to-json") ||
+      path.includes("json-validator") ||
+      path.includes("reconciliation-2a-2b") ||
+      path.includes("ecom-to-tally") ||
       path.includes("qr-studio") ||
       path.includes("admin");
 
@@ -1572,6 +1577,267 @@ export function openUserAccountModal() {
   });
 }
 
+// ============================================================================
+// GLOBAL ☰ SLIDE-OUT "ALL SUPER TOOLS MENU" DRAWER (FOR ALL PAGES)
+// ============================================================================
+export function openSuperToolsMenu() {
+  const drawer = document.getElementById("super-tools-drawer");
+  const backdrop = document.getElementById("super-tools-backdrop");
+  if (!drawer || !backdrop) return;
+
+  try {
+    const savedBills = JSON.parse(localStorage.getItem("sellgst_invoices") || "[]");
+    const billsEl = document.getElementById("drawer-saved-bills-count");
+    if (billsEl) billsEl.textContent = `Saved GST Bills (${savedBills.length || 3})`;
+
+    const health = evaluateSubscriptionHealth();
+    const titleEl = document.getElementById("drawer-plan-status-title");
+    const subEl = document.getElementById("drawer-quota-subtext");
+
+    if (health.isPro && health.planName === "YEARLY") {
+      if (titleEl) titleEl.textContent = `Yearly Pro Active (${health.remainingDays}d left)`;
+      if (subEl) subEl.textContent = "Unlimited GSTR-1 JSON, Audits, Bills & QRs";
+    } else if (health.isPro && health.planName === "MONTHLY") {
+      if (titleEl) titleEl.textContent = `Ends in: ${health.remainingDays}d ${health.remainingHours}h`;
+      if (subEl) subEl.textContent = "Monthly Pro Active • Upgrade to ₹499 Yearly";
+    } else {
+      if (titleEl) titleEl.textContent = `Free Trial Quota: ${health.freeActionsRemaining}/5 Left`;
+      if (subEl) subEl.textContent = `Left: ${health.freeActionsRemaining} Free Uses, 5 Custom Downloads`;
+    }
+  } catch (_) {}
+
+  backdrop.classList.remove("hidden");
+  requestAnimationFrame(() => {
+    backdrop.classList.remove("opacity-0");
+    drawer.classList.remove("-translate-x-full");
+  });
+
+  pushModalState("super-tools-drawer", () => closeSuperToolsMenu(true));
+}
+
+export function closeSuperToolsMenu(fromPopState = false) {
+  const drawer = document.getElementById("super-tools-drawer");
+  const backdrop = document.getElementById("super-tools-backdrop");
+  if (!drawer || !backdrop) return;
+
+  backdrop.classList.add("opacity-0");
+  drawer.classList.add("-translate-x-full");
+  setTimeout(() => {
+    backdrop.classList.add("hidden");
+  }, 280);
+
+  if (!fromPopState) {
+    removeModalState("super-tools-drawer");
+  }
+}
+
+function injectGlobalSuperToolsMenu() {
+  if (isCurrentPageLogin()) return;
+
+  // 1. Inject ☰ Hamburger Button into Top Header on every page if not already present
+  const header = document.querySelector("header");
+  if (header && !header.querySelector("[data-open-super-menu]")) {
+    const firstGroup = header.querySelector("nav > div:first-child") || header.querySelector("div:first-child");
+    if (firstGroup) {
+      const menuBtn = document.createElement("button");
+      menuBtn.type = "button";
+      menuBtn.setAttribute("data-open-super-menu", "true");
+      menuBtn.setAttribute("aria-label", "Open All Super Tools Menu");
+      menuBtn.title = "Open All Super Tools Menu";
+      menuBtn.className =
+        "w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-slate-100 hover:bg-[#5B2EFF] text-[#081B4B] hover:text-white border border-slate-200 flex items-center justify-center font-black text-base sm:text-lg shadow-xs transition shrink-0 cursor-pointer";
+      menuBtn.textContent = "☰";
+      firstGroup.prepend(menuBtn);
+    }
+  }
+
+  // 2. If #super-tools-drawer is not already in the HTML (e.g., on sub-pages), inject it into body
+  if (!document.getElementById("super-tools-drawer")) {
+    const backdrop = document.createElement("div");
+    backdrop.id = "super-tools-backdrop";
+    backdrop.className =
+      "fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-[9990] hidden opacity-0 transition-opacity duration-300 no-print";
+
+    const aside = document.createElement("aside");
+    aside.id = "super-tools-drawer";
+    aside.setAttribute("aria-label", "All Super Tools Menu");
+    aside.className =
+      "fixed top-0 left-0 bottom-0 w-[310px] sm:w-[345px] max-w-[88vw] bg-white z-[9995] shadow-2xl flex flex-col justify-between transform -translate-x-full transition-transform duration-300 ease-in-out overflow-y-auto no-print";
+
+    aside.innerHTML = `
+      <div>
+        <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white/95 backdrop-blur-md z-10">
+          <div class="flex items-center gap-2">
+            <span class="text-base">⚡</span>
+            <span class="font-extrabold text-xs sm:text-[13px] tracking-wider uppercase text-[#1D4ED8]">
+              ALL SUPER TOOLS MENU
+            </span>
+          </div>
+          <button
+            type="button"
+            id="close-super-tools-btn"
+            aria-label="Close Menu"
+            class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center font-extrabold text-sm transition"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div class="p-4 space-y-5 text-xs">
+          <div class="space-y-1.5">
+            <div class="px-2 text-[10.5px] font-extrabold uppercase tracking-wider text-slate-400">
+              1. GST FILING &amp; PORTAL JSON SUITE
+            </div>
+
+            <a href="./gst-filing.html" class="flex items-center justify-between px-3 py-2.5 rounded-2xl bg-slate-50 hover:bg-indigo-50/80 text-slate-800 font-bold transition">
+              <div class="flex items-center gap-3 min-w-0">
+                <span class="text-base shrink-0">🏛️</span>
+                <span class="truncate">E-Com CSV to GSTR-1 JSON</span>
+              </div>
+              <span class="px-2 py-0.5 rounded-md bg-emerald-600 text-white font-extrabold text-[10px] shrink-0">1-CLICK</span>
+            </a>
+
+            <a href="./gov-excel-to-json.html" class="flex items-center justify-between px-3 py-2.5 rounded-2xl hover:bg-slate-100 text-slate-700 font-bold transition">
+              <div class="flex items-center gap-3 min-w-0">
+                <span class="text-base shrink-0">📗</span>
+                <span class="truncate">Gov Excel (.XLSX) to JSON</span>
+              </div>
+            </a>
+
+            <div class="p-2.5 rounded-2xl bg-blue-50/70 border border-blue-100 space-y-2">
+              <a href="./json-validator.html" class="flex items-center justify-between text-slate-900 font-extrabold">
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <span class="text-base shrink-0">🔍</span>
+                  <span class="truncate">JSON Validator &amp; Editor</span>
+                </div>
+                <span class="px-2.5 py-1 rounded-lg bg-[#2563EB] text-white font-extrabold text-[10px] shadow-xs shrink-0">CHECK / EDIT</span>
+              </a>
+              <div class="pl-7 space-y-1 text-[11px] font-semibold text-slate-500">
+                <div><a href="./json-validator.html" class="hover:text-[#2563EB]">• Check B2B, B2CS &amp; HSN Tables</a></div>
+                <div><a href="./json-validator.html" class="hover:text-[#2563EB]">• Fix 15-Digit GSTIN Errors</a></div>
+              </div>
+            </div>
+
+            <a href="./reconciliation-2a-2b.html" class="flex items-center justify-between px-3 py-2.5 rounded-2xl hover:bg-slate-100 text-slate-700 font-bold transition">
+              <div class="flex items-center gap-3 min-w-0">
+                <span class="text-base shrink-0">🔄</span>
+                <span class="truncate">2A/2B Purchase Reconciliation</span>
+              </div>
+              <span class="px-2 py-0.5 rounded-md bg-indigo-100 text-[#5B2EFF] font-extrabold text-[10px] shrink-0">ITC</span>
+            </a>
+
+            <a href="./ecom-to-tally.html" class="flex items-center justify-between px-3 py-2.5 rounded-2xl hover:bg-slate-100 text-slate-700 font-bold transition">
+              <div class="flex items-center gap-3 min-w-0">
+                <span class="text-base shrink-0">📁</span>
+                <span class="truncate">E-Com to Tally Prime XML</span>
+              </div>
+              <span class="px-2 py-0.5 rounded-md bg-rose-500 text-white font-extrabold text-[9px] shrink-0">NEW</span>
+            </a>
+          </div>
+
+          <div class="space-y-1.5">
+            <div class="px-2 text-[10.5px] font-extrabold uppercase tracking-wider text-slate-400">
+              2. E-COM AUDIT, BILLING &amp; WAREHOUSE
+            </div>
+
+            <div class="p-2.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+              <a href="./app.html" class="flex items-center justify-between text-slate-900 font-extrabold">
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <span class="text-base shrink-0">📊</span>
+                  <span class="truncate">3D User Dashboard</span>
+                </div>
+                <span class="px-2.5 py-1 rounded-lg bg-[#2563EB] text-white font-extrabold text-[10px] shadow-xs shrink-0">EDIT / TRACK</span>
+              </a>
+              <div class="pl-7 space-y-1 text-[11px] font-semibold text-slate-500">
+                <div id="drawer-saved-bills-count">Saved GST Bills (3)</div>
+                <div id="drawer-rto-claims-count">Flagged RTO Claims (7)</div>
+              </div>
+            </div>
+
+            <a href="./ecom-audit.html" class="flex items-center justify-between px-3 py-2.5 rounded-2xl hover:bg-slate-100 text-slate-700 font-bold transition">
+              <div class="flex items-center gap-3 min-w-0">
+                <span class="text-base shrink-0">📈</span>
+                <span class="truncate">Profit/Loss &amp; RTO CSV Audit</span>
+              </div>
+              <span class="px-2 py-0.5 rounded-md bg-emerald-600 text-white font-extrabold text-[10px] shrink-0">LIVE</span>
+            </a>
+
+            <a href="./invoice.html" class="flex items-center justify-between px-3 py-2.5 rounded-2xl hover:bg-slate-100 text-slate-700 font-bold transition">
+              <div class="flex items-center gap-3 min-w-0">
+                <span class="text-base shrink-0">🧾</span>
+                <span class="truncate">S.K.P.S Navy GST Invoice</span>
+              </div>
+            </a>
+
+            <a href="./label-studio.html" class="flex items-center justify-between px-3 py-2.5 rounded-2xl hover:bg-slate-100 text-slate-700 font-bold transition">
+              <div class="flex items-center gap-3 min-w-0">
+                <span class="text-base shrink-0">🏷️</span>
+                <span class="truncate">4×6 Label &amp; Thank You Card</span>
+              </div>
+            </a>
+
+            <a href="./qr-studio.html" class="flex items-center justify-between px-3 py-2.5 rounded-2xl hover:bg-slate-100 text-slate-700 font-bold transition">
+              <div class="flex items-center gap-3 min-w-0">
+                <span class="text-base shrink-0">🎨</span>
+                <span class="truncate">Artistic &amp; Dynamic QR Studio</span>
+              </div>
+            </a>
+          </div>
+
+          <div class="space-y-1.5">
+            <div class="px-2 text-[10.5px] font-extrabold uppercase tracking-wider text-slate-400">
+              3. PLANS &amp; UPGRADE
+            </div>
+
+            <button type="button" data-unlock-pro="YEARLY" class="w-full flex items-center justify-between px-3 py-2.5 rounded-2xl hover:bg-indigo-50 text-slate-800 font-extrabold transition text-left">
+              <div class="flex items-center gap-3">
+                <span class="text-base">💳</span>
+                <span>Plans &amp; Pricing (₹99 / ₹499)</span>
+              </div>
+              <span class="px-2 py-0.5 rounded-md bg-purple-100 text-[#5B2EFF] font-extrabold text-[10px]">PRO</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 border-t border-slate-100 space-y-2.5 bg-white">
+        <div class="p-3.5 rounded-2xl bg-rose-50/80 border border-rose-200/80 space-y-2">
+          <div class="flex items-start gap-2 text-rose-700 font-extrabold text-xs">
+            <span>⏰</span>
+            <span id="drawer-plan-status-title">Free Trial Quota Active</span>
+          </div>
+          <div id="drawer-quota-subtext" class="text-[11px] font-semibold text-slate-600">
+            Left: 5 Free Actions, Unlimited Pro Downloads
+          </div>
+          <button
+            type="button"
+            data-unlock-pro="YEARLY"
+            class="w-full py-2.5 px-4 rounded-xl bg-[#2563EB] hover:bg-blue-700 text-white font-extrabold text-xs shadow-md transition uppercase tracking-wide"
+          >
+            UPGRADE PRO (₹499)
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <a href="./index.html" class="py-2.5 px-3 rounded-xl border border-slate-300 hover:bg-slate-50 text-[#2563EB] font-extrabold text-xs text-center transition">
+            🏠 Home
+          </a>
+          <button type="button" data-open-account class="py-2.5 px-3 rounded-xl border border-slate-300 hover:bg-slate-50 text-[#081B4B] font-extrabold text-xs text-center transition">
+            My Account
+          </button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(backdrop);
+    document.body.appendChild(aside);
+  }
+
+  // Bind Close Events
+  document.getElementById("close-super-tools-btn")?.addEventListener("click", () => closeSuperToolsMenu());
+  document.getElementById("super-tools-backdrop")?.addEventListener("click", () => closeSuperToolsMenu());
+}
+
 function getSmartContextualReply(queryText = "") {
   const raw = String(queryText || "").trim();
   const q = raw.toLowerCase();
@@ -1940,6 +2206,7 @@ export function initSecurityCore() {
 function onDOMReady() {
   fixTopLayoutSpacingGap();
   enforceAuthAndGuestGate();
+  injectGlobalSuperToolsMenu();
   syncProDOMElements();
   renderPendingPaymentBanner();
   injectFloatingAIAssistant();
@@ -1948,6 +2215,13 @@ function onDOMReady() {
   syncLiveProfitLossVisuals();
 
   document.body.addEventListener("click", (e) => {
+    const superMenuBtn = e.target.closest("[data-open-super-menu]");
+    if (superMenuBtn) {
+      e.preventDefault();
+      openSuperToolsMenu();
+      return;
+    }
+
     const extQrBtn = e.target.closest("#open-external-qr-portal-btn");
     if (extQrBtn) {
       e.preventDefault();
@@ -1961,6 +2235,7 @@ function onDOMReady() {
     const unlockBtn = e.target.closest("[data-unlock-pro]");
     if (unlockBtn) {
       e.preventDefault();
+      closeSuperToolsMenu();
       openProPaymentModal(unlockBtn.getAttribute("data-unlock-pro") || "MONTHLY");
       return;
     }
@@ -1982,6 +2257,7 @@ function onDOMReady() {
     const myAccBtn = e.target.closest("[data-open-account]");
     if (myAccBtn) {
       e.preventDefault();
+      closeSuperToolsMenu();
       openUserAccountModal();
     }
   });
@@ -2015,6 +2291,8 @@ window.SellGSTCore = {
   openProPaymentModal,
   closeProPaymentModal,
   openUserAccountModal,
+  openSuperToolsMenu,
+  closeSuperToolsMenu,
   openAIAssistant,
   closeAIAssistant,
   triggerPWAInstall,
