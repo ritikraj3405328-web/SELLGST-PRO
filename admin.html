@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <title>Master Admin Console — SellGST Pro</title>
+  <meta name="robots" content="noindex, nofollow" />
   <meta name="theme-color" content="#081B4B" />
   <link rel="manifest" href="./manifest.json" />
 
@@ -199,7 +200,7 @@
   <!-- MAIN CONTENT WRAPPER -->
   <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-3 sm:pt-4 space-y-5 overflow-x-hidden">
 
-    <!-- CLEAN TOP HEADER BAR (ONLY HOME BUTTON + 7s INSTALL BUTTON + SIMULATE + LOCK ADMIN + LANGUAGE) -->
+    <!-- CLEAN TOP HEADER BAR -->
     <header class="bg-white/90 backdrop-blur-xl rounded-3xl border border-white px-4 sm:px-6 py-3 shadow-lg shadow-indigo-500/5 flex flex-wrap items-center justify-between gap-2.5">
       <div class="flex items-center gap-2.5 min-w-0">
         <a
@@ -641,9 +642,8 @@
       try {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         const ctx = new AudioCtx();
-        const osc = ctx.createOscillator();
+        const osc = new OscillatorNode(ctx, { type: "sine", frequency: 587.33 });
         const gain = ctx.createGain();
-        osc.type = "sine";
         osc.frequency.setValueAtTime(587.33, ctx.currentTime);
         osc.frequency.setValueAtTime(880, ctx.currentTime + 0.14);
         gain.gain.setValueAtTime(0.18, ctx.currentTime);
@@ -696,10 +696,13 @@
         localStorage.setItem("sellgst_local_payment_requests", JSON.stringify(localQueue));
       }
 
+      // Deduplicate by UTR number first so Firestore & Local items never clash
       const map = new Map();
       [...firestoreRequests, ...localQueue].forEach((item) => {
-        const key = item.id || item.utrNumber;
-        if (!map.has(key)) map.set(key, item);
+        const key = item.utrNumber || item.id;
+        if (!map.has(key) || item.status === "APPROVED") {
+          map.set(key, item);
+        }
       });
       return Array.from(map.values());
     }
@@ -798,6 +801,7 @@
                     data-approve-id="${sanitizeHTML(req.id)}"
                     data-approve-uid="${sanitizeHTML(req.uid)}"
                     data-approve-plan="${sanitizeHTML(req.planName || "MONTHLY")}"
+                    data-approve-utr="${sanitizeHTML(req.utrNumber || "")}"
                     class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-sm transition whitespace-nowrap"
                   >
                     ✅ Approve &amp; Activate ID
@@ -814,6 +818,7 @@
                     type="button"
                     data-reject-id="${sanitizeHTML(req.id)}"
                     data-reject-uid="${sanitizeHTML(req.uid)}"
+                    data-reject-utr="${sanitizeHTML(req.utrNumber || "")}"
                     class="px-3 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs transition whitespace-nowrap"
                   >
                     ❌ Reject
@@ -853,25 +858,32 @@
           const reqId = btn.getAttribute("data-approve-id");
           const targetUid = btn.getAttribute("data-approve-uid");
           const planName = btn.getAttribute("data-approve-plan");
-          await handleApproveRequest(reqId, targetUid, planName);
+          const utrNum = btn.getAttribute("data-approve-utr");
+          await handleApproveRequest(reqId, targetUid, planName, utrNum);
         });
       });
 
       container.querySelectorAll("[data-reject-id]").forEach((btn) => {
         btn.addEventListener("click", async () => {
           const reqId = btn.getAttribute("data-reject-id");
-          await handleRejectRequest(reqId);
+          const targetUid = btn.getAttribute("data-reject-uid");
+          const utrNum = btn.getAttribute("data-reject-utr");
+          await handleRejectRequest(reqId, targetUid, utrNum);
         });
       });
     }
 
-    // 5. 1-Click Approval with Exact 30-Day (Monthly) vs 365-Day (Yearly) Expiry
-    // FIXED: Only updates local profile if targetUid matches current device user!
-    async function handleApproveRequest(reqId, targetUid, planName = "MONTHLY") {
+    // 5. 1-Click Approval: Approves ALL matching requests in Firestore + LocalStorage & clears Pending state immediately!
+    async function handleApproveRequest(reqId, targetUid, planName = "MONTHLY", utrNum = "") {
       const cleanPlan = planName === "YEARLY" ? "YEARLY" : "MONTHLY";
       const durationDays = cleanPlan === "YEARLY" ? 365 : 30;
       const nowISO = new Date().toISOString();
       const expiryISO = new Date(Date.now() + durationDays * 24 * 60 * 60 * 1000).toISOString();
+
+      // Update primary request + any other pending Firestore requests for this seller UID or UTR
+      const matchingDocs = firestoreRequests.filter(
+        (r) => r.id === reqId || (targetUid && r.uid === targetUid && r.status === "PENDING") || (utrNum && r.utrNumber === utrNum)
+      );
 
       try {
         await updateDoc(doc(db, "payment_requests", reqId), {
@@ -881,6 +893,19 @@
           approvedAt: serverTimestamp()
         });
       } catch (_) {}
+
+      for (const item of matchingDocs) {
+        if (item.id && item.id !== reqId) {
+          try {
+            await updateDoc(doc(db, "payment_requests", item.id), {
+              status: "APPROVED",
+              planDurationDays: durationDays,
+              planExpiryISO: expiryISO,
+              approvedAt: serverTimestamp()
+            });
+          } catch (_) {}
+        }
+      }
 
       try {
         await setDoc(
@@ -898,18 +923,27 @@
         );
       } catch (_) {}
 
+      // Update in-memory & localStorage queues
+      firestoreRequests.forEach((r) => {
+        if (r.id === reqId || r.uid === targetUid || (utrNum && r.utrNumber === utrNum)) {
+          r.status = "APPROVED";
+          r.expectedExpiryISO = expiryISO;
+        }
+      });
+
       const localQueue = JSON.parse(localStorage.getItem("sellgst_local_payment_requests") || "[]");
       localQueue.forEach((r) => {
-        if (r.id === reqId) {
+        if (r.id === reqId || r.uid === targetUid || (utrNum && r.utrNumber === utrNum)) {
           r.status = "APPROVED";
           r.expectedExpiryISO = expiryISO;
         }
       });
       localStorage.setItem("sellgst_local_payment_requests", JSON.stringify(localQueue));
 
-      // Only update current device session if the approved UID belongs to this device
+      // Clear local pending UTR & activate Pro if this device submitted that UTR or matches targetUid
       const currentDeviceUid = AppState.user?.uid || AppState.profile?.uid;
-      if (targetUid === currentDeviceUid) {
+      const pendingLocalUtr = localStorage.getItem("sellgst_pending_utr");
+      if (targetUid === currentDeviceUid || (utrNum && pendingLocalUtr === utrNum) || pendingLocalUtr) {
         localStorage.removeItem("sellgst_pending_utr");
         AppState.pendingRequest = null;
         AppState.profile.isPro = true;
@@ -936,7 +970,7 @@
       );
     }
 
-    async function handleRejectRequest(reqId) {
+    async function handleRejectRequest(reqId, targetUid = "", utrNum = "") {
       try {
         await updateDoc(doc(db, "payment_requests", reqId), {
           status: "REJECTED",
@@ -944,11 +978,28 @@
         });
       } catch (_) {}
 
+      if (targetUid) {
+        try {
+          await setDoc(doc(db, "users", targetUid), { paymentPending: false }, { merge: true });
+        } catch (_) {}
+      }
+
+      firestoreRequests.forEach((r) => {
+        if (r.id === reqId || (utrNum && r.utrNumber === utrNum)) r.status = "REJECTED";
+      });
+
       const localQueue = JSON.parse(localStorage.getItem("sellgst_local_payment_requests") || "[]");
       localQueue.forEach((r) => {
-        if (r.id === reqId) r.status = "REJECTED";
+        if (r.id === reqId || (utrNum && r.utrNumber === utrNum)) r.status = "REJECTED";
       });
       localStorage.setItem("sellgst_local_payment_requests", JSON.stringify(localQueue));
+
+      const pendingLocalUtr = localStorage.getItem("sellgst_pending_utr");
+      if (utrNum && pendingLocalUtr === utrNum) {
+        localStorage.removeItem("sellgst_pending_utr");
+        AppState.pendingRequest = null;
+      }
+
       renderPendingPaymentBanner();
       renderPaymentQueue();
       showToast(`Marked request ${reqId} as REJECTED.`, "warning");
@@ -1088,7 +1139,7 @@
       showToast(active ? "📢 Global Broadcast Banner published!" : "Broadcast Banner hidden.", "success");
     });
 
-    // Device Subscription Tier Tester (Free vs ₹99 Monthly vs ₹499 Yearly)
+    // Device Subscription Tier Tester
     function updateLocalSessionStatus() {
       const statusEl = document.getElementById("local-session-status");
       const health = evaluateSubscriptionHealth();
@@ -1106,38 +1157,49 @@
 
     document.getElementById("test-tier-monthly-btn")?.addEventListener("click", () => {
       const expiry30d = new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString();
+      localStorage.removeItem("sellgst_pending_utr");
+      AppState.pendingRequest = null;
       AppState.profile = {
         ...AppState.profile,
         isPro: true,
+        paymentPending: false,
         subscriptionStatus: "ACTIVE",
         planName: "MONTHLY",
         planExpiryISO: expiry30d
       };
       localStorage.setItem("sellgst_local_profile", JSON.stringify(AppState.profile));
       syncProDOMElements();
+      renderPendingPaymentBanner();
       updateLocalSessionStatus();
       showToast("⏳ Activated ₹99 Monthly Mode (30-Day Countdown + Only ₹499 Upgrade shown)!", "info");
     });
 
     document.getElementById("test-tier-yearly-btn")?.addEventListener("click", () => {
       const expiry365d = new Date(Date.now() + 365 * 24 * 3600 * 1000).toISOString();
+      localStorage.removeItem("sellgst_pending_utr");
+      AppState.pendingRequest = null;
       AppState.profile = {
         ...AppState.profile,
         isPro: true,
+        paymentPending: false,
         subscriptionStatus: "ACTIVE",
         planName: "YEARLY",
         planExpiryISO: expiry365d
       };
       localStorage.setItem("sellgst_local_profile", JSON.stringify(AppState.profile));
       syncProDOMElements();
+      renderPendingPaymentBanner();
       updateLocalSessionStatus();
       showToast("✨ Activated ₹499 Yearly Mode (1-Year Background Expiry, All Upgrade Prompts Hidden)!", "success");
     });
 
     document.getElementById("test-tier-free-btn")?.addEventListener("click", () => {
+      localStorage.removeItem("sellgst_pending_utr");
+      AppState.pendingRequest = null;
       AppState.profile = {
         ...AppState.profile,
         isPro: false,
+        paymentPending: false,
         subscriptionStatus: "FREE",
         planName: "FREE",
         planExpiryISO: null,
@@ -1146,6 +1208,7 @@
       localStorage.setItem("sellgst_qr_count", "0");
       localStorage.setItem("sellgst_local_profile", JSON.stringify(AppState.profile));
       syncProDOMElements();
+      renderPendingPaymentBanner();
       updateLocalSessionStatus();
       showToast("🔒 Reset to Free Tier (5-Action Limit Active).", "warning");
     });
@@ -1154,6 +1217,7 @@
       sessionStorage.removeItem(PIN_SESSION_UNLOCKED_KEY);
       logoutUser();
     });
+    document.getElementById("bottom-lock-pin-btn")?.addEventListener("click", lockAdminConsoleNow);
     document.getElementById("bottom-logout-btn")?.addEventListener("click", () => {
       sessionStorage.removeItem(PIN_SESSION_UNLOCKED_KEY);
       logoutUser();
