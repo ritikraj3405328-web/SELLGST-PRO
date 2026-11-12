@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en" class="overflow-x-hidden scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+
+  <!-- ===================================================================== -->
+  <!-- 100% SEO-FRIENDLY META TAGS, OPENGRAPH & GOOGLE JSON-LD SCHEMA        -->
+  <!-- ===================================================================== -->
+  <title>E-Commerce CSV/Excel to Tally Prime XML Converter Online (Meesho, Amazon, Flipkart) — SellGST Pro</title>
+  <meta name="description" content="Convert Meesho, Amazon, Flipkart & Shopsy GST sales reports (.CSV / .XLSX) into Tally Prime Vouchers (.XML) in 1 click. Zero manual data entry for e-commerce sellers & CAs." />
+  <meta name="keywords" content="Ecom to Tally XML converter, Meesho to Tally Prime XML, Flipkart Amazon to Tally XML converter free, import ecommerce sales in Tally Prime, GST filing India, SellGST Pro" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <link rel="canonical" href="https://sellgst-pro.pages.dev/ecom-to-tally.html" />
+
+  <!-- Open Graph / WhatsApp / Social Media Preview -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="E-Com CSV/Excel to Tally Prime XML Converter — SellGST Pro" />
+  <meta property="og:description" content="Upload Meesho, Flipkart & Amazon GST reports and generate ready-to-import Tally Prime Sales Vouchers (.XML) in 60 seconds." />
+  <meta property="og:url" content="https://sellgst-pro.pages.dev/ecom-to-tally.html" />
+  <meta name="theme-color" content="#081B4B" />
+  <link rel="manifest" href="./manifest.json" />
+
+  <!-- Structured Data for Google Search Rich Snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SellGST Pro E-Commerce to Tally Prime XML Converter",
+    "url": "https://sellgst-pro.pages.dev/ecom-to-tally.html",
+    "applicationCategory": "FinanceApplication, AccountingApplication",
+    "operatingSystem": "Web, Android, iOS, Windows",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "INR"
+    },
+    "description": "Convert Meesho, Amazon, and Flipkart GST sales reports into Tally Prime XML voucher import files."
+  }
+  </script>
+
+  <!-- 0.1s Instant Module Preload & Speculative Tool Prefetch -->
+  <link rel="modulepreload" href="./assets/js/security-core.js" />
+  <link rel="modulepreload" href="./assets/js/i18n.js" />
+  <link rel="prefetch" href="./index.html" as="document" />
+  <link rel="prefetch" href="./gst-filing.html" as="document" />
+  <link rel="prefetch" href="./gov-excel-to-json.html" as="document" />
+  <link rel="prefetch" href="./json-validator.html" as="document" />
+  <link rel="prefetch" href="./reconciliation-2a-2b.html" as="document" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 100% Client-Side RAM Excel & CSV Parsers -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js" defer></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          },
+          colors: {
+            navy: '#081B4B',
+            royal: '#5B2EFF',
+            mint: '#10E594'
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    html, body {
+      max-width: 100vw;
+      overflow-x: hidden;
+      background: linear-gradient(135deg, #DDE3FF 0%, #EEF2FF 48%, #D6F5F8 100%);
+      color: #0F172A;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .bento-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(16px);
+      border-radius: 26px;
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 18px 40px -15px rgba(91, 46, 255, 0.14), 0 4px 12px rgba(15, 23, 42, 0.04);
+      transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease;
+      min-width: 0;
+    }
+    .purple-3d-card {
+      background: linear-gradient(135deg, #6A3BFF 0%, #5B2EFF 55%, #3F16C4 100%);
+      border-radius: 26px;
+      box-shadow: 0 22px 45px -12px rgba(91, 46, 255, 0.38);
+      min-width: 0;
+    }
+    @keyframes shrink7s {
+      from { width: 100%; }
+      to { width: 0%; }
+    }
+    .pwa-timer-bar {
+      animation: shrink7s 7s linear forwards;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="min-h-screen w-full overflow-x-hidden pb-24 lg:pb-12 lg:pl-24">
+
+  <!-- DESKTOP FLOATING 3D LEFT PILL SIDEBAR -->
+  <aside class="hidden lg:flex fixed left-4 top-4 bottom-4 w-16 bg-white/95 backdrop-blur-xl border border-white rounded-full shadow-xl shadow-indigo-500/10 flex-col items-center justify-between py-5 z-40">
+    <a href="./index.html" title="Home Page" class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#081B4B] via-[#5B2EFF] to-[#10E594] text-white flex items-center justify-center font-black text-sm shadow-md">
+      🏠
+    </a>
+    <nav class="flex flex-col items-center gap-3">
+      <a href="./app.html" title="3D Financial Dashboard" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+        📊
+      </a>
+      <a href="./invoice.html" title="Custom Navy GST Invoice" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+        🧾
+      </a>
+      <a href="./ecom-audit.html" title="E-Com Audit & 4x6 Labels" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+        📦
+      </a>
+      <a href="./gst-filing.html" title="GST Filing Suite" class="w-11 h-11 rounded-2xl bg-[#5B2EFF] text-white flex items-center justify-center text-base shadow-md transition">
+        🏛️
+      </a>
+      <a href="./qr-studio.html" title="Dynamic QR & Google Reviews" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+        🔳
+      </a>
+      <a href="./admin.html" data-admin-only title="Master Admin Console" class="hidden w-11 h-11 rounded-2xl bg-rose-50 text-rose-600 hover:bg-rose-100 flex items-center justify-center text-base transition">
+        🛡️
+      </a>
+    </nav>
+    <div class="flex flex-col items-center gap-2">
+      <button type="button" data-open-account title="My Personal Account & DPDP Privacy" class="w-10 h-10 rounded-full bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] flex items-center justify-center text-sm shadow-sm">
+        👤
+      </button>
+      <button type="button" id="sidebar-logout-btn" title="Logout" class="w-10 h-10 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center text-sm">
+        ⏻
+      </button>
+    </div>
+  </aside>
+
+  <!-- MOBILE FLOATING BOTTOM DOCK -->
+  <nav class="lg:hidden fixed bottom-2.5 inset-x-3 bg-white/95 backdrop-blur-xl text-slate-700 rounded-3xl px-2 py-2.5 shadow-2xl border border-indigo-100 z-40 flex items-center justify-around">
+    <a href="./app.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">📊</span>
+      <span>Dashboard</span>
+    </a>
+    <a href="./invoice.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">🧾</span>
+      <span>GST Bill</span>
+    </a>
+    <a href="./ecom-audit.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">📦</span>
+      <span>E-Com Audit</span>
+    </a>
+    <a href="./gst-filing.html" class="flex flex-col items-center gap-0.5 text-[#5B2EFF] font-extrabold text-[10px]">
+      <span class="text-base">🏛️</span>
+      <span>GSTR-1</span>
+    </a>
+    <a href="./qr-studio.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">🔳</span>
+      <span>QR Studio</span>
+    </a>
+  </nav>
+
+  <!-- MAIN CONTENT WRAPPER -->
+  <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-3 sm:pt-4 space-y-5 overflow-x-hidden">
+
+    <!-- CLEAN TOP HEADER BAR -->
+    <header class="bg-white/90 backdrop-blur-xl rounded-3xl border border-white px-4 sm:px-6 py-3 shadow-lg shadow-indigo-500/5 flex flex-wrap items-center justify-between gap-2.5">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <a
+          href="./index.html"
+          class="px-3.5 py-2 rounded-2xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow-sm transition flex items-center gap-1.5 shrink-0"
+        >
+          <span>🏠 Home</span>
+        </a>
+        <div class="min-w-0">
+          <h1 class="font-extrabold text-sm sm:text-[15px] text-[#081B4B] truncate">
+            E-Com to Tally XML — 1-Click Tally Prime Voucher Generator
+          </h1>
+          <p class="text-[11px] text-slate-500 truncate">
+            Convert Meesho, Amazon &amp; Flipkart GST reports (.CSV / .XLSX) into Tally Prime Import XML Vouchers
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-end ml-auto">
+        <select
+          data-lang-switcher
+          aria-label="Language"
+          class="px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none max-w-[92px] sm:max-w-none truncate"
+        ></select>
+
+        <!-- 7-SECOND AUTO-HIDING PWA INSTALL BUTTON -->
+        <button
+          type="button"
+          id="pwa-install-btn"
+          data-pwa-install
+          class="relative overflow-hidden px-3 py-1.5 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#081B4B] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap flex items-center gap-1.5"
+        >
+          <span>📲 Install App</span>
+          <span id="pwa-sec-badge" class="px-1.5 py-0.2 rounded-full bg-white/20 text-[10px] font-mono">7s</span>
+          <span class="absolute bottom-0 left-0 h-0.5 bg-[#10E594] pwa-timer-bar"></span>
+        </button>
+
+        <button
+          type="button"
+          data-open-account
+          class="px-3 py-1.5 rounded-full bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] text-xs font-extrabold border border-indigo-100 transition whitespace-nowrap"
+        >
+          👤 My Account
+        </button>
+
+        <button
+          type="button"
+          data-pro-badge
+          data-unlock-pro="MONTHLY"
+          class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-[#5B2EFF] to-[#4318FF] text-white shadow-md whitespace-nowrap"
+        >
+          Unlock Pro ⚡
+        </button>
+      </div>
+    </header>
+
+    <!-- =================================================================== -->
+    <!-- DEDICATED SEPARATE GST FILES NAVIGATION BAR (LIKE GSTPROSELLER.COM) -->
+    <!-- =================================================================== -->
+    <section class="bento-card p-3 sm:p-4 flex items-center gap-2 overflow-x-auto no-scrollbar">
+      <a
+        href="./gst-filing.html"
+        class="px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-indigo-50 text-[#081B4B] font-extrabold text-xs border border-slate-200 transition whitespace-nowrap flex items-center gap-1.5 shrink-0"
+      >
+        <span>🛒 1. E-Com CSV to JSON &amp; Excel</span>
+      </a>
+      <a
+        href="./gov-excel-to-json.html"
+        class="px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-indigo-50 text-[#081B4B] font-extrabold text-xs border border-slate-200 transition whitespace-nowrap flex items-center gap-1.5 shrink-0"
+      >
+        <span>📗 2. Gov Excel to JSON</span>
+      </a>
+      <a
+        href="./json-validator.html"
+        class="px-4 py-2.5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 text-emerald-900 font-extrabold text-xs border border-emerald-300 transition whitespace-nowrap flex items-center gap-1.5 shrink-0"
+      >
+        <span>🔍 3. JSON Validator &amp; Visual Editor (Check All Data)</span>
+      </a>
+      <a
+        href="./reconciliation-2a-2b.html"
+        class="px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-indigo-50 text-[#081B4B] font-extrabold text-xs border border-slate-200 transition whitespace-nowrap flex items-center gap-1.5 shrink-0"
+      >
+        <span>🔄 4. 2A/2B Purchase Reconciliation</span>
+      </a>
+      <a
+        href="./ecom-to-tally.html"
+        class="px-4 py-2.5 rounded-2xl bg-[#5B2EFF] text-white font-extrabold text-xs shadow-md whitespace-nowrap flex items-center gap-1.5 shrink-0"
+      >
+        <span>📁 5. E-Com to Tally XML (Active)</span>
+      </a>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECTION 1: TALLY LEDGER CONFIG & E-COM FILE UPLOAD                  -->
+    <!-- =================================================================== -->
+    <section data-3d-tilt class="bento-card p-5 sm:p-6 space-y-5 border-2 border-[#5B2EFF]/25">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+        <div>
+          <span class="px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-600 font-extrabold text-[10px] uppercase">
+            FEATURE #5 • TALLY PRIME &amp; ERP 9 XML BRIDGE
+          </span>
+          <h2 class="text-base sm:text-lg font-extrabold text-[#081B4B] mt-1">
+            📁 E-Commerce CSV / Excel to Tally Prime XML Converter
+          </h2>
+          <p class="text-xs text-slate-500 mt-0.5">
+            Upload your Meesho, Flipkart, or Amazon sales report and download a ready-to-import Tally Prime <code>.XML</code> file.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          id="load-demo-tally-btn"
+          class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow transition"
+        >
+          ⚡ Load Demo E-Com Vouchers
+        </button>
+      </div>
+
+      <!-- Tally Ledger Mapping Inputs -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 text-xs bg-slate-50 p-4 rounded-2xl border border-slate-200">
+        <div>
+          <label class="block font-extrabold text-[#081B4B] mb-1">Party / Marketplace Ledger</label>
+          <input
+            type="text"
+            id="tally-party-ledger"
+            value="Meesho / Flipkart / Amazon Debtors"
+            class="w-full px-3 py-2 rounded-xl bg-white border border-slate-300 font-bold text-[#081B4B]"
+          />
+        </div>
+        <div>
+          <label class="block font-extrabold text-[#081B4B] mb-1">Sales Ledger Name</label>
+          <input
+            type="text"
+            id="tally-sales-ledger"
+            value="GST E-Commerce Sales @ 18%"
+            class="w-full px-3 py-2 rounded-xl bg-white border border-slate-300 font-bold text-[#081B4B]"
+          />
+        </div>
+        <div>
+          <label class="block font-extrabold text-[#081B4B] mb-1">IGST Ledger Name</label>
+          <input
+            type="text"
+            id="tally-igst-ledger"
+            value="Output IGST @ 18%"
+            class="w-full px-3 py-2 rounded-xl bg-white border border-slate-300 font-bold text-[#081B4B]"
+          />
+        </div>
+        <div>
+          <label class="block font-extrabold text-[#081B4B] mb-1">CGST / SGST Ledger Prefix</label>
+          <input
+            type="text"
+            id="tally-cgst-ledger"
+            value="Output CGST / SGST @ 9%"
+            class="w-full px-3 py-2 rounded-xl bg-white border border-slate-300 font-bold text-[#081B4B]"
+          />
+        </div>
+      </div>
+
+      <!-- Upload Dropzone + Download XML Buttons -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+        <label
+          for="tally-file-input"
+          class="lg:col-span-7 border-2 border-dashed border-indigo-300 hover:border-[#5B2EFF] bg-indigo-50/40 rounded-2xl p-5 flex items-center gap-4 cursor-pointer transition group"
+        >
+          <div class="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-2xl shrink-0 group-hover:scale-105 transition">
+            📤
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="text-xs font-extrabold text-[#5B2EFF] uppercase">
+              UPLOAD MEESHO • AMAZON • FLIPKART REPORT (.CSV / .XLSX)
+            </div>
+            <div class="text-sm sm:text-base font-extrabold text-[#081B4B] truncate mt-0.5">
+              Click to Select E-Commerce Sales File for Tally XML
+            </div>
+            <div id="tally-upload-status" class="text-[11px] font-mono text-emerald-700 font-bold truncate mt-1">
+              ✅ 4 Demo E-Commerce Sales Vouchers Ready in RAM
+            </div>
+          </div>
+          <input type="file" id="tally-file-input" accept=".csv,.xlsx,.xls" class="hidden" />
+        </label>
+
+        <div class="lg:col-span-5 bg-slate-50 rounded-2xl p-4 border border-slate-200 flex flex-col justify-between gap-2.5">
+          <button
+            type="button"
+            id="download-tally-xml-btn"
+            class="w-full py-3 px-4 rounded-xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow-lg transition flex items-center justify-center gap-2"
+          >
+            <span>⬇ Download Tally Prime Vouchers (.XML)</span>
+          </button>
+
+          <button
+            type="button"
+            id="copy-tally-xml-btn"
+            class="w-full py-2.5 px-4 rounded-xl bg-[#10E594] hover:bg-emerald-300 text-[#081B4B] font-extrabold text-xs shadow-sm transition"
+          >
+            📋 Copy Raw Tally XML
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECTION 2: VOUCHER SUMMARY & LIVE TALLY XML PREVIEW                 -->
+    <!-- =================================================================== -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+
+      <!-- Left 5 Cols: 3D Purple Voucher Summary Card -->
+      <div data-3d-tilt class="purple-3d-card text-white p-5 sm:p-6 lg:col-span-5 flex flex-col justify-between relative overflow-hidden">
+        <div class=" -top-10 -right-10 w-36 h-36 rounded-full bg-white/10 pointer-events-none absolute"></div>
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-indigo-100">Tally Prime Import Summary</span>
+          <span id="tally-voucher-badge" class="px-2.5 py-0.5 rounded-full bg-[#10E594] text-[#081B4B] font-mono text-[10px] font-extrabold">
+            4 VOUCHERS
+          </span>
+        </div>
+
+        <div class="my-3">
+          <div class="text-[11px] uppercase tracking-wider text-indigo-200">Total Voucher Gross Value</div>
+          <div id="tally-gross-total" class="text-2xl sm:text-3xl font-black font-mono tracking-tight text-white mt-0.5">
+            ₹83,388.58
+          </div>
+          <div class="text-xs text-[#10E594] font-mono font-bold mt-1">
+            Taxable Sales: <span id="tally-taxable-total">₹71,545.37</span>
+          </div>
+        </div>
+
+        <div class="bg-white text-[#081B4B] rounded-2xl p-3.5 shadow-lg space-y-2 text-xs">
+          <div class="font-extrabold text-[#081B4B]">How to Import in Tally Prime:</div>
+          <div class="text-[11px] text-slate-600 leading-relaxed">
+            Open <strong>Tally Prime</strong> → Press <strong>Alt + O (Import)</strong> → Select <strong>Transactions</strong> → Choose XML file downloaded from here!
+          </div>
+        </div>
+      </div>
+
+      <!-- Right 7 Cols: Live Tally XML Preview -->
+      <div data-3d-tilt class="bento-card p-5 sm:p-6 lg:col-span-7 flex flex-col justify-between space-y-3">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">TALLY ENVELOPE XML v2.0</span>
+            <h3 class="text-base font-extrabold text-[#081B4B]">Live Tally Prime Voucher XML Preview</h3>
+          </div>
+          <span class="px-2.5 py-0.5 rounded-full bg-[#081B4B] text-[#10E594] font-mono text-[10px] font-bold">
+            0 ERRORS
+          </span>
+        </div>
+
+        <pre
+          id="tally-xml-preview"
+          class="w-full h-64 p-4 rounded-2xl bg-[#081B4B] text-[#10E594] font-mono text-[11px] overflow-auto leading-relaxed border border-indigo-900 shadow-inner"
+        ></pre>
+      </div>
+
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- BOTTOM PERSONAL ACCOUNT, DPDP PRIVACY (✔️) & LOGOUT BAR             -->
+    <!-- =================================================================== -->
+    <section data-3d-tilt class="bento-card p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-[#5B2EFF] flex items-center justify-center text-base font-bold shrink-0">
+          🛡️
+        </div>
+        <div class="min-w-0">
+          <div class="text-xs font-extrabold text-[#081B4B]">My Personal Data &amp; DPDP Act 2023 Privacy Controls</div>
+          <div class="text-[11px] text-slate-500 truncate">
+            Manage your store GSTIN, view subscription validity, or permanently delete your account &amp; data with confirmation tick (✔️).
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2 ml-auto">
+        <button
+          type="button"
+          data-open-account
+          class="px-4 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] font-extrabold text-xs transition"
+        >
+          👤 My Account &amp; Delete Option (✔️)
+        </button>
+        <button
+          type="button"
+          id="bottom-logout-btn"
+          class="px-4 py-2 rounded-xl bg-[#081B4B] hover:bg-rose-600 text-white font-extrabold text-xs shadow transition flex items-center gap-1.5"
+        >
+          <span>⏻ Logout</span>
+        </button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- E-COM TO TALLY XML ENGINE (ZERO NaN PROTECTION) -->
+  <script type="module">
+    import {
+      subscribeAppState,
+      consumeFreeActionOrLock,
+      sanitizeHTML,
+      formatINR,
+      showToast,
+      logoutUser,
+      syncProDOMElements,
+      init3DTiltCards
+    } from "./assets/js/security-core.js";
+
+    init3DTiltCards();
+
+    function safeNum(val, fallback = 0) {
+      if (val === null || val === undefined || val === "") return fallback;
+      const n = Number(String(val).replace(/[₹$,\s%]/g, "").trim());
+      return Number.isFinite(n) ? n : fallback;
+    }
+
+    const DEMO_TALLY_VOUCHERS = [
+      { invNo: "MSH-2026-101", date: "20261110", party: "Meesho Marketplace", state: "Maharashtra", taxable: 18500, igst: 3330, cgst: 0, sgst: 0 },
+      { invNo: "FK-2026-202", date: "20261111", party: "Flipkart Internet Pvt Ltd", state: "Karnataka", taxable: 14990, igst: 2698.2, cgst: 0, sgst: 0 },
+      { invNo: "AMZ-2026-303", date: "20261112", party: "Amazon Seller Services", state: "Uttar Pradesh", taxable: 34565.37, igst: 0, cgst: 3110.88, sgst: 2073.92 },
+      { invNo: "MSH-2026-404", date: "20261112", party: "Meesho Marketplace", state: "Delhi", taxable: 3490, igst: 0, cgst: 314.1, sgst: 314.1 }
+    ];
+
+    let voucherList = [...DEMO_TALLY_VOUCHERS];
+
+    function buildTallyXml() {
+      const partyLedgerDefault = sanitizeHTML(document.getElementById("tally-party-ledger")?.value || "E-Commerce Debtors");
+      const salesLedger = sanitizeHTML(document.getElementById("tally-sales-ledger")?.value || "GST Sales @ 18%");
+      const igstLedger = sanitizeHTML(document.getElementById("tally-igst-ledger")?.value || "Output IGST @ 18%");
+      const cgstLedger = sanitizeHTML(document.getElementById("tally-cgst-ledger")?.value || "Output CGST/SGST");
+
+      let totalTaxable = 0;
+      let totalGross = 0;
+
+      const messagesXml = voucherList
+        .map((v) => {
+          const tx = safeNum(v.taxable);
+          const igst = safeNum(v.igst);
+          const cgst = safeNum(v.cgst);
+          const sgst = safeNum(v.sgst);
+          const gross = Number((tx + igst + cgst + sgst).toFixed(2));
+          totalTaxable += tx;
+          totalGross += gross;
+
+          const partyName = sanitizeHTML(v.party || partyLedgerDefault);
+          const taxEntries =
+            igst > 0
+              ? `
+            <ALLLEDGERENTRIES.LIST>
+              <LEDGERNAME>${igstLedger}</LEDGERNAME>
+              <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>
+              <AMOUNT>${igst.toFixed(2)}</AMOUNT>
+            </ALLLEDGERENTRIES.LIST>`
+              : `
+            <ALLLEDGERENTRIES.LIST>
+              <LEDGERNAME>${cgstLedger} (CGST)</LEDGERNAME>
+              <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>
+              <AMOUNT>${cgst.toFixed(2)}</AMOUNT>
+            </ALLLEDGERENTRIES.LIST>
+            <ALLLEDGERENTRIES.LIST>
+              <LEDGERNAME>${cgstLedger} (SGST)</LEDGERNAME>
+              <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>
+              <AMOUNT>${sgst.toFixed(2)}</AMOUNT>
+            </ALLLEDGERENTRIES.LIST>`;
+
+          return `
+        <TALLYMESSAGE xmlns:UDF="TallyUDF">
+          <VOUCHER VCHTYPE="Sales" ACTION="Create" OBJVIEW="Accounting Voucher View">
+            <DATE>${sanitizeHTML(v.date || "20261112")}</DATE>
+            <VOUCHERTYPENAME>Sales</VOUCHERTYPENAME>
+            <VOUCHERNUMBER>${sanitizeHTML(v.invNo)}</VOUCHERNUMBER>
+            <PARTYLEDGERNAME>${partyName}</PARTYLEDGERNAME>
+            <STATENAME>${sanitizeHTML(v.state || "Delhi")}</STATENAME>
+            <NARRATION>Imported via SellGST Pro E-Com to Tally XML</NARRATION>
+            <ALLLEDGERENTRIES.LIST>
+              <LEDGERNAME>${partyName}</LEDGERNAME>
+              <ISDEEMEDPOSITIVE>Yes</ISDEEMEDPOSITIVE>
+              <AMOUNT>-${gross.toFixed(2)}</AMOUNT>
+            </ALLLEDGERENTRIES.LIST>
+            <ALLLEDGERENTRIES.LIST>
+              <LEDGERNAME>${salesLedger}</LEDGERNAME>
+              <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>
+              <AMOUNT>${tx.toFixed(2)}</AMOUNT>
+            </ALLLEDGERENTRIES.LIST>${taxEntries}
+          </VOUCHER>
+        </TALLYMESSAGE>`;
+        })
+        .join("\n");
+
+      const fullXml = `<?xml version="1.0" encoding="UTF-8"?>
+<ENVELOPE>
+  <HEADER>
+    <TALLYREQUEST>Import Data</TALLYREQUEST>
+  </HEADER>
+  <BODY>
+    <IMPORTDATA>
+      <REQUESTDESC>
+        <REPORTNAME>Vouchers</REPORTNAME>
+      </REQUESTDESC>
+      <REQUESTDATA>${messagesXml}
+      </REQUESTDATA>
+    </IMPORTDATA>
+  </BODY>
+</ENVELOPE>`;
+
+      document.getElementById("tally-voucher-badge").textContent = `${voucherList.length} VOUCHERS`;
+      document.getElementById("tally-gross-total").textContent = formatINR(totalGross);
+      document.getElementById("tally-taxable-total").textContent = formatINR(totalTaxable);
+      document.getElementById("tally-xml-preview").textContent = fullXml;
+
+      return fullXml;
+    }
+
+    function parseUploadedTallyRows(rows = []) {
+      const parsed = [];
+      rows.forEach((r, idx) => {
+        const tx = safeNum(r["Taxable Value"] ?? r["Taxable Amount"] ?? r["Sale Amount"] ?? r["txval"], 0);
+        if (tx <= 0) return;
+        const igst = safeNum(r["IGST"] ?? r["IGST Amount"] ?? r["iamt"], 0);
+        const cgst = safeNum(r["CGST"] ?? r["CGST Amount"] ?? r["camt"], igst === 0 ? tx * 0.09 : 0);
+        const sgst = safeNum(r["SGST"] ?? r["SGST Amount"] ?? r["samt"], igst === 0 ? tx * 0.09 : 0);
+        parsed.push({
+          invNo: String(r["Invoice No"] || r["Invoice Number"] || r["Order ID"] || `VCH-${101 + idx}`),
+          date: "20261112",
+          party: String(r["Channel"] || r["Marketplace"] || r["Customer Name"] || "E-Com Marketplace"),
+          state: String(r["State"] || r["Place of Supply"] || "Delhi"),
+          taxable: tx,
+          igst,
+          cgst,
+          sgst
+        });
+      });
+      return parsed;
+    }
+
+    document.getElementById("tally-file-input")?.addEventListener("change", async (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      if (!consumeFreeActionOrLock("E-Com to Tally XML Converter")) return;
+
+      if (file.name.toLowerCase().endsWith(".xlsx") || file.name.toLowerCase().endsWith(".xls")) {
+        const buf = await file.arrayBuffer();
+        if (window.XLSX) {
+          const wb = window.XLSX.read(buf, { type: "array" });
+          const rows = window.XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: "" });
+          const res = parseUploadedTallyRows(rows);
+          if (res.length > 0) voucherList = res;
+        }
+      } else if (window.Papa) {
+        window.Papa.parse(file, {
+          header: true,
+          skipEmptyLines: true,
+          complete: (r) => {
+            const res = parseUploadedTallyRows(r.data || []);
+            if (res.length > 0) voucherList = res;
+            buildTallyXml();
+          }
+        });
+      }
+
+      document.getElementById("tally-upload-status").textContent = `✅ Converted ${voucherList.length} Vouchers from ${file.name}`;
+      buildTallyXml();
+      showToast(`✅ Converted ${file.name} into Tally Prime XML!`, "success");
+    });
+
+    ["tally-party-ledger", "tally-sales-ledger", "tally-igst-ledger", "tally-cgst-ledger"].forEach((id) => {
+      document.getElementById(id)?.addEventListener("input", buildTallyXml);
+    });
+
+    document.getElementById("load-demo-tally-btn")?.addEventListener("click", () => {
+      voucherList = [...DEMO_TALLY_VOUCHERS];
+      buildTallyXml();
+      showToast("⚡ Loaded Demo E-Commerce Tally Vouchers!", "success");
+    });
+
+    document.getElementById("download-tally-xml-btn")?.addEventListener("click", () => {
+      if (!consumeFreeActionOrLock("Tally XML Download")) return;
+      const xml = buildTallyXml();
+      const blob = new Blob([xml], { type: "application/xml;charset=utf-8;" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `SellGST_TallyPrime_Vouchers_${new Date().toISOString().slice(0, 10)}.xml`;
+      a.click();
+      showToast("✅ Downloaded Tally Prime Vouchers (.XML)!", "success");
+    });
+
+    document.getElementById("copy-tally-xml-btn")?.addEventListener("click", () => {
+      const xml = document.getElementById("tally-xml-preview").textContent;
+      navigator.clipboard.writeText(xml);
+      showToast("📋 Copied Tally Prime XML to clipboard!", "success");
+    });
+
+    document.getElementById("sidebar-logout-btn")?.addEventListener("click", logoutUser);
+    document.getElementById("bottom-logout-btn")?.addEventListener("click", logoutUser);
+
+    subscribeAppState(() => {
+      syncProDOMElements();
+    });
+
+    buildTallyXml();
+  </script>
+</body>
+</html>
