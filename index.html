@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#081B4B" />
   <link rel="manifest" href="./manifest.json" />
 
-  <!-- Google Structured Data (WebApplication + FAQPage Schema for #1 SEO Ranking on "GST Filing") -->
+  <!-- Google Structured Data (WebApplication + SiteNavigationElement + FAQPage Schema for #1 SEO Ranking) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -52,11 +52,31 @@
         },
         "featureList": [
           "1-Click GSTR-1 (.JSON) Schema v3.1.6 Generator & GSTR-3B GST Filing Assistant",
+          "Government GSTR-1 Excel (.XLSX) to JSON Converter",
+          "GSTR-1 JSON Validator & Visual Table Editor",
+          "GSTR-2A / 2B vs Purchase Book ITC Reconciliation Tool",
+          "E-Commerce CSV/Excel to Tally Prime XML Converter",
           "Flipkart, Amazon & Meesho Order-Wise Profit/Loss CSV Calculator",
           "Unreturned RTO (>30 days) & Courier Weight Discrepancy Claim Generator",
           "S.K.P.S Style Custom Navy GST Invoice Maker with Circle Logo & Digital Signature",
           "4x6 Thermal Shipping Label Cropper & Custom Hindi/English Thank You Card Studio",
           "Dynamic Business & 5-Star Google Review QR Studio"
+        ]
+      },
+      {
+        "@type": "ItemList",
+        "name": "SellGST Pro Super Tools Navigation",
+        "itemListElement": [
+          { "@type": "SiteNavigationElement", "position": 1, "name": "1-Click GSTR-1 JSON & GSTR-3B Filing", "url": "https://sellgst-pro.pages.dev/gst-filing.html" },
+          { "@type": "SiteNavigationElement", "position": 2, "name": "Gov Excel to GSTR-1 JSON Converter", "url": "https://sellgst-pro.pages.dev/gov-excel-to-json.html" },
+          { "@type": "SiteNavigationElement", "position": 3, "name": "GSTR-1 JSON Validator & Visual Editor", "url": "https://sellgst-pro.pages.dev/json-validator.html" },
+          { "@type": "SiteNavigationElement", "position": 4, "name": "GSTR-2A/2B Purchase Reconciliation", "url": "https://sellgst-pro.pages.dev/reconciliation-2a-2b.html" },
+          { "@type": "SiteNavigationElement", "position": 5, "name": "E-Com to Tally Prime XML Converter", "url": "https://sellgst-pro.pages.dev/ecom-to-tally.html" },
+          { "@type": "SiteNavigationElement", "position": 6, "name": "3D Financial & Store Valuation Dashboard", "url": "https://sellgst-pro.pages.dev/app.html" },
+          { "@type": "SiteNavigationElement", "position": 7, "name": "Custom Navy GST Invoice Maker", "url": "https://sellgst-pro.pages.dev/invoice.html" },
+          { "@type": "SiteNavigationElement", "position": 8, "name": "Flipkart Amazon Meesho Profit/Loss & RTO Audit", "url": "https://sellgst-pro.pages.dev/ecom-audit.html" },
+          { "@type": "SiteNavigationElement", "position": 9, "name": "4x6 Thermal Shipping Label & Thank You Studio", "url": "https://sellgst-pro.pages.dev/label-studio.html" },
+          { "@type": "SiteNavigationElement", "position": 10, "name": "Dynamic QR & Google Review Studio", "url": "https://sellgst-pro.pages.dev/qr-studio.html" }
         ]
       },
       {
@@ -67,7 +87,7 @@
             "name": "How can I do GSTR-1 and GSTR-3B GST filing online without a CA?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "On SellGST Pro (https://sellgst-pro.pages.dev/gst-filing.html), enter your GSTIN and invoices to download a 100% validated gst.gov.in GSTR-1 (.JSON) file in 1 click, plus copy-ready GSTR-3B Table 3.1 tax and ITC/TCS offset figures."
+              "text": "On SellGST Pro (https://sellgst-pro.pages.dev/gst-filing.html), upload your Meesho, Flipkart, or Amazon GST report to download a 100% validated gst.gov.in GSTR-1 (.JSON) file and Ready Excel in 1 click, then verify all data visually in the JSON Validator."
             }
           },
           {
@@ -75,7 +95,7 @@
             "name": "Is my client invoice and marketplace CSV data private on SellGST Pro?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. SellGST Pro processes all CSV files and GST calculations 100% inside your device's client-side RAM and protects seller records with strict UID-isolated Zero-Trust security under the DPDP Act 2023."
+              "text": "Yes. SellGST Pro processes all CSV/Excel files and GST calculations 100% inside your device's client-side RAM and protects seller records with strict UID-isolated Zero-Trust security under the DPDP Act 2023."
             }
           }
         ]
@@ -92,6 +112,10 @@
   <link rel="prefetch" href="./ecom-audit.html" as="document" />
   <link rel="prefetch" href="./label-studio.html" as="document" />
   <link rel="prefetch" href="./gst-filing.html" as="document" />
+  <link rel="prefetch" href="./gov-excel-to-json.html" as="document" />
+  <link rel="prefetch" href="./json-validator.html" as="document" />
+  <link rel="prefetch" href="./reconciliation-2a-2b.html" as="document" />
+  <link rel="prefetch" href="./ecom-to-tally.html" as="document" />
   <link rel="prefetch" href="./qr-studio.html" as="document" />
   <link rel="prefetch" href="./login.html" as="document" />
 
@@ -161,55 +185,336 @@
     .pwa-timer-bar {
       animation: shrink7s 7s linear forwards;
     }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
   </style>
 </head>
 <body class="min-h-screen w-full overflow-x-hidden pb-24 lg:pb-12 flex flex-col justify-start">
 
-  <!-- MOBILE FLOATING BOTTOM DOCK (FIXED: SINGLE HOME ICON 🏠) -->
+  <!-- ===================================================================== -->
+  <!-- SLIDE-OUT LEFT SIDEBAR DRAWER ("⚡ ALL SUPER TOOLS MENU" LIKE SCREENSHOT) -->
+  <!-- ===================================================================== -->
+  <div
+    id="super-tools-backdrop"
+    class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-[9990] hidden opacity-0 transition-opacity duration-300"
+  ></div>
+
+  <aside
+    id="super-tools-drawer"
+    aria-label="All Super Tools Menu"
+    class="fixed top-0 left-0 bottom-0 w-[310px] sm:w-[345px] max-w-[88vw] bg-white z-[9995] shadow-2xl flex flex-col justify-between transform -translate-x-full transition-transform duration-300 ease-in-out overflow-y-auto"
+  >
+    <!-- Top Header of Drawer -->
+    <div>
+      <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white/95 backdrop-blur-md z-10">
+        <div class="flex items-center gap-2">
+          <span class="text-base">⚡</span>
+          <span class="font-extrabold text-xs sm:text-[13px] tracking-wider uppercase text-[#1D4ED8]">
+            ALL SUPER TOOLS MENU
+          </span>
+        </div>
+        <button
+          type="button"
+          id="close-super-tools-btn"
+          aria-label="Close Menu"
+          class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center font-extrabold text-sm transition"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Menu Body -->
+      <div class="p-4 space-y-5 text-xs">
+
+        <!-- CATEGORY 1: GST FILING & PORTAL JSON SUITE (ALL 5 DEDICATED FILES) -->
+        <div class="space-y-1.5">
+          <div class="px-2 text-[10.5px] font-extrabold uppercase tracking-wider text-slate-400">
+            1. GST FILING &amp; PORTAL JSON SUITE
+          </div>
+
+          <a
+            href="./gst-filing.html"
+            class="flex items-center justify-between px-3 py-2.5 rounded-2xl bg-slate-50 hover:bg-indigo-50/80 text-slate-800 font-bold transition"
+          >
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="text-base shrink-0">🏛️</span>
+              <span class="truncate">E-Com CSV to GSTR-1 JSON</span>
+            </div>
+            <span class="px-2 py-0.5 rounded-md bg-emerald-600 text-white font-extrabold text-[10px] shrink-0">
+              1-CLICK
+            </span>
+          </a>
+
+          <a
+            href="./gov-excel-to-json.html"
+            class="flex items-center justify-between px-3 py-2.5 rounded-2xl hover:bg-slate-100 text-slate-700 font-bold transition"
+          >
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="text-base shrink-0">📗</span>
+              <span class="truncate">Gov Excel (.XLSX) to JSON</span>
+            </div>
+          </a>
+
+          <!-- Highlighted Visual Validator Item with Blue Pill (Like Screenshot) -->
+          <div class="p-2.5 rounded-2xl bg-blue-50/70 border border-blue-100 space-y-2">
+            <a
+              href="./json-validator.html"
+              class="flex items-center justify-between text-slate-900 font-extrabold"
+            >
+              <div class="flex items-center gap-2.5 min-w-0">
+                <span class="text-base shrink-0">🔍</span>
+                <span class="truncate">JSON Validator &amp; Editor</span>
+              </div>
+              <span class="px-2.5 py-1 rounded-lg bg-[#2563EB] text-white font-extrabold text-[10px] shadow-xs shrink-0">
+                CHECK / EDIT
+              </span>
+            </a>
+            <div class="pl-7 space-y-1 text-[11px] font-semibold text-slate-500">
+              <div><a href="./json-validator.html" class="hover:text-[#2563EB]">• Check B2B, B2CS &amp; HSN Tables</a></div>
+              <div><a href="./json-validator.html" class="hover:text-[#2563EB]">• Fix 15-Digit GSTIN Errors</a></div>
+            </div>
+          </div>
+
+          <a
+            href="./reconciliation-2a-2b.html"
+            class="flex items-center justify-between px-3 py-2.5 rounded-2xl hover:bg-slate-100 text-slate-700 font-bold transition"
+          >
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="text-base shrink-0">🔄</span>
+              <span class="truncate">2A/2B Purchase Reconciliation</span>
+            </div>
+            <span class="px-2 py-0.5 rounded-md bg-indigo-100 text-[#5B2EFF] font-extrabold text-[10px] shrink-0">
+              ITC
+            </span>
+          </a>
+
+          <a
+            href="./ecom-to-tally.html"
+            class="flex items-center justify-between px-3 py-2.5 rounded-2xl hover:bg-slate-100 text-slate-700 font-bold transition"
+          >
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="text-base shrink-0">📁</span>
+              <span class="truncate">E-Com to Tally Prime XML</span>
+            </div>
+            <span class="px-2 py-0.5 rounded-md bg-rose-500 text-white font-extrabold text-[9px] shrink-0">
+              NEW
+            </span>
+          </a>
+        </div>
+
+        <!-- CATEGORY 2: E-COM AUDIT, BILLING & WAREHOUSE TOOLS -->
+        <div class="space-y-1.5">
+          <div class="px-2 text-[10.5px] font-extrabold uppercase tracking-wider text-slate-400">
+            2. E-COM AUDIT, BILLING &amp; WAREHOUSE
+          </div>
+
+          <!-- User Dashboard with EDIT / TRACK Pill & Live Sub-Stats (Matches Screenshot) -->
+          <div class="p-2.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+            <a
+              href="./app.html"
+              class="flex items-center justify-between text-slate-900 font-extrabold"
+            >
+              <div class="flex items-center gap-2.5 min-w-0">
+                <span class="text-base shrink-0">📊</span>
+                <span class="truncate">3D User Dashboard</span>
+              </div>
+              <span class="px-2.5 py-1 rounded-lg bg-[#2563EB] text-white font-extrabold text-[10px] shadow-xs shrink-0">
+                EDIT / TRACK
+              </span>
+            </a>
+            <div class="pl-7 space-y-1 text-[11px] font-semibold text-slate-500">
+              <div id="drawer-saved-bills-count">Saved GST Bills (3)</div>
+              <div id="drawer-rto-claims-count">Flagged RTO Claims (7)</div>
+            </div>
+          </div>
+
+          <a
+            href="./ecom-audit.html"
+            class="flex items-center justify-between px-3 py-2.5 rounded-2xl hover:bg-slate-100 text-slate-700 font-bold transition"
+          >
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="text-base shrink-0">📈</span>
+              <span class="truncate">Profit/Loss &amp; RTO CSV Audit</span>
+            </div>
+            <span class="px-2 py-0.5 rounded-md bg-emerald-600 text-white font-extrabold text-[10px] shrink-0">
+              LIVE
+            </span>
+          </a>
+
+          <a
+            href="./invoice.html"
+            class="flex items-center justify-between px-3 py-2.5 rounded-2xl hover:bg-slate-100 text-slate-700 font-bold transition"
+          >
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="text-base shrink-0">🧾</span>
+              <span class="truncate">S.K.P.S Navy GST Invoice</span>
+            </div>
+          </a>
+
+          <a
+            href="./label-studio.html"
+            class="flex items-center justify-between px-3 py-2.5 rounded-2xl hover:bg-slate-100 text-slate-700 font-bold transition"
+          >
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="text-base shrink-0">🏷️</span>
+              <span class="truncate">4×6 Label &amp; Thank You Card</span>
+            </div>
+          </a>
+
+          <a
+            href="./qr-studio.html"
+            class="flex items-center justify-between px-3 py-2.5 rounded-2xl hover:bg-slate-100 text-slate-700 font-bold transition"
+          >
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="text-base shrink-0">🎨</span>
+              <span class="truncate">Artistic &amp; Dynamic QR Studio</span>
+            </div>
+          </a>
+        </div>
+
+        <!-- CATEGORY 3: PLANS & UPGRADE -->
+        <div class="space-y-1.5">
+          <div class="px-2 text-[10.5px] font-extrabold uppercase tracking-wider text-slate-400">
+            3. PLANS &amp; UPGRADE
+          </div>
+
+          <button
+            type="button"
+            data-unlock-pro="YEARLY"
+            class="w-full flex items-center justify-between px-3 py-2.5 rounded-2xl hover:bg-indigo-50 text-slate-800 font-extrabold transition text-left"
+          >
+            <div class="flex items-center gap-3">
+              <span class="text-base">💳</span>
+              <span>Plans &amp; Pricing (₹99 / ₹499)</span>
+            </div>
+            <span class="px-2 py-0.5 rounded-md bg-purple-100 text-[#5B2EFF] font-extrabold text-[10px]">
+              PRO
+            </span>
+          </button>
+
+          <a
+            href="./admin.html"
+            data-admin-only
+            class="hidden items-center justify-between px-3 py-2.5 rounded-2xl bg-rose-50 text-rose-700 font-extrabold transition"
+          >
+            <div class="flex items-center gap-3">
+              <span class="text-base">🛡️</span>
+              <span>Master Admin Console</span>
+            </div>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Bottom Trial / Quota Card + Upgrade Pro & Sign-In Buttons (Matches Screenshot) -->
+    <div class="p-4 border-t border-slate-100 space-y-2.5 bg-white">
+      <div class="p-3.5 rounded-2xl bg-rose-50/80 border border-rose-200/80 space-y-2">
+        <div class="flex items-start gap-2 text-rose-700 font-extrabold text-xs">
+          <span>⏰</span>
+          <span id="drawer-plan-status-title">Free Trial Quota Active (Instant UPI Unlock)</span>
+        </div>
+        <div id="drawer-quota-subtext" class="text-[11px] font-semibold text-slate-600">
+          Left: 5 Free Actions, Unlimited Pro Downloads
+        </div>
+        <button
+          type="button"
+          data-unlock-pro="YEARLY"
+          class="w-full py-2.5 px-4 rounded-xl bg-[#2563EB] hover:bg-blue-700 text-white font-extrabold text-xs shadow-md transition uppercase tracking-wide"
+        >
+          UPGRADE PRO (₹499)
+        </button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <a
+          href="./login.html"
+          class="py-2.5 px-3 rounded-xl border border-slate-300 hover:bg-slate-50 text-[#2563EB] font-extrabold text-xs text-center transition"
+        >
+          Sign in
+        </a>
+        <button
+          type="button"
+          data-open-account
+          class="py-2.5 px-3 rounded-xl border border-slate-300 hover:bg-slate-50 text-[#081B4B] font-extrabold text-xs text-center transition"
+        >
+          My Account
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MOBILE FLOATING BOTTOM DOCK (SINGLE HOME ICON 🏠 + MENU TRIGGER) -->
   <nav class="lg:hidden fixed bottom-2.5 inset-x-3 bg-white/95 backdrop-blur-xl text-slate-700 rounded-3xl px-2 py-2.5 shadow-2xl border border-indigo-100 z-40 flex items-center justify-around">
     <a href="./index.html" class="flex flex-col items-center gap-0.5 text-[#5B2EFF] font-extrabold text-[10px]">
       <span class="text-base">🏠</span>
       <span data-i18n="nav_home_text">Home</span>
     </a>
-    <a href="./app.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
-      <span class="text-base">📊</span>
-      <span>3D Analytics</span>
+    <a href="./gst-filing.html" class="flex flex-col items-center gap-0.5 text-slate-500 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">🏛️</span>
+      <span>GST Filing</span>
     </a>
-    <a href="./invoice.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+    <a href="./ecom-audit.html" class="flex flex-col items-center gap-0.5 text-slate-500 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">📦</span>
+      <span>Profit/Audit</span>
+    </a>
+    <a href="./invoice.html" class="flex flex-col items-center gap-0.5 text-slate-500 hover:text-[#5B2EFF] font-semibold text-[10px]">
       <span class="text-base">🧾</span>
       <span>Navy Bill</span>
     </a>
-    <a href="./qr-studio.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
-      <span class="text-base">🔳</span>
-      <span>Dynamic QR</span>
-    </a>
-    <button type="button" data-open-account class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
-      <span class="text-base">👤</span>
-      <span>Account</span>
+    <button
+      type="button"
+      data-open-super-menu
+      class="flex flex-col items-center gap-0.5 text-[#081B4B] hover:text-[#5B2EFF] font-extrabold text-[10px]"
+    >
+      <span class="text-base">☰</span>
+      <span>All Tools</span>
     </button>
   </nav>
 
-  <!-- CLEAN TOP NAVIGATION BAR -->
+  <!-- CLEAN TOP NAVIGATION BAR WITH PROMINENT 3-LINE (☰) BUTTON -->
   <header class="sticky top-1 z-30 max-w-7xl mx-auto w-full px-3 sm:px-6 mt-1">
-    <nav class="bg-white/90 backdrop-blur-xl border border-white rounded-3xl px-4 sm:px-6 py-3 shadow-lg shadow-indigo-500/5 flex flex-wrap items-center justify-between gap-2.5">
-      <a href="./index.html" class="flex items-center gap-2.5 min-w-0">
-        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#081B4B] via-[#5B2EFF] to-[#10E594] text-white flex items-center justify-center font-black text-sm shadow-md shrink-0">
-          S₹
-        </div>
-        <div class="min-w-0">
-          <div class="flex items-center gap-1.5">
-            <span class="font-extrabold text-base tracking-tight text-[#081B4B]">SellGST</span>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#5B2EFF] text-white">3D PRO</span>
-          </div>
-          <p class="text-[11px] text-slate-500 truncate">3D Valuation • Navy Invoice • Dynamic QR • GSTR-1</p>
-        </div>
-      </a>
+    <nav class="bg-white/95 backdrop-blur-xl border border-white rounded-3xl px-3.5 sm:px-6 py-2.5 shadow-lg shadow-indigo-500/5 flex items-center justify-between gap-2">
+      <!-- Left: 3-Line Hamburger Button (☰) + Brand Logo -->
+      <div class="flex items-center gap-2.5 min-w-0">
+        <button
+          type="button"
+          id="open-super-tools-btn"
+          data-open-super-menu
+          aria-label="Open All Super Tools Menu"
+          title="Open All Super Tools Menu"
+          class="w-10 h-10 rounded-2xl bg-slate-100 hover:bg-[#5B2EFF] text-[#081B4B] hover:text-white border border-slate-200 flex items-center justify-center font-black text-lg shadow-xs transition shrink-0 cursor-pointer"
+        >
+          ☰
+        </button>
 
-      <div class="flex items-center gap-2 flex-wrap justify-end ml-auto">
+        <a href="./index.html" class="flex items-center gap-2 min-w-0">
+          <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-[#081B4B] via-[#5B2EFF] to-[#10E594] text-white flex items-center justify-center font-black text-xs shadow-md shrink-0">
+            S₹
+          </div>
+          <div class="min-w-0">
+            <div class="flex items-center gap-1.5">
+              <span class="font-extrabold text-sm sm:text-base tracking-tight text-[#081B4B] truncate">SellGST</span>
+              <span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-[#5B2EFF] text-white shrink-0">3D PRO</span>
+            </div>
+            <p class="hidden sm:block text-[11px] text-slate-500 truncate">
+              1-Click GST Filing • E-Com Profit/Loss Audit • Navy Billing
+            </p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Right: Compact Action Controls -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
         <select
           data-lang-switcher
           aria-label="Select Language"
-          class="px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none max-w-[95px] sm:max-w-none truncate"
+          class="px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none max-w-[88px] sm:max-w-none truncate"
         ></select>
 
         <!-- 7-SECOND AUTO-HIDING PWA INSTALL BUTTON -->
@@ -217,40 +522,42 @@
           type="button"
           id="pwa-install-btn"
           data-pwa-install
-          class="relative overflow-hidden px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#081B4B] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap flex items-center gap-1.5"
+          class="relative overflow-hidden px-3 py-1.5 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#081B4B] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap flex items-center gap-1"
         >
-          <span data-i18n="install_app_btn">📲 Install App</span>
+          <span data-i18n="install_app_btn">📲 Install</span>
           <span id="pwa-sec-badge" class="px-1.5 py-0.2 rounded-full bg-white/20 text-[10px] font-mono">7s</span>
           <span class="absolute bottom-0 left-0 h-0.5 bg-[#10E594] pwa-timer-bar"></span>
         </button>
 
         <button
           type="button"
-          data-open-account
-          data-i18n="nav_account"
-          class="px-3.5 py-1.5 rounded-full bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] text-xs font-extrabold border border-indigo-100 transition whitespace-nowrap"
+          data-open-super-menu
+          class="hidden md:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] text-xs font-extrabold border border-indigo-200 transition whitespace-nowrap"
         >
-          👤 My Account
+          <span>⚡ All 10 Super Tools</span>
         </button>
 
-        <a
-          href="./login.html"
-          class="px-4 py-1.5 rounded-full bg-[#081B4B] hover:bg-[#5B2EFF] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap"
+        <button
+          type="button"
+          data-open-account
+          class="px-3 py-1.5 rounded-full bg-[#081B4B] hover:bg-[#5B2EFF] text-white text-xs font-extrabold shadow-xs transition whitespace-nowrap"
         >
-          🔐 Login / Signup
-        </a>
+          👤 Account
+        </button>
       </div>
     </nav>
   </header>
 
-  <!-- MAIN 3D HERO & LIVE BUSINESS VALUATION SECTION -->
-  <main class="max-w-7xl mx-auto w-full px-3 sm:px-6 mt-2.5 space-y-6 flex-1">
+  <!-- ===================================================================== -->
+  <!-- PURPOSEFUL, ZERO-CLUTTER FRONT WORKSPACE (LIVE CALCULATOR & 3D GAUGE) -->
+  <!-- ===================================================================== -->
+  <main class="max-w-7xl mx-auto w-full px-3 sm:px-6 mt-3 space-y-5 flex-1">
 
     <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
 
-      <!-- Left 7 Cols: Hero Value Proposition & Interactive Order Slider -->
+      <!-- Left 7 Cols: Live Interactive Store Valuation & Marketplace Leak Calculator -->
       <div data-3d-tilt class="bento-card p-5 sm:p-7 lg:col-span-7 flex flex-col justify-between space-y-5">
-        <div class="space-y-3">
+        <div class="space-y-2.5">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <span data-i18n="hero_badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 text-[#5B2EFF] text-[11px] font-extrabold">
               💎 INDIA'S #1 3D E-COM VALUATION, AUDIT &amp; GST SUPER-APP
@@ -274,10 +581,10 @@
           </p>
         </div>
 
-        <!-- Interactive 3D Valuation & Leak Recovery Calculator -->
+        <!-- Functional Tool on Front Page: Live Interactive 3D Valuation & Leak Recovery Calculator -->
         <div class="p-4 rounded-2xl bg-slate-50/90 border border-slate-200/80 space-y-3">
           <div class="flex items-center justify-between text-xs">
-            <span class="font-extrabold text-[#081B4B]">Monthly Marketplace Orders (Drag to test 3D Store Valuation)</span>
+            <span class="font-extrabold text-[#081B4B]">Monthly Marketplace Orders (Drag to Calculate Leak &amp; Valuation)</span>
             <span id="order-vol-label" class="font-mono font-black text-sm text-[#5B2EFF]">1,500 Orders / mo</span>
           </div>
 
@@ -308,31 +615,28 @@
           </div>
         </div>
 
-        <!-- Direct Launch CTA Buttons -->
+        <!-- Primary Action Buttons (Including 1-Click Open All Super Tools Drawer) -->
         <div class="flex flex-wrap items-center gap-2.5 pt-1">
-          <a
-            href="./app.html"
-            class="px-5 py-3 rounded-2xl bg-[#5B2EFF] hover:bg-indigo-700 text-white font-extrabold text-xs sm:text-[13px] shadow-xl shadow-indigo-500/25 transition flex items-center gap-2"
+          <button
+            type="button"
+            data-open-super-menu
+            class="px-5 py-3 rounded-2xl bg-[#5B2EFF] hover:bg-indigo-700 text-white font-extrabold text-xs sm:text-[13px] shadow-xl shadow-indigo-500/25 transition flex items-center gap-2 cursor-pointer"
           >
-            <span>📊 Open 3D Financial Dashboard</span>
-          </a>
+            <span>☰ Open All Super Tools Menu (10 Tools)</span>
+          </button>
+
           <a
-            href="./invoice.html"
+            href="./gst-filing.html"
             class="px-4 py-3 rounded-2xl bg-[#081B4B] hover:bg-slate-900 text-white font-extrabold text-xs sm:text-[13px] shadow-md transition flex items-center gap-1.5"
           >
-            <span>🧾 Create Navy GST Invoice</span>
+            <span>🏛️ 1-Click GSTR-1 JSON</span>
           </a>
+
           <a
-            href="./qr-studio.html"
+            href="./ecom-audit.html"
             class="px-4 py-3 rounded-2xl bg-[#10E594] hover:bg-emerald-300 text-[#081B4B] font-extrabold text-xs sm:text-[13px] shadow-sm transition flex items-center gap-1.5"
           >
-            <span>🔳 Dynamic QR &amp; Google Reviews</span>
-          </a>
-          <a
-            href="./login.html"
-            class="px-4 py-3 rounded-2xl bg-amber-50 hover:bg-amber-100 text-[#081B4B] font-extrabold text-xs border border-amber-200 transition"
-          >
-            🔐 Login / Create Account →
+            <span>📦 Scan Profit/Loss CSV</span>
           </a>
         </div>
       </div>
@@ -372,7 +676,13 @@
         <div data-3d-tilt class="bento-card p-5 flex flex-col justify-between space-y-3">
           <div class="flex items-center justify-between">
             <span class="text-xs font-extrabold text-[#081B4B]">3D Profit &amp; Compliance Gauge</span>
-            <span class="px-2.5 py-0.5 rounded-full bg-[#5B2EFF] text-white text-[10px] font-bold">All Tasks</span>
+            <button
+              type="button"
+              data-open-super-menu
+              class="px-2.5 py-0.5 rounded-full bg-[#5B2EFF] text-white text-[10px] font-bold"
+            >
+              All Tools ☰
+            </button>
           </div>
 
           <div class="grid grid-cols-2 gap-3 items-center">
@@ -414,88 +724,6 @@
     </section>
 
     <!-- =================================================================== -->
-    <!-- 5 CORE 3D SUPER-APP MODULES BENTO GRID                              -->
-    <!-- =================================================================== -->
-    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-
-      <!-- 1. Custom Navy Invoice -->
-      <a href="./invoice.html" data-3d-tilt class="bento-card p-5 flex flex-col justify-between group">
-        <div>
-          <div class="w-11 h-11 rounded-2xl bg-indigo-50 text-[#5B2EFF] flex items-center justify-center text-lg font-bold mb-3">
-            🧾
-          </div>
-          <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#5B2EFF]">MODULE 01 • NAVY BILL</span>
-          <h2 class="text-sm font-extrabold text-[#081B4B] mt-1">S.K.P.S Style GST Invoice + Circle Logo</h2>
-          <p class="text-xs text-slate-500 mt-1 leading-relaxed">
-            Upload your circular logo, edit every bank/tax field, add digital signature &amp; infinite IDs.
-          </p>
-        </div>
-        <span class="mt-4 text-xs font-extrabold text-[#081B4B] group-hover:text-[#5B2EFF]">Create Bill →</span>
-      </a>
-
-      <!-- 2. Profit/Loss & RTO Audit -->
-      <a href="./ecom-audit.html" data-3d-tilt class="bento-card p-5 flex flex-col justify-between group">
-        <div>
-          <div class="w-11 h-11 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-lg font-bold mb-3">
-            📦
-          </div>
-          <span class="text-[10px] font-extrabold uppercase tracking-wider text-rose-600">MODULE 02 • RAM SCANNER</span>
-          <h2 class="text-sm font-extrabold text-[#081B4B] mt-1">Profit/Loss + Pending RTO (&gt;30d) &amp; Weight Fraud</h2>
-          <p class="text-xs text-slate-500 mt-1 leading-relaxed">
-            Drop Meesho, Flipkart, or Amazon CSV. See Green Profit / Red Loss &amp; claim tickets in 0.1s.
-          </p>
-        </div>
-        <span class="mt-4 text-xs font-extrabold text-[#081B4B] group-hover:text-[#5B2EFF]">Scan CSV →</span>
-      </a>
-
-      <!-- 3. GSTR-1 JSON -->
-      <a href="./gst-filing.html" data-3d-tilt class="bento-card p-5 flex flex-col justify-between group">
-        <div>
-          <div class="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-lg font-bold mb-3">
-            🏛️
-          </div>
-          <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">MODULE 03 • PORTAL JSON</span>
-          <h2 class="text-sm font-extrabold text-[#081B4B] mt-1">1-Click GSTR-1 (.JSON) &amp; GSTR-3B</h2>
-          <p class="text-xs text-slate-500 mt-1 leading-relaxed">
-            Generate official <code>gst.gov.in</code> offline JSON files (B2B, B2CS, HSN) in 60 seconds.
-          </p>
-        </div>
-        <span class="mt-4 text-xs font-extrabold text-[#081B4B] group-hover:text-[#5B2EFF]">File GSTR-1 →</span>
-      </a>
-
-      <!-- 4. 4x6 Thermal Label & Custom Thank You Studio -->
-      <a href="./label-studio.html" data-3d-tilt class="bento-card p-5 flex flex-col justify-between group">
-        <div>
-          <div class="w-11 h-11 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center text-lg font-bold mb-3">
-            🏷️
-          </div>
-          <span class="text-[10px] font-extrabold uppercase tracking-wider text-amber-700">MODULE 04 • WAREHOUSE</span>
-          <h2 class="text-sm font-extrabold text-[#081B4B] mt-1">4×6 Thermal Shipping Label &amp; Thank You Studio</h2>
-          <p class="text-xs text-slate-500 mt-1 leading-relaxed">
-            Auto-crop Meesho, Flipkart &amp; Amazon labels into 4×6 thermal rolls with custom Hindi/English Thank You cards.
-          </p>
-        </div>
-        <span class="mt-4 text-xs font-extrabold text-[#081B4B] group-hover:text-[#5B2EFF]">Crop Labels →</span>
-      </a>
-
-      <!-- 5. Dynamic QR & Google Review Studio -->
-      <a href="./qr-studio.html" data-3d-tilt class="bento-card p-5 flex flex-col justify-between group border-2 border-[#5B2EFF]/30">
-        <div>
-          <div class="w-11 h-11 rounded-2xl bg-[#081B4B] text-[#10E594] flex items-center justify-center text-lg font-bold mb-3">
-            🔳
-          </div>
-          <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#5B2EFF]">MODULE 05 • QR STUDIO</span>
-          <h2 class="text-sm font-extrabold text-[#081B4B] mt-1">Business &amp; Google Review Dynamic QR</h2>
-          <p class="text-xs text-slate-500 mt-1 leading-relaxed">
-            Create custom UPI, Business &amp; 5-Star Google Review QR codes (5 Free Limit, then Pro Lock).
-          </p>
-        </div>
-        <span class="mt-4 text-xs font-extrabold text-[#5B2EFF]">Open QR Studio →</span>
-      </a>
-
-    </section>
-
-    <!-- =================================================================== -->
     <!-- BOTTOM PERSONAL ACCOUNT, DPDP PRIVACY (✔️) & LOGOUT BAR             -->
     <!-- =================================================================== -->
     <section data-3d-tilt class="bento-card p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
@@ -531,9 +759,10 @@
 
   </main>
 
-  <!-- INTERACTIVE 3D VALUATION SLIDER & 7s PWA COUNTDOWN SCRIPT -->
+  <!-- INTERACTIVE 3D VALUATION SLIDER, DRAWER CONTROLLER & 7s PWA SCRIPT -->
   <script type="module">
     import {
+      evaluateSubscriptionHealth,
       formatINR,
       logoutUser,
       syncProDOMElements,
@@ -543,7 +772,60 @@
     init3DTiltCards();
     syncProDOMElements();
 
-    // 1. 7-Second Countdown Badge on Install App Button
+    // 1. Slide-Out "ALL SUPER TOOLS MENU" Drawer Controller
+    const drawer = document.getElementById("super-tools-drawer");
+    const backdrop = document.getElementById("super-tools-backdrop");
+
+    function openSuperToolsDrawer() {
+      if (!drawer || !backdrop) return;
+      // Update live counts inside drawer
+      try {
+        const savedBills = JSON.parse(localStorage.getItem("sellgst_invoices") || "[]");
+        const billsEl = document.getElementById("drawer-saved-bills-count");
+        if (billsEl) billsEl.textContent = `Saved GST Bills (${savedBills.length || 3})`;
+
+        const health = evaluateSubscriptionHealth();
+        const titleEl = document.getElementById("drawer-plan-status-title");
+        const subEl = document.getElementById("drawer-quota-subtext");
+        if (health.isPro && health.planName === "YEARLY") {
+          if (titleEl) titleEl.textContent = `Yearly Pro Active (${health.remainingDays}d left)`;
+          if (subEl) subEl.textContent = "Unlimited GSTR-1 JSON, Audits, Bills & QRs";
+        } else if (health.isPro && health.planName === "MONTHLY") {
+          if (titleEl) titleEl.textContent = `Ends in: ${health.remainingDays}d ${health.remainingHours}h`;
+          if (subEl) subEl.textContent = "Monthly Pro Active • Upgrade to ₹499 Yearly";
+        } else {
+          if (titleEl) titleEl.textContent = `Free Trial Quota: ${health.freeActionsRemaining}/5 Left`;
+          if (subEl) subEl.textContent = `Left: ${health.freeActionsRemaining} Free Uses, 5 Custom Downloads`;
+        }
+      } catch (_) {}
+
+      backdrop.classList.remove("hidden");
+      requestAnimationFrame(() => {
+        backdrop.classList.remove("opacity-0");
+        drawer.classList.remove("-translate-x-full");
+      });
+    }
+
+    function closeSuperToolsDrawer() {
+      if (!drawer || !backdrop) return;
+      backdrop.classList.add("opacity-0");
+      drawer.classList.add("-translate-x-full");
+      setTimeout(() => {
+        backdrop.classList.add("hidden");
+      }, 280);
+    }
+
+    document.querySelectorAll("[data-open-super-menu]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        openSuperToolsDrawer();
+      });
+    });
+
+    document.getElementById("close-super-tools-btn")?.addEventListener("click", closeSuperToolsDrawer);
+    backdrop?.addEventListener("click", closeSuperToolsDrawer);
+
+    // 2. 7-Second Countdown Badge on Install App Button
     const secBadge = document.getElementById("pwa-sec-badge");
     let remainingSec = 7;
     const secInterval = setInterval(() => {
@@ -555,12 +837,12 @@
       }
     }, 1000);
 
-    // 2. 0.1s rAF-Throttled 3D Store Valuation & Leak Calculator
+    // 3. 0.1s rAF-Throttled 3D Store Valuation & Leak Calculator (Zero NaN Protection)
     const slider = document.getElementById("order-vol-slider");
     let framePending = false;
 
     function updateValuationMetrics() {
-      const orders = Number(slider.value) || 1500;
+      const orders = Number(slider?.value) || 1500;
       const rtoLoss = orders * 12.5;
       const weightLoss = orders * 5.6;
       const monthlyLeak = rtoLoss + weightLoss;
