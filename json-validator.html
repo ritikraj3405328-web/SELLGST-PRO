@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en" class="overflow-x-hidden scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+
+  <!-- ===================================================================== -->
+  <!-- 100% SEO-FRIENDLY META TAGS, OPENGRAPH & GOOGLE JSON-LD SCHEMA        -->
+  <!-- ===================================================================== -->
+  <title>GSTR-1 JSON Validator & Visual Editor Online (gst.gov.in Schema v3.1.6) — SellGST Pro</title>
+  <meta name="description" content="Free Online GSTR-1 JSON Validator & Visual Editor for Indian sellers & CAs. Upload any GSTR-1 .JSON file to inspect B2B, B2CS, and HSN tables visually, fix GSTIN errors, and export 100% compliant JSON." />
+  <meta name="keywords" content="GSTR-1 JSON validator online, GSTR-1 JSON visual editor, open GSTR-1 JSON file in Excel, fix gst.gov.in JSON error, B2B B2CS HSN JSON viewer, SellGST Pro" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <link rel="canonical" href="https://sellgst-pro.pages.dev/json-validator.html" />
+
+  <!-- Open Graph / WhatsApp / Social Media Preview -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="GSTR-1 JSON Validator & Visual Editor — SellGST Pro" />
+  <meta property="og:description" content="Upload any GSTR-1 .JSON file to inspect, validate against official gst.gov.in rules, visually edit B2B/B2CS/HSN tables, and export error-free JSON." />
+  <meta property="og:url" content="https://sellgst-pro.pages.dev/json-validator.html" />
+  <meta name="theme-color" content="#081B4B" />
+  <link rel="manifest" href="./manifest.json" />
+
+  <!-- Structured Data for Google Search Rich Snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SellGST Pro GSTR-1 JSON Validator & Visual Editor",
+    "url": "https://sellgst-pro.pages.dev/json-validator.html",
+    "applicationCategory": "FinanceApplication, AccountingApplication",
+    "operatingSystem": "Web, Android, iOS, Windows",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "INR"
+    },
+    "description": "Upload any GSTR-1 JSON file to inspect, validate against official GST portal rules, visually edit B2B, B2CS, and HSN tables, and export compliant JSON or Excel."
+  }
+  </script>
+
+  <!-- 0.1s Instant Module Preload & Speculative Tool Prefetch -->
+  <link rel="modulepreload" href="./assets/js/security-core.js" />
+  <link rel="modulepreload" href="./assets/js/i18n.js" />
+  <link rel="prefetch" href="./index.html" as="document" />
+  <link rel="prefetch" href="./gst-filing.html" as="document" />
+  <link rel="prefetch" href="./gov-excel-to-json.html" as="document" />
+  <link rel="prefetch" href="./reconciliation-2a-2b.html" as="document" />
+  <link rel="prefetch" href="./ecom-to-tally.html" as="document" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          },
+          colors: {
+            navy: '#081B4B',
+            royal: '#5B2EFF',
+            mint: '#10E594'
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    html, body {
+      max-width: 100vw;
+      overflow-x: hidden;
+      background: linear-gradient(135deg, #DDE3FF 0%, #EEF2FF 48%, #D6F5F8 100%);
+      color: #0F172A;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .bento-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(16px);
+      border-radius: 26px;
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 18px 40px -15px rgba(91, 46, 255, 0.14), 0 4px 12px rgba(15, 23, 42, 0.04);
+      transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease;
+      min-width: 0;
+    }
+    .purple-3d-card {
+      background: linear-gradient(135deg, #6A3BFF 0%, #5B2EFF 55%, #3F16C4 100%);
+      border-radius: 26px;
+      box-shadow: 0 22px 45px -12px rgba(91, 46, 255, 0.38);
+      min-width: 0;
+    }
+    .cell-edit-input {
+      width: 100%;
+      background: #F8FAFC;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      padding: 4px 7px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #081B4B;
+      transition: all 0.15s ease;
+    }
+    .cell-edit-input:focus {
+      outline: none;
+      background: #FFFFFF;
+      border-color: #5B2EFF;
+      box-shadow: 0 0 0 2px rgba(91, 46, 255, 0.15);
+    }
+    @keyframes shrink7s {
+      from { width: 100%; }
+      to { width: 0%; }
+    }
+    .pwa-timer-bar {
+      animation: shrink7s 7s linear forwards;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="min-h-screen w-full overflow-x-hidden pb-24 lg:pb-12 lg:pl-24">
+
+  <!-- DESKTOP FLOATING 3D LEFT PILL SIDEBAR -->
+  <aside class="hidden lg:flex fixed left-4 top-4 bottom-4 w-16 bg-white/95 backdrop-blur-xl border border-white rounded-full shadow-xl shadow-indigo-500/10 flex-col items-center justify-between py-5 z-40">
+    <a href="./index.html" title="Home Page" class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#081B4B] via-[#5B2EFF] to-[#10E594] text-white flex items-center justify-center font-black text-sm shadow-md">
+      🏠
+    </a>
+    <nav class="flex flex-col items-center gap-3">
+      <a href="./app.html" title="3D Financial Dashboard" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+        📊
+      </a>
+      <a href="./invoice.html" title="Custom Navy GST Invoice" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+        🧾
+      </a>
+      <a href="./ecom-audit.html" title="E-Com Audit & 4x6 Labels" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+        📦
+      </a>
+      <a href="./gst-filing.html" title="GST Filing & JSON Validator" class="w-11 h-11 rounded-2xl bg-[#5B2EFF] text-white flex items-center justify-center text-base shadow-md transition">
+        🏛️
+      </a>
+      <a href="./qr-studio.html" title="Dynamic QR & Google Reviews" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+        🔳
+      </a>
+      <a href="./admin.html" data-admin-only title="Master Admin Console" class="hidden w-11 h-11 rounded-2xl bg-rose-50 text-rose-600 hover:bg-rose-100 flex items-center justify-center text-base transition">
+        🛡️
+      </a>
+    </nav>
+    <div class="flex flex-col items-center gap-2">
+      <button type="button" data-open-account title="My Personal Account & DPDP Privacy" class="w-10 h-10 rounded-full bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] flex items-center justify-center text-sm shadow-sm">
+        👤
+      </button>
+      <button type="button" id="sidebar-logout-btn" title="Logout" class="w-10 h-10 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center text-sm">
+        ⏻
+      </button>
+    </div>
+  </aside>
+
+  <!-- MOBILE FLOATING BOTTOM DOCK -->
+  <nav class="lg:hidden fixed bottom-2.5 inset-x-3 bg-white/95 backdrop-blur-xl text-slate-700 rounded-3xl px-2 py-2.5 shadow-2xl border border-indigo-100 z-40 flex items-center justify-around">
+    <a href="./app.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">📊</span>
+      <span>Dashboard</span>
+    </a>
+    <a href="./invoice.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">🧾</span>
+      <span>GST Bill</span>
+    </a>
+    <a href="./ecom-audit.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">📦</span>
+      <span>E-Com Audit</span>
+    </a>
+    <a href="./gst-filing.html" class="flex flex-col items-center gap-0.5 text-[#5B2EFF] font-extrabold text-[10px]">
+      <span class="text-base">🏛️</span>
+      <span>GSTR-1</span>
+    </a>
+    <a href="./qr-studio.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">🔳</span>
+      <span>QR Studio</span>
+    </a>
+  </nav>
+
+  <!-- MAIN CONTENT WRAPPER -->
+  <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-3 sm:pt-4 space-y-5 overflow-x-hidden">
+
+    <!-- CLEAN TOP HEADER BAR -->
+    <header class="bg-white/90 backdrop-blur-xl rounded-3xl border border-white px-4 sm:px-6 py-3 shadow-lg shadow-indigo-500/5 flex flex-wrap items-center justify-between gap-2.5">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <a
+          href="./index.html"
+          class="px-3.5 py-2 rounded-2xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow-sm transition flex items-center gap-1.5 shrink-0"
+        >
+          <span>🏠 Home</span>
+        </a>
+        <div class="min-w-0">
+          <h1 class="font-extrabold text-sm sm:text-[15px] text-[#081B4B] truncate">
+            GSTR-1 JSON Validator &amp; Visual Editor
+          </h1>
+          <p class="text-[11px] text-slate-500 truncate">
+            Upload any GSTR-1 JSON file to inspect, validate against official GST rules, visually edit issues &amp; export compliant JSON
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-end ml-auto">
+        <select
+          data-lang-switcher
+          aria-label="Language"
+          class="px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none max-w-[92px] sm:max-w-none truncate"
+        ></select>
+
+        <!-- 7-SECOND AUTO-HIDING PWA INSTALL BUTTON -->
+        <button
+          type="button"
+          id="pwa-install-btn"
+          data-pwa-install
+          class="relative overflow-hidden px-3 py-1.5 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#081B4B] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap flex items-center gap-1.5"
+        >
+          <span>📲 Install App</span>
+          <span id="pwa-sec-badge" class="px-1.5 py-0.2 rounded-full bg-white/20 text-[10px] font-mono">7s</span>
+          <span class="absolute bottom-0 left-0 h-0.5 bg-[#10E594] pwa-timer-bar"></span>
+        </button>
+
+        <button
+          type="button"
+          data-open-account
+          class="px-3 py-1.5 rounded-full bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] text-xs font-extrabold border border-indigo-100 transition whitespace-nowrap"
+        >
+          👤 My Account
+        </button>
+
+        <button
+          type="button"
+          data-pro-badge
+          data-unlock-pro="MONTHLY"
+          class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-[#5B2EFF] to-[#4318FF] text-white shadow-md whitespace-nowrap"
+        >
+          Unlock Pro ⚡
+        </button>
+      </div>
+    </header>
+
+    <!-- =================================================================== -->
+    <!-- DEDICATED SEPARATE GST FILES NAVIGATION BAR (LIKE GSTPROSELLER.COM) -->
+    <!-- =================================================================== -->
+    <section class="bento-card p-3 sm:p-4 flex items-center gap-2 overflow-x-auto no-scrollbar">
+      <a
+        href="./gst-filing.html"
+        class="px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-indigo-50 text-[#081B4B] font-extrabold text-xs border border-slate-200 transition whitespace-nowrap flex items-center gap-1.5 shrink-0"
+      >
+        <span>🛒 1. E-Com CSV to JSON &amp; Excel</span>
+      </a>
+      <a
+        href="./gov-excel-to-json.html"
+        class="px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-indigo-50 text-[#081B4B] font-extrabold text-xs border border-slate-200 transition whitespace-nowrap flex items-center gap-1.5 shrink-0"
+      >
+        <span>📗 2. Gov Excel to JSON</span>
+      </a>
+      <a
+        href="./json-validator.html"
+        class="px-4 py-2.5 rounded-2xl bg-[#5B2EFF] text-white font-extrabold text-xs shadow-md whitespace-nowrap flex items-center gap-1.5 shrink-0"
+      >
+        <span>🔍 3. JSON Validator &amp; Visual Editor (Active)</span>
+      </a>
+      <a
+        href="./reconciliation-2a-2b.html"
+        class="px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-indigo-50 text-[#081B4B] font-extrabold text-xs border border-slate-200 transition whitespace-nowrap flex items-center gap-1.5 shrink-0"
+      >
+        <span>🔄 4. 2A/2B Purchase Reconciliation</span>
+      </a>
+      <a
+        href="./ecom-to-tally.html"
+        class="px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-indigo-50 text-[#081B4B] font-extrabold text-xs border border-slate-200 transition whitespace-nowrap flex items-center gap-1.5 shrink-0"
+      >
+        <span>📁 5. E-Com to Tally XML</span>
+      </a>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECTION 1: UPLOAD GSTR-1 JSON FILE OR PASTE RAW JSON DROPZONE       -->
+    <!-- =================================================================== -->
+    <section data-3d-tilt class="bento-card p-5 sm:p-6 space-y-4 border-2 border-[#5B2EFF]/25">
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+        <div>
+          <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-[#5B2EFF] font-extrabold text-[10px] uppercase">
+            FEATURE #3 • FINAL DATA VERIFICATION &amp; VISUAL EDITOR
+          </span>
+          <h2 class="text-base sm:text-lg font-extrabold text-[#081B4B] mt-1">
+            JSON Validator &amp; Visual Editor — Check All Your GST Data Before Portal Upload
+          </h2>
+          <p class="text-xs text-slate-500 mt-0.5">
+            Upload any GSTR-1 <code>.json</code> file to inspect, validate against official <code>gst.gov.in</code> rules, visually edit issues, and export compliant JSON.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          id="load-demo-json-btn"
+          class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow transition whitespace-nowrap"
+        >
+          ⚡ Load Sample GSTR-1 JSON
+        </button>
+      </div>
+
+      <!-- Cloud Dropzone matching gstproseller.com screenshot -->
+      <div
+        id="json-dropzone"
+        class="border-2 border-dashed border-indigo-300 hover:border-[#5B2EFF] bg-indigo-50/40 rounded-3xl p-6 text-center space-y-3 transition"
+      >
+        <div class="w-14 h-14 rounded-2xl bg-white shadow-md text-[#5B2EFF] flex items-center justify-center text-2xl mx-auto">
+          ☁️
+        </div>
+        <div>
+          <div class="text-sm sm:text-base font-extrabold text-[#081B4B]">
+            Drag and drop your GSTR-1 JSON file here
+          </div>
+          <p id="loaded-json-file-label" class="text-xs font-mono text-emerald-700 font-bold mt-0.5">
+            ✅ Auto-Loaded Latest GSTR-1 JSON Data in Visual Editor Below
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-center gap-3 pt-1">
+          <label
+            for="json-file-upload-input"
+            class="px-5 py-2.5 rounded-xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow-md cursor-pointer transition inline-flex items-center gap-2"
+          >
+            <span>📂 Select JSON File</span>
+            <input type="file" id="json-file-upload-input" accept=".json,application/json" class="hidden" />
+          </label>
+
+          <button
+            type="button"
+            id="toggle-paste-json-btn"
+            class="px-5 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-[#081B4B] font-extrabold text-xs border border-slate-300 shadow-sm transition inline-flex items-center gap-2"
+          >
+            <span>&lt;/&gt; Paste Raw JSON</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Collapsible Raw JSON Paste Box -->
+      <div id="paste-json-drawer" class="hidden p-4 rounded-2xl bg-slate-900 text-white space-y-3">
+        <div class="flex items-center justify-between text-xs">
+          <span class="font-bold text-[#10E594]">Paste Raw GSTR-1 JSON Payload Below:</span>
+          <button type="button" id="close-paste-drawer-btn" class="text-slate-400 hover:text-white font-bold">✕ Close</button>
+        </div>
+        <textarea
+          id="raw-json-paste-textarea"
+          rows="6"
+          placeholder='{"gstin": "07AABCS1429B1Z5", "fp": "112026", "b2b": [], "b2cs": [], "hsn": {"data": []}}'
+          class="w-full p-3 rounded-xl bg-slate-950 border border-slate-700 font-mono text-xs text-emerald-300 focus:outline-none"
+        ></textarea>
+        <button
+          type="button"
+          id="parse-pasted-json-btn"
+          class="px-5 py-2.5 rounded-xl bg-[#10E594] text-[#081B4B] font-extrabold text-xs shadow"
+        >
+          ✅ Validate &amp; Load in Visual Editor
+        </button>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECTION 2: 4 VALIDATION HEALTH & SUMMARY CARDS                      -->
+    <!-- =================================================================== -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+      <!-- Card 1: Validation Status -->
+      <div id="val-status-card" class="p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-400 flex flex-col justify-between shadow-sm">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-extrabold text-emerald-950">🛡️ Portal Rule Check</span>
+          <span id="val-schema-badge" class="px-2 py-0.5 rounded-full bg-emerald-600 text-white font-mono text-[10px] font-extrabold">
+            GST3.1.6
+          </span>
+        </div>
+        <div id="val-error-count" class="text-xl font-black font-mono text-emerald-700 my-2">
+          ✅ 0 Errors Found
+        </div>
+        <div id="val-error-sub" class="text-[11px] text-emerald-800 font-bold border-t border-emerald-200 pt-1.5">
+          100% Ready for gst.gov.in Upload
+        </div>
+      </div>
+
+      <!-- Card 2: B2B Invoices Summary -->
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 flex flex-col justify-between shadow-sm">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-extrabold text-[#081B4B]">🏢 Table 4A: B2B Bills</span>
+          <span id="val-b2b-count" class="px-2 py-0.5 rounded-full bg-indigo-50 text-[#5B2EFF] font-mono text-[10px] font-extrabold">
+            0 Invoices
+          </span>
+        </div>
+        <div id="val-b2b-taxable" class="text-xl font-black font-mono text-[#081B4B] my-2">
+          ₹0.00
+        </div>
+        <div class="text-[11px] text-slate-500 font-semibold border-t border-slate-100 pt-1.5">
+          Registered 15-Digit GSTIN Buyers
+        </div>
+      </div>
+
+      <!-- Card 3: B2CS Summary -->
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 flex flex-col justify-between shadow-sm">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-extrabold text-[#081B4B]">🛒 Table 7: B2CS Sales</span>
+          <span id="val-b2cs-count" class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-mono text-[10px] font-extrabold">
+            0 States
+          </span>
+        </div>
+        <div id="val-b2cs-taxable" class="text-xl font-black font-mono text-emerald-700 my-2">
+          ₹0.00
+        </div>
+        <div class="text-[11px] text-slate-500 font-semibold border-t border-slate-100 pt-1.5">
+          State-Wise Unregistered Consumers
+        </div>
+      </div>
+
+      <!-- Card 4: HSN Summary & Total Tax -->
+      <div class="p-4 rounded-2xl bg-[#081B4B] text-white flex flex-col justify-between shadow-md">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-extrabold text-[#10E594]">📦 Table 12: HSN &amp; Tax</span>
+          <span id="val-hsn-count" class="px-2 py-0.5 rounded-full bg-white/15 text-white font-mono text-[10px] font-extrabold">
+            0 HSNs
+          </span>
+        </div>
+        <div id="val-total-tax" class="text-xl font-black font-mono text-[#10E594] my-2">
+          ₹0.00
+        </div>
+        <div class="text-[11px] text-indigo-200 font-semibold border-t border-white/15 pt-1.5">
+          Total IGST + CGST + SGST Liability
+        </div>
+      </div>
+
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECTION 3: INTERACTIVE VISUAL EDITOR (HEADER + B2B + B2CS + HSN)    -->
+    <!-- =================================================================== -->
+    <section class="bento-card p-5 sm:p-6 space-y-5">
+
+      <!-- Top Seller GSTIN, Filing Period & 1-Click Export Controls -->
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+        <div class="flex flex-wrap items-center gap-3 text-xs">
+          <div>
+            <label class="block font-bold text-slate-500 mb-1">Seller GSTIN in JSON</label>
+            <input
+              type="text"
+              id="ed-seller-gstin"
+              maxlength="15"
+              value="07AABCS1429B1Z5"
+              class="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-300 font-mono font-extrabold uppercase text-[#081B4B]"
+            />
+          </div>
+          <div>
+            <label class="block font-bold text-slate-500 mb-1">Filing Period (MMYYYY)</label>
+            <input
+              type="text"
+              id="ed-filing-period"
+              maxlength="6"
+              value="112026"
+              class="w-32 px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-300 font-mono font-extrabold text-[#081B4B]"
+            />
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            id="export-corrected-json-btn"
+            class="px-5 py-2.5 rounded-2xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow-lg transition flex items-center gap-1.5"
+          >
+            <span>⬇ Download Validated GSTR-1 (.JSON)</span>
+          </button>
+          <button
+            type="button"
+            id="export-visual-csv-btn"
+            class="px-4 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow transition flex items-center gap-1.5"
+          >
+            <span>📊 Export Audit Excel (.CSV)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Visual Section Switcher Tabs -->
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div class="flex flex-wrap items-center gap-1.5 bg-slate-100 p-1.5 rounded-2xl text-xs font-extrabold">
+          <button type="button" data-ed-tab="B2B" class="ed-tab-btn px-4 py-2 rounded-xl bg-[#5B2EFF] text-white shadow-sm transition">
+            🏢 1. B2B Invoices (Table 4A)
+          </button>
+          <button type="button" data-ed-tab="B2CS" class="ed-tab-btn px-4 py-2 rounded-xl text-slate-700 hover:text-[#081B4B] transition">
+            🛒 2. B2CS State Summary (Table 7)
+          </button>
+          <button type="button" data-ed-tab="HSN" class="ed-tab-btn px-4 py-2 rounded-xl text-slate-700 hover:text-[#081B4B] transition">
+            📦 3. HSN Summary (Table 12)
+          </button>
+        </div>
+
+        <span class="text-[11px] font-bold text-slate-500">
+          💡 Tip: Edit any box below — GST totals &amp; JSON update automatically in 0.1s!
+        </span>
+      </div>
+
+      <!-- TAB 1: B2B INVOICES VISUAL TABLE EDITOR -->
+      <div id="tab-panel-B2B" class="space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-extrabold text-[#081B4B]">Table 4A: B2B Registered Buyer Invoices</h3>
+          <button
+            type="button"
+            id="add-b2b-row-btn"
+            class="px-3.5 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] font-extrabold text-xs border border-indigo-200"
+          >
+            + Add B2B Invoice Row
+          </button>
+        </div>
+        <div class="w-full overflow-x-auto rounded-2xl border border-slate-200">
+          <table class="w-full text-left border-collapse text-xs min-w-[780px]">
+            <thead>
+              <tr class="bg-[#081B4B] text-white uppercase text-[10px] font-extrabold">
+                <th class="py-3 px-2.5">Buyer GSTIN (15 Chars)</th>
+                <th class="py-3 px-2">Invoice No</th>
+                <th class="py-3 px-2">Date (DD-MM-YYYY)</th>
+                <th class="py-3 px-2 w-20">POS</th>
+                <th class="py-3 px-2 w-20">GST %</th>
+                <th class="py-3 px-2">Taxable (₹)</th>
+                <th class="py-3 px-2">IGST (₹)</th>
+                <th class="py-3 px-2">CGST (₹)</th>
+                <th class="py-3 px-2">SGST (₹)</th>
+                <th class="py-3 px-2 text-center">Status</th>
+                <th class="py-3 px-2 text-center">Del</th>
+              </tr>
+            </thead>
+            <tbody id="b2b-editor-tbody" class="divide-y divide-slate-200 font-mono"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 2: B2CS STATE SUMMARY VISUAL TABLE EDITOR -->
+      <div id="tab-panel-B2CS" class="hidden space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-extrabold text-[#081B4B]">Table 7: B2CS (Unregistered Consumer State-Wise Summary)</h3>
+          <button
+            type="button"
+            id="add-b2cs-row-btn"
+            class="px-3.5 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] font-extrabold text-xs border border-indigo-200"
+          >
+            + Add B2CS State Row
+          </button>
+        </div>
+        <div class="w-full overflow-x-auto rounded-2xl border border-slate-200">
+          <table class="w-full text-left border-collapse text-xs min-w-[680px]">
+            <thead>
+              <tr class="bg-[#081B4B] text-white uppercase text-[10px] font-extrabold">
+                <th class="py-3 px-3">Place of Supply (POS Code)</th>
+                <th class="py-3 px-2">Supply Type</th>
+                <th class="py-3 px-2">GST Rate %</th>
+                <th class="py-3 px-2">Taxable Value (₹)</th>
+                <th class="py-3 px-2">IGST (₹)</th>
+                <th class="py-3 px-2">CGST (₹)</th>
+                <th class="py-3 px-2">SGST (₹)</th>
+                <th class="py-3 px-2 text-center">Del</th>
+              </tr>
+            </thead>
+            <tbody id="b2cs-editor-tbody" class="divide-y divide-slate-200 font-mono"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 3: HSN SUMMARY VISUAL TABLE EDITOR -->
+      <div id="tab-panel-HSN" class="hidden space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-extrabold text-[#081B4B]">Table 12: HSN-Wise Outward Supplies Summary</h3>
+          <button
+            type="button"
+            id="add-hsn-row-btn"
+            class="px-3.5 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] font-extrabold text-xs border border-indigo-200"
+          >
+            + Add HSN Row
+          </button>
+        </div>
+        <div class="w-full overflow-x-auto rounded-2xl border border-slate-200">
+          <table class="w-full text-left border-collapse text-xs min-w-[740px]">
+            <thead>
+              <tr class="bg-[#081B4B] text-white uppercase text-[10px] font-extrabold">
+                <th class="py-3 px-2.5">HSN Code</th>
+                <th class="py-3 px-2">Description</th>
+                <th class="py-3 px-2 w-20">UQC</th>
+                <th class="py-3 px-2 w-20">Total Qty</th>
+                <th class="py-3 px-2 w-20">GST %</th>
+                <th class="py-3 px-2">Taxable Value (₹)</th>
+                <th class="py-3 px-2">IGST (₹)</th>
+                <th class="py-3 px-2">CGST (₹)</th>
+                <th class="py-3 px-2">SGST (₹)</th>
+                <th class="py-3 px-2 text-center">Status</th>
+                <th class="py-3 px-2 text-center">Del</th>
+              </tr>
+            </thead>
+            <tbody id="hsn-editor-tbody" class="divide-y divide-slate-200 font-mono"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- BOTTOM PERSONAL ACCOUNT, DPDP PRIVACY (✔️) & LOGOUT BAR             -->
+    <!-- =================================================================== -->
+    <section data-3d-tilt class="bento-card p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-[#5B2EFF] flex items-center justify-center text-base font-bold shrink-0">
+          🛡️
+        </div>
+        <div class="min-w-0">
+          <div class="text-xs font-extrabold text-[#081B4B]">My Personal Data &amp; DPDP Act 2023 Privacy Controls</div>
+          <div class="text-[11px] text-slate-500 truncate">
+            Manage your store GSTIN, view subscription validity, or permanently delete your account &amp; data with confirmation tick (✔️).
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2 ml-auto">
+        <button
+          type="button"
+          data-open-account
+          class="px-4 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] font-extrabold text-xs transition"
+        >
+          👤 My Account &amp; Delete Option (✔️)
+        </button>
+        <button
+          type="button"
+          id="bottom-logout-btn"
+          class="px-4 py-2 rounded-xl bg-[#081B4B] hover:bg-rose-600 text-white font-extrabold text-xs shadow transition flex items-center gap-1.5"
+        >
+          <span>⏻ Logout</span>
+        </button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- JSON VALIDATOR & VISUAL EDITOR ENGINE (ZERO-NaN PROTECTION) -->
+  <script type="module">
+    import {
+      AppState,
+      subscribeAppState,
+      consumeFreeActionOrLock,
+      sanitizeHTML,
+      sanitizeCSVCell,
+      formatINR,
+      showToast,
+      logoutUser,
+      syncProDOMElements,
+      init3DTiltCards
+    } from "./assets/js/security-core.js";
+
+    init3DTiltCards();
+
+    function safeNum(val, fallback = 0) {
+      if (val === null || val === undefined || val === "") return fallback;
+      const n = Number(String(val).replace(/[₹$,\s%]/g, "").trim());
+      return Number.isFinite(n) ? n : fallback;
+    }
+
+    // State model for Visual Editor
+    let b2bRows = [];
+    let b2csRows = [];
+    let hsnRows = [];
+
+    function getDefaultSampleGSTR1Json() {
+      return {
+        gstin: AppState.profile?.gstin || "07AABCS1429B1Z5",
+        fp: "112026",
+        version: "GST3.1.6",
+        hash: "hash",
+        b2b: [
+          {
+            ctin: "09AABCN6969K1Z9",
+            inv: [
+              {
+                inum: "4649845",
+                idt: "12-11-2026",
+                val: 39750.18,
+                pos: "09",
+                rchrg: "N",
+                inv_typ: "R",
+                itms: [
+                  {
+                    num: 1,
+                    itm_det: { txval: 34565.37, rt: 18, iamt: 0, camt: 3110.88, samt: 2073.92, csamt: 0 }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            ctin: "10AABCP1122K1Z2",
+            inv: [
+              {
+                inum: "4649846",
+                idt: "12-11-2026",
+                val: 17688.2,
+                pos: "10",
+                rchrg: "N",
+                inv_typ: "R",
+                itms: [
+                  {
+                    num: 1,
+                    itm_det: { txval: 14990, rt: 18, iamt: 2698.2, camt: 0, samt: 0, csamt: 0 }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        b2cs: [
+          { sply_ty: "INTRA", pos: "07", typ: "OE", rt: 18, txval: 3490, iamt: 0, camt: 314.1, samt: 314.1, csamt: 0 },
+          { sply_ty: "INTER", pos: "27", typ: "OE", rt: 18, txval: 18500, iamt: 3330, camt: 0, samt: 0, csamt: 0 }
+        ],
+        hsn: {
+          data: [
+            { num: 1, hsn_sc: "8537", desc: "RoyalTank Water Controller Kit", uqc: "PCS", qty: 25, val: 39518.2, txval: 33490, iamt: 6028.2, camt: 0, samt: 0, csamt: 0, rt: 18 },
+            { num: 2, hsn_sc: "3926", desc: "Smart LCD Writing Pencil Box", uqc: "PCS", qty: 10, val: 4118.2, txval: 3490, iamt: 0, camt: 314.1, samt: 314.1, csamt: 0, rt: 18 }
+          ]
+        }
+      };
+    }
+
+    function parseJsonIntoTables(payload) {
+      if (!payload || typeof payload !== "object") {
+        payload = getDefaultSampleGSTR1Json();
+      }
+
+      document.getElementById("ed-seller-gstin").value = String(payload.gstin || "07AABCS1429B1Z5").toUpperCase();
+      document.getElementById("ed-filing-period").value = String(payload.fp || "112026");
+
+      // 1. Flatten B2B
+      b2bRows = [];
+      (Array.isArray(payload.b2b) ? payload.b2b : []).forEach((party) => {
+        const ctin = String(party.ctin || "").toUpperCase();
+        (Array.isArray(party.inv) ? party.inv : []).forEach((inv) => {
+          const det = inv.itms?.[0]?.itm_det || {};
+          b2bRows.push({
+            ctin,
+            inum: String(inv.inum || "INV-01"),
+            idt: String(inv.idt || "12-11-2026"),
+            pos: String(inv.pos || ctin.slice(0, 2) || "07"),
+            rt: safeNum(det.rt, 18),
+            txval: safeNum(det.txval, 0),
+            iamt: safeNum(det.iamt, 0),
+            camt: safeNum(det.camt, 0),
+            samt: safeNum(det.samt, 0)
+          });
+        });
+      });
+
+      // 2. Flatten B2CS
+      b2csRows = (Array.isArray(payload.b2cs) ? payload.b2cs : []).map((row) => ({
+        pos: String(row.pos || "07"),
+        sply_ty: String(row.sply_ty || "INTRA").toUpperCase(),
+        rt: safeNum(row.rt, 18),
+        txval: safeNum(row.txval, 0),
+        iamt: safeNum(row.iamt, 0),
+        camt: safeNum(row.camt, 0),
+        samt: safeNum(row.samt, 0)
+      }));
+
+      // 3. Flatten HSN
+      const rawHsnList = Array.isArray(payload.hsn?.data)
+        ? payload.hsn.data
+        : Array.isArray(payload.hsn)
+        ? payload.hsn
+        : [];
+
+      hsnRows = rawHsnList.map((h) => ({
+        hsn_sc: String(h.hsn_sc || "8537"),
+        desc: String(h.desc || "E-Com Goods"),
+        uqc: String(h.uqc || "PCS"),
+        qty: safeNum(h.qty, 1),
+        rt: safeNum(h.rt, 18),
+        txval: safeNum(h.txval, 0),
+        iamt: safeNum(h.iamt, 0),
+        camt: safeNum(h.camt, 0),
+        samt: safeNum(h.samt, 0)
+      }));
+
+      renderAllVisualTables();
+    }
+
+    function isValidGstinFormat(str) {
+      return /^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(String(str || "").trim().toUpperCase());
+    }
+
+    function renderAllVisualTables() {
+      let errorCount = 0;
+      const sellerGstin = document.getElementById("ed-seller-gstin").value.trim().toUpperCase();
+      if (!isValidGstinFormat(sellerGstin)) errorCount += 1;
+
+      // Render B2B Table
+      const b2bTbody = document.getElementById("b2b-editor-tbody");
+      b2bTbody.innerHTML = b2bRows
+        .map((r, idx) => {
+          const validGstin = isValidGstinFormat(r.ctin);
+          if (!validGstin) errorCount += 1;
+          return `
+            <tr class="${validGstin ? "hover:bg-slate-50" : "bg-rose-50/70"}">
+              <td class="p-2"><input type="text" maxlength="15" data-b2b="${idx}" data-f="ctin" value="${sanitizeHTML(r.ctin)}" class="cell-edit-input uppercase" /></td>
+              <td class="p-2"><input type="text" data-b2b="${idx}" data-f="inum" value="${sanitizeHTML(r.inum)}" class="cell-edit-input" /></td>
+              <td class="p-2"><input type="text" data-b2b="${idx}" data-f="idt" value="${sanitizeHTML(r.idt)}" class="cell-edit-input" /></td>
+              <td class="p-2"><input type="text" maxlength="2" data-b2b="${idx}" data-f="pos" value="${sanitizeHTML(r.pos)}" class="cell-edit-input text-center" /></td>
+              <td class="p-2"><input type="number" data-b2b="${idx}" data-f="rt" value="${safeNum(r.rt)}" class="cell-edit-input text-center" /></td>
+              <td class="p-2"><input type="number" step="0.01" data-b2b="${idx}" data-f="txval" value="${safeNum(r.txval)}" class="cell-edit-input text-right" /></td>
+              <td class="p-2"><input type="number" step="0.01" data-b2b="${idx}" data-f="iamt" value="${safeNum(r.iamt)}" class="cell-edit-input text-right" /></td>
+              <td class="p-2"><input type="number" step="0.01" data-b2b="${idx}" data-f="camt" value="${safeNum(r.camt)}" class="cell-edit-input text-right" /></td>
+              <td class="p-2"><input type="number" step="0.01" data-b2b="${idx}" data-f="samt" value="${safeNum(r.samt)}" class="cell-edit-input text-right" /></td>
+              <td class="p-2 text-center">
+                ${
+                  validGstin
+                    ? `<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-extrabold">✅ Valid</span>`
+                    : `<span class="px-2 py-0.5 rounded-full bg-rose-600 text-white text-[10px] font-extrabold">⚠️ Fix GSTIN</span>`
+                }
+              </td>
+              <td class="p-2 text-center">
+                <button type="button" data-del-b2b="${idx}" class="text-rose-600 font-extrabold">✕</button>
+              </td>
+            </tr>
+          `;
+        })
+        .join("");
+
+      // Render B2CS Table
+      const b2csTbody = document.getElementById("b2cs-editor-tbody");
+      b2csTbody.innerHTML = b2csRows
+        .map(
+          (r, idx) => `
+          <tr class="hover:bg-slate-50">
+            <td class="p-2"><input type="text" maxlength="2" data-b2cs="${idx}" data-f="pos" value="${sanitizeHTML(r.pos)}" class="cell-edit-input text-center" /></td>
+            <td class="p-2">
+              <select data-b2cs="${idx}" data-f="sply_ty" class="cell-edit-input">
+                <option value="INTRA" ${r.sply_ty === "INTRA" ? "selected" : ""}>INTRA</option>
+                <option value="INTER" ${r.sply_ty === "INTER" ? "selected" : ""}>INTER</option>
+              </select>
+            </td>
+            <td class="p-2"><input type="number" data-b2cs="${idx}" data-f="rt" value="${safeNum(r.rt)}" class="cell-edit-input text-center" /></td>
+            <td class="p-2"><input type="number" step="0.01" data-b2cs="${idx}" data-f="txval" value="${safeNum(r.txval)}" class="cell-edit-input text-right" /></td>
+            <td class="p-2"><input type="number" step="0.01" data-b2cs="${idx}" data-f="iamt" value="${safeNum(r.iamt)}" class="cell-edit-input text-right" /></td>
+            <td class="p-2"><input type="number" step="0.01" data-b2cs="${idx}" data-f="camt" value="${safeNum(r.camt)}" class="cell-edit-input text-right" /></td>
+            <td class="p-2"><input type="number" step="0.01" data-b2cs="${idx}" data-f="samt" value="${safeNum(r.samt)}" class="cell-edit-input text-right" /></td>
+            <td class="p-2 text-center">
+              <button type="button" data-del-b2cs="${idx}" class="text-rose-600 font-extrabold">✕</button>
+            </td>
+          </tr>
+        `
+        )
+        .join("");
+
+      // Render HSN Table
+      const hsnTbody = document.getElementById("hsn-editor-tbody");
+      hsnTbody.innerHTML = hsnRows
+        .map((r, idx) => {
+          const validHsn = /^\d{4,8}$/.test(String(r.hsn_sc || "").trim());
+          if (!validHsn) errorCount += 1;
+          return `
+            <tr class="${validHsn ? "hover:bg-slate-50" : "bg-rose-50/70"}">
+              <td class="p-2"><input type="text" maxlength="8" data-hsn="${idx}" data-f="hsn_sc" value="${sanitizeHTML(r.hsn_sc)}" class="cell-edit-input" /></td>
+              <td class="p-2"><input type="text" data-hsn="${idx}" data-f="desc" value="${sanitizeHTML(r.desc)}" class="cell-edit-input font-sans" /></td>
+              <td class="p-2"><input type="text" data-hsn="${idx}" data-f="uqc" value="${sanitizeHTML(r.uqc)}" class="cell-edit-input text-center uppercase" /></td>
+              <td class="p-2"><input type="number" data-hsn="${idx}" data-f="qty" value="${safeNum(r.qty)}" class="cell-edit-input text-center" /></td>
+              <td class="p-2"><input type="number" data-hsn="${idx}" data-f="rt" value="${safeNum(r.rt)}" class="cell-edit-input text-center" /></td>
+              <td class="p-2"><input type="number" step="0.01" data-hsn="${idx}" data-f="txval" value="${safeNum(r.txval)}" class="cell-edit-input text-right" /></td>
+              <td class="p-2"><input type="number" step="0.01" data-hsn="${idx}" data-f="iamt" value="${safeNum(r.iamt)}" class="cell-edit-input text-right" /></td>
+              <td class="p-2"><input type="number" step="0.01" data-hsn="${idx}" data-f="camt" value="${safeNum(r.camt)}" class="cell-edit-input text-right" /></td>
+              <td class="p-2"><input type="number" step="0.01" data-hsn="${idx}" data-f="samt" value="${safeNum(r.samt)}" class="cell-edit-input text-right" /></td>
+              <td class="p-2 text-center">
+                ${
+                  validHsn
+                    ? `<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-extrabold">✅ 4-8 Digit</span>`
+                    : `<span class="px-2 py-0.5 rounded-full bg-rose-600 text-white text-[10px] font-extrabold">⚠️ Fix HSN</span>`
+                }
+              </td>
+              <td class="p-2 text-center">
+                <button type="button" data-del-hsn="${idx}" class="text-rose-600 font-extrabold">✕</button>
+              </td>
+            </tr>
+          `;
+        })
+        .join("");
+
+      bindTableInputs();
+      updateSummaryKPIs(errorCount);
+    }
+
+    function updateSummaryKPIs(errorCount = 0) {
+      const b2bTaxable = b2bRows.reduce((a, r) => a + safeNum(r.txval), 0);
+      const b2csTaxable = b2csRows.reduce((a, r) => a + safeNum(r.txval), 0);
+      const b2bTax = b2bRows.reduce((a, r) => a + safeNum(r.iamt) + safeNum(r.camt) + safeNum(r.samt), 0);
+      const b2csTax = b2csRows.reduce((a, r) => a + safeNum(r.iamt) + safeNum(r.camt) + safeNum(r.samt), 0);
+      const totalTax = b2bTax + b2csTax;
+
+      document.getElementById("val-b2b-count").textContent = `${b2bRows.length} Invoices`;
+      document.getElementById("val-b2b-taxable").textContent = formatINR(b2bTaxable);
+      document.getElementById("val-b2cs-count").textContent = `${b2csRows.length} States`;
+      document.getElementById("val-b2cs-taxable").textContent = formatINR(b2csTaxable);
+      document.getElementById("val-hsn-count").textContent = `${hsnRows.length} HSNs`;
+      document.getElementById("val-total-tax").textContent = formatINR(totalTax);
+
+      const statusCard = document.getElementById("val-status-card");
+      const errCountEl = document.getElementById("val-error-count");
+      const errSubEl = document.getElementById("val-error-sub");
+
+      if (errorCount === 0) {
+        statusCard.className = "p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-400 flex flex-col justify-between shadow-sm";
+        errCountEl.className = "text-xl font-black font-mono text-emerald-700 my-2";
+        errCountEl.textContent = "✅ 0 Errors Found";
+        errSubEl.className = "text-[11px] text-emerald-800 font-bold border-t border-emerald-200 pt-1.5";
+        errSubEl.textContent = "100% Ready for gst.gov.in Upload";
+      } else {
+        statusCard.className = "p-4 rounded-2xl bg-rose-50 border-2 border-rose-400 flex flex-col justify-between shadow-sm";
+        errCountEl.className = "text-xl font-black font-mono text-rose-600 my-2";
+        errCountEl.textContent = `⚠️ ${errorCount} Issue(s) Found`;
+        errSubEl.className = "text-[11px] text-rose-800 font-bold border-t border-rose-200 pt-1.5";
+        errSubEl.textContent = "Fix highlighted red GSTIN / HSN rows below";
+      }
+    }
+
+    function bindTableInputs() {
+      document.querySelectorAll("[data-b2b]").forEach((inp) => {
+        inp.addEventListener("change", (e) => {
+          const idx = Number(e.target.getAttribute("data-b2b"));
+          const f = e.target.getAttribute("data-f");
+          b2bRows[idx][f] = ["txval", "rt", "iamt", "camt", "samt"].includes(f)
+            ? safeNum(e.target.value)
+            : e.target.value.trim();
+          renderAllVisualTables();
+        });
+      });
+
+      document.querySelectorAll("[data-del-b2b]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          b2bRows.splice(Number(btn.getAttribute("data-del-b2b")), 1);
+          renderAllVisualTables();
+        });
+      });
+
+      document.querySelectorAll("[data-b2cs]").forEach((inp) => {
+        inp.addEventListener("change", (e) => {
+          const idx = Number(e.target.getAttribute("data-b2cs"));
+          const f = e.target.getAttribute("data-f");
+          b2csRows[idx][f] = ["txval", "rt", "iamt", "camt", "samt"].includes(f)
+            ? safeNum(e.target.value)
+            : e.target.value.trim();
+          renderAllVisualTables();
+        });
+      });
+
+      document.querySelectorAll("[data-del-b2cs]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          b2csRows.splice(Number(btn.getAttribute("data-del-b2cs")), 1);
+          renderAllVisualTables();
+        });
+      });
+
+      document.querySelectorAll("[data-hsn]").forEach((inp) => {
+        inp.addEventListener("change", (e) => {
+          const idx = Number(e.target.getAttribute("data-hsn"));
+          const f = e.target.getAttribute("data-f");
+          hsnRows[idx][f] = ["qty", "txval", "rt", "iamt", "camt", "samt"].includes(f)
+            ? safeNum(e.target.value)
+            : e.target.value.trim();
+          renderAllVisualTables();
+        });
+      });
+
+      document.querySelectorAll("[data-del-hsn]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          hsnRows.splice(Number(btn.getAttribute("data-del-hsn")), 1);
+          renderAllVisualTables();
+        });
+      });
+    }
+
+    // Add Row Buttons
+    document.getElementById("add-b2b-row-btn")?.addEventListener("click", () => {
+      b2bRows.push({
+        ctin: "07AABCU9603R1ZM",
+        inum: `INV-${101 + b2bRows.length}`,
+        idt: "12-11-2026",
+        pos: "07",
+        rt: 18,
+        txval: 5000,
+        iamt: 0,
+        camt: 450,
+        samt: 450
+      });
+      renderAllVisualTables();
+    });
+
+    document.getElementById("add-b2cs-row-btn")?.addEventListener("click", () => {
+      b2csRows.push({ pos: "10", sply_ty: "INTER", rt: 18, txval: 4500, iamt: 810, camt: 0, samt: 0 });
+      renderAllVisualTables();
+    });
+
+    document.getElementById("add-hsn-row-btn")?.addEventListener("click", () => {
+      hsnRows.push({
+        hsn_sc: "8537",
+        desc: "Electronic Controller",
+        uqc: "PCS",
+        qty: 10,
+        rt: 18,
+        txval: 5000,
+        iamt: 900,
+        camt: 0,
+        samt: 0
+      });
+      renderAllVisualTables();
+    });
+
+    // Tab Switching
+    document.querySelectorAll("[data-ed-tab]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const target = btn.getAttribute("data-ed-tab");
+        document.querySelectorAll(".ed-tab-btn").forEach((b) => {
+          b.className = "ed-tab-btn px-4 py-2 rounded-xl text-slate-700 hover:text-[#081B4B] transition";
+        });
+        btn.className = "ed-tab-btn px-4 py-2 rounded-xl bg-[#5B2EFF] text-white shadow-sm transition";
+
+        ["B2B", "B2CS", "HSN"].forEach((k) => {
+          document.getElementById(`tab-panel-${k}`)?.classList.toggle("hidden", k !== target);
+        });
+      });
+    });
+
+    // Build Final Corrected JSON from Visual Tables
+    function compileCorrectedJson() {
+      const gstin = document.getElementById("ed-seller-gstin").value.trim().toUpperCase() || "07AABCS1429B1Z5";
+      const fp = document.getElementById("ed-filing-period").value.trim() || "112026";
+
+      const b2bGroup = new Map();
+      let curGt = 0;
+
+      b2bRows.forEach((r) => {
+        const ctin = String(r.ctin || "").toUpperCase();
+        if (!b2bGroup.has(ctin)) b2bGroup.set(ctin, []);
+        const tx = safeNum(r.txval);
+        const tax = safeNum(r.iamt) + safeNum(r.camt) + safeNum(r.samt);
+        curGt += tx;
+
+        b2bGroup.get(ctin).push({
+          inum: r.inum,
+          idt: r.idt,
+          val: Number((tx + tax).toFixed(2)),
+          pos: String(r.pos || "07").padStart(2, "0"),
+          rchrg: "N",
+          inv_typ: "R",
+          itms: [
+            {
+              num: 1,
+              itm_det: {
+                txval: Number(tx.toFixed(2)),
+                rt: safeNum(r.rt, 18),
+                iamt: Number(safeNum(r.iamt).toFixed(2)),
+                camt: Number(safeNum(r.camt).toFixed(2)),
+                samt: Number(safeNum(r.samt).toFixed(2)),
+                csamt: 0
+              }
+            }
+          ]
+        });
+      });
+
+      const b2bArr = [];
+      b2bGroup.forEach((inv, ctin) => b2bArr.push({ ctin, inv }));
+
+      const b2csArr = b2csRows.map((r) => {
+        curGt += safeNum(r.txval);
+        return {
+          sply_ty: r.sply_ty,
+          pos: String(r.pos || "07").padStart(2, "0"),
+          typ: "OE",
+          rt: safeNum(r.rt, 18),
+          txval: Number(safeNum(r.txval).toFixed(2)),
+          iamt: Number(safeNum(r.iamt).toFixed(2)),
+          camt: Number(safeNum(r.camt).toFixed(2)),
+          samt: Number(safeNum(r.samt).toFixed(2)),
+          csamt: 0
+        };
+      });
+
+      const hsnArr = hsnRows.map((h, i) => {
+        const tx = safeNum(h.txval);
+        const tax = safeNum(h.iamt) + safeNum(h.camt) + safeNum(h.samt);
+        return {
+          num: i + 1,
+          hsn_sc: h.hsn_sc,
+          desc: h.desc.slice(0, 30),
+          uqc: h.uqc || "PCS",
+          qty: safeNum(h.qty, 1),
+          val: Number((tx + tax).toFixed(2)),
+          txval: Number(tx.toFixed(2)),
+          iamt: Number(safeNum(h.iamt).toFixed(2)),
+          camt: Number(safeNum(h.camt).toFixed(2)),
+          samt: Number(safeNum(h.samt).toFixed(2)),
+          csamt: 0,
+          rt: safeNum(h.rt, 18)
+        };
+      });
+
+      const finalPayload = {
+        gstin,
+        fp,
+        gt: 0,
+        cur_gt: Number(curGt.toFixed(2)),
+        version: "GST3.1.6",
+        hash: "hash",
+        b2b: b2bArr,
+        b2cl: [],
+        b2cs: b2csArr,
+        hsn: { data: hsnArr }
+      };
+
+      localStorage.setItem("sellgst_latest_gstr1_json", JSON.stringify(finalPayload));
+      return finalPayload;
+    }
+
+    // Upload JSON File Handler
+    document.getElementById("json-file-upload-input")?.addEventListener("change", async (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      if (!consumeFreeActionOrLock("GSTR-1 JSON Validator")) {
+        e.target.value = "";
+        return;
+      }
+      try {
+        const text = await file.text();
+        const parsed = JSON.parse(text);
+        document.getElementById("loaded-json-file-label").textContent = `✅ Loaded & Validated File: ${file.name}`;
+        parseJsonIntoTables(parsed);
+        showToast(`✅ Loaded ${file.name} into Visual Editor!`, "success");
+      } catch (_) {
+        showToast("⚠️ Invalid JSON file format! Please select a valid GSTR-1 .JSON file.", "error");
+      }
+    });
+
+    // Paste Raw JSON Drawer
+    const pasteDrawer = document.getElementById("paste-json-drawer");
+    document.getElementById("toggle-paste-json-btn")?.addEventListener("click", () => {
+      pasteDrawer.classList.toggle("hidden");
+    });
+    document.getElementById("close-paste-drawer-btn")?.addEventListener("click", () => {
+      pasteDrawer.classList.add("hidden");
+    });
+    document.getElementById("parse-pasted-json-btn")?.addEventListener("click", () => {
+      try {
+        const raw = document.getElementById("raw-json-paste-textarea").value.trim();
+        const parsed = JSON.parse(raw);
+        parseJsonIntoTables(parsed);
+        pasteDrawer.classList.add("hidden");
+        showToast("✅ Pasted JSON validated & loaded into Visual Tables!", "success");
+      } catch (_) {
+        showToast("⚠️ Invalid JSON syntax! Please check your pasted JSON.", "error");
+      }
+    });
+
+    document.getElementById("load-demo-json-btn")?.addEventListener("click", () => {
+      parseJsonIntoTables(getDefaultSampleGSTR1Json());
+      showToast("✅ Loaded Sample GSTR-1 JSON in Visual Editor!", "success");
+    });
+
+    document.getElementById("ed-seller-gstin")?.addEventListener("input", () => renderAllVisualTables());
+
+    // Export Validated JSON
+    document.getElementById("export-corrected-json-btn")?.addEventListener("click", () => {
+      if (!consumeFreeActionOrLock("Validated GSTR-1 JSON Export")) return;
+      const payload = compileCorrectedJson();
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `VALIDATED_GSTR1_${payload.gstin}_${payload.fp}.json`;
+      a.click();
+      showToast(`✅ Downloaded VALIDATED_GSTR1_${payload.gstin}_${payload.fp}.json!`, "success");
+    });
+
+    // Export Visual Audit Sheet (.CSV)
+    document.getElementById("export-visual-csv-btn")?.addEventListener("click", () => {
+      if (!consumeFreeActionOrLock("Visual Audit Excel Export")) return;
+      let csv = "Section,Party GSTIN or HSN,Invoice or Desc,POS,GST Rate,Taxable Value,IGST,CGST,SGST\n";
+      b2bRows.forEach((r) => {
+        csv += `B2B,${sanitizeCSVCell(r.ctin)},${sanitizeCSVCell(r.inum)},${sanitizeCSVCell(r.pos)},${r.rt},${r.txval},${r.iamt},${r.camt},${r.samt}\n`;
+      });
+      b2csRows.forEach((r) => {
+        csv += `B2CS,Consumer,${r.sply_ty},${sanitizeCSVCell(r.pos)},${r.rt},${r.txval},${r.iamt},${r.camt},${r.samt}\n`;
+      });
+      hsnRows.forEach((r) => {
+        csv += `HSN,${sanitizeCSVCell(r.hsn_sc)},"${sanitizeCSVCell(r.desc)}",Qty:${r.qty},${r.rt},${r.txval},${r.iamt},${r.camt},${r.samt}\n`;
+      });
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `GSTR1_Visual_Audit_Sheet_${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      showToast("📊 Exported Visual Audit Sheet (.CSV)!", "success");
+    });
+
+    document.getElementById("sidebar-logout-btn")?.addEventListener("click", logoutUser);
+    document.getElementById("bottom-logout-btn")?.addEventListener("click", logoutUser);
+
+    // Initial Load: Load from localStorage if seller came from gst-filing.html, else load sample
+    try {
+      const savedJson = localStorage.getItem("sellgst_latest_gstr1_json");
+      if (savedJson) {
+        parseJsonIntoTables(JSON.parse(savedJson));
+      } else {
+        parseJsonIntoTables(getDefaultSampleGSTR1Json());
+      }
+    } catch (_) {
+      parseJsonIntoTables(getDefaultSampleGSTR1Json());
+    }
+
+    subscribeAppState(() => {
+      syncProDOMElements();
+    });
+  </script>
+</body>
+</html>
