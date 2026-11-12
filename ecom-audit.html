@@ -3,15 +3,47 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-  <title>Profit/Loss Calculator, E-Com CSV Audit & 4x6 Label Cropper — SellGST Pro</title>
+
+  <!-- ===================================================================== -->
+  <!-- 100% SEO-FRIENDLY META TAGS, OPENGRAPH & GOOGLE JSON-LD SCHEMA        -->
+  <!-- ===================================================================== -->
+  <title>Flipkart, Amazon & Meesho Profit/Loss Calculator + RTO Claim Audit — SellGST Pro</title>
+  <meta name="description" content="100% Client-Side RAM CSV Profit/Loss Calculator and Unclaimed RTO (>30 days) & Courier Weight Fraud Scanner for Flipkart, Amazon, and Meesho sellers." />
+  <meta name="keywords" content="Flipkart profit loss calculator, Amazon settlement reconciliation CSV, Meesho RTO claim calculator, courier weight discrepancy audit, SPF claim ticket generator, SAFE-T claim format, SellGST Pro" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://sellgst-pro.pages.dev/ecom-audit.html" />
+
+  <!-- Open Graph / WhatsApp / Social Media Preview -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Flipkart, Amazon & Meesho Profit/Loss Calculator + RTO Audit — SellGST Pro" />
+  <meta property="og:description" content="Upload your marketplace CSV to see order-wise Green Profit & Red Loss, live 3D Profit Gauge, and 1-Click RTO/Weight Fraud claim tickets." />
+  <meta property="og:url" content="https://sellgst-pro.pages.dev/ecom-audit.html" />
   <meta name="theme-color" content="#5B2EFF" />
   <link rel="manifest" href="./manifest.json" />
 
-  <!-- 0.1s Instant Module Preload & Speculative Tool Prefetch (Zero 404 Relative Paths) -->
+  <!-- Structured Data for Google Search Rich Snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SellGST Pro E-Commerce Profit/Loss & RTO Claim Auditor",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web, Android, iOS, Windows",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "INR"
+    },
+    "description": "Order-wise Profit & Loss CSV reconciliation and automated RTO (>30d) & weight fraud claim generator for Indian e-commerce sellers."
+  }
+  </script>
+
+  <!-- 0.1s Instant Module Preload & Speculative Tool Prefetch -->
   <link rel="modulepreload" href="./assets/js/security-core.js" />
   <link rel="modulepreload" href="./assets/js/i18n.js" />
   <link rel="prefetch" href="./index.html" as="document" />
   <link rel="prefetch" href="./app.html" as="document" />
+  <link rel="prefetch" href="./label-studio.html" as="document" />
   <link rel="prefetch" href="./invoice.html" as="document" />
   <link rel="prefetch" href="./gst-filing.html" as="document" />
   <link rel="prefetch" href="./qr-studio.html" as="document" />
@@ -95,20 +127,23 @@
 </head>
 <body class="min-h-screen w-full overflow-x-hidden pb-24 lg:pb-12 lg:pl-24">
 
-  <!-- DESKTOP FLOATING 3D LEFT PILL SIDEBAR (ADMIN HIDDEN FROM REGULAR USERS) -->
+  <!-- DESKTOP FLOATING 3D LEFT PILL SIDEBAR (INCLUDES NEW LABEL-STUDIO LINK) -->
   <aside class="hidden lg:flex fixed left-4 top-4 bottom-4 w-16 bg-white/95 backdrop-blur-xl border border-white rounded-full shadow-xl shadow-indigo-500/10 flex-col items-center justify-between py-5 z-40">
     <a href="./index.html" title="Home Page" class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#081B4B] via-[#5B2EFF] to-[#10E594] text-white flex items-center justify-center font-black text-sm shadow-md">
       🏠
     </a>
-    <nav class="flex flex-col items-center gap-3">
+    <nav class="flex flex-col items-center gap-2.5">
       <a href="./app.html" title="3D Financial Dashboard" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
         📊
       </a>
       <a href="./invoice.html" title="Custom Navy GST Invoice" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
         🧾
       </a>
-      <a href="./ecom-audit.html" title="Profit/Loss, E-Com Audit & 4x6 Labels" class="w-11 h-11 rounded-2xl bg-[#5B2EFF] text-white flex items-center justify-center text-base shadow-md transition">
+      <a href="./ecom-audit.html" title="Profit/Loss & E-Com CSV Audit" class="w-11 h-11 rounded-2xl bg-[#5B2EFF] text-white flex items-center justify-center text-base shadow-md transition">
         📦
+      </a>
+      <a href="./label-studio.html" title="4x6 Shipping Label & Thank You Card Studio" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+        🏷️
       </a>
       <a href="./gst-filing.html" title="1-Click GSTR-1 JSON" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
         🏛️
@@ -130,7 +165,7 @@
     </div>
   </aside>
 
-  <!-- MOBILE FLOATING BOTTOM DOCK (SHOWS CURRENT PAGE ACTIVE, NO ADMIN FOR REGULAR USERS) -->
+  <!-- MOBILE FLOATING BOTTOM DOCK -->
   <nav class="lg:hidden fixed bottom-2.5 inset-x-3 bg-white/95 backdrop-blur-xl text-slate-700 rounded-3xl px-2 py-2.5 shadow-2xl border border-indigo-100 z-40 flex items-center justify-around">
     <a href="./app.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
       <span class="text-base">📊</span>
@@ -144,9 +179,9 @@
       <span class="text-base">📦</span>
       <span data-i18n="nav_audit">Profit &amp; Audit</span>
     </a>
-    <a href="./gst-filing.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
-      <span class="text-base">🏛️</span>
-      <span data-i18n="nav_gst">GSTR-1</span>
+    <a href="./label-studio.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">🏷️</span>
+      <span>ThankYou Label</span>
     </a>
     <a href="./qr-studio.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
       <span class="text-base">🔳</span>
@@ -157,7 +192,7 @@
   <!-- MAIN CONTAINER -->
   <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-2 sm:pt-3 space-y-5 overflow-x-hidden">
 
-    <!-- CLEAN TOP HEADER BAR (ONLY HOME BUTTON + 7s INSTALL BUTTON + MY ACCOUNT + PRO TIER) -->
+    <!-- CLEAN TOP HEADER BAR -->
     <header class="bg-white/95 backdrop-blur-xl rounded-3xl border border-white px-4 sm:px-6 py-2.5 shadow-lg shadow-indigo-500/5 flex flex-wrap items-center justify-between gap-2.5">
       <div class="flex items-center gap-2.5 min-w-0">
         <a
@@ -174,6 +209,13 @@
       </div>
 
       <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-end ml-auto">
+        <a
+          href="./label-studio.html"
+          class="px-3 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-extrabold transition whitespace-nowrap flex items-center gap-1"
+        >
+          <span>🏷️ 4×6 Thank You Label Studio</span>
+        </a>
+
         <select
           data-lang-switcher
           aria-label="Language"
@@ -353,7 +395,7 @@
       </div>
 
       <!-- ================================================================= -->
-      <!-- NEW VISUAL METER: REAL-TIME 3D SPEEDOMETER GAUGE + CHANNEL BARS   -->
+      <!-- LIVE VISUAL METER: REAL-TIME 3D SPEEDOMETER GAUGE + CHANNEL BARS  -->
       <!-- (MOVES UP IN GREEN 🟢 FOR PROFIT, DROPS DOWN IN RED 🔴 FOR LOSS)  -->
       <!-- ================================================================= -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 bg-slate-50/90 p-4 sm:p-5 rounded-3xl border border-slate-200">
@@ -568,7 +610,7 @@
     </section>
 
     <!-- =================================================================== -->
-    <!-- EXISTING SECTION 1: RTO (>30d) & WEIGHT FRAUD CSV SCANNER           -->
+    <!-- SECTION 1: RTO (>30d) & WEIGHT FRAUD CSV SCANNER                    -->
     <!-- =================================================================== -->
     <section id="csv-scanner-section" class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
 
@@ -711,7 +753,7 @@
     </section>
 
     <!-- =================================================================== -->
-    <!-- EXISTING SECTION 2: FLAGGED ORDERS TABLE & 1-CLICK CLAIM TICKETS    -->
+    <!-- SECTION 2: FLAGGED ORDERS TABLE & 1-CLICK CLAIM TICKETS             -->
     <!-- =================================================================== -->
     <section id="flagged-orders-section" data-3d-tilt class="bento-card p-5 sm:p-6 space-y-4 overflow-hidden">
       <div class="flex flex-wrap items-center justify-between gap-3">
@@ -736,7 +778,7 @@
         </div>
       </div>
 
-      <!-- Paywall Notice -->
+      <!-- Paywall Notice (Disappears automatically in real-time when Admin approves payment) -->
       <div
         data-pro-lock-overlay
         class="p-4 rounded-2xl bg-gradient-to-r from-[#081B4B] via-[#5B2EFF] to-[#081B4B] text-white flex flex-wrap items-center justify-between gap-3 shadow-lg"
@@ -781,71 +823,33 @@
     </section>
 
     <!-- =================================================================== -->
-    <!-- EXISTING SECTION 3: 4x6 THERMAL SHIPPING LABEL CROPPER              -->
+    <!-- SECTION 3: DEDICATED LAUNCH BANNER FOR NEW `/label-studio.html`     -->
     <!-- =================================================================== -->
-    <section id="label-cropper-section" data-3d-tilt class="bento-card p-5 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center overflow-hidden">
-      <div class="lg:col-span-6 space-y-4 min-w-0">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-[#5B2EFF] font-extrabold text-[11px]">
-          <span>🏷️ WAREHOUSE AUTOMATION</span>
+    <section data-3d-tilt class="bento-card p-5 sm:p-6 border-2 border-emerald-400/50 bg-gradient-to-r from-white via-indigo-50/40 to-emerald-50/50 flex flex-wrap items-center justify-between gap-5">
+      <div class="space-y-2 max-w-2xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#081B4B] text-[#10E594] font-extrabold text-[11px]">
+          <span>🏷️ NEW DEDICATED STUDIO PAGE • SAVE ₹3 PER ORDER</span>
         </div>
-        <h2 class="text-lg sm:text-xl font-extrabold text-[#081B4B]">4x6 Thermal Shipping Label Cropper (Meesho, Flipkart &amp; Amazon)</h2>
-        <p class="text-[13px] text-slate-600 leading-relaxed">
-          Convert A4 marketplace shipping sheets into crisp <strong>4×6 inch (101.6mm × 152.4mm)</strong> thermal barcode labels for Zebra, TSC, and Xprinter rolls—complete with an automatic <strong>SKU + Qty Pick-List Footer</strong> at the bottom so your packing staff never packs the wrong item.
+        <h2 class="text-lg sm:text-xl font-extrabold text-[#081B4B]">
+          4×6 Thermal Shipping Label Cropper + Custom Hindi/English Thank You Card Studio
+        </h2>
+        <p class="text-xs sm:text-[13px] text-slate-600 leading-relaxed">
+          Meesho, Flipkart और Amazon के लेबल डाउनलोड करने पर नीचे की जगह खाली छूट जाती है। हमारे नए <strong>Label &amp; Thank You Studio</strong> पेज पर जाकर लेबल के नीचे अपनी भाषा (हिंदी/English) में कस्टम <strong>⭐⭐⭐⭐⭐ 5-Star Rating &amp; Thank You Card</strong> जोड़ें और साइज को अपने हिसाब से छोटा-बड़ा करें!
         </p>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-          <div>
-            <label class="block font-bold text-slate-700 mb-1">Marketplace Crop Preset</label>
-            <select id="crop-preset-select" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-bold text-[#081B4B]">
-              <option value="MEESHO">Meesho (A4 Top Half -&gt; 4x6 Thermal)</option>
-              <option value="FLIPKART">Flipkart (Center Label Crop + SKU Footer)</option>
-              <option value="AMAZON">Amazon EasyShip (4x6 Barcode Frame)</option>
-            </select>
-          </div>
-          <div>
-            <label class="block font-bold text-slate-700 mb-1">Stamp SKU Pick-List on Label Bottom</label>
-            <input
-              type="text"
-              id="label-sku-stamp"
-              value="SKU: RT-AUTO-01 | QTY: 1 | RoyalTank Kit"
-              class="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-mono text-[#081B4B]"
-            />
-          </div>
-        </div>
-
-        <div class="flex flex-wrap items-center gap-2.5 pt-2">
-          <label class="px-4 py-2.5 rounded-2xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs cursor-pointer shadow transition">
-            <span>📤 Upload Label Image / Sheet</span>
-            <input type="file" id="label-upload-input" accept="image/*" class="hidden" />
-          </label>
-          <button
-            type="button"
-            id="generate-demo-label-btn"
-            class="px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-[#081B4B] font-bold text-xs border border-slate-200"
-          >
-            🔄 Refresh Sample 4x6 Label
-          </button>
-          <button
-            type="button"
-            id="download-cropped-label-btn"
-            class="px-4 py-2.5 rounded-2xl bg-[#10E594] hover:bg-emerald-300 text-[#081B4B] font-extrabold text-xs shadow-sm"
-          >
-            🖨️ Download / Print 4x6 PNG
-          </button>
+        <div class="flex flex-wrap gap-2 pt-1 text-[11px] font-bold text-[#081B4B]">
+          <span class="px-2.5 py-1 rounded-lg bg-white border border-slate-200">✅ Meesho / Flipkart / Amazon Fixed Ratio</span>
+          <span class="px-2.5 py-1 rounded-lg bg-white border border-slate-200">✅ हिंदी &amp; English Custom Message Box</span>
+          <span class="px-2.5 py-1 rounded-lg bg-white border border-slate-200">✅ Height &amp; Font Size Sliders</span>
         </div>
       </div>
 
-      <!-- Right 6 Cols: Live 4x6 Thermal Canvas Preview -->
-      <div class="lg:col-span-6 flex flex-col items-center justify-center bg-slate-50 rounded-3xl p-4 sm:p-5 border border-slate-200 min-w-0">
-        <div class="text-[11px] font-mono font-bold text-[#5B2EFF] mb-2 text-center">
-          LIVE 4×6 INCH (101.6mm × 152.4mm) THERMAL ROLL PREVIEW
-        </div>
-        <canvas
-          id="thermal-label-canvas"
-          width="380"
-          height="560"
-          class="bg-white rounded-xl shadow-xl border border-slate-300 max-w-full h-auto"
-        ></canvas>
+      <div class="flex flex-col sm:flex-row items-center gap-3 shrink-0 w-full sm:w-auto">
+        <a
+          href="./label-studio.html"
+          class="w-full sm:w-auto text-center px-6 py-3.5 rounded-2xl bg-[#5B2EFF] hover:bg-indigo-700 text-white font-extrabold text-xs sm:text-sm shadow-xl transition"
+        >
+          🏷️ Open 4×6 Label &amp; Thank You Studio →
+        </a>
       </div>
     </section>
 
@@ -911,7 +915,7 @@
     </div>
   </div>
 
-  <!-- PROFIT/LOSS CALCULATOR, LIVE 3D GAUGE SYNC, E-COM AUDIT & LABEL CROPPER SCRIPT -->
+  <!-- PROFIT/LOSS CALCULATOR, LIVE 3D GAUGE SYNC & E-COM AUDIT ENGINE -->
   <script type="module">
     import {
       AppState,
@@ -1252,7 +1256,7 @@
       updateChannelBarUI("bar-amz-fill", "bar-amz-value", amzNet);
       updateChannelBarUI("bar-msh-fill", "bar-msh-value", mshNet);
 
-      // 4. Update 3D Donut Ring Card in Section 1 so it also reflects real Profit/Loss %
+      // 4. Update 3D Donut Ring Card in Section 1
       const donutPrimary = document.getElementById("audit-donut-primary");
       const donutSecondary = document.getElementById("audit-donut-secondary");
       const ringCount = document.getElementById("audit-ring-count");
@@ -1567,14 +1571,12 @@
       showToast(`Applied ₹${newCost} cost — Watch the 3D Gauge & Bars update!`, "success");
     });
 
-    // Test Profit Scenario Button
     document.getElementById("pnl-load-demo-btn")?.addEventListener("click", () => {
       pnlOrdersList = JSON.parse(JSON.stringify(DEMO_PNL_PROFIT_ORDERS));
       renderProfitLossCalculator();
       showToast("🟢 Loaded Profitable Scenario — 3D Gauge & Bars moved UP!", "success");
     });
 
-    // Test Loss Scenario Button (Demonstrates Needle & Bars dropping to Red)
     document.getElementById("pnl-test-loss-btn")?.addEventListener("click", () => {
       pnlOrdersList = JSON.parse(JSON.stringify(DEMO_PNL_LOSS_ORDERS));
       renderProfitLossCalculator();
@@ -1974,134 +1976,16 @@
       showToast("Claim Sheet exported!", "success");
     });
 
-    // =========================================================================
-    // PART C: 4x6 THERMAL SHIPPING LABEL CROPPER ENGINE (100% INTACT)
-    // =========================================================================
-    const canvas = document.getElementById("thermal-label-canvas");
-    const ctx = canvas.getContext("2d");
-    let currentUploadedLabelImg = null;
-    let labelFramePending = false;
-
-    function scheduleLabelRedraw() {
-      if (labelFramePending) return;
-      labelFramePending = true;
-      requestAnimationFrame(() => {
-        labelFramePending = false;
-        drawSampleThermalLabel(currentUploadedLabelImg);
-      });
-    }
-
-    function drawSampleThermalLabel(uploadedImg = null) {
-      const preset = document.getElementById("crop-preset-select").value;
-      const skuStamp = document.getElementById("label-sku-stamp").value.trim();
-
-      ctx.fillStyle = "#FFFFFF";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      ctx.strokeStyle = "#081B4B";
-      ctx.lineWidth = 3;
-      ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
-
-      if (uploadedImg) {
-        ctx.drawImage(uploadedImg, 0, 0, uploadedImg.width, uploadedImg.height * 0.55, 16, 16, canvas.width - 32, canvas.height - 95);
-      } else {
-        ctx.fillStyle = "#081B4B";
-        ctx.font = "bold 16px 'Plus Jakarta Sans', sans-serif";
-        ctx.fillText(`${preset} EXPRESS LOGISTICS — PREPAID`, 24, 42);
-
-        ctx.font = "bold 12px 'JetBrains Mono', monospace";
-        ctx.fillText("AWB: 14908273645192", 24, 64);
-
-        for (let x = 24; x < 340; x += 6) {
-          ctx.fillRect(x, 76, x % 18 === 0 ? 4 : 2, 48);
-        }
-
-        ctx.strokeStyle = "#CBD5E1";
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(20, 140);
-        ctx.lineTo(360, 140);
-        ctx.stroke();
-
-        ctx.fillStyle = "#081B4B";
-        ctx.font = "bold 13px 'Plus Jakarta Sans', sans-serif";
-        ctx.fillText("SHIP TO: NAZIM KHAN", 24, 168);
-        ctx.font = "12px 'Plus Jakarta Sans', sans-serif";
-        ctx.fillText("Sector-200, Noida, Gautam Buddha Nagar", 24, 190);
-        ctx.fillText("Uttar Pradesh — PIN: 201301", 24, 210);
-        ctx.font = "bold 12px 'JetBrains Mono', monospace";
-        ctx.fillText("DEST CODE: DEL-N-04   |   WEIGHT: 0.45 KG", 24, 238);
-
-        ctx.beginPath();
-        ctx.moveTo(20, 258);
-        ctx.lineTo(360, 258);
-        ctx.stroke();
-
-        ctx.font = "bold 11px 'Plus Jakarta Sans', sans-serif";
-        ctx.fillText(`RETURN TO: ${AppState.profile.businessName || "S.K.P.S DIGITAL"}`, 24, 282);
-        ctx.font = "11px 'JetBrains Mono', monospace";
-        ctx.fillText(`GSTIN: ${AppState.profile.gstin || "07AABCS1429B1Z5"}`, 24, 302);
-        ctx.fillText("Order ID: MSH-894120984   |   Invoice: 4649845", 24, 322);
-
-        for (let x = 24; x < 280; x += 5) {
-          ctx.fillRect(x, 345, x % 15 === 0 ? 3 : 1.5, 38);
-        }
-      }
-
-      ctx.fillStyle = "#081B4B";
-      ctx.fillRect(14, canvas.height - 68, canvas.width - 28, 52);
-      ctx.fillStyle = "#10E594";
-      ctx.font = "bold 10px 'JetBrains Mono', monospace";
-      ctx.fillText("PACKING PICK-LIST STAMP • POWERED BY SELLGST PRO:", 24, canvas.height - 46);
-      ctx.fillStyle = "#FFFFFF";
-      ctx.font = "bold 12px 'JetBrains Mono', monospace";
-      ctx.fillText(skuStamp.slice(0, 42), 24, canvas.height - 26);
-    }
-
-    document.getElementById("crop-preset-select")?.addEventListener("change", scheduleLabelRedraw);
-    document.getElementById("label-sku-stamp")?.addEventListener("input", scheduleLabelRedraw);
-    document.getElementById("generate-demo-label-btn")?.addEventListener("click", () => {
-      currentUploadedLabelImg = null;
-      scheduleLabelRedraw();
-    });
-
-    document.getElementById("label-upload-input")?.addEventListener("change", (e) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-      if (!consumeFreeActionOrLock("4x6 Thermal Label Cropper")) {
-        e.target.value = "";
-        return;
-      }
-      const img = new Image();
-      img.onload = () => {
-        currentUploadedLabelImg = img;
-        scheduleLabelRedraw();
-        showToast("Cropped to 4x6 thermal format with SKU footer!", "success");
-      };
-      img.src = URL.createObjectURL(file);
-    });
-
-    document.getElementById("download-cropped-label-btn")?.addEventListener("click", () => {
-      if (!consumeFreeActionOrLock("4x6 Thermal Label Download")) return;
-      const a = document.createElement("a");
-      a.href = canvas.toDataURL("image/png");
-      a.download = `Thermal-Label-4x6-${Date.now()}.png`;
-      a.click();
-      showToast("4x6 Thermal Label PNG downloaded!", "success");
-    });
-
     document.getElementById("sidebar-logout-btn")?.addEventListener("click", logoutUser);
     document.getElementById("bottom-logout-btn")?.addEventListener("click", logoutUser);
 
     subscribeAppState(() => {
       renderProfitLossCalculator();
       renderAuditTable();
-      scheduleLabelRedraw();
     });
 
     renderProfitLossCalculator();
     renderAuditTable();
-    scheduleLabelRedraw();
   </script>
 </body>
   </html>
