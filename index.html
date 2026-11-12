@@ -104,20 +104,9 @@
   }
   </script>
 
-  <!-- 0.1s Instant Module Preload & Speculative Prefetch -->
-  <link rel="modulepreload" href="./assets/js/security-core.js" />
+  <!-- 0.1s Instant Module Preload (With ?v=7.2 Cache-Buster for Cloudflare Pages) -->
+  <link rel="modulepreload" href="./assets/js/security-core.js?v=7.2" />
   <link rel="modulepreload" href="./assets/js/i18n.js" />
-  <link rel="prefetch" href="./app.html" as="document" />
-  <link rel="prefetch" href="./invoice.html" as="document" />
-  <link rel="prefetch" href="./ecom-audit.html" as="document" />
-  <link rel="prefetch" href="./label-studio.html" as="document" />
-  <link rel="prefetch" href="./gst-filing.html" as="document" />
-  <link rel="prefetch" href="./gov-excel-to-json.html" as="document" />
-  <link rel="prefetch" href="./json-validator.html" as="document" />
-  <link rel="prefetch" href="./reconciliation-2a-2b.html" as="document" />
-  <link rel="prefetch" href="./ecom-to-tally.html" as="document" />
-  <link rel="prefetch" href="./qr-studio.html" as="document" />
-  <link rel="prefetch" href="./login.html" as="document" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -452,8 +441,7 @@
   <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-3 sm:pt-4 space-y-5 overflow-x-hidden">
 
     <!-- =================================================================== -->
-    <!-- CLEAN TOP HEADER BAR (EXACTLY MATCHES QR-STUDIO.HTML STRUCTURE)     -->
-    <!-- RED-MARKED SUBTITLE & REDUNDANT SUPER-TOOLS HEADER PILL REMOVED     -->
+    <!-- CLEAN TOP HEADER BAR (PRE-POPULATED LANGUAGE SELECTOR & ZERO LAG)   -->
     <!-- =================================================================== -->
     <header class="bg-white/95 backdrop-blur-xl rounded-3xl border border-white px-4 sm:px-6 py-3 shadow-lg shadow-indigo-500/5 flex flex-wrap items-center justify-between gap-2.5">
       <div class="flex items-center gap-2.5 min-w-0">
@@ -484,7 +472,11 @@
           data-lang-switcher
           aria-label="Select Language"
           class="px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none max-w-[95px] truncate"
-        ></select>
+        >
+          <option value="en">English</option>
+          <option value="hi">हिन्दी</option>
+          <option value="hinglish">Hinglish</option>
+        </select>
 
         <!-- 7-SECOND AUTO-HIDING PWA INSTALL BUTTON -->
         <button
@@ -696,115 +688,93 @@
 
   </div>
 
-  <!-- INTERACTIVE 3D VALUATION SLIDER, DRAWER CONTROLLER & 7s PWA SCRIPT -->
-  <script type="module">
-    import {
-      evaluateSubscriptionHealth,
-      formatINR,
-      syncProDOMElements,
-      init3DTiltCards
-    } from "./assets/js/security-core.js";
+  <!-- ===================================================================== -->
+  <!-- 0.01s INSTANT STANDALONE UI ENGINE (WORKS EVEN BEFORE MODULE LOADS!)  -->
+  <!-- ===================================================================== -->
+  <script>
+    (function initInstantUI() {
+      const inrFmt = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 2 });
+      const fmtINR = (v) => inrFmt.format(Number(v) || 0);
 
-    init3DTiltCards();
-    syncProDOMElements();
+      // 1. Instant ☰ Super Tools Drawer Toggle (Zero Dependency)
+      const drawer = document.getElementById("super-tools-drawer");
+      const backdrop = document.getElementById("super-tools-backdrop");
 
-    // 1. Slide-Out "ALL SUPER TOOLS MENU" Drawer Controller
-    const drawer = document.getElementById("super-tools-drawer");
-    const backdrop = document.getElementById("super-tools-backdrop");
-
-    function openSuperToolsDrawer() {
-      if (!drawer || !backdrop) return;
-      try {
-        const savedBills = JSON.parse(localStorage.getItem("sellgst_invoices") || "[]");
-        const billsEl = document.getElementById("drawer-saved-bills-count");
-        if (billsEl) billsEl.textContent = `Saved GST Bills (${savedBills.length || 3})`;
-
-        const health = evaluateSubscriptionHealth();
-        const titleEl = document.getElementById("drawer-plan-status-title");
-        const subEl = document.getElementById("drawer-quota-subtext");
-        if (health.isPro && health.planName === "YEARLY") {
-          if (titleEl) titleEl.textContent = `Yearly Pro Active (${health.remainingDays}d left)`;
-          if (subEl) subEl.textContent = "Unlimited GSTR-1 JSON, Audits, Bills & QRs";
-        } else if (health.isPro && health.planName === "MONTHLY") {
-          if (titleEl) titleEl.textContent = `Ends in: ${health.remainingDays}d ${health.remainingHours}h`;
-          if (subEl) subEl.textContent = "Monthly Pro Active • Upgrade to ₹499 Yearly";
-        } else {
-          if (titleEl) titleEl.textContent = `Free Trial Quota: ${health.freeActionsRemaining}/5 Left`;
-          if (subEl) subEl.textContent = `Left: ${health.freeActionsRemaining} Free Uses, 5 Custom Downloads`;
-        }
-      } catch (_) {}
-
-      backdrop.classList.remove("hidden");
-      requestAnimationFrame(() => {
-        backdrop.classList.remove("opacity-0");
-        drawer.classList.remove("-translate-x-full");
-      });
-    }
-
-    function closeSuperToolsDrawer() {
-      if (!drawer || !backdrop) return;
-      backdrop.classList.add("opacity-0");
-      drawer.classList.add("-translate-x-full");
-      setTimeout(() => {
-        backdrop.classList.add("hidden");
-      }, 280);
-    }
-
-    document.querySelectorAll("[data-open-super-menu]").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        openSuperToolsDrawer();
-      });
-    });
-
-    document.getElementById("close-super-tools-btn")?.addEventListener("click", closeSuperToolsDrawer);
-    backdrop?.addEventListener("click", closeSuperToolsDrawer);
-
-    // 2. 7-Second Countdown Badge on Install App Button
-    const secBadge = document.getElementById("pwa-sec-badge");
-    let remainingSec = 7;
-    const secInterval = setInterval(() => {
-      remainingSec -= 1;
-      if (secBadge && remainingSec > 0) {
-        secBadge.textContent = `${remainingSec}s`;
-      } else {
-        clearInterval(secInterval);
+      function openDrawer() {
+        if (!drawer || !backdrop) return;
+        backdrop.classList.remove("hidden");
+        requestAnimationFrame(() => {
+          backdrop.classList.remove("opacity-0");
+          drawer.classList.remove("-translate-x-full");
+        });
       }
-    }, 1000);
 
-    // 3. 0.1s rAF-Throttled 3D Store Valuation & Leak Calculator (Zero NaN Protection)
-    const slider = document.getElementById("order-vol-slider");
-    let framePending = false;
+      function closeDrawer() {
+        if (!drawer || !backdrop) return;
+        backdrop.classList.add("opacity-0");
+        drawer.classList.add("-translate-x-full");
+        setTimeout(() => backdrop.classList.add("hidden"), 280);
+      }
 
-    function updateValuationMetrics() {
-      const orders = Number(slider?.value) || 1500;
-      const rtoLoss = orders * 12.5;
-      const weightLoss = orders * 5.6;
-      const monthlyLeak = rtoLoss + weightLoss;
-      const yearlyRecovery = monthlyLeak * 12;
-      const monthlyGmv = orders * 300;
-      const storeValuation = monthlyGmv * 4.8;
-
-      document.getElementById("order-vol-label").textContent = `${orders.toLocaleString("en-IN")} Orders / mo`;
-      document.getElementById("calc-rto-loss").textContent = formatINR(rtoLoss);
-      document.getElementById("calc-weight-loss").textContent = formatINR(weightLoss);
-      document.getElementById("calc-yearly-save").textContent = formatINR(yearlyRecovery);
-      document.getElementById("calc-monthly-leak").textContent = formatINR(monthlyLeak);
-      document.getElementById("calc-monthly-gmv").textContent = formatINR(monthlyGmv);
-      document.getElementById("calc-store-valuation").textContent = formatINR(storeValuation);
-
-      const angle = Math.min(52, Math.max(-35, Math.round((orders / 25000) * 70 - 15)));
-      document.getElementById("home-gauge-needle")?.setAttribute("transform", `rotate(${angle} 65 66)`);
-    }
-
-    slider?.addEventListener("input", () => {
-      if (framePending) return;
-      framePending = true;
-      requestAnimationFrame(() => {
-        framePending = false;
-        updateValuationMetrics();
+      document.querySelectorAll("[data-open-super-menu]").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          openDrawer();
+        });
       });
-    });
+      document.getElementById("close-super-tools-btn")?.addEventListener("click", closeDrawer);
+      backdrop?.addEventListener("click", closeDrawer);
+
+      // 2. Instant 7-Second Countdown & Auto-Hide on Install App Button
+      const pwaBtn = document.getElementById("pwa-install-btn");
+      const secBadge = document.getElementById("pwa-sec-badge");
+      let remSec = 7;
+      const timer = setInterval(() => {
+        remSec -= 1;
+        if (secBadge && remSec > 0) {
+          secBadge.textContent = remSec + "s";
+        } else {
+          clearInterval(timer);
+          if (pwaBtn) {
+            pwaBtn.style.opacity = "0";
+            pwaBtn.style.pointerEvents = "none";
+            setTimeout(() => pwaBtn.classList.add("hidden"), 400);
+          }
+        }
+      }, 1000);
+
+      // 3. Instant 0.1s Store Valuation Slider
+      const slider = document.getElementById("order-vol-slider");
+      let rafLock = false;
+      slider?.addEventListener("input", () => {
+        if (rafLock) return;
+        rafLock = true;
+        requestAnimationFrame(() => {
+          rafLock = false;
+          const orders = Number(slider.value) || 1500;
+          const rtoLoss = orders * 12.5;
+          const weightLoss = orders * 5.6;
+          const monthlyLeak = rtoLoss + weightLoss;
+          const yearlyRecovery = monthlyLeak * 12;
+          const monthlyGmv = orders * 300;
+          const storeValuation = monthlyGmv * 4.8;
+
+          document.getElementById("order-vol-label").textContent = orders.toLocaleString("en-IN") + " Orders / mo";
+          document.getElementById("calc-rto-loss").textContent = fmtINR(rtoLoss);
+          document.getElementById("calc-weight-loss").textContent = fmtINR(weightLoss);
+          document.getElementById("calc-yearly-save").textContent = fmtINR(yearlyRecovery);
+          document.getElementById("calc-monthly-leak").textContent = fmtINR(monthlyLeak);
+          document.getElementById("calc-monthly-gmv").textContent = fmtINR(monthlyGmv);
+          document.getElementById("calc-store-valuation").textContent = fmtINR(storeValuation);
+
+          const angle = Math.min(52, Math.max(-35, Math.round((orders / 25000) * 70 - 15)));
+          document.getElementById("home-gauge-needle")?.setAttribute("transform", "rotate(" + angle + " 65 66)");
+        });
+      });
+    })();
   </script>
+
+  <!-- Load Security Core with ?v=7.2 Cache-Buster so Cloudflare Pages fetches fresh JS immediately -->
+  <script type="module" src="./assets/js/security-core.js?v=7.2"></script>
 </body>
 </html>
