@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en" class="overflow-x-hidden scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+
+  <!-- ===================================================================== -->
+  <!-- 100% SEO-FRIENDLY META TAGS, OPENGRAPH & GOOGLE JSON-LD SCHEMA        -->
+  <!-- ===================================================================== -->
+  <title>Gov GSTR-1 Excel to JSON Converter Online (gst.gov.in Schema v3.1.6) — SellGST Pro</title>
+  <meta name="description" content="Free Online Government GSTR-1 Excel (.XLSX / .XLS / .CSV) to JSON Converter for Indian sellers & CAs. Convert GSTR-1 Excel templates into official gst.gov.in JSON in 1 click without installing offline utilities." />
+  <meta name="keywords" content="Gov Excel to JSON converter, GSTR-1 Excel to JSON converter online, convert GSTR1 xlsx to json free, gst.gov.in offline tool Excel to JSON, Monthly Quarterly IFF JSON generator, SellGST Pro" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <link rel="canonical" href="https://sellgst-pro.pages.dev/gov-excel-to-json.html" />
+
+  <!-- Open Graph / WhatsApp / Social Media Preview -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Gov GSTR-1 Excel to JSON Standalone Converter — SellGST Pro" />
+  <meta property="og:description" content="Upload the government GSTR-1 Excel workbook (.xlsx / .xls / .csv) and generate 100% validated gst.gov.in JSON using your selected GSTIN, filing type, month, and year." />
+  <meta property="og:url" content="https://sellgst-pro.pages.dev/gov-excel-to-json.html" />
+  <meta name="theme-color" content="#081B4B" />
+  <link rel="manifest" href="./manifest.json" />
+
+  <!-- Structured Data for Google Search Rich Snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SellGST Pro Gov GSTR-1 Excel to JSON Converter",
+    "url": "https://sellgst-pro.pages.dev/gov-excel-to-json.html",
+    "applicationCategory": "FinanceApplication, AccountingApplication",
+    "operatingSystem": "Web, Android, iOS, Windows",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "INR"
+    },
+    "description": "Standalone converter tool to convert Government GSTR-1 Excel (.xlsx, .xls, .csv) into official gst.gov.in GSTR-1 JSON."
+  }
+  </script>
+
+  <!-- 0.1s Instant Module Preload & Speculative Tool Prefetch -->
+  <link rel="modulepreload" href="./assets/js/security-core.js" />
+  <link rel="modulepreload" href="./assets/js/i18n.js" />
+  <link rel="prefetch" href="./index.html" as="document" />
+  <link rel="prefetch" href="./gst-filing.html" as="document" />
+  <link rel="prefetch" href="./json-validator.html" as="document" />
+  <link rel="prefetch" href="./reconciliation-2a-2b.html" as="document" />
+  <link rel="prefetch" href="./ecom-to-tally.html" as="document" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 100% Client-Side RAM Excel (.xlsx/.xls) & CSV Parsers -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js" defer></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          },
+          colors: {
+            navy: '#081B4B',
+            royal: '#5B2EFF',
+            mint: '#10E594'
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    html, body {
+      max-width: 100vw;
+      overflow-x: hidden;
+      background: linear-gradient(135deg, #DDE3FF 0%, #EEF2FF 48%, #D6F5F8 100%);
+      color: #0F172A;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .bento-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(16px);
+      border-radius: 26px;
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 18px 40px -15px rgba(91, 46, 255, 0.14), 0 4px 12px rgba(15, 23, 42, 0.04);
+      transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease;
+      min-width: 0;
+    }
+    .purple-3d-card {
+      background: linear-gradient(135deg, #6A3BFF 0%, #5B2EFF 55%, #3F16C4 100%);
+      border-radius: 26px;
+      box-shadow: 0 22px 45px -12px rgba(91, 46, 255, 0.38);
+      min-width: 0;
+    }
+    @keyframes shrink7s {
+      from { width: 100%; }
+      to { width: 0%; }
+    }
+    .pwa-timer-bar {
+      animation: shrink7s 7s linear forwards;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="min-h-screen w-full overflow-x-hidden pb-24 lg:pb-12 lg:pl-24">
+
+  <!-- DESKTOP FLOATING 3D LEFT PILL SIDEBAR -->
+  <aside class="hidden lg:flex fixed left-4 top-4 bottom-4 w-16 bg-white/95 backdrop-blur-xl border border-white rounded-full shadow-xl shadow-indigo-500/10 flex-col items-center justify-between py-5 z-40">
+    <a href="./index.html" title="Home Page" class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#081B4B] via-[#5B2EFF] to-[#10E594] text-white flex items-center justify-center font-black text-sm shadow-md">
+      🏠
+    </a>
+    <nav class="flex flex-col items-center gap-3">
+      <a href="./app.html" title="3D Financial Dashboard" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+        📊
+      </a>
+      <a href="./invoice.html" title="Custom Navy GST Invoice" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+        🧾
+      </a>
+      <a href="./ecom-audit.html" title="E-Com Audit & 4x6 Labels" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+        📦
+      </a>
+      <a href="./gst-filing.html" title="GST Filing Suite" class="w-11 h-11 rounded-2xl bg-[#5B2EFF] text-white flex items-center justify-center text-base shadow-md transition">
+        🏛️
+      </a>
+      <a href="./qr-studio.html" title="Dynamic QR & Google Reviews" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+        🔳
+      </a>
+      <a href="./admin.html" data-admin-only title="Master Admin Console" class="hidden w-11 h-11 rounded-2xl bg-rose-50 text-rose-600 hover:bg-rose-100 flex items-center justify-center text-base transition">
+        🛡️
+      </a>
+    </nav>
+    <div class="flex flex-col items-center gap-2">
+      <button type="button" data-open-account title="My Personal Account & DPDP Privacy" class="w-10 h-10 rounded-full bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] flex items-center justify-center text-sm shadow-sm">
+        👤
+      </button>
+      <button type="button" id="sidebar-logout-btn" title="Logout" class="w-10 h-10 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center text-sm">
+        ⏻
+      </button>
+    </div>
+  </aside>
+
+  <!-- MOBILE FLOATING BOTTOM DOCK -->
+  <nav class="lg:hidden fixed bottom-2.5 inset-x-3 bg-white/95 backdrop-blur-xl text-slate-700 rounded-3xl px-2 py-2.5 shadow-2xl border border-indigo-100 z-40 flex items-center justify-around">
+    <a href="./app.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">📊</span>
+      <span>Dashboard</span>
+    </a>
+    <a href="./invoice.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">🧾</span>
+      <span>GST Bill</span>
+    </a>
+    <a href="./ecom-audit.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">📦</span>
+      <span>E-Com Audit</span>
+    </a>
+    <a href="./gst-filing.html" class="flex flex-col items-center gap-0.5 text-[#5B2EFF] font-extrabold text-[10px]">
+      <span class="text-base">🏛️</span>
+      <span>GSTR-1</span>
+    </a>
+    <a href="./qr-studio.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">🔳</span>
+      <span>QR Studio</span>
+    </a>
+  </nav>
+
+  <!-- MAIN CONTENT WRAPPER -->
+  <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-3 sm:pt-4 space-y-5 overflow-x-hidden">
+
+    <!-- CLEAN TOP HEADER BAR -->
+    <header class="bg-white/90 backdrop-blur-xl rounded-3xl border border-white px-4 sm:px-6 py-3 shadow-lg shadow-indigo-500/5 flex flex-wrap items-center justify-between gap-2.5">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <a
+          href="./index.html"
+          class="px-3.5 py-2 rounded-2xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow-sm transition flex items-center gap-1.5 shrink-0"
+        >
+          <span>🏠 Home</span>
+        </a>
+        <div class="min-w-0">
+          <h1 class="font-extrabold text-sm sm:text-[15px] text-[#081B4B] truncate">
+            Gov Excel to JSON — Standalone Converter Tool
+          </h1>
+          <p class="text-[11px] text-slate-500 truncate">
+            Upload the government GSTR-1 Excel (.xlsx / .xls / .csv) and generate JSON using your selected GSTIN, month, and year
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-end ml-auto">
+        <select
+          data-lang-switcher
+          aria-label="Language"
+          class="px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none max-w-[92px] sm:max-w-none truncate"
+        ></select>
+
+        <!-- 7-SECOND AUTO-HIDING PWA INSTALL BUTTON -->
+        <button
+          type="button"
+          id="pwa-install-btn"
+          data-pwa-install
+          class="relative overflow-hidden px-3 py-1.5 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#081B4B] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap flex items-center gap-1.5"
+        >
+          <span>📲 Install App</span>
+          <span id="pwa-sec-badge" class="px-1.5 py-0.2 rounded-full bg-white/20 text-[10px] font-mono">7s</span>
+          <span class="absolute bottom-0 left-0 h-0.5 bg-[#10E594] pwa-timer-bar"></span>
+        </button>
+
+        <button
+          type="button"
+          data-open-account
+          class="px-3 py-1.5 rounded-full bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] text-xs font-extrabold border border-indigo-100 transition whitespace-nowrap"
+        >
+          👤 My Account
+        </button>
+
+        <button
+          type="button"
+          data-pro-badge
+          data-unlock-pro="MONTHLY"
+          class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-[#5B2EFF] to-[#4318FF] text-white shadow-md whitespace-nowrap"
+        >
+          Unlock Pro ⚡
+        </button>
+      </div>
+    </header>
+
+    <!-- =================================================================== -->
+    <!-- DEDICATED SEPARATE GST FILES NAVIGATION BAR (LIKE GSTPROSELLER.COM) -->
+    <!-- =================================================================== -->
+    <section class="bento-card p-3 sm:p-4 flex items-center gap-2 overflow-x-auto no-scrollbar">
+      <a
+        href="./gst-filing.html"
+        class="px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-indigo-50 text-[#081B4B] font-extrabold text-xs border border-slate-200 transition whitespace-nowrap flex items-center gap-1.5 shrink-0"
+      >
+        <span>🛒 1. E-Com CSV to JSON &amp; Excel</span>
+      </a>
+      <a
+        href="./gov-excel-to-json.html"
+        class="px-4 py-2.5 rounded-2xl bg-[#5B2EFF] text-white font-extrabold text-xs shadow-md whitespace-nowrap flex items-center gap-1.5 shrink-0"
+      >
+        <span>📗 2. Gov Excel to JSON (Active)</span>
+      </a>
+      <a
+        href="./json-validator.html"
+        class="px-4 py-2.5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 text-emerald-900 font-extrabold text-xs border border-emerald-300 transition whitespace-nowrap flex items-center gap-1.5 shrink-0"
+      >
+        <span>🔍 3. JSON Validator &amp; Visual Editor (Check All Data)</span>
+      </a>
+      <a
+        href="./reconciliation-2a-2b.html"
+        class="px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-indigo-50 text-[#081B4B] font-extrabold text-xs border border-slate-200 transition whitespace-nowrap flex items-center gap-1.5 shrink-0"
+      >
+        <span>🔄 4. 2A/2B Purchase Reconciliation</span>
+      </a>
+      <a
+        href="./ecom-to-tally.html"
+        class="px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-indigo-50 text-[#081B4B] font-extrabold text-xs border border-slate-200 transition whitespace-nowrap flex items-center gap-1.5 shrink-0"
+      >
+        <span>📁 5. E-Com to Tally XML</span>
+      </a>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECTION 1: GOV EXCEL TO JSON CONVERTER FORM (MATCHES SCREENSHOT 28) -->
+    <!-- =================================================================== -->
+    <section data-3d-tilt class="bento-card p-5 sm:p-6 space-y-5 border-2 border-[#5B2EFF]/25">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+        <div>
+          <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-[#5B2EFF] font-extrabold text-[10px] uppercase">
+            FEATURE #2 • STANDALONE CONVERTER TOOL
+          </span>
+          <h2 class="text-base sm:text-lg font-extrabold text-[#081B4B] mt-1">
+            📄 Gov Excel to JSON Converter
+          </h2>
+          <p class="text-xs text-slate-500 mt-0.5">
+            Upload the government GSTR-1 Excel (<code>.xlsx</code>, <code>.xls</code>, or <code>.csv</code>) and generate official <code>gst.gov.in</code> JSON using your selected GSTIN, month, and year.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            id="download-gov-template-btn"
+            class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#081B4B] font-bold text-xs border border-slate-200 transition"
+          >
+            ⬇ Sample Gov GSTR-1 Excel (.CSV)
+          </button>
+          <button
+            type="button"
+            id="load-demo-gov-excel-btn"
+            class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow transition"
+          >
+            ⚡ Load Demo Gov Excel Data
+          </button>
+        </div>
+      </div>
+
+      <!-- Parameter Grid matching Screenshot 28: GST Number, Type of Filing, Month, Year, Reset -->
+      <div class="p-4 sm:p-5 rounded-2xl bg-indigo-50/50 border border-indigo-100 space-y-4 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3.5 items-end">
+
+          <!-- 1. GST Number (3 Cols) -->
+          <div class="lg:col-span-3">
+            <label for="gov-gstin-input" class="block font-extrabold text-[#081B4B] mb-1">
+              GST Number *
+            </label>
+            <input
+              type="text"
+              id="gov-gstin-input"
+              maxlength="15"
+              value="07AABCS1429B1Z5"
+              placeholder="Enter GSTIN"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 font-mono font-extrabold uppercase text-[#081B4B] focus:outline-none focus:ring-2 focus:ring-[#5B2EFF]"
+            />
+          </div>
+
+          <!-- 2. Type of Filing (3 Cols) -->
+          <div class="lg:col-span-3">
+            <label for="gov-filing-type" class="block font-extrabold text-[#081B4B] mb-1">
+              Type of Filing
+            </label>
+            <select
+              id="gov-filing-type"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 font-bold text-[#081B4B] focus:outline-none focus:ring-2 focus:ring-[#5B2EFF]"
+            >
+              <option value="MONTHLY">Monthly GSTR-1</option>
+              <option value="QUARTERLY_IFF">Quarterly (IFF / QRMP)</option>
+            </select>
+          </div>
+
+          <!-- 3. Month (2 Cols) -->
+          <div class="lg:col-span-2">
+            <label for="gov-month-select" class="block font-extrabold text-[#081B4B] mb-1">
+              Month
+            </label>
+            <select
+              id="gov-month-select"
+              class="w-full px-3 py-2.5 rounded-xl bg-white border border-slate-300 font-mono font-bold text-[#081B4B] focus:outline-none focus:ring-2 focus:ring-[#5B2EFF]"
+            >
+              <option value="11" selected>11 - November</option>
+              <option value="10">10 - October</option>
+              <option value="09">09 - September</option>
+              <option value="08">08 - August</option>
+              <option value="07">07 - July</option>
+              <option value="06">06 - June</option>
+              <option value="05">05 - May</option>
+              <option value="04">04 - April</option>
+              <option value="03">03 - March</option>
+              <option value="02">02 - February</option>
+              <option value="01">01 - January</option>
+              <option value="12">12 - December</option>
+            </select>
+          </div>
+
+          <!-- 4. Year (2 Cols) -->
+          <div class="lg:col-span-2">
+            <label for="gov-year-select" class="block font-extrabold text-[#081B4B] mb-1">
+              Year
+            </label>
+            <select
+              id="gov-year-select"
+              class="w-full px-3 py-2.5 rounded-xl bg-white border border-slate-300 font-mono font-bold text-[#081B4B] focus:outline-none focus:ring-2 focus:ring-[#5B2EFF]"
+            >
+              <option value="2026" selected>2026 (FY 2026-27)</option>
+              <option value="2025">2025 (FY 2025-26)</option>
+              <option value="2027">2027 (FY 2026-27)</option>
+            </select>
+          </div>
+
+          <!-- 5. Reset Button (2 Cols) -->
+          <div class="lg:col-span-2">
+            <button
+              type="button"
+              id="gov-reset-btn"
+              class="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-rose-50 text-slate-700 hover:text-rose-700 font-extrabold border border-slate-300 shadow-sm transition"
+            >
+              🔄 Reset
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- GSTR1 Excel File Upload Box (Matches Screenshot 28) -->
+      <div class="p-4 sm:p-5 rounded-2xl bg-white border-2 border-slate-200 space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <label for="gov-excel-file-input" class="text-xs font-extrabold text-[#081B4B]">
+            📗 GSTR1 Excel Workbook (Supports Multi-Sheet <code>b2b</code>, <code>b2cs</code>, <code>hsn</code> <code>.xlsx</code>, <code>.xls</code>, or <code>.csv</code>)
+          </label>
+          <span id="gov-sheets-detected-pill" class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 font-mono text-[10px] font-extrabold">
+            Pre-Loaded Demo Workbook
+          </span>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200">
+          <label
+            for="gov-excel-file-input"
+            class="px-5 py-2.5 rounded-xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow cursor-pointer transition shrink-0"
+          >
+            Choose file
+          </label>
+          <span id="gov-file-chosen-name" class="text-xs font-mono font-bold text-slate-600 truncate">
+            Demo_Gov_GSTR1_Workbook_Nov2026.xlsx (Loaded)
+          </span>
+          <input type="file" id="gov-excel-file-input" accept=".xlsx,.xls,.csv" class="hidden" />
+        </div>
+
+        <!-- Primary Action Buttons -->
+        <div class="pt-2 flex flex-wrap items-center justify-between gap-3">
+          <div class="flex flex-wrap items-center gap-2.5">
+            <button
+              type="button"
+              id="gov-download-json-btn"
+              class="px-6 py-3 rounded-2xl bg-[#5B2EFF] hover:bg-indigo-700 text-white font-extrabold text-xs sm:text-[13px] shadow-lg transition flex items-center gap-2"
+            >
+              <span>⬇ Generate &amp; Download Official GSTR-1 (.JSON)</span>
+            </button>
+            <button
+              type="button"
+              id="gov-copy-json-btn"
+              class="px-4 py-3 rounded-2xl bg-[#10E594] hover:bg-emerald-300 text-[#081B4B] font-extrabold text-xs shadow-sm transition"
+            >
+              📋 Copy JSON
+            </button>
+          </div>
+
+          <a
+            href="./json-validator.html"
+            class="px-5 py-3 rounded-2xl bg-[#081B4B] hover:bg-slate-800 text-white font-extrabold text-xs shadow transition flex items-center gap-2"
+          >
+            <span>🔍 Check &amp; Edit All Data in JSON Validator (#3) →</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECTION 2: PARSED EXCEL SUMMARY CARDS & LIVE JSON PREVIEW           -->
+    <!-- =================================================================== -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+
+      <!-- Left 5 Cols: 3D Purple Parsed Workbook Summary Card -->
+      <div data-3d-tilt class="purple-3d-card text-white p-5 sm:p-6 lg:col-span-5 flex flex-col justify-between relative overflow-hidden">
+        <div class=" -top-10 -right-10 w-36 h-36 rounded-full bg-white/10 pointer-events-none absolute"></div>
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-indigo-100">Gov Excel Workbook Summary</span>
+          <span id="gov-fp-badge" class="px-2.5 py-0.5 rounded-full bg-[#10E594] text-[#081B4B] font-mono text-[10px] font-extrabold">
+            FP: 112026
+          </span>
+        </div>
+
+        <div class="my-3">
+          <div class="text-[11px] uppercase tracking-wider text-indigo-200">Total Taxable Value in Excel</div>
+          <div id="gov-sum-taxable" class="text-2xl sm:text-3xl font-black font-mono tracking-tight text-white mt-0.5">
+            ₹71,545.37
+          </div>
+          <div class="text-xs text-[#10E594] font-mono font-bold mt-1">
+            Total Output GST: <span id="gov-sum-tax">₹11,841.20</span>
+          </div>
+        </div>
+
+        <div class="bg-white text-[#081B4B] rounded-2xl p-3.5 shadow-lg grid grid-cols-3 gap-2 text-center">
+          <div class="border-r border-slate-100 pr-1">
+            <div class="text-[10px] font-bold text-slate-400">B2B Sheet</div>
+            <div id="gov-count-b2b" class="text-sm font-black text-[#5B2EFF] font-mono mt-0.5">2 Bills</div>
+          </div>
+          <div class="border-r border-slate-100 px-1">
+            <div class="text-[10px] font-bold text-slate-400">B2CS Sheet</div>
+            <div id="gov-count-b2cs" class="text-sm font-black text-emerald-600 font-mono mt-0.5">2 States</div>
+          </div>
+          <div class="pl-1">
+            <div class="text-[10px] font-bold text-slate-400">HSN Sheet</div>
+            <div id="gov-count-hsn" class="text-sm font-black text-[#081B4B] font-mono mt-0.5">2 HSNs</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right 7 Cols: Live Generated JSON Preview -->
+      <div data-3d-tilt class="bento-card p-5 sm:p-6 lg:col-span-7 flex flex-col justify-between space-y-3">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">100% GST.GOV.IN COMPATIBLE</span>
+            <h3 class="text-base font-extrabold text-[#081B4B]">Live Converted GSTR-1 JSON Output</h3>
+          </div>
+          <span class="px-2.5 py-0.5 rounded-full bg-[#081B4B] text-[#10E594] font-mono text-[10px] font-bold">
+            SCHEMA v3.1.6
+          </span>
+        </div>
+
+        <pre
+          id="gov-json-preview"
+          class="w-full h-64 p-4 rounded-2xl bg-[#081B4B] text-[#10E594] font-mono text-[11px] overflow-auto leading-relaxed border border-indigo-900 shadow-inner"
+        ></pre>
+      </div>
+
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- BOTTOM PERSONAL ACCOUNT, DPDP PRIVACY (✔️) & LOGOUT BAR             -->
+    <!-- =================================================================== -->
+    <section data-3d-tilt class="bento-card p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-[#5B2EFF] flex items-center justify-center text-base font-bold shrink-0">
+          🛡️
+        </div>
+        <div class="min-w-0">
+          <div class="text-xs font-extrabold text-[#081B4B]">My Personal Data &amp; DPDP Act 2023 Privacy Controls</div>
+          <div class="text-[11px] text-slate-500 truncate">
+            Manage your store GSTIN, view subscription validity, or permanently delete your account &amp; data with confirmation tick (✔️).
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2 ml-auto">
+        <button
+          type="button"
+          data-open-account
+          class="px-4 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] font-extrabold text-xs transition"
+        >
+          👤 My Account &amp; Delete Option (✔️)
+        </button>
+        <button
+          type="button"
+          id="bottom-logout-btn"
+          class="px-4 py-2 rounded-xl bg-[#081B4B] hover:bg-rose-600 text-white font-extrabold text-xs shadow transition flex items-center gap-1.5"
+        >
+          <span>⏻ Logout</span>
+        </button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- GOV EXCEL TO JSON STANDALONE CONVERTER ENGINE (ZERO NaN PROTECTION) -->
+  <script type="module">
+    import {
+      AppState,
+      subscribeAppState,
+      consumeFreeActionOrLock,
+      formatINR,
+      showToast,
+      logoutUser,
+      syncProDOMElements,
+      init3DTiltCards
+    } from "./assets/js/security-core.js";
+
+    init3DTiltCards();
+
+    function safeNum(val, fallback = 0) {
+      if (val === null || val === undefined || val === "") return fallback;
+      const n = Number(String(val).replace(/[₹$,\s%]/g, "").trim());
+      return Number.isFinite(n) ? n : fallback;
+    }
+
+    function formatPortalDate(rawDate = "") {
+      const s = String(rawDate || "").trim();
+      const parts = s.split(/[-/]/);
+      if (parts.length === 3) {
+        if (parts[0].length === 4) return `${parts[2].slice(0, 2)}-${parts[1]}-${parts[0]}`;
+        return `${parts[0].padStart(2, "0")}-${parts[1].padStart(2, "0")}-${parts[2].slice(0, 4)}`;
+      }
+      return "12-11-2026";
+    }
+
+    function getDefaultGovWorkbookData() {
+      return {
+        b2b: [
+          {
+            ctin: "09AABCN6969K1Z9",
+            inv: [
+              {
+                inum: "4649845",
+                idt: "12-11-2026",
+                val: 39750.18,
+                pos: "09",
+                rchrg: "N",
+                inv_typ: "R",
+                itms: [{ num: 1, itm_det: { txval: 34565.37, rt: 18, iamt: 0, camt: 3110.88, samt: 2073.92, csamt: 0 } }]
+              }
+            ]
+          },
+          {
+            ctin: "10AABCP1122K1Z2",
+            inv: [
+              {
+                inum: "4649846",
+                idt: "12-11-2026",
+                val: 17688.2,
+                pos: "10",
+                rchrg: "N",
+                inv_typ: "R",
+                itms: [{ num: 1, itm_det: { txval: 14990, rt: 18, iamt: 2698.2, camt: 0, samt: 0, csamt: 0 } }]
+              }
+            ]
+          }
+        ],
+        b2cs: [
+          { sply_ty: "INTRA", pos: "07", typ: "OE", rt: 18, txval: 3490, iamt: 0, camt: 314.1, samt: 314.1, csamt: 0 },
+          { sply_ty: "INTER", pos: "27", typ: "OE", rt: 18, txval: 18500, iamt: 3330, camt: 0, samt: 0, csamt: 0 }
+        ],
+        hsn: [
+          { num: 1, hsn_sc: "8537", desc: "RoyalTank Water Controller Kit", uqc: "PCS", qty: 25, val: 39518.2, txval: 33490, iamt: 6028.2, camt: 0, samt: 0, csamt: 0, rt: 18 },
+          { num: 2, hsn_sc: "3926", desc: "Smart LCD Writing Pencil Box", uqc: "PCS", qty: 10, val: 4118.2, txval: 3490, iamt: 0, camt: 314.1, samt: 314.1, csamt: 0, rt: 18 }
+        ]
+      };
+    }
+
+    let currentWorkbookState = getDefaultGovWorkbookData();
+
+    function getSelectedFilingPeriod() {
+      const mm = document.getElementById("gov-month-select")?.value || "11";
+      const yyyy = document.getElementById("gov-year-select")?.value || "2026";
+      return `${mm}${yyyy}`;
+    }
+
+    function compileGovGSTR1Payload() {
+      const gstin = (document.getElementById("gov-gstin-input")?.value || "07AABCS1429B1Z5").trim().toUpperCase();
+      const fp = getSelectedFilingPeriod();
+
+      let totalTaxable = 0;
+      let totalTax = 0;
+      let b2bBillCount = 0;
+
+      currentWorkbookState.b2b.forEach((party) => {
+        (party.inv || []).forEach((inv) => {
+          b2bBillCount += 1;
+          (inv.itms || []).forEach((it) => {
+            const d = it.itm_det || {};
+            totalTaxable += safeNum(d.txval);
+            totalTax += safeNum(d.iamt) + safeNum(d.camt) + safeNum(d.samt);
+          });
+        });
+      });
+
+      currentWorkbookState.b2cs.forEach((row) => {
+        totalTaxable += safeNum(row.txval);
+        totalTax += safeNum(row.iamt) + safeNum(row.camt) + safeNum(row.samt);
+      });
+
+      const payload = {
+        gstin,
+        fp,
+        gt: 0,
+        cur_gt: Number(totalTaxable.toFixed(2)),
+        version: "GST3.1.6",
+        hash: "hash",
+        b2b: currentWorkbookState.b2b,
+        b2cl: [],
+        b2cs: currentWorkbookState.b2cs,
+        hsn: {
+          data: currentWorkbookState.hsn
+        }
+      };
+
+      // Save to localStorage so Feature #3 (`json-validator.html`) opens it automatically!
+      try {
+        localStorage.setItem("sellgst_latest_gstr1_json", JSON.stringify(payload));
+      } catch (_) {}
+
+      document.getElementById("gov-fp-badge").textContent = `FP: ${fp}`;
+      document.getElementById("gov-sum-taxable").textContent = formatINR(totalTaxable);
+      document.getElementById("gov-sum-tax").textContent = formatINR(totalTax);
+      document.getElementById("gov-count-b2b").textContent = `${b2bBillCount} Bills`;
+      document.getElementById("gov-count-b2cs").textContent = `${currentWorkbookState.b2cs.length} States`;
+      document.getElementById("gov-count-hsn").textContent = `${currentWorkbookState.hsn.length} HSNs`;
+      document.getElementById("gov-json-preview").textContent = JSON.stringify(payload, null, 2);
+
+      return payload;
+    }
+
+    // Parse Government Excel rows (Supports standard Gov offline template column headers)
+    function parseGovSheetRows(sheetMap) {
+      const sellerGstin = (document.getElementById("gov-gstin-input")?.value || "07AABCS1429B1Z5").trim().toUpperCase();
+      const sellerPos = sellerGstin.slice(0, 2) || "07";
+
+      const b2bMap = new Map();
+      const b2csList = [];
+      const hsnList = [];
+
+      Object.entries(sheetMap).forEach(([sheetName, rows]) => {
+        const lowerSheet = sheetName.toLowerCase();
+        if (!Array.isArray(rows)) return;
+
+        rows.forEach((r, idx) => {
+          if (!r || typeof r !== "object") return;
+
+          // Check if HSN sheet/row
+          const hsnVal = r["HSN"] || r["HSN Code"] || r["hsn_sc"];
+          if (lowerSheet.includes("hsn") || (hsnVal && !r["Invoice Number"] && !r["GSTIN/UIN of Recipient"])) {
+            const tx = safeNum(r["Taxable Value"] ?? r["txval"], 0);
+            if (tx <= 0) return;
+            const rt = safeNum(r["Rate"] ?? r["GST Rate"] ?? r["rt"], 18);
+            const iamt = safeNum(r["Integrated Tax Amount"] ?? r["IGST"] ?? r["iamt"], 0);
+            const camt = safeNum(r["Central Tax Amount"] ?? r["CGST"] ?? r["camt"], 0);
+            const samt = safeNum(r["State/UT Tax Amount"] ?? r["SGST"] ?? r["samt"], 0);
+            hsnList.push({
+              num: hsnList.length + 1,
+              hsn_sc: String(hsnVal || "8537").replace(/\D/g, "") || "8537",
+              desc: String(r["Description"] || r["desc"] || "Goods").slice(0, 30),
+              uqc: String(r["UQC"] || r["uqc"] || "PCS").slice(0, 3).toUpperCase(),
+              qty: Math.max(1, safeNum(r["Total Quantity"] ?? r["Qty"] ?? r["qty"], 1)),
+              val: Number((tx + iamt + camt + samt).toFixed(2)),
+              txval: Number(tx.toFixed(2)),
+              iamt: Number(iamt.toFixed(2)),
+              camt: Number(camt.toFixed(2)),
+              samt: Number(samt.toFixed(2)),
+              csamt: 0,
+              rt
+            });
+            return;
+          }
+
+          // Check if B2B row
+          const ctin = String(
+            r["GSTIN/UIN of Recipient"] || r["Customer GSTIN"] || r["Buyer GSTIN"] || r["ctin"] || ""
+          ).trim().toUpperCase();
+
+          const tx = safeNum(r["Taxable Value"] ?? r["Taxable Amount"] ?? r["txval"], 0);
+          if (tx <= 0) return;
+
+          const rt = safeNum(r["Rate"] ?? r["GST Rate"] ?? r["rt"], 18);
+          const rawPos = String(r["Place Of Supply"] || r["Place of Supply"] || r["pos"] || ctin.slice(0, 2) || "07");
+          const pos = (rawPos.match(/^(\d{2})/) || ["07", "07"])[1];
+          const isInter = pos !== sellerPos;
+          const computedTax = (tx * rt) / 100;
+
+          const iamt = safeNum(r["Integrated Tax Amount"] ?? r["IGST"] ?? r["iamt"], isInter ? computedTax : 0);
+          const camt = safeNum(r["Central Tax Amount"] ?? r["CGST"] ?? r["camt"], !isInter ? computedTax / 2 : 0);
+          const samt = safeNum(r["State/UT Tax Amount"] ?? r["SGST"] ?? r["samt"], !isInter ? computedTax / 2 : 0);
+
+          if (ctin.length === 15 || lowerSheet.includes("b2b")) {
+            const validCtin = ctin.length === 15 ? ctin : "09AABCN6969K1Z9";
+            if (!b2bMap.has(validCtin)) b2bMap.set(validCtin, []);
+            b2bMap.get(validCtin).push({
+              inum: String(r["Invoice Number"] || r["Invoice No"] || r["inum"] || `GOV-${101 + idx}`),
+              idt: formatPortalDate(r["Invoice date"] || r["Invoice Date"] || r["idt"]),
+              val: Number((tx + iamt + camt + samt).toFixed(2)),
+              pos,
+              rchrg: "N",
+              inv_typ: "R",
+              itms: [
+                {
+                  num: 1,
+                  itm_det: {
+                    txval: Number(tx.toFixed(2)),
+                    rt,
+                    iamt: Number(iamt.toFixed(2)),
+                    camt: Number(camt.toFixed(2)),
+                    samt: Number(samt.toFixed(2)),
+                    csamt: 0
+                  }
+                }
+              ]
+            });
+          } else {
+            // B2CS row
+            b2csList.push({
+              sply_ty: isInter ? "INTER" : "INTRA",
+              pos,
+              typ: "OE",
+              rt,
+              txval: Number(tx.toFixed(2)),
+              iamt: Number(iamt.toFixed(2)),
+              camt: Number(camt.toFixed(2)),
+              samt: Number(samt.toFixed(2)),
+              csamt: 0
+            });
+          }
+        });
+      });
+
+      const b2bArr = [];
+      b2bMap.forEach((inv, ctin) => b2bArr.push({ ctin, inv }));
+
+      if (b2bArr.length > 0 || b2csList.length > 0 || hsnList.length > 0) {
+        currentWorkbookState = {
+          b2b: b2bArr,
+          b2cs: b2csList,
+          hsn: hsnList.length > 0 ? hsnList : getDefaultGovWorkbookData().hsn
+        };
+        compileGovGSTR1Payload();
+        return true;
+      }
+      return false;
+    }
+
+    // Handle Excel (.xlsx/.xls) or CSV Upload
+    document.getElementById("gov-excel-file-input")?.addEventListener("change", async (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      if (!consumeFreeActionOrLock("Gov Excel to JSON Converter")) {
+        e.target.value = "";
+        return;
+      }
+
+      document.getElementById("gov-file-chosen-name").textContent = file.name;
+      const lower = file.name.toLowerCase();
+
+      if (lower.endsWith(".xlsx") || lower.endsWith(".xls")) {
+        try {
+          const buf = await file.arrayBuffer();
+          if (window.XLSX) {
+            const wb = window.XLSX.read(buf, { type: "array" });
+            const sheetMap = {};
+            wb.SheetNames.forEach((name) => {
+              sheetMap[name] = window.XLSX.utils.sheet_to_json(wb.Sheets[name], { defval: "" });
+            });
+            document.getElementById("gov-sheets-detected-pill").textContent = `Sheets: ${wb.SheetNames.slice(0, 4).join(", ")}`;
+            if (parseGovSheetRows(sheetMap)) {
+              showToast(`✅ Converted ${file.name} into Official GSTR-1 JSON!`, "success");
+            } else {
+              showToast("Loaded workbook with sample structure.", "info");
+            }
+          }
+        } catch (_) {
+          showToast("⚠️ Could not read Excel workbook. Try saving as .xlsx or .csv.", "error");
+        }
+      } else {
+        if (window.Papa) {
+          window.Papa.parse(file, {
+            header: true,
+            skipEmptyLines: true,
+            complete: (res) => {
+              document.getElementById("gov-sheets-detected-pill").textContent = "CSV Sheet Loaded";
+              if (parseGovSheetRows({ b2b_b2cs: res.data || [] })) {
+                showToast(`✅ Converted ${file.name} into Official GSTR-1 JSON!`, "success");
+              }
+            }
+          });
+        }
+      }
+    });
+
+    ["gov-gstin-input", "gov-filing-type", "gov-month-select", "gov-year-select"].forEach((id) => {
+      document.getElementById(id)?.addEventListener("change", compileGovGSTR1Payload);
+      document.getElementById(id)?.addEventListener("input", compileGovGSTR1Payload);
+    });
+
+    document.getElementById("gov-reset-btn")?.addEventListener("click", () => {
+      document.getElementById("gov-gstin-input").value = AppState.profile?.gstin || "07AABCS1429B1Z5";
+      document.getElementById("gov-filing-type").value = "MONTHLY";
+      document.getElementById("gov-month-select").value = "11";
+      document.getElementById("gov-year-select").value = "2026";
+      document.getElementById("gov-file-chosen-name").textContent = "Demo_Gov_GSTR1_Workbook_Nov2026.xlsx (Loaded)";
+      currentWorkbookState = getDefaultGovWorkbookData();
+      compileGovGSTR1Payload();
+      showToast("🔄 Reset Gov Excel Converter to default state.", "info");
+    });
+
+    document.getElementById("load-demo-gov-excel-btn")?.addEventListener("click", () => {
+      currentWorkbookState = getDefaultGovWorkbookData();
+      compileGovGSTR1Payload();
+      showToast("⚡ Loaded Demo Government GSTR-1 Excel Data!", "success");
+    });
+
+    document.getElementById("download-gov-template-btn")?.addEventListener("click", () => {
+      const sample =
+        "GSTIN/UIN of Recipient,Invoice Number,Invoice date,Invoice Value,Place Of Supply,Rate,Taxable Value,Integrated Tax Amount,Central Tax Amount,State/UT Tax Amount\n" +
+        "09AABCN6969K1Z9,4649845,12-11-2026,39750.18,09-Uttar Pradesh,18,34565.37,0,3110.88,2073.92\n" +
+        "10AABCP1122K1Z2,4649846,12-11-2026,17688.20,10-Bihar,18,14990.00,2698.20,0,0\n" +
+        ",B2CS-DELHI,12-11-2026,4118.20,07-Delhi,18,3490.00,0,314.10,314.10\n";
+      const blob = new Blob([sample], { type: "text/csv;charset=utf-8;" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "Sample_Gov_GSTR1_Template.csv";
+      a.click();
+    });
+
+    document.getElementById("gov-download-json-btn")?.addEventListener("click", () => {
+      if (!consumeFreeActionOrLock("Gov Excel to GSTR-1 JSON Export")) return;
+      const payload = compileGovGSTR1Payload();
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `GOV_GSTR1_${payload.gstin}_${payload.fp}.json`;
+      a.click();
+      showToast(`✅ Downloaded GOV_GSTR1_${payload.gstin}_${payload.fp}.json!`, "success");
+    });
+
+    document.getElementById("gov-copy-json-btn")?.addEventListener("click", () => {
+      const text = document.getElementById("gov-json-preview").textContent;
+      navigator.clipboard.writeText(text);
+      showToast("📋 Copied Gov GSTR-1 JSON to clipboard!", "success");
+    });
+
+    document.getElementById("sidebar-logout-btn")?.addEventListener("click", logoutUser);
+    document.getElementById("bottom-logout-btn")?.addEventListener("click", logoutUser);
+
+    subscribeAppState(() => {
+      syncProDOMElements();
+      if (AppState.profile?.gstin) {
+        document.getElementById("gov-gstin-input").value = AppState.profile.gstin;
+      }
+      compileGovGSTR1Payload();
+    });
+
+    compileGovGSTR1Payload();
+  </script>
+</body>
+                                                  </html>
