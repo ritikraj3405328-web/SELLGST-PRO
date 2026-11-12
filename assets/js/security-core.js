@@ -1,5 +1,5 @@
 /**
- * SellGST Pro — Principal Security Core v6.8 (100% Full Uncut Original + Global ☰ Super Tools Sidebar)
+ * SellGST Pro — Principal Security Core v6.9 (100% Full Uncut Original + 1-UID-1-Request + Global ☰ Sidebar + Clean Bottom UI)
  * File: /assets/js/security-core.js
  */
 
@@ -70,7 +70,7 @@ googleProvider.setCustomParameters({ prompt: "select_account" });
       return;
     }
 
-    const healKey = "sellgst_v6_8_sw_healed";
+    const healKey = "sellgst_v6_9_sw_healed";
     if (!localStorage.getItem(healKey)) {
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker.getRegistrations().then((regs) => {
@@ -104,6 +104,35 @@ export function fixTopLayoutSpacingGap() {
     main.classList.remove("mt-5");
     main.classList.add("mt-2.5");
   }
+}
+
+/**
+ * Automatically removes the red-marked bottom navigation bar and bottom inline DPDP card
+ * from ALL pages (DPDP Act & Delete Account remain inside the "My Account" modal).
+ */
+export function removeRedundantBottomSections() {
+  try {
+    // 1. Remove mobile floating bottom navigation dock across all pages (since ☰ sidebar has all tools)
+    document.querySelectorAll("nav").forEach((navEl) => {
+      const cls = navEl.className || "";
+      if (cls.includes("fixed") && (cls.includes("bottom-2.5") || cls.includes("bottom-0"))) {
+        navEl.remove();
+      }
+    });
+
+    // 2. Remove the inline bottom "My Personal Data & DPDP Act 2023 Privacy Controls" card from page footers
+    // (Keep it ONLY inside #sellgst-user-account-modal when user clicks "My Account")
+    document.querySelectorAll("section").forEach((secEl) => {
+      if (secEl.closest("#sellgst-user-account-modal")) return;
+      const txt = secEl.textContent || "";
+      if (
+        txt.includes("My Personal Data & DPDP Act 2023 Privacy Controls") ||
+        txt.includes("Logged into Master Admin Console")
+      ) {
+        secEl.remove();
+      }
+    });
+  } catch (_) {}
 }
 
 export const GUEST_PREVIEW_DURATION_MS = 2 * 60 * 1000;
@@ -1246,7 +1275,7 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
             class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono font-bold tracking-wider focus:outline-none focus:ring-2 focus:ring-[#5B2EFF]"
           />
           <p class="text-[10.5px] text-slate-500 mt-1">
-            🔒 Fake UTRs are rejected. Your ID activates only after Admin verifies the 12-digit UTR in bank statement.
+            🔒 1 Request per UID: Submitting updates your single verification request in real-time.
           </p>
         </div>
 
@@ -1313,11 +1342,13 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
       return;
     }
 
-    const uid = AppState.user?.uid || AppState.profile.uid || "seller-" + Date.now();
+    const uid = AppState.user?.uid || AppState.profile.uid || "seller-local-01";
+    const singleRequestId = `req_${uid}`;
     const durationDays = currentPlan === "YEARLY" ? 365 : 30;
     const expectedExpiryISO = new Date(Date.now() + durationDays * 24 * 60 * 60 * 1000).toISOString();
 
     const payload = {
+      id: singleRequestId,
       uid,
       userName: AppState.profile.businessName || AppState.profile.displayName || "S.K.P.S DIGITAL",
       userEmail: AppState.profile.email || AppState.user?.email || "seller@sellgst.pro",
@@ -1356,13 +1387,17 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
     submitBtn.innerHTML = `<span class="animate-spin">⏳</span> Saving & Alerting Admin...`;
 
     localStorage.setItem("sellgst_pending_utr", utrNumber);
-    const localQueue = JSON.parse(localStorage.getItem("sellgst_local_payment_requests") || "[]");
-    localQueue.unshift({ id: "req_" + Date.now(), ...payload });
+
+    // STRICTLY 1 REQUEST PER UID IN LOCAL STORAGE: Filter out any previous request from the same UID
+    let localQueue = JSON.parse(localStorage.getItem("sellgst_local_payment_requests") || "[]");
+    localQueue = localQueue.filter((r) => r.uid !== uid);
+    localQueue.unshift(payload);
     localStorage.setItem("sellgst_local_payment_requests", JSON.stringify(localQueue.slice(0, 50)));
 
+    // STRICTLY 1 REQUEST PER UID IN FIRESTORE: Use deterministic doc(db, "payment_requests", "req_" + uid)
     try {
       if (AppState.user) {
-        await addDoc(collection(db, "payment_requests"), payload);
+        await setDoc(doc(db, "payment_requests", singleRequestId), payload, { merge: true });
         await setDoc(doc(db, "users", uid), { paymentPending: true }, { merge: true });
       }
     } catch (_) {}
@@ -1371,7 +1406,7 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
     renderPendingPaymentBanner();
     closeProPaymentModal();
 
-    showToast("⏳ UTR Submitted! Verification pending until Admin approves.", "warning", 6000);
+    showToast("⏳ UTR Submitted! (1 Active Request for your UID)", "warning", 6000);
 
     if (!waWindow) {
       setTimeout(() => {
@@ -1651,7 +1686,7 @@ function injectGlobalSuperToolsMenu() {
     }
   }
 
-  // 2. If #super-tools-drawer is not already in the HTML (e.g., on sub-pages), inject it into body
+  // 2. Inject #super-tools-drawer if not already in the HTML
   if (!document.getElementById("super-tools-drawer")) {
     const backdrop = document.createElement("div");
     backdrop.id = "super-tools-backdrop";
@@ -1833,7 +1868,6 @@ function injectGlobalSuperToolsMenu() {
     document.body.appendChild(aside);
   }
 
-  // Bind Close Events
   document.getElementById("close-super-tools-btn")?.addEventListener("click", () => closeSuperToolsMenu());
   document.getElementById("super-tools-backdrop")?.addEventListener("click", () => closeSuperToolsMenu());
 }
@@ -1870,7 +1904,7 @@ function injectFloatingAIAssistant() {
 
   const orbWrapper = document.createElement("div");
   orbWrapper.id = "sellgst-ai-orb-wrapper";
-  orbWrapper.className = "fixed bottom-24 lg:bottom-6 right-3.5 z-[9980] flex items-center no-print";
+  orbWrapper.className = "fixed bottom-6 right-3.5 z-[9980] flex items-center no-print";
 
   orbWrapper.innerHTML = `
     <div class="relative flex items-center">
@@ -2205,6 +2239,7 @@ export function initSecurityCore() {
 
 function onDOMReady() {
   fixTopLayoutSpacingGap();
+  removeRedundantBottomSections();
   enforceAuthAndGuestGate();
   injectGlobalSuperToolsMenu();
   syncProDOMElements();
@@ -2283,6 +2318,7 @@ window.SellGSTCore = {
   generateUniqueInvoiceNumber,
   peekCurrentInvoiceNumber,
   init3DTiltCards,
+  removeRedundantBottomSections,
   sanitizeHTML,
   sanitizeCSVCell,
   escapeAttr,
