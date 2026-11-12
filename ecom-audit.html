@@ -134,41 +134,42 @@
   <nav class="lg:hidden fixed bottom-2.5 inset-x-3 bg-white/95 backdrop-blur-xl text-slate-700 rounded-3xl px-2 py-2.5 shadow-2xl border border-indigo-100 z-40 flex items-center justify-around">
     <a href="./app.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
       <span class="text-base">📊</span>
-      <span>Dashboard</span>
+      <span data-i18n="nav_dashboard">Dashboard</span>
     </a>
     <a href="./invoice.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
       <span class="text-base">🧾</span>
-      <span>GST Bill</span>
+      <span data-i18n="nav_invoice">GST Bill</span>
     </a>
     <a href="./ecom-audit.html" class="flex flex-col items-center gap-0.5 text-[#5B2EFF] font-extrabold text-[10px]">
       <span class="text-base">📦</span>
-      <span>Profit &amp; Audit</span>
+      <span data-i18n="nav_audit">Profit &amp; Audit</span>
     </a>
     <a href="./gst-filing.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
       <span class="text-base">🏛️</span>
-      <span>GSTR-1</span>
+      <span data-i18n="nav_gst">GSTR-1</span>
     </a>
     <a href="./qr-studio.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
       <span class="text-base">🔳</span>
-      <span>QR Studio</span>
+      <span data-i18n="nav_qr">QR Studio</span>
     </a>
   </nav>
 
   <!-- MAIN CONTAINER -->
-  <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-3 sm:pt-4 space-y-6 overflow-x-hidden">
+  <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-2 sm:pt-3 space-y-5 overflow-x-hidden">
 
     <!-- CLEAN TOP HEADER BAR (ONLY HOME BUTTON + 7s INSTALL BUTTON + MY ACCOUNT + PRO TIER) -->
-    <header class="bg-white/90 backdrop-blur-xl rounded-3xl border border-white px-4 sm:px-6 py-3 shadow-lg shadow-indigo-500/5 flex flex-wrap items-center justify-between gap-2.5">
+    <header class="bg-white/95 backdrop-blur-xl rounded-3xl border border-white px-4 sm:px-6 py-2.5 shadow-lg shadow-indigo-500/5 flex flex-wrap items-center justify-between gap-2.5">
       <div class="flex items-center gap-2.5 min-w-0">
         <a
           href="./index.html"
+          data-i18n="nav_home"
           class="px-3.5 py-2 rounded-2xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow-sm transition flex items-center gap-1.5 shrink-0"
         >
-          <span>🏠 Home</span>
+          🏠 Home
         </a>
         <div class="min-w-0">
           <h1 class="font-extrabold text-sm sm:text-[15px] text-[#081B4B] truncate">Flipkart, Amazon &amp; Meesho Profit/Loss + RTO Audit</h1>
-          <p class="text-[11px] text-slate-500 truncate">🟢 Green = Profit • 🔴 Red = Loss • 100% Browser RAM CSV Scanner</p>
+          <p class="text-[11px] text-slate-500 truncate">🟢 Green = Profit UP • 🔴 Red = Loss DOWN • Live 3D Gauge &amp; Bars</p>
         </div>
       </div>
 
@@ -176,7 +177,7 @@
         <select
           data-lang-switcher
           aria-label="Language"
-          class="px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none max-w-[92px] sm:max-w-none truncate"
+          class="px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none max-w-[95px] sm:max-w-none truncate"
         ></select>
 
         <!-- 7-SECOND AUTO-HIDING PWA INSTALL BUTTON -->
@@ -186,7 +187,7 @@
           data-pwa-install
           class="relative overflow-hidden px-3 py-1.5 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#081B4B] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap flex items-center gap-1.5"
         >
-          <span>📲 Install App</span>
+          <span data-i18n="install_app_btn">📲 Install App</span>
           <span id="pwa-sec-badge" class="px-1.5 py-0.2 rounded-full bg-white/20 text-[10px] font-mono">7s</span>
           <span class="absolute bottom-0 left-0 h-0.5 bg-[#10E594] pwa-timer-bar"></span>
         </button>
@@ -194,6 +195,7 @@
         <button
           type="button"
           data-open-account
+          data-i18n="nav_account"
           class="px-3 py-1.5 rounded-full bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] text-xs font-extrabold border border-indigo-100 transition whitespace-nowrap"
         >
           👤 My Account
@@ -211,22 +213,21 @@
     </header>
 
     <!-- =================================================================== -->
-    <!-- NEW SECTION 0: CHILD-FRIENDLY ("BACCHA-BACCHA SAMAJH JAYE")         -->
-    <!-- FLIPKART, AMAZON & MEESHO PROFIT & LOSS CALCULATOR (GREEN & RED)    -->
+    <!-- SECTION 0: VISUAL 3D PROFIT vs LOSS CALCULATOR (GREEN 🟢 & RED 🔴)   -->
     <!-- =================================================================== -->
     <section id="profit-loss-calculator-section" class="bento-card p-5 sm:p-6 space-y-5 border-2 border-[#5B2EFF]/20">
 
-      <!-- Title & Simple Explanation -->
+      <!-- Title & Quick Profit / Loss Demo Test Buttons -->
       <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
         <div>
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-extrabold mb-1.5">
-            <span>🟢 PROFIT vs 🔴 LOSS CALCULATOR (FLIPKART • AMAZON • MEESHO)</span>
+            <span data-i18n="pnl_badge">🟢 PROFIT vs 🔴 LOSS CALCULATOR (FLIPKART • AMAZON • MEESHO)</span>
           </div>
-          <h2 class="text-base sm:text-xl font-extrabold text-[#081B4B]">
-            1-Click में देखें: मुझे कितना मुनाफा (Profit 🟢) हुआ और कितना नुकसान (Loss 🔴) हुआ?
+          <h2 data-i18n="pnl_heading" class="text-base sm:text-xl font-extrabold text-[#081B4B]">
+            1-Click Check: See Your Exact Profit (🟢) &amp; Loss (🔴) from Marketplace CSV
           </h2>
-          <p class="text-xs text-slate-600 mt-0.5">
-            बस अपनी <strong>Flipkart, Amazon या Meesho</strong> की CSV फाइल अपलोड करें—हरा रंग (🟢) मतलब फायदा और लाल रंग (🔴) मतलब घाटा!
+          <p data-i18n="pnl_subtext" class="text-xs text-slate-600 mt-0.5">
+            Upload your Flipkart, Amazon or Meesho CSV file — Green (🟢) means Profit UP and Red (🔴) means Loss DOWN!
           </p>
         </div>
 
@@ -234,9 +235,16 @@
           <button
             type="button"
             id="pnl-load-demo-btn"
-            class="px-3.5 py-2 rounded-xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow transition"
+            class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow transition"
           >
-            ⚡ Demo Flipkart/Amazon Data देखें
+            🟢 Test Profit Data
+          </button>
+          <button
+            type="button"
+            id="pnl-test-loss-btn"
+            class="px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs shadow transition"
+          >
+            🔴 Test Loss Data (See Needle Drop)
           </button>
           <button
             type="button"
@@ -261,7 +269,7 @@
           </div>
           <div class="min-w-0 flex-1">
             <div class="text-xs font-extrabold text-[#5B2EFF] uppercase">STEP 1: UPLOAD FLIPKART / AMAZON CSV</div>
-            <div class="text-sm font-extrabold text-[#081B4B] truncate">Order या Payment CSV यहाँ डालें</div>
+            <div data-i18n="pnl_step1_title" class="text-sm font-extrabold text-[#081B4B] truncate">Upload Order or Payment CSV Here</div>
             <div id="pnl-file1-status" class="text-[11px] font-mono text-slate-500 truncate mt-0.5">
               Click to select 1 or multiple .CSV files
             </div>
@@ -269,7 +277,7 @@
           <input type="file" id="pnl-order-csv-input" accept=".csv" multiple class="hidden" />
         </label>
 
-        <!-- Box 2: Optional 2nd Payment CSV if seller has separate Order & Payment files (4 Cols) -->
+        <!-- Box 2: Optional 2nd Payment CSV (4 Cols) -->
         <label
           for="pnl-payment-csv-input"
           class="lg:col-span-4 border-2 border-dashed border-emerald-300 hover:border-emerald-600 bg-emerald-50/40 rounded-2xl p-4 flex items-center gap-3.5 cursor-pointer transition group"
@@ -279,7 +287,7 @@
           </div>
           <div class="min-w-0 flex-1">
             <div class="text-xs font-extrabold text-emerald-700 uppercase">OPTIONAL: 2nd PAYMENT CSV</div>
-            <div class="text-sm font-extrabold text-[#081B4B] truncate">दूसरी Payment फाइल (अगर अलग है)</div>
+            <div data-i18n="pnl_step2_title" class="text-sm font-extrabold text-[#081B4B] truncate">2nd Payment CSV (If Separate)</div>
             <div id="pnl-file2-status" class="text-[11px] font-mono text-slate-500 truncate mt-0.5">
               Auto-matches Order IDs
             </div>
@@ -287,14 +295,14 @@
           <input type="file" id="pnl-payment-csv-input" accept=".csv" multiple class="hidden" />
         </label>
 
-        <!-- Box 3: Default Product Buying Cost (Mera Kharcha ₹) (3 Cols) -->
+        <!-- Box 3: Default Product Buying Cost (3 Cols) -->
         <div class="lg:col-span-3 bg-slate-50 rounded-2xl p-4 border border-slate-200 flex flex-col justify-between">
           <div>
-            <label for="pnl-default-cost-input" class="block text-xs font-extrabold text-[#081B4B]">
-              🏷️ सामान की खरीद कीमत (Default Cost ₹)
+            <label for="pnl-default-cost-input" data-i18n="pnl_cost_label" class="block text-xs font-extrabold text-[#081B4B]">
+              🏷️ Product Buying Cost (Default Cost ₹)
             </label>
-            <p class="text-[10px] text-slate-500 mt-0.5">
-              अगर CSV में Cost न हो, तो 1 पीस का खर्चा:
+            <p data-i18n="pnl_cost_sub" class="text-[10px] text-slate-500 mt-0.5">
+              If Cost is not in CSV, enter 1 unit cost:
             </p>
           </div>
           <div class="flex items-center gap-2 mt-2">
@@ -328,10 +336,10 @@
           <span id="pnl-verdict-icon" class="text-3xl sm:text-4xl">🟢</span>
           <div>
             <div id="pnl-verdict-title" class="text-base sm:text-lg font-black tracking-tight">
-              बधाई हो! आपको कुल ₹2,415.00 का शुद्ध मुनाफा (NET PROFIT) हुआ है!
+              Congratulations! You earned a Net Profit of +₹1,630.00 across your orders!
             </div>
             <div id="pnl-verdict-subtitle" class="text-xs text-emerald-100 font-semibold mt-0.5">
-              कुल 8 ऑर्डर्स में से 5 ऑर्डर्स में मुनाफा (🟢) और 3 ऑर्डर्स में नुकसान (🔴) हुआ है।
+              Out of 8 total orders, 5 orders are in Profit (🟢) and 3 orders are in Loss (🔴).
             </div>
           </div>
         </div>
@@ -344,85 +352,180 @@
         </button>
       </div>
 
+      <!-- ================================================================= -->
+      <!-- NEW VISUAL METER: REAL-TIME 3D SPEEDOMETER GAUGE + CHANNEL BARS   -->
+      <!-- (MOVES UP IN GREEN 🟢 FOR PROFIT, DROPS DOWN IN RED 🔴 FOR LOSS)  -->
+      <!-- ================================================================= -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 bg-slate-50/90 p-4 sm:p-5 rounded-3xl border border-slate-200">
+
+        <!-- Left 5 Cols: Live 3D Profit vs Loss Speedometer (Ghadi) -->
+        <div class="lg:col-span-5 bg-white rounded-2xl p-4 border border-slate-200 text-center flex flex-col justify-between shadow-sm">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-extrabold text-[#081B4B]">Live 3D Profit / Loss Meter</span>
+            <span id="live-meter-direction-pill" class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-mono text-[10px] font-extrabold">
+              ▲ UP (PROFIT)
+            </span>
+          </div>
+
+          <div class="my-2">
+            <svg viewBox="0 0 200 115" class="w-48 h-28 mx-auto overflow-visible">
+              <!-- Left Red Loss Zone Arc -->
+              <path d="M 20 95 A 75 75 0 0 1 100 20" fill="none" stroke="#FECDD3" stroke-width="14" stroke-linecap="round" />
+              <!-- Right Green Profit Zone Arc -->
+              <path d="M 100 20 A 75 75 0 0 1 180 95" fill="none" stroke="#A7F3D0" stroke-width="14" stroke-linecap="round" />
+              <!-- Dynamic Active Fill Arc -->
+              <path id="pnl-gauge-active-arc" d="M 100 20 A 75 75 0 0 1 168 62" fill="none" stroke="#10B981" stroke-width="14" stroke-linecap="round" />
+
+              <!-- Animated Needle (Rotates left to -55deg on Loss, right to +55deg on Profit) -->
+              <g id="pnl-live-needle" transform="rotate(34 100 95)" style="transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);">
+                <polygon id="pnl-live-needle-poly" points="100,95 94,95 100,22 106,95" fill="#10B981" />
+                <circle cx="100" cy="95" r="8" fill="#081B4B" />
+              </g>
+
+              <text x="14" y="112" class="text-[10px] font-extrabold fill-rose-600">🔴 LOSS DOWN</text>
+              <text x="86" y="12" class="text-[9px] font-mono fill-slate-500 font-bold">0%</text>
+              <text x="122" y="112" class="text-[10px] font-extrabold fill-emerald-600">🟢 PROFIT UP</text>
+            </svg>
+          </div>
+
+          <div id="pnl-meter-caption" class="text-xs font-extrabold text-emerald-700">
+            🟢 Meter is UP: 62% Orders Profitable
+          </div>
+        </div>
+
+        <!-- Right 7 Cols: Live Channel Progress Bars (Flipkart, Amazon, Meesho & Overall Win Ratio) -->
+        <div class="lg:col-span-7 bg-white rounded-2xl p-4 border border-slate-200 flex flex-col justify-between space-y-3 shadow-sm">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-extrabold text-[#081B4B]">Live Channel Profit / Loss Progress Bars</span>
+            <span class="text-[11px] font-semibold text-slate-500">Auto-updates from uploaded CSV</span>
+          </div>
+
+          <!-- Bar 1: Overall Profitable Orders % vs Loss Orders % -->
+          <div>
+            <div class="flex justify-between text-xs font-extrabold mb-1">
+              <span id="bar-overall-label" class="text-emerald-700">🟢 Profitable Orders (62%)</span>
+              <span id="bar-overall-loss-label" class="text-rose-600">🔴 Loss Orders (38%)</span>
+            </div>
+            <div class="w-full h-3.5 rounded-full bg-rose-200 overflow-hidden flex">
+              <div id="bar-overall-profit-fill" class="h-full bg-emerald-500 transition-all duration-500" style="width: 62%;"></div>
+            </div>
+          </div>
+
+          <!-- Bar 2: Flipkart Net Profit / Loss Bar -->
+          <div>
+            <div class="flex justify-between text-xs font-bold mb-1">
+              <span class="text-[#081B4B]">🛒 Flipkart Net Result</span>
+              <span id="bar-fk-value" class="font-mono font-extrabold text-emerald-600">+₹420.00 (PROFIT 🟢)</span>
+            </div>
+            <div class="w-full h-2.5 rounded-full bg-slate-100 overflow-hidden">
+              <div id="bar-fk-fill" class="h-full bg-emerald-500 rounded-full transition-all duration-500" style="width: 65%;"></div>
+            </div>
+          </div>
+
+          <!-- Bar 3: Amazon Net Profit / Loss Bar -->
+          <div>
+            <div class="flex justify-between text-xs font-bold mb-1">
+              <span class="text-[#081B4B]">📦 Amazon Net Result</span>
+              <span id="bar-amz-value" class="font-mono font-extrabold text-emerald-600">+₹510.00 (PROFIT 🟢)</span>
+            </div>
+            <div class="w-full h-2.5 rounded-full bg-slate-100 overflow-hidden">
+              <div id="bar-amz-fill" class="h-full bg-emerald-500 rounded-full transition-all duration-500" style="width: 72%;"></div>
+            </div>
+          </div>
+
+          <!-- Bar 4: Meesho Net Profit / Loss Bar -->
+          <div>
+            <div class="flex justify-between text-xs font-bold mb-1">
+              <span class="text-[#081B4B]">🛍️ Meesho Net Result</span>
+              <span id="bar-msh-value" class="font-mono font-extrabold text-emerald-600">+₹880.00 (PROFIT 🟢)</span>
+            </div>
+            <div class="w-full h-2.5 rounded-full bg-slate-100 overflow-hidden">
+              <div id="bar-msh-fill" class="h-full bg-emerald-500 rounded-full transition-all duration-500" style="width: 85%;"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
       <!-- STEP 3: 4 CHILD-FRIENDLY TRAFFIC-LIGHT SUMMARY CARDS -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
         <!-- Card A: Total Bank Settlement -->
         <div class="p-4 rounded-2xl bg-indigo-50/70 border-2 border-indigo-200 flex flex-col justify-between">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-extrabold text-indigo-900">🏦 बैंक में आया पैसा</span>
+            <span data-i18n="pnl_card_bank" class="text-xs font-extrabold text-indigo-900">🏦 Bank Settlement Received</span>
             <span class="px-2 py-0.5 rounded-full bg-indigo-200 text-indigo-900 font-mono text-[10px] font-extrabold" id="pnl-total-orders-badge">8 Orders</span>
           </div>
           <div id="pnl-sum-settlement" class="text-2xl font-black font-mono text-[#081B4B] my-2">
-            ₹5,915.00
+            ₹4,010.00
           </div>
           <div class="text-[11px] text-slate-600 font-semibold flex justify-between border-t border-indigo-200/60 pt-1.5">
-            <span>सामान की कुल लागत (Cost):</span>
-            <span id="pnl-sum-cost" class="font-mono font-bold text-[#081B4B]">₹3,500.00</span>
+            <span data-i18n="pnl_card_cost">Total Product Cost:</span>
+            <span id="pnl-sum-cost" class="font-mono font-bold text-[#081B4B]">₹2,500.00</span>
           </div>
         </div>
 
         <!-- Card B: GREEN PROFIT ORDERS -->
         <div class="p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-400 flex flex-col justify-between shadow-sm">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-extrabold text-emerald-950">🟢 कुल मुनाफा (PROFIT)</span>
+            <span data-i18n="pnl_card_profit" class="text-xs font-extrabold text-emerald-950">🟢 Total Profit</span>
             <span id="pnl-profit-orders-badge" class="px-2.5 py-0.5 rounded-full bg-emerald-600 text-white font-mono text-[10px] font-extrabold">
               ✅ 5 Orders
             </span>
           </div>
           <div id="pnl-sum-profit" class="text-2xl font-black font-mono text-emerald-700 my-2">
-            +₹3,120.00
+            +₹2,515.00
           </div>
-          <div class="text-[11px] text-emerald-800 font-bold border-t border-emerald-200 pt-1.5">
-            ✅ इन ऑर्डर्स में आपको सीधा फायदा हुआ
+          <div data-i18n="pnl_card_profit_sub" class="text-[11px] text-emerald-800 font-bold border-t border-emerald-200 pt-1.5">
+            ✅ Direct profit earned on these orders
           </div>
         </div>
 
         <!-- Card C: RED LOSS ORDERS -->
         <div class="p-4 rounded-2xl bg-rose-50 border-2 border-rose-400 flex flex-col justify-between shadow-sm">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-extrabold text-rose-950">🔴 कुल नुकसान (LOSS)</span>
+            <span data-i18n="pnl_card_loss" class="text-xs font-extrabold text-rose-950">🔴 Total Loss</span>
             <span id="pnl-loss-orders-badge" class="px-2.5 py-0.5 rounded-full bg-rose-600 text-white font-mono text-[10px] font-extrabold">
               ❌ 3 Orders
             </span>
           </div>
           <div id="pnl-sum-loss" class="text-2xl font-black font-mono text-rose-600 my-2">
-            -₹705.00
+            -₹885.00
           </div>
-          <div class="text-[11px] text-rose-800 font-bold border-t border-rose-200 pt-1.5">
-            ❌ RTO शिपिंग, रिटर्न या ज्यादा कमीशन से घाटा
+          <div data-i18n="pnl_card_loss_sub" class="text-[11px] text-rose-800 font-bold border-t border-rose-200 pt-1.5">
+            ❌ Loss due to RTO shipping, returns or high fees
           </div>
         </div>
 
         <!-- Card D: FINAL NET POCKET MONEY (PROFIT - LOSS) -->
         <div id="pnl-net-card" class="p-4 rounded-2xl bg-[#081B4B] text-white border-2 border-[#10E594] flex flex-col justify-between shadow-md">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-extrabold text-[#10E594]">⚖️ जेब में बचा (NET RESULT)</span>
+            <span data-i18n="pnl_card_net" class="text-xs font-extrabold text-[#10E594]">⚖️ Net Pocket Result</span>
             <span id="pnl-margin-badge" class="px-2 py-0.5 rounded-full bg-white/15 text-white font-mono text-[10px] font-extrabold">
-              +40.8% Margin
+              +40.6% Margin
             </span>
           </div>
           <div id="pnl-sum-net" class="text-2xl font-black font-mono text-[#10E594] my-2">
-            +₹2,415.00
+            +₹1,630.00
           </div>
-          <div class="text-[11px] text-indigo-200 font-semibold border-t border-white/15 pt-1.5">
-            मुनाफा 🟢 घटाव नुकसान 🔴 = असली कमाई
+          <div data-i18n="pnl_card_net_sub" class="text-[11px] text-indigo-200 font-semibold border-t border-white/15 pt-1.5">
+            Profit 🟢 minus Loss 🔴 = Real Earnings
           </div>
         </div>
 
       </div>
 
-      <!-- STEP 4: FILTER BUTTONS (ALL / ONLY GREEN PROFIT / ONLY RED LOSS / FLIPKART / AMAZON / MEESHO) -->
+      <!-- STEP 4: FILTER BUTTONS -->
       <div class="flex flex-wrap items-center justify-between gap-2 pt-2">
         <div class="flex flex-wrap items-center gap-1.5">
-          <button type="button" data-pnl-filter="ALL" class="pnl-filter-btn px-3.5 py-1.5 rounded-xl bg-[#081B4B] text-white text-xs font-extrabold shadow-sm">
+          <button type="button" data-pnl-filter="ALL" data-i18n="pnl_filter_all" class="pnl-filter-btn px-3.5 py-1.5 rounded-xl bg-[#081B4B] text-white text-xs font-extrabold shadow-sm">
             All Orders
           </button>
-          <button type="button" data-pnl-filter="PROFIT" class="pnl-filter-btn px-3.5 py-1.5 rounded-xl bg-emerald-100 text-emerald-900 hover:bg-emerald-200 text-xs font-extrabold">
-            🟢 सिर्फ Profit वाले देखें
+          <button type="button" data-pnl-filter="PROFIT" data-i18n="pnl_filter_profit" class="pnl-filter-btn px-3.5 py-1.5 rounded-xl bg-emerald-100 text-emerald-900 hover:bg-emerald-200 text-xs font-extrabold">
+            🟢 Show Only Profit
           </button>
-          <button type="button" data-pnl-filter="LOSS" class="pnl-filter-btn px-3.5 py-1.5 rounded-xl bg-rose-100 text-rose-900 hover:bg-rose-200 text-xs font-extrabold">
-            🔴 सिर्फ Loss वाले देखें
+          <button type="button" data-pnl-filter="LOSS" data-i18n="pnl_filter_loss" class="pnl-filter-btn px-3.5 py-1.5 rounded-xl bg-rose-100 text-rose-900 hover:bg-rose-200 text-xs font-extrabold">
+            🔴 Show Only Loss
           </button>
           <button type="button" data-pnl-filter="FLIPKART" class="pnl-filter-btn px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-indigo-50 text-xs font-bold">
             Flipkart
@@ -436,7 +539,7 @@
         </div>
 
         <span class="text-[11px] font-bold text-slate-500">
-          💡 Tip: नीचे टेबल में <strong>"Mera Kharcha (Cost ₹)"</strong> बदलकर लाइव Profit/Loss देखें!
+          💡 Tip: Change <strong>"Product Cost (₹)"</strong> in any row below to see the 3D Gauge &amp; Profit/Loss update live!
         </span>
       </div>
 
@@ -450,9 +553,9 @@
               <th class="py-3 px-2">Product / SKU</th>
               <th class="py-3 px-2">Order Status</th>
               <th class="py-3 px-2 text-right">Sale Price (MRP)</th>
-              <th class="py-3 px-2 text-right">Meesho/FK/Amz Cut</th>
-              <th class="py-3 px-2 text-right">Bank Mein Aaya (₹)</th>
-              <th class="py-3 px-2 text-center">Mera Kharcha (Cost ₹)</th>
+              <th class="py-3 px-2 text-right">Marketplace Cut</th>
+              <th class="py-3 px-2 text-right">Bank Settlement (₹)</th>
+              <th class="py-3 px-2 text-center">Product Cost (₹)</th>
               <th class="py-3 px-3 text-right">PROFIT 🟢 / LOSS 🔴</th>
             </tr>
           </thead>
@@ -565,33 +668,35 @@
         <!-- 3D Donut Ring & Mini Progress Rings Card (6 Cols) -->
         <div data-3d-tilt class="bento-card p-5 sm:col-span-6 flex flex-col justify-between">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-extrabold text-[#081B4B]">3D Audit Breakdown</span>
-            <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-[#5B2EFF] text-[10px] font-bold">All Tasks</span>
+            <span class="text-xs font-extrabold text-[#081B4B]">3D Audit &amp; Profit Ring</span>
+            <span id="audit-ring-status-pill" class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-extrabold">
+              🟢 Profitable
+            </span>
           </div>
 
           <div class="flex items-center justify-around my-2">
             <div class="relative flex items-center justify-center float-3d">
               <svg viewBox="0 0 110 110" class="w-24 h-24">
                 <circle cx="55" cy="55" r="38" fill="none" stroke="#E2E8F0" stroke-width="12" />
-                <circle cx="55" cy="55" r="38" fill="none" stroke="#5B2EFF" stroke-width="14" stroke-dasharray="150 240" stroke-linecap="round" transform="rotate(-90 55 55)" />
-                <circle cx="55" cy="55" r="38" fill="none" stroke="#10E594" stroke-width="10" stroke-dasharray="65 240" stroke-dashoffset="-155" stroke-linecap="round" transform="rotate(-90 55 55)" />
-                <text id="audit-ring-count" x="55" y="54" text-anchor="middle" class="font-mono font-black text-sm" fill="#081B4B">7</text>
-                <text x="55" y="66" text-anchor="middle" class="font-sans font-bold text-[8px]" fill="#64748B">LEAKS</text>
+                <circle id="audit-donut-primary" cx="55" cy="55" r="38" fill="none" stroke="#10B981" stroke-width="14" stroke-dasharray="150 240" stroke-linecap="round" transform="rotate(-90 55 55)" style="transition: all 0.5s ease;" />
+                <circle id="audit-donut-secondary" cx="55" cy="55" r="38" fill="none" stroke="#F43F5E" stroke-width="10" stroke-dasharray="65 240" stroke-dashoffset="-155" stroke-linecap="round" transform="rotate(-90 55 55)" style="transition: all 0.5s ease;" />
+                <text id="audit-ring-count" x="55" y="54" text-anchor="middle" class="font-mono font-black text-sm" fill="#081B4B">62%</text>
+                <text id="audit-ring-sublabel" x="55" y="66" text-anchor="middle" class="font-sans font-bold text-[8px]" fill="#10B981">PROFIT</text>
               </svg>
             </div>
 
             <div class="space-y-2 text-xs">
               <div class="flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-[#5B2EFF]"></span>
-                <span class="font-bold text-slate-700">RTO Claims (92%)</span>
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <span id="ring-legend-profit" class="font-bold text-slate-700">Profit Orders (62%)</span>
               </div>
               <div class="flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-[#10E594]"></span>
-                <span class="font-bold text-slate-700">Weight Fraud (8%)</span>
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                <span id="ring-legend-loss" class="font-bold text-slate-700">Loss Orders (38%)</span>
               </div>
               <div class="pt-1 border-t border-slate-100">
-                <div class="text-[10px] text-slate-400">Negative Settlement</div>
-                <div id="audit-neg-count" class="font-mono font-extrabold text-indigo-600 text-xs">3 Orders Flagged</div>
+                <div class="text-[10px] text-slate-400">Recoverable RTO/Weight</div>
+                <div id="audit-neg-count" class="font-mono font-extrabold text-indigo-600 text-xs">7 Claims Ready</div>
               </div>
             </div>
           </div>
@@ -631,7 +736,7 @@
         </div>
       </div>
 
-      <!-- Paywall Notice (Automatically disappears when Admin approves UPI) -->
+      <!-- Paywall Notice -->
       <div
         data-pro-lock-overlay
         class="p-4 rounded-2xl bg-gradient-to-r from-[#081B4B] via-[#5B2EFF] to-[#081B4B] text-white flex flex-wrap items-center justify-between gap-3 shadow-lg"
@@ -806,12 +911,13 @@
     </div>
   </div>
 
-  <!-- PROFIT/LOSS CALCULATOR, E-COM AUDIT & LABEL CROPPER SCRIPT -->
+  <!-- PROFIT/LOSS CALCULATOR, LIVE 3D GAUGE SYNC, E-COM AUDIT & LABEL CROPPER SCRIPT -->
   <script type="module">
     import {
       AppState,
       subscribeAppState,
       consumeFreeActionOrLock,
+      syncLiveProfitLossVisuals,
       sanitizeHTML,
       sanitizeCSVCell,
       formatINR,
@@ -837,9 +943,9 @@
     }, 1000);
 
     // =========================================================================
-    // PART A: SUPER-SIMPLE PROFIT & LOSS ENGINE (FLIPKART, AMAZON & MEESHO)
+    // PART A: SUPER-SIMPLE PROFIT & LOSS ENGINE + LIVE 3D GAUGE & BARS
     // =========================================================================
-    const DEMO_PNL_ORDERS = [
+    const DEMO_PNL_PROFIT_ORDERS = [
       {
         orderId: "OD431982736101",
         channel: "Flipkart",
@@ -914,7 +1020,64 @@
       }
     ];
 
-    let pnlOrdersList = [...DEMO_PNL_ORDERS];
+    const DEMO_PNL_LOSS_ORDERS = [
+      {
+        orderId: "OD431982739940",
+        channel: "Flipkart",
+        sku: "RT-AUTO-01 (RoyalTank Kit)",
+        status: "CUSTOMER_RETURN",
+        saleAmount: 1499,
+        settlementAmount: -240,
+        costPrice: 650
+      },
+      {
+        orderId: "402-6619082-5541",
+        channel: "Amazon",
+        sku: "RT-AUTO-01 (RoyalTank Kit)",
+        status: "CUSTOMER_RETURN",
+        saleAmount: 1599,
+        settlementAmount: -285,
+        costPrice: 650
+      },
+      {
+        orderId: "MSH-773190442",
+        channel: "Meesho",
+        sku: "EXT-3PIN-09 (3-Pin Extension)",
+        status: "CUSTOMER_RETURN",
+        saleAmount: 499,
+        settlementAmount: -160,
+        costPrice: 250
+      },
+      {
+        orderId: "OD431982788123",
+        channel: "Flipkart",
+        sku: "LCD-BOX-02 (Smart LCD Pencil Box)",
+        status: "DELIVERED",
+        saleAmount: 349,
+        settlementAmount: 210,
+        costPrice: 320
+      },
+      {
+        orderId: "408-7712904-8821",
+        channel: "Amazon",
+        sku: "EXT-3PIN-09 (3-Pin Extension)",
+        status: "RTO_RETURN",
+        saleAmount: 549,
+        settlementAmount: -135,
+        costPrice: 240
+      },
+      {
+        orderId: "MSH-884120955",
+        channel: "Meesho",
+        sku: "LCD-BOX-02 (Smart LCD Pencil Box)",
+        status: "DELIVERED",
+        saleAmount: 399,
+        settlementAmount: 310,
+        costPrice: 150
+      }
+    ];
+
+    let pnlOrdersList = [...DEMO_PNL_PROFIT_ORDERS];
     let pnlActiveFilter = "ALL";
 
     function computeOrderProfitLoss(row) {
@@ -922,11 +1085,9 @@
       const cost = Number(row.costPrice) || 0;
       const statusUpper = String(row.status || "DELIVERED").toUpperCase();
 
-      // If order is RTO or Returned and settlement is negative (reverse shipping fee deducted by Flipkart/Amazon),
-      // the seller loses the reverse fee + packaging/damage cost. If delivered, Profit = Bank Settlement - Product Cost.
       let netProfitLoss = 0;
       if (statusUpper.includes("RTO") && settlement <= 0) {
-        netProfitLoss = settlement; // Direct shipping/collection penalty loss
+        netProfitLoss = settlement;
       } else {
         netProfitLoss = settlement - cost;
       }
@@ -939,6 +1100,23 @@
       };
     }
 
+    function updateChannelBarUI(barFillId, barValId, netAmount) {
+      const fillEl = document.getElementById(barFillId);
+      const valEl = document.getElementById(barValId);
+      if (!fillEl || !valEl) return;
+
+      const isProf = netAmount >= 0;
+      const absAmt = Math.abs(netAmount);
+      const widthPct = Math.min(96, Math.max(18, Math.round((absAmt / 1500) * 85)));
+
+      fillEl.style.width = `${widthPct}%`;
+      fillEl.className = `h-full rounded-full transition-all duration-500 ${
+        isProf ? "bg-emerald-500" : "bg-rose-500"
+      }`;
+      valEl.textContent = `${isProf ? "+" : "-"}${formatINR(absAmt)} (${isProf ? "PROFIT 🟢" : "LOSS 🔴"})`;
+      valEl.className = `font-mono font-extrabold ${isProf ? "text-emerald-600" : "text-rose-600"}`;
+    }
+
     function renderProfitLossCalculator() {
       const enriched = pnlOrdersList.map(computeOrderProfitLoss);
 
@@ -948,6 +1126,13 @@
       let profitOrderCount = 0;
       let totalLossAmt = 0;
       let lossOrderCount = 0;
+
+      let fkNet = 0;
+      let fkCount = 0;
+      let amzNet = 0;
+      let amzCount = 0;
+      let mshNet = 0;
+      let mshCount = 0;
 
       enriched.forEach((item) => {
         totalSettlement += Number(item.settlementAmount) || 0;
@@ -959,12 +1144,29 @@
           totalLossAmt += Math.abs(item.netProfitLoss);
           lossOrderCount += 1;
         }
+
+        const ch = String(item.channel || "").toUpperCase();
+        if (ch.includes("FLIPKART")) {
+          fkNet += item.netProfitLoss;
+          fkCount += 1;
+        } else if (ch.includes("AMAZON")) {
+          amzNet += item.netProfitLoss;
+          amzCount += 1;
+        } else {
+          mshNet += item.netProfitLoss;
+          mshCount += 1;
+        }
       });
 
       const finalNetResult = totalProfitAmt - totalLossAmt;
-      const marginPct = totalSettlement > 0 ? ((finalNetResult / totalSettlement) * 100).toFixed(1) : "0.0";
+      const isOverallProfit = finalNetResult >= 0;
+      const totalOrders = Math.max(1, enriched.length);
+      const winRatioPct = Math.round((profitOrderCount / totalOrders) * 100);
+      const lossRatioPct = 100 - winRatioPct;
+      const marginPct =
+        Math.abs(totalSettlement) > 0 ? ((finalNetResult / Math.abs(totalSettlement)) * 100).toFixed(1) : "0.0";
 
-      // Update Top 4 Summary Cards
+      // 1. Update Top 4 Summary Cards
       document.getElementById("pnl-total-orders-badge").textContent = `${enriched.length} Orders`;
       document.getElementById("pnl-sum-settlement").textContent = formatINR(totalSettlement);
       document.getElementById("pnl-sum-cost").textContent = formatINR(totalCost);
@@ -976,31 +1178,134 @@
       document.getElementById("pnl-sum-loss").textContent = `-${formatINR(totalLossAmt)}`;
 
       const netEl = document.getElementById("pnl-sum-net");
+      const netCard = document.getElementById("pnl-net-card");
       const marginBadge = document.getElementById("pnl-margin-badge");
       const verdictBanner = document.getElementById("pnl-big-verdict-banner");
       const verdictIcon = document.getElementById("pnl-verdict-icon");
       const verdictTitle = document.getElementById("pnl-verdict-title");
       const verdictSub = document.getElementById("pnl-verdict-subtitle");
 
-      if (finalNetResult >= 0) {
+      if (isOverallProfit) {
         netEl.textContent = `+${formatINR(finalNetResult)}`;
         netEl.className = "text-2xl font-black font-mono text-[#10E594] my-2";
+        netCard.className = "p-4 rounded-2xl bg-[#081B4B] text-white border-2 border-[#10E594] flex flex-col justify-between shadow-md";
         marginBadge.textContent = `+${marginPct}% Profit`;
         verdictBanner.className = "p-4 sm:p-5 rounded-2xl bg-emerald-600 text-white shadow-lg flex flex-wrap items-center justify-between gap-3 transition-all";
         verdictIcon.textContent = "🟢";
-        verdictTitle.textContent = `बधाई हो! आपको कुल +${formatINR(finalNetResult)} का शुद्ध मुनाफा (NET PROFIT) हुआ है!`;
-        verdictSub.textContent = `कुल ${enriched.length} ऑर्डर्स में से ${profitOrderCount} में मुनाफा (🟢 +${formatINR(totalProfitAmt)}) और ${lossOrderCount} में नुकसान (🔴 -${formatINR(totalLossAmt)}) हुआ है।`;
+        verdictTitle.textContent = `Congratulations! You earned a Net Profit of +${formatINR(finalNetResult)} across your orders!`;
+        verdictSub.textContent = `Out of ${enriched.length} total orders, ${profitOrderCount} orders are in Profit (🟢 +${formatINR(totalProfitAmt)}) and ${lossOrderCount} orders are in Loss (🔴 -${formatINR(totalLossAmt)}).`;
       } else {
         netEl.textContent = `-${formatINR(Math.abs(finalNetResult))}`;
         netEl.className = "text-2xl font-black font-mono text-rose-400 my-2";
+        netCard.className = "p-4 rounded-2xl bg-rose-950 text-white border-2 border-rose-500 flex flex-col justify-between shadow-md";
         marginBadge.textContent = `${marginPct}% Loss`;
         verdictBanner.className = "p-4 sm:p-5 rounded-2xl bg-rose-600 text-white shadow-lg flex flex-wrap items-center justify-between gap-3 transition-all";
         verdictIcon.textContent = "🔴";
-        verdictTitle.textContent = `सावधान! आपको कुल -${formatINR(Math.abs(finalNetResult))} का शुद्ध नुकसान (NET LOSS) हो रहा है!`;
-        verdictSub.textContent = `कुल ${enriched.length} ऑर्डर्स में से ${lossOrderCount} ऑर्डर्स में भारी रिटर्न/कमीशन की वजह से घाटा (🔴 -${formatINR(totalLossAmt)}) लगा है।`;
+        verdictTitle.textContent = `Alert! You have a Net Loss of -${formatINR(Math.abs(finalNetResult))} across your uploaded orders!`;
+        verdictSub.textContent = `Out of ${enriched.length} total orders, ${lossOrderCount} orders suffered Loss (🔴 -${formatINR(totalLossAmt)}) due to returns or high fees.`;
       }
 
-      // Filter Table Rows
+      // 2. Animate Live 3D Speedometer Gauge (Needle UP in Green 🟢 vs DOWN in Red 🔴)
+      const needleGroup = document.getElementById("pnl-live-needle");
+      const needlePoly = document.getElementById("pnl-live-needle-poly");
+      const activeArc = document.getElementById("pnl-gauge-active-arc");
+      const dirPill = document.getElementById("live-meter-direction-pill");
+      const meterCaption = document.getElementById("pnl-meter-caption");
+
+      const needleAngle = isOverallProfit
+        ? Math.min(58, Math.max(15, Math.round((winRatioPct / 100) * 58)))
+        : Math.max(-58, Math.min(-22, -Math.round((lossRatioPct / 100) * 58)));
+
+      needleGroup?.setAttribute("transform", `rotate(${needleAngle} 100 95)`);
+      needlePoly?.setAttribute("fill", isOverallProfit ? "#10B981" : "#F43F5E");
+
+      if (activeArc) {
+        activeArc.setAttribute("stroke", isOverallProfit ? "#10B981" : "#F43F5E");
+        activeArc.setAttribute(
+          "d",
+          isOverallProfit ? "M 100 20 A 75 75 0 0 1 168 62" : "M 32 62 A 75 75 0 0 1 100 20"
+        );
+      }
+
+      if (dirPill) {
+        dirPill.textContent = isOverallProfit ? "▲ UP (IN PROFIT 🟢)" : "▼ DOWN (IN LOSS 🔴)";
+        dirPill.className = isOverallProfit
+          ? "px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-mono text-[10px] font-extrabold"
+          : "px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 font-mono text-[10px] font-extrabold";
+      }
+
+      if (meterCaption) {
+        meterCaption.textContent = isOverallProfit
+          ? `🟢 Meter is UP: ${winRatioPct}% Orders Profitable (+${formatINR(finalNetResult)})`
+          : `🔴 Meter is DOWN: ${lossRatioPct}% Orders in Loss (-${formatINR(Math.abs(finalNetResult))})`;
+        meterCaption.className = `text-xs font-extrabold ${
+          isOverallProfit ? "text-emerald-700" : "text-rose-600"
+        }`;
+      }
+
+      // 3. Update Live Progress Bars (Overall + Flipkart + Amazon + Meesho)
+      document.getElementById("bar-overall-label").textContent = `🟢 Profitable Orders (${winRatioPct}%)`;
+      document.getElementById("bar-overall-loss-label").textContent = `🔴 Loss Orders (${lossRatioPct}%)`;
+      document.getElementById("bar-overall-profit-fill").style.width = `${winRatioPct}%`;
+
+      updateChannelBarUI("bar-fk-fill", "bar-fk-value", fkNet);
+      updateChannelBarUI("bar-amz-fill", "bar-amz-value", amzNet);
+      updateChannelBarUI("bar-msh-fill", "bar-msh-value", mshNet);
+
+      // 4. Update 3D Donut Ring Card in Section 1 so it also reflects real Profit/Loss %
+      const donutPrimary = document.getElementById("audit-donut-primary");
+      const donutSecondary = document.getElementById("audit-donut-secondary");
+      const ringCount = document.getElementById("audit-ring-count");
+      const ringSub = document.getElementById("audit-ring-sublabel");
+      const ringStatusPill = document.getElementById("audit-ring-status-pill");
+      const legendProfit = document.getElementById("ring-legend-profit");
+      const legendLoss = document.getElementById("ring-legend-loss");
+
+      const circumference = 238;
+      const profitDash = Math.round((winRatioPct / 100) * circumference);
+      const lossDash = Math.max(0, circumference - profitDash);
+
+      donutPrimary?.setAttribute("stroke-dasharray", `${profitDash} ${circumference}`);
+      donutSecondary?.setAttribute("stroke-dasharray", `${lossDash} ${circumference}`);
+      donutSecondary?.setAttribute("stroke-dashoffset", `-${profitDash}`);
+
+      if (ringCount) ringCount.textContent = isOverallProfit ? `${winRatioPct}%` : `-${lossRatioPct}%`;
+      if (ringSub) {
+        ringSub.textContent = isOverallProfit ? "PROFIT" : "LOSS";
+        ringSub.setAttribute("fill", isOverallProfit ? "#10B981" : "#F43F5E");
+      }
+      if (ringStatusPill) {
+        ringStatusPill.textContent = isOverallProfit ? "🟢 Profitable" : "🔴 In Loss";
+        ringStatusPill.className = isOverallProfit
+          ? "px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-extrabold"
+          : "px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 text-[10px] font-extrabold";
+      }
+      if (legendProfit) legendProfit.textContent = `Profit Orders (${winRatioPct}%)`;
+      if (legendLoss) legendLoss.textContent = `Loss Orders (${lossRatioPct}%)`;
+
+      // 5. Save real metrics to localStorage & sync across `app.html` and `index.html` gauges!
+      localStorage.setItem(
+        "sellgst_live_pnl_metrics",
+        JSON.stringify({
+          totalOrders: enriched.length,
+          profitOrderCount,
+          lossOrderCount,
+          totalSettlement,
+          totalCost,
+          totalProfitAmt,
+          totalLossAmt,
+          finalNetResult,
+          marginPct,
+          meeshoNet: mshNet,
+          meeshoCount: mshCount,
+          fkAmzNet: fkNet + amzNet,
+          fkAmzCount: fkCount + amzCount,
+          updatedAt: Date.now()
+        })
+      );
+      syncLiveProfitLossVisuals();
+
+      // 6. Render Order-Wise Table Rows
       const filteredRows = enriched.filter((r) => {
         if (pnlActiveFilter === "PROFIT") return r.netProfitLoss >= 0;
         if (pnlActiveFilter === "LOSS") return r.netProfitLoss < 0;
@@ -1081,20 +1386,18 @@
 
       syncProDOMElements();
 
-      // Live Cost Price Edit Listener inside Table
       tbody.querySelectorAll("[data-cost-idx]").forEach((inp) => {
         inp.addEventListener("change", (e) => {
           const idx = Number(e.target.getAttribute("data-cost-idx"));
           if (idx >= 0 && pnlOrdersList[idx]) {
             pnlOrdersList[idx].costPrice = Number(e.target.value) || 0;
             renderProfitLossCalculator();
-            showToast("Updated Product Cost & Recalculated Profit/Loss!", "info", 2000);
+            showToast("Updated Cost! 3D Gauge & Profit/Loss Bars updated live!", "info", 2000);
           }
         });
       });
     }
 
-    // Smart Flipkart / Amazon / Meesho CSV Parser & Merger for Profit/Loss
     function parseCleanNumber(val) {
       if (val === null || val === undefined || val === "") return NaN;
       const cleaned = String(val).replace(/[₹$,\s]/g, "").trim();
@@ -1175,7 +1478,6 @@
           r["Cost Price"] ?? r["Product Cost"] ?? r["Buying Price"] ?? r["Mera Kharcha"]
         );
 
-        // Try matching SKU cost from Inventory if not in CSV
         let inferredCost = !isNaN(costParsed) ? costParsed : defaultCost;
         const invMatch = savedInventory.find((inv) =>
           String(sku).toUpperCase().includes(String(inv.sku || "").toUpperCase())
@@ -1212,7 +1514,7 @@
         pnlOrdersList = Array.from(orderMap.values());
         renderProfitLossCalculator();
         showToast(
-          `🟢🔴 Profit & Loss Calculated for ${pnlOrdersList.length} Flipkart/Amazon/Meesho Orders!`,
+          `🟢🔴 Profit/Loss & 3D Gauge updated for ${pnlOrdersList.length} Orders!`,
           "success"
         );
       } else {
@@ -1262,13 +1564,21 @@
       const newCost = Number(document.getElementById("pnl-default-cost-input")?.value) || 0;
       pnlOrdersList = pnlOrdersList.map((o) => ({ ...o, costPrice: newCost }));
       renderProfitLossCalculator();
-      showToast(`Applied ₹${newCost} buying cost to all orders!`, "success");
+      showToast(`Applied ₹${newCost} cost — Watch the 3D Gauge & Bars update!`, "success");
     });
 
+    // Test Profit Scenario Button
     document.getElementById("pnl-load-demo-btn")?.addEventListener("click", () => {
-      pnlOrdersList = [...DEMO_PNL_ORDERS];
+      pnlOrdersList = JSON.parse(JSON.stringify(DEMO_PNL_PROFIT_ORDERS));
       renderProfitLossCalculator();
-      showToast("Loaded Flipkart, Amazon & Meesho Profit/Loss Demo Report!", "info");
+      showToast("🟢 Loaded Profitable Scenario — 3D Gauge & Bars moved UP!", "success");
+    });
+
+    // Test Loss Scenario Button (Demonstrates Needle & Bars dropping to Red)
+    document.getElementById("pnl-test-loss-btn")?.addEventListener("click", () => {
+      pnlOrdersList = JSON.parse(JSON.stringify(DEMO_PNL_LOSS_ORDERS));
+      renderProfitLossCalculator();
+      showToast("🔴 Loaded Loss Scenario — Watch the 3D Gauge & Bars drop to RED!", "warning");
     });
 
     document.getElementById("pnl-download-sample-btn")?.addEventListener("click", () => {
@@ -1439,8 +1749,6 @@
       document.getElementById("audit-rto-amt").textContent = formatINR(rtoSum);
       document.getElementById("audit-weight-count").textContent = `${weightRows.length} Orders`;
       document.getElementById("audit-weight-amt").textContent = formatINR(weightSum);
-      const ringCount = document.getElementById("audit-ring-count");
-      if (ringCount) ringCount.textContent = String(currentAuditRows.length);
 
       const displaySlice = filtered.slice(0, 200);
 
@@ -1535,7 +1843,6 @@
     });
 
     function processParsedRows(rows = []) {
-      // Also feed uploaded CSV into Profit/Loss Calculator automatically!
       mergeAndProcessProfitLossCSVRows(rows, false);
 
       const parsedLeaks = [];
@@ -1741,7 +2048,6 @@
         }
       }
 
-      // Stamp High-Contrast Pick-List Footer at bottom of 4x6 Label
       ctx.fillStyle = "#081B4B";
       ctx.fillRect(14, canvas.height - 68, canvas.width - 28, 52);
       ctx.fillStyle = "#10E594";
@@ -1798,4 +2104,4 @@
     scheduleLabelRedraw();
   </script>
 </body>
-</html>
+  </html>
