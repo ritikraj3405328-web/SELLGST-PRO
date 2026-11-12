@@ -277,14 +277,24 @@
 
               <div>
                 <label data-i18n="password_label" class="block text-[11px] font-bold text-slate-500">Password</label>
-                <input
-                  type="password"
-                  id="signup-password"
-                  required
-                  minlength="6"
-                  placeholder="••••••••••••••"
-                  class="white-line-input tracking-widest"
-                />
+                <div class="relative flex items-center">
+                  <input
+                    type="password"
+                    id="signup-password"
+                    required
+                    minlength="6"
+                    placeholder="••••••••••••••"
+                    class="white-line-input tracking-widest pr-16"
+                  />
+                  <button
+                    type="button"
+                    data-toggle-password="signup-password"
+                    aria-label="Show or Hide Password"
+                    class="absolute right-0 px-2.5 py-1 rounded-full bg-slate-100 hover:bg-indigo-50 text-[#071C50] text-[11px] font-extrabold border border-slate-200 transition select-none"
+                  >
+                    👁️ Show
+                  </button>
+                </div>
               </div>
 
               <div>
@@ -430,14 +440,24 @@
 
                 <div>
                   <label data-i18n="password_label" class="block text-xs font-semibold text-indigo-200">Password</label>
-                  <input
-                    type="password"
-                    id="login-password"
-                    required
-                    minlength="6"
-                    placeholder="••••••••••••••"
-                    class="navy-line-input tracking-widest"
-                  />
+                  <div class="relative flex items-center">
+                    <input
+                      type="password"
+                      id="login-password"
+                      required
+                      minlength="6"
+                      placeholder="••••••••••••••"
+                      class="navy-line-input tracking-widest pr-16"
+                    />
+                    <button
+                      type="button"
+                      data-toggle-password="login-password"
+                      aria-label="Show or Hide Password"
+                      class="absolute right-0 px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-[#10E594] text-[11px] font-extrabold border border-white/20 transition select-none"
+                    >
+                      👁️ Show
+                    </button>
+                  </div>
                 </div>
 
                 <div class="flex items-center justify-between pt-2">
@@ -591,6 +611,27 @@
     } from "./assets/js/security-core.js";
 
     init3DTiltCards();
+
+    // =========================================================================
+    // 0. 1-CLICK SHOW / HIDE PASSWORD TOGGLE (BOTH SIGNUP & LOGIN)
+    // =========================================================================
+    document.querySelectorAll("[data-toggle-password]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const targetId = btn.getAttribute("data-toggle-password");
+        const passInput = document.getElementById(targetId);
+        if (!passInput) return;
+
+        if (passInput.type === "password") {
+          passInput.type = "text";
+          passInput.classList.remove("tracking-widest");
+          btn.textContent = "🙈 Hide";
+        } else {
+          passInput.type = "password";
+          passInput.classList.add("tracking-widest");
+          btn.textContent = "👁️ Show";
+        }
+      });
+    });
 
     let redirectTimer = null;
     const stageViewport = document.getElementById("panel-split-auth");
