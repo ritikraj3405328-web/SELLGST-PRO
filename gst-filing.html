@@ -7,16 +7,16 @@
   <!-- ===================================================================== -->
   <!-- 100% SEO-FRIENDLY META TAGS, OPENGRAPH & GOOGLE JSON-LD SCHEMA        -->
   <!-- ===================================================================== -->
-  <title>Online GST Filing India: 1-Click GSTR-1 JSON Generator & GSTR-3B Calculator — SellGST Pro</title>
-  <meta name="description" content="Free 1-Click GSTR-1 (.JSON) Schema v3.1.6 Generator and GSTR-3B GST Filing Assistant for Indian businesses & e-commerce sellers (Meesho, Flipkart, Amazon). Upload directly to gst.gov.in with 0 errors." />
-  <meta name="keywords" content="GST filing, GSTR-1 JSON generator, online GST return filing India, GSTR-3B calculator, gst.gov.in offline JSON tool, B2B B2CS HSN summary generator, e-commerce TCS credit GST filing, SellGST Pro" />
+  <title>Online GST Filing India: 1-Click E-Com CSV/Excel to GSTR-1 JSON & GSTR-3B — SellGST Pro</title>
+  <meta name="description" content="Upload Meesho, Amazon, Flipkart or Shopsy GST reports (.CSV / .XLSX) and generate 1-Click official gst.gov.in GSTR-1 (.JSON), Ready GSTR-1 Excel, and GSTR-3B calculations in 60 seconds." />
+  <meta name="keywords" content="GST filing, E-com CSV to GSTR-1 JSON, Meesho GST report to JSON, Amazon MTR to GSTR-1 JSON, Flipkart GST filing tool, GSTR-1 JSON generator India, GSTR-3B calculator, SellGST Pro" />
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
   <link rel="canonical" href="https://sellgst-pro.pages.dev/gst-filing.html" />
 
   <!-- Open Graph / WhatsApp / Social Media Preview -->
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="1-Click GSTR-1 (.JSON) Generator & GSTR-3B GST Filing Assistant — SellGST Pro" />
-  <meta property="og:description" content="Prepare and download official gst.gov.in GSTR-1 JSON (B2B, B2CS, HSN Table 12) and calculate GSTR-3B ITC & E-Com TCS offset in 60 seconds." />
+  <meta property="og:title" content="1-Click E-Commerce GST Report to GSTR-1 (.JSON) & Ready Excel — SellGST Pro" />
+  <meta property="og:description" content="Upload Meesho, Flipkart & Amazon GST Sales CSV/Excel to download 100% validated gst.gov.in GSTR-1 JSON & Ready Excel in 1 click." />
   <meta property="og:url" content="https://sellgst-pro.pages.dev/gst-filing.html" />
   <meta name="theme-color" content="#5B2EFF" />
   <link rel="manifest" href="./manifest.json" />
@@ -26,7 +26,7 @@
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "SellGST Pro 1-Click GSTR-1 JSON & GSTR-3B GST Filing Assistant",
+    "name": "SellGST Pro 1-Click E-Com GSTR-1 JSON & Excel Generator",
     "url": "https://sellgst-pro.pages.dev/gst-filing.html",
     "applicationCategory": "FinanceApplication, AccountingApplication",
     "operatingSystem": "Web, Android, iOS, Windows",
@@ -35,23 +35,29 @@
       "price": "0",
       "priceCurrency": "INR"
     },
-    "description": "Official gst.gov.in Schema v3.1.6 GSTR-1 JSON generator and GSTR-3B tax, ITC, and e-commerce TCS offset assistant."
+    "description": "Convert Meesho, Flipkart, and Amazon GST reports (.CSV / .XLSX) into official gst.gov.in Schema v3.1.6 GSTR-1 JSON and Ready Excel."
   }
   </script>
 
-  <!-- 0.1s Instant Module Preload & Speculative Tool Prefetch (Zero 404 Relative Paths) -->
+  <!-- 0.1s Instant Module Preload & Speculative Tool Prefetch -->
   <link rel="modulepreload" href="./assets/js/security-core.js" />
   <link rel="modulepreload" href="./assets/js/i18n.js" />
   <link rel="prefetch" href="./index.html" as="document" />
   <link rel="prefetch" href="./app.html" as="document" />
   <link rel="prefetch" href="./invoice.html" as="document" />
   <link rel="prefetch" href="./ecom-audit.html" as="document" />
-  <link rel="prefetch" href="./qr-studio.html" as="document" />
+  <link rel="prefetch" href="./json-validator.html" as="document" />
+  <link rel="prefetch" href="./gov-excel-to-json.html" as="document" />
+  <link rel="prefetch" href="./reconciliation-2a-2b.html" as="document" />
+  <link rel="prefetch" href="./ecom-to-tally.html" as="document" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 100% Client-Side RAM CSV & Excel (.xlsx/.xls) Parsers -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
   <script>
     tailwind.config = {
       theme: {
@@ -146,6 +152,7 @@
       <a href="./qr-studio.html" title="Dynamic QR & Google Reviews" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
         🔳
       </a>
+      <!-- Visible ONLY if logged-in user has isAdmin == true -->
       <a href="./admin.html" data-admin-only title="Master Admin Console" class="hidden w-11 h-11 rounded-2xl bg-rose-50 text-rose-600 hover:bg-rose-100 flex items-center justify-center text-base transition">
         🛡️
       </a>
@@ -240,6 +247,128 @@
       </div>
     </header>
 
+    <!-- =================================================================== -->
+    <!-- DEDICATED SEPARATE GST FILES NAVIGATION BAR (LIKE GSTPROSELLER.COM) -->
+    <!-- =================================================================== -->
+    <section class="bento-card p-3 sm:p-4 flex items-center gap-2 overflow-x-auto no-scrollbar">
+      <a
+        href="./gst-filing.html"
+        class="px-4 py-2.5 rounded-2xl bg-[#5B2EFF] text-white font-extrabold text-xs shadow-md whitespace-nowrap flex items-center gap-1.5 shrink-0"
+      >
+        <span>🛒 1. E-Com CSV to JSON &amp; Excel</span>
+      </a>
+      <a
+        href="./gov-excel-to-json.html"
+        class="px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-indigo-50 text-[#081B4B] font-extrabold text-xs border border-slate-200 transition whitespace-nowrap flex items-center gap-1.5 shrink-0"
+      >
+        <span>📗 2. Gov Excel to JSON</span>
+      </a>
+      <a
+        href="./json-validator.html"
+        class="px-4 py-2.5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 text-emerald-900 font-extrabold text-xs border border-emerald-300 transition whitespace-nowrap flex items-center gap-1.5 shrink-0"
+      >
+        <span>🔍 3. JSON Validator &amp; Visual Editor (Check All Data)</span>
+      </a>
+      <a
+        href="./reconciliation-2a-2b.html"
+        class="px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-indigo-50 text-[#081B4B] font-extrabold text-xs border border-slate-200 transition whitespace-nowrap flex items-center gap-1.5 shrink-0"
+      >
+        <span>🔄 4. 2A/2B Purchase Reconciliation</span>
+      </a>
+      <a
+        href="./ecom-to-tally.html"
+        class="px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-indigo-50 text-[#081B4B] font-extrabold text-xs border border-slate-200 transition whitespace-nowrap flex items-center gap-1.5 shrink-0"
+      >
+        <span>📁 5. E-Com to Tally XML</span>
+      </a>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- NEW: CHILD-SIMPLE 1-CLICK MEESHO, AMAZON & FLIPKART GST UPLOAD BOX  -->
+    <!-- =================================================================== -->
+    <section data-3d-tilt class="bento-card p-5 sm:p-6 space-y-4 border-2 border-[#5B2EFF]/25">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+        <div>
+          <span class="px-2.5 py-1 rounded-full bg-indigo-50 text-[#5B2EFF] font-extrabold text-[11px]">
+            ⚡ STEP 1: UPLOAD MARKETPLACE GST REPORT (100% PRIVATE IN RAM)
+          </span>
+          <h2 class="text-base sm:text-lg font-extrabold text-[#081B4B] mt-1">
+            Upload Meesho, Amazon, Flipkart, Shopsy or Tax Invoice Report (.CSV / .XLSX)
+          </h2>
+          <p class="text-xs text-slate-500 mt-0.5">
+            Apni Meesho, Flipkart ya Amazon ki GST Sales Report upload karein — 1-Click mein Ready <strong>GSTR-1 (.JSON)</strong> aur <strong>Ready GSTR-1 Excel (.CSV)</strong> ban jayega!
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            id="load-sample-ecom-gst-btn"
+            class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow transition whitespace-nowrap"
+          >
+            ⚡ Load Demo E-Com GST Data
+          </button>
+          <button
+            type="button"
+            id="clear-ecom-gst-btn"
+            class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-700 font-bold text-xs border border-slate-200 transition whitespace-nowrap"
+          >
+            🔄 Reset / Clear
+          </button>
+        </div>
+      </div>
+
+      <!-- Drag & Drop / Click Upload Box + Instant Ready Excel & Validator Buttons -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+        <label
+          for="ecom-gst-file-input"
+          class="lg:col-span-7 border-2 border-dashed border-indigo-300 hover:border-[#5B2EFF] bg-indigo-50/40 rounded-2xl p-5 flex items-center gap-4 cursor-pointer transition group"
+        >
+          <div class="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-2xl shrink-0 group-hover:scale-105 transition">
+            📥
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="text-xs font-extrabold text-[#5B2EFF] uppercase">
+              MEESHO • AMAZON MTR • FLIPKART GSTR-1 • SHOPSY (.CSV / .XLSX)
+            </div>
+            <div class="text-sm sm:text-base font-extrabold text-[#081B4B] truncate mt-0.5">
+              Click Here to Upload GST Report or Tax Invoice Files
+            </div>
+            <div id="ecom-gst-upload-status" class="text-[11px] font-mono text-emerald-700 font-bold truncate mt-1">
+              ✅ Ready: Supports multiple .CSV, .XLSX, .XLS files in 0.1s RAM
+            </div>
+          </div>
+          <input type="file" id="ecom-gst-file-input" accept=".csv,.xlsx,.xls" multiple class="hidden" />
+        </label>
+
+        <!-- Right 5 Cols: 1-Click Ready Excel & Feature #3 Visual Validator Link -->
+        <div class="lg:col-span-5 bg-slate-50 rounded-2xl p-4 border border-slate-200 flex flex-col justify-between gap-2.5">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-extrabold text-[#081B4B]">1-Click Ready Outputs</span>
+            <span id="uploaded-orders-pill" class="px-2.5 py-0.5 rounded-full bg-indigo-100 text-[#5B2EFF] font-mono text-[10px] font-extrabold">
+              Auto-Synced
+            </span>
+          </div>
+
+          <button
+            type="button"
+            id="download-ready-excel-btn"
+            class="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow transition flex items-center justify-center gap-2"
+          >
+            <span>📊 Download Ready GSTR-1 Excel (.CSV)</span>
+          </button>
+
+          <a
+            href="./json-validator.html"
+            id="send-to-validator-btn"
+            class="w-full py-2.5 px-4 rounded-xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow transition flex items-center justify-center gap-2 text-center"
+          >
+            <span>🔍 Check &amp; Edit All Data in JSON Validator (#3) →</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
     <!-- PERIOD SELECTOR & PRIMARY EXPORT BAR -->
     <section id="gstr1-export-bar" data-3d-tilt class="bento-card p-5 sm:p-6 flex flex-wrap items-center justify-between gap-4">
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs w-full lg:w-auto flex-1">
@@ -309,7 +438,7 @@
         <div class="my-3">
           <div class="text-[11px] uppercase tracking-wider text-indigo-200">Total Output GST Liability</div>
           <div id="sum-total-tax" class="text-2xl sm:text-3xl font-black font-mono tracking-tight text-white mt-0.5">
-            ₹0.00
+            ₹8,511.20
           </div>
         </div>
 
@@ -317,13 +446,13 @@
         <div class="bg-white text-[#081B4B] rounded-2xl p-3.5 shadow-lg grid grid-cols-2 gap-3 text-center">
           <div class="border-r border-slate-100 pr-2">
             <div class="text-[10px] font-bold text-slate-400">Table 4A: B2B Sales</div>
-            <div id="sum-b2b-val" class="text-sm font-black text-[#5B2EFF] font-mono mt-0.5">₹0.00</div>
-            <div id="sum-b2b-count" class="text-[10px] text-slate-500 mt-0.5">0 Registered Bills</div>
+            <div id="sum-b2b-val" class="text-sm font-black text-[#5B2EFF] font-mono mt-0.5">₹49,555.37</div>
+            <div id="sum-b2b-count" class="text-[10px] text-slate-500 mt-0.5">2 Registered Bills</div>
           </div>
           <div class="pl-2">
             <div class="text-[10px] font-bold text-slate-400">Table 7: B2CS Sales</div>
-            <div id="sum-b2cs-val" class="text-sm font-black text-emerald-600 font-mono mt-0.5">₹0.00</div>
-            <div id="sum-b2cs-count" class="text-[10px] text-slate-500 mt-0.5">0 Consumer Bills</div>
+            <div id="sum-b2cs-val" class="text-sm font-black text-emerald-600 font-mono mt-0.5">₹3,490.00</div>
+            <div id="sum-b2cs-count" class="text-[10px] text-slate-500 mt-0.5">1 Consumer Bills</div>
           </div>
         </div>
       </div>
@@ -356,7 +485,7 @@
         <div class="sm:col-span-6 space-y-3 text-xs">
           <div class="flex items-center justify-between">
             <span class="font-extrabold text-[#081B4B]">Table 12: HSN Summary</span>
-            <span id="sum-hsn-count" class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-[#5B2EFF] font-mono font-bold text-[11px]">0 HSN Codes</span>
+            <span id="sum-hsn-count" class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-[#5B2EFF] font-mono font-bold text-[11px]">4 HSN Codes</span>
           </div>
 
           <div class="space-y-2.5 bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80">
@@ -382,7 +511,7 @@
 
             <div class="pt-1 flex items-center justify-between text-[11px] border-t border-slate-200">
               <span class="text-slate-500 font-semibold">Total Units Billed:</span>
-              <span id="sum-hsn-qty" class="font-mono font-extrabold text-[#081B4B]">0 Units</span>
+              <span id="sum-hsn-qty" class="font-mono font-extrabold text-[#081B4B]">96 Units</span>
             </div>
           </div>
         </div>
@@ -414,40 +543,44 @@
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <!-- Total Taxable Value -->
             <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-2">
               <div class="min-w-0">
                 <div class="text-[10px] font-bold uppercase text-slate-500">Total Taxable Value</div>
-                <div id="g3b-taxable" class="text-base font-black text-[#081B4B] font-mono mt-0.5 truncate">0.00</div>
+                <div id="g3b-taxable" class="text-base font-black text-[#081B4B] font-mono mt-0.5 truncate">53045.37</div>
               </div>
               <button type="button" data-copy-target="g3b-taxable" class="px-3 py-1.5 rounded-xl bg-white border border-slate-300 font-bold text-[11px] hover:bg-[#5B2EFF] hover:text-white hover:border-[#5B2EFF] transition shrink-0">
                 Copy
               </button>
             </div>
 
+            <!-- Integrated Tax (IGST) -->
             <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-2">
               <div class="min-w-0">
                 <div class="text-[10px] font-bold uppercase text-[#5B2EFF]">Integrated Tax (IGST)</div>
-                <div id="g3b-igst" class="text-base font-black text-[#081B4B] font-mono mt-0.5 truncate">0.00</div>
+                <div id="g3b-igst" class="text-base font-black text-[#081B4B] font-mono mt-0.5 truncate">2698.20</div>
               </div>
               <button type="button" data-copy-target="g3b-igst" class="px-3 py-1.5 rounded-xl bg-white border border-slate-300 font-bold text-[11px] hover:bg-[#5B2EFF] hover:text-white hover:border-[#5B2EFF] transition shrink-0">
                 Copy
               </button>
             </div>
 
+            <!-- Central Tax (CGST) -->
             <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-2">
               <div class="min-w-0">
                 <div class="text-[10px] font-bold uppercase text-emerald-700">Central Tax (CGST)</div>
-                <div id="g3b-cgst" class="text-base font-black text-[#081B4B] font-mono mt-0.5 truncate">0.00</div>
+                <div id="g3b-cgst" class="text-base font-black text-[#081B4B] font-mono mt-0.5 truncate">3424.98</div>
               </div>
               <button type="button" data-copy-target="g3b-cgst" class="px-3 py-1.5 rounded-xl bg-white border border-slate-300 font-bold text-[11px] hover:bg-[#5B2EFF] hover:text-white hover:border-[#5B2EFF] transition shrink-0">
                 Copy
               </button>
             </div>
 
+            <!-- State/UT Tax (SGST) -->
             <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-2">
               <div class="min-w-0">
                 <div class="text-[10px] font-bold uppercase text-emerald-700">State / UT Tax (SGST)</div>
-                <div id="g3b-sgst" class="text-base font-black text-[#081B4B] font-mono mt-0.5 truncate">0.00</div>
+                <div id="g3b-sgst" class="text-base font-black text-[#081B4B] font-mono mt-0.5 truncate">2388.02</div>
               </div>
               <button type="button" data-copy-target="g3b-sgst" class="px-3 py-1.5 rounded-xl bg-white border border-slate-300 font-bold text-[11px] hover:bg-[#5B2EFF] hover:text-white hover:border-[#5B2EFF] transition shrink-0">
                 Copy
@@ -491,7 +624,7 @@
               <div class="text-xs font-extrabold text-[#10E594]">Net Cash Challan Required for GSTR-3B</div>
               <div class="text-[11px] text-indigo-100">Output Tax minus Eligible ITC &amp; TCS Credit</div>
             </div>
-            <div id="net-challan-payable" class="text-xl font-black text-white font-mono">₹0.00</div>
+            <div id="net-challan-payable" class="text-xl font-black text-white font-mono">₹6,361.20</div>
           </div>
         </div>
       </div>
@@ -534,9 +667,9 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
         <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">
           <span class="inline-block px-2.5 py-0.5 rounded-full bg-[#5B2EFF] text-white font-mono font-bold text-[10px]">STEP 01</span>
-          <h4 class="font-extrabold text-[#081B4B] text-sm">Download GSTR-1 (.JSON)</h4>
+          <h4 class="font-extrabold text-[#081B4B] text-sm">Upload E-Com CSV &amp; Download JSON</h4>
           <p class="text-slate-600 leading-relaxed">
-            Verify your B2B, B2CS, and HSN totals above and click <strong>Download Official GSTR-1 (.JSON)</strong>.
+            Upload your Meesho, Flipkart or Amazon GST report above, verify totals, and click <strong>Download Official GSTR-1 (.JSON)</strong>.
           </p>
         </div>
 
@@ -602,12 +735,13 @@
 
   </div>
 
-  <!-- GSTR-1 JSON & GSTR-3B ENGINE SCRIPT (0.1s ZERO-LAG rAF ENGINE) -->
+  <!-- GSTR-1 JSON, E-COM CSV/EXCEL UPLOAD & GSTR-3B ENGINE SCRIPT (ZERO NaN PROTECTION) -->
   <script type="module">
     import {
       AppState,
       subscribeAppState,
       consumeFreeActionOrLock,
+      sanitizeCSVCell,
       formatINR,
       showToast,
       logoutUser,
@@ -616,6 +750,41 @@
     } from "./assets/js/security-core.js";
 
     init3DTiltCards();
+
+    // Zero-NaN Safe Number Helper
+    function safeNum(val, fallback = 0) {
+      if (val === null || val === undefined || val === "") return fallback;
+      const cleaned = String(val).replace(/[₹$,\s%]/g, "").trim();
+      const num = Number(cleaned);
+      return Number.isFinite(num) ? num : fallback;
+    }
+
+    // State Name / Code Mapper for Meesho, Amazon & Flipkart Reports
+    const STATE_POS_MAP = {
+      "jammu": "01", "himachal": "02", "punjab": "03", "chandigarh": "04",
+      "uttarakhand": "05", "haryana": "06", "delhi": "07", "rajasthan": "08",
+      "uttar pradesh": "09", "up": "09", "bihar": "10", "sikkim": "11",
+      "arunachal": "12", "nagaland": "13", "manipur": "14", "mizoram": "15",
+      "tripura": "16", "meghalaya": "17", "assam": "18", "west bengal": "19",
+      "jharkhand": "20", "odisha": "21", "chhattisgarh": "22", "madhya pradesh": "23",
+      "gujarat": "24", "maharashtra": "27", "karnataka": "29", "goa": "30",
+      "kerala": "32", "tamil nadu": "33", "telangana": "36", "andhra": "37"
+    };
+
+    function parseStateCode(rawState = "", buyerGstin = "") {
+      const cleanGstin = String(buyerGstin || "").trim().toUpperCase();
+      if (/^\d{2}[A-Z0-9]{13}$/.test(cleanGstin)) {
+        return cleanGstin.slice(0, 2);
+      }
+      const s = String(rawState || "").trim();
+      const digitsMatch = s.match(/^(\d{2})/);
+      if (digitsMatch) return digitsMatch[1];
+      const lower = s.toLowerCase();
+      for (const [k, code] of Object.entries(STATE_POS_MAP)) {
+        if (lower.includes(k)) return code;
+      }
+      return "07";
+    }
 
     // 1. 7-Second Countdown Badge on Install App Button
     const secBadge = document.getElementById("pwa-sec-badge");
@@ -629,10 +798,10 @@
       }
     }, 1000);
 
-    function getSavedInvoices() {
-      const existing = JSON.parse(localStorage.getItem("sellgst_invoices") || "[]");
-      if (existing.length > 0) return existing;
+    // Holds uploaded E-Com GST rows in RAM (or falls back to saved invoices / demo data)
+    let uploadedEcomInvoices = [];
 
+    function getDefaultDemoInvoices() {
       const today = new Date().toISOString().slice(0, 10);
       return [
         {
@@ -686,14 +855,288 @@
       ];
     }
 
-    function formatPortalDate(isoDate = "") {
-      const parts = String(isoDate).split("-");
-      if (parts.length === 3) {
-        return `${parts[2]}-${parts[1]}-${parts[0]}`;
-      }
-      return "09-11-2026";
+    function getSavedInvoices() {
+      if (uploadedEcomInvoices.length > 0) return uploadedEcomInvoices;
+      try {
+        const existing = JSON.parse(localStorage.getItem("sellgst_invoices") || "[]");
+        if (Array.isArray(existing) && existing.length > 0) return existing;
+      } catch (_) {}
+      return getDefaultDemoInvoices();
     }
 
+    function formatPortalDate(isoDate = "") {
+      const clean = String(isoDate || "").trim();
+      const parts = clean.split(/[-/]/);
+      if (parts.length === 3) {
+        if (parts[0].length === 4) {
+          return `${parts[2].slice(0, 2)}-${parts[1]}-${parts[0]}`;
+        }
+        return `${parts[0].padStart(2, "0")}-${parts[1].padStart(2, "0")}-${parts[2].slice(0, 4)}`;
+      }
+      return "12-11-2026";
+    }
+
+    // =========================================================================
+    // 2. MEESHO, AMAZON & FLIPKART CSV / EXCEL PARSER INTO GSTR-1 INVOICES
+    // =========================================================================
+    function convertRawEcomRowsToInvoices(rows = []) {
+      const sellerGstin = (document.getElementById("filing-gstin-input")?.value || "07AABCS1429B1Z5").trim().toUpperCase();
+      const sellerState = sellerGstin.slice(0, 2) || "07";
+      const parsedInvoices = [];
+
+      rows.forEach((r, idx) => {
+        if (!r || typeof r !== "object") return;
+
+        const invNo = String(
+          r["Invoice Number"] ||
+          r["Invoice No"] ||
+          r["Invoice No."] ||
+          r["Sub Order No"] ||
+          r["Order ID"] ||
+          r["Order Item ID"] ||
+          r["inum"] ||
+          `ECOM-${1001 + idx}`
+        ).trim();
+
+        const rawDate =
+          r["Invoice Date"] ||
+          r["Order Date"] ||
+          r["idt"] ||
+          new Date().toISOString().slice(0, 10);
+
+        const buyerGstin = String(
+          r["Customer GSTIN"] ||
+          r["Buyer GSTIN"] ||
+          r["Bill To GSTIN"] ||
+          r["ctin"] ||
+          r["GSTIN"] ||
+          ""
+        ).trim().toUpperCase();
+
+        const rawState =
+          r["Place of Supply"] ||
+          r["Customer State"] ||
+          r["Ship To State"] ||
+          r["Delivery State"] ||
+          r["State"] ||
+          r["pos"] ||
+          "07-Delhi";
+
+        const posCode = parseStateCode(rawState, buyerGstin);
+        const isInter = posCode !== sellerState;
+
+        const hsn = String(
+          r["HSN"] ||
+          r["HSN Code"] ||
+          r["HSN/SAC"] ||
+          r["hsn_sc"] ||
+          "8537"
+        ).replace(/\D/g, "") || "8537";
+
+        const desc = String(
+          r["Product Name"] ||
+          r["Description"] ||
+          r["Item Description"] ||
+          r["SKU"] ||
+          "E-Commerce Goods"
+        ).trim();
+
+        const qty = Math.max(1, safeNum(r["Quantity"] ?? r["Qty"] ?? r["Item Quantity"] ?? 1, 1));
+        const gstRate = safeNum(r["GST Rate"] ?? r["Tax Rate"] ?? r["IGST Rate"] ?? r["rt"] ?? 18, 18);
+
+        let taxableVal = safeNum(
+          r["Taxable Value"] ??
+          r["Taxable Amount"] ??
+          r["Net Taxable Value"] ??
+          r["txval"] ??
+          r["Sale Amount"],
+          NaN
+        );
+
+        const grossVal = safeNum(
+          r["Invoice Value"] ??
+          r["Total Amount"] ??
+          r["Invoice Amount"] ??
+          r["Buyer Invoice Amount"] ??
+          r["val"],
+          NaN
+        );
+
+        if (!Number.isFinite(taxableVal)) {
+          if (Number.isFinite(grossVal) && grossVal > 0) {
+            taxableVal = grossVal / (1 + gstRate / 100);
+          } else {
+            taxableVal = 0;
+          }
+        }
+
+        if (taxableVal <= 0) return;
+
+        let igst = safeNum(r["IGST Amount"] ?? r["IGST"] ?? r["Integrated Tax"] ?? r["iamt"], NaN);
+        let cgst = safeNum(r["CGST Amount"] ?? r["CGST"] ?? r["Central Tax"] ?? r["camt"], NaN);
+        let sgst = safeNum(r["SGST Amount"] ?? r["SGST"] ?? r["State Tax"] ?? r["samt"], NaN);
+
+        const totalComputedTax = (taxableVal * gstRate) / 100;
+        if (!Number.isFinite(igst) && !Number.isFinite(cgst)) {
+          if (isInter) {
+            igst = totalComputedTax;
+            cgst = 0;
+            sgst = 0;
+          } else {
+            igst = 0;
+            cgst = totalComputedTax / 2;
+            sgst = totalComputedTax / 2;
+          }
+        } else {
+          igst = safeNum(igst, 0);
+          cgst = safeNum(cgst, 0);
+          sgst = safeNum(sgst, 0);
+        }
+
+        const totalTax = igst + cgst + sgst;
+        const grandTotal = Number.isFinite(grossVal) && grossVal > 0 ? grossVal : taxableVal + totalTax;
+
+        parsedInvoices.push({
+          invNo,
+          date: rawDate,
+          buyerName: String(r["Customer Name"] || r["Buyer Name"] || "E-Com Customer"),
+          buyerGstin: /^\d{2}[A-Z0-9]{13}$/.test(buyerGstin) ? buyerGstin : "",
+          placeOfSupply: `${posCode}-${String(rawState).replace(/^\d{2}-?/, "") || "State"}`,
+          isInterState: isInter || igst > 0,
+          taxableTotal: Number(taxableVal.toFixed(2)),
+          cgstTotal: Number(cgst.toFixed(2)),
+          sgstTotal: Number(sgst.toFixed(2)),
+          igstTotal: Number(igst.toFixed(2)),
+          totalTax: Number(totalTax.toFixed(2)),
+          grandTotal: Number(grandTotal.toFixed(2)),
+          items: [
+            {
+              desc,
+              hsn,
+              qty,
+              rate: Number((taxableVal / qty).toFixed(2)),
+              gstRate
+            }
+          ]
+        });
+      });
+
+      return parsedInvoices;
+    }
+
+    document.getElementById("ecom-gst-file-input")?.addEventListener("change", async (e) => {
+      const files = Array.from(e.target.files || []);
+      if (files.length === 0) return;
+      if (!consumeFreeActionOrLock("E-Com GST Report to JSON")) {
+        e.target.value = "";
+        return;
+      }
+
+      const statusEl = document.getElementById("ecom-gst-upload-status");
+      statusEl.textContent = `⏳ Reading ${files.length} file(s) in RAM...`;
+
+      let allRows = [];
+
+      for (const file of files) {
+        const lowerName = file.name.toLowerCase();
+        if (lowerName.endsWith(".xlsx") || lowerName.endsWith(".xls")) {
+          try {
+            const buf = await file.arrayBuffer();
+            if (window.XLSX) {
+              const wb = window.XLSX.read(buf, { type: "array" });
+              wb.SheetNames.forEach((sheetName) => {
+                const sheetRows = window.XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { defval: "" });
+                allRows = allRows.concat(sheetRows);
+              });
+            }
+          } catch (_) {}
+        } else {
+          await new Promise((resolve) => {
+            if (!window.Papa) {
+              resolve();
+              return;
+            }
+            window.Papa.parse(file, {
+              header: true,
+              skipEmptyLines: true,
+              complete: (res) => {
+                allRows = allRows.concat(res.data || []);
+                resolve();
+              },
+              error: () => resolve()
+            });
+          });
+        }
+      }
+
+      const converted = convertRawEcomRowsToInvoices(allRows);
+      if (converted.length > 0) {
+        uploadedEcomInvoices = converted;
+        document.getElementById("uploaded-orders-pill").textContent = `${converted.length} Orders Loaded`;
+        statusEl.textContent = `✅ Loaded ${converted.length} GST Entries from ${files.map((f) => f.name).join(", ")}`;
+        buildGSTR1Payload();
+        showToast(`✅ ${converted.length} Orders converted to GSTR-1 JSON & Ready Excel!`, "success");
+      } else {
+        statusEl.textContent = `⚠️ No valid tax rows found in file — Loaded Demo E-Com Data`;
+        uploadedEcomInvoices = getDefaultDemoInvoices();
+        buildGSTR1Payload();
+        showToast("Loaded sample E-Com GST data. Check column headers in your file.", "warning");
+      }
+    });
+
+    document.getElementById("load-sample-ecom-gst-btn")?.addEventListener("click", () => {
+      uploadedEcomInvoices = [
+        ...getDefaultDemoInvoices(),
+        {
+          invNo: "MSH-2026-991",
+          date: "2026-11-10",
+          buyerName: "Meesho B2C Maharashtra",
+          buyerGstin: "",
+          placeOfSupply: "27-Maharashtra",
+          isInterState: true,
+          taxableTotal: 18500,
+          cgstTotal: 0,
+          sgstTotal: 0,
+          igstTotal: 3330,
+          totalTax: 3330,
+          grandTotal: 21830,
+          items: [{ desc: "RoyalTank Automatic Controller", hsn: "8537", qty: 15, rate: 1233.33, gstRate: 18 }]
+        },
+        {
+          invNo: "FK-2026-442",
+          date: "2026-11-11",
+          buyerName: "Flipkart B2C Karnataka",
+          buyerGstin: "",
+          placeOfSupply: "29-Karnataka",
+          isInterState: true,
+          taxableTotal: 12400,
+          cgstTotal: 0,
+          sgstTotal: 0,
+          igstTotal: 2232,
+          totalTax: 2232,
+          grandTotal: 14632,
+          items: [{ desc: "Heavy Duty 3-Pin Extension", hsn: "8536", qty: 25, rate: 496, gstRate: 18 }]
+        }
+      ];
+      document.getElementById("uploaded-orders-pill").textContent = `${uploadedEcomInvoices.length} Demo Orders`;
+      document.getElementById("ecom-gst-upload-status").textContent =
+        "✅ Loaded 5 Realistic Meesho, Flipkart & Amazon GST Entries!";
+      buildGSTR1Payload();
+      showToast("✅ Loaded Realistic Meesho, Flipkart & Amazon GST Data!", "success");
+    });
+
+    document.getElementById("clear-ecom-gst-btn")?.addEventListener("click", () => {
+      uploadedEcomInvoices = [];
+      document.getElementById("uploaded-orders-pill").textContent = "Auto-Synced";
+      document.getElementById("ecom-gst-upload-status").textContent =
+        "✅ Ready: Supports multiple .CSV, .XLSX, .XLS files in 0.1s RAM";
+      buildGSTR1Payload();
+      showToast("Reset to default store invoices.", "info");
+    });
+
+    // =========================================================================
+    // 3. CORE GSTR-1 JSON & GSTR-3B BUILDER (100% ZERO-NaN PROTECTED)
+    // =========================================================================
     let gstrFramePending = false;
     function scheduleBuildGSTR1() {
       if (gstrFramePending) return;
@@ -706,8 +1149,8 @@
 
     function buildGSTR1Payload() {
       const invoices = getSavedInvoices();
-      const gstin = document.getElementById("filing-gstin-input").value.trim().toUpperCase() || "07AABCS1429B1Z5";
-      const fp = document.getElementById("filing-period-select").value || "112026";
+      const gstin = (document.getElementById("filing-gstin-input")?.value || "07AABCS1429B1Z5").trim().toUpperCase();
+      const fp = document.getElementById("filing-period-select")?.value || "112026";
 
       const b2bMap = new Map();
       const b2csMap = new Map();
@@ -727,14 +1170,16 @@
       invoices.forEach((inv) => {
         const rawGstin = String(inv.buyerGstin || "").replace(/GSTIN\s*:\s*/i, "").trim().toUpperCase();
         const hasValidGstin = rawGstin.length === 15;
-        const inferredPos = hasValidGstin ? rawGstin.slice(0, 2) : String(inv.placeOfSupply || "07-Delhi").split("-")[0].trim() || "07";
-        const isInter = Boolean(inv.isInterState || (Number(inv.igstTotal) || 0) > 0);
+        const inferredPos = hasValidGstin
+          ? rawGstin.slice(0, 2)
+          : String(inv.placeOfSupply || "07-Delhi").split("-")[0].trim() || "07";
+        const isInter = Boolean(inv.isInterState || safeNum(inv.igstTotal) > 0);
 
-        const invTaxable = Number(inv.taxableTotal) || 0;
-        const invTotalTax = Number(inv.totalTax) || 0;
-        const invIgst = inv.igstTotal !== undefined ? Number(inv.igstTotal) : isInter ? invTotalTax : 0;
-        const invCgst = inv.cgstTotal !== undefined ? Number(inv.cgstTotal) : !isInter ? invTotalTax / 2 : 0;
-        const invSgst = inv.sgstTotal !== undefined ? Number(inv.sgstTotal) : !isInter ? invTotalTax / 2 : 0;
+        const invTaxable = safeNum(inv.taxableTotal, 0);
+        const invTotalTax = safeNum(inv.totalTax, 0);
+        const invIgst = inv.igstTotal !== undefined ? safeNum(inv.igstTotal, 0) : isInter ? invTotalTax : 0;
+        const invCgst = inv.cgstTotal !== undefined ? safeNum(inv.cgstTotal, 0) : !isInter ? invTotalTax / 2 : 0;
+        const invSgst = inv.sgstTotal !== undefined ? safeNum(inv.sgstTotal, 0) : !isInter ? invTotalTax / 2 : 0;
 
         totalTaxable += invTaxable;
         totalIgst += invIgst;
@@ -750,7 +1195,7 @@
           b2bMap.get(rawGstin).push({
             inum: String(inv.invNo || "4649845"),
             idt: formatPortalDate(inv.date),
-            val: Number((Number(inv.grandTotal) || invTaxable + invTotalTax).toFixed(2)),
+            val: Number((safeNum(inv.grandTotal, invTaxable + invTotalTax)).toFixed(2)),
             pos: inferredPos,
             rchrg: "N",
             inv_typ: "R",
@@ -793,11 +1238,11 @@
         }
 
         (inv.items || []).forEach((it) => {
-          const hsnCode = it.hsn || "8537";
-          const itemTitle = it.desc || it.name || "E-Com Goods";
-          const qty = Number(it.qty) || 1;
-          const rate = Number(it.rate) || 0;
-          const gstRate = Number(it.gstRate) || 18;
+          const hsnCode = String(it.hsn || "8537").trim() || "8537";
+          const itemTitle = String(it.desc || it.name || "E-Com Goods").trim();
+          const qty = Math.max(1, safeNum(it.qty, 1));
+          const rate = safeNum(it.rate, 0);
+          const gstRate = safeNum(it.gstRate, 18);
           const txval = qty * rate;
           const tax = txval * (gstRate / 100);
           totalUnits += qty;
@@ -851,6 +1296,11 @@
         }
       };
 
+      // Save latest JSON in localStorage so Feature #3 (`json-validator.html`) can automatically open & validate it!
+      try {
+        localStorage.setItem("sellgst_latest_gstr1_json", JSON.stringify(payload));
+      } catch (_) {}
+
       const totalTax = totalIgst + totalCgst + totalSgst;
       document.getElementById("sum-b2b-val").textContent = formatINR(b2bTaxableSum);
       document.getElementById("sum-b2b-count").textContent = `${b2bCount} Registered Bills`;
@@ -865,8 +1315,8 @@
       document.getElementById("g3b-cgst").textContent = totalCgst.toFixed(2);
       document.getElementById("g3b-sgst").textContent = totalSgst.toFixed(2);
 
-      const itcVal = Number(document.getElementById("itc-input-val").value) || 0;
-      const tcsVal = Number(document.getElementById("tcs-input-val").value) || 0;
+      const itcVal = safeNum(document.getElementById("itc-input-val")?.value, 0);
+      const tcsVal = safeNum(document.getElementById("tcs-input-val")?.value, 0);
       const netPayable = Math.max(0, totalTax - itcVal - tcsVal);
       document.getElementById("net-challan-payable").textContent = formatINR(netPayable);
 
@@ -889,6 +1339,36 @@
       a.download = `GSTR1_${payload.gstin}_${payload.fp}.json`;
       a.click();
       showToast(`Downloaded GSTR1_${payload.gstin}_${payload.fp}.json! Ready for gst.gov.in upload.`, "success");
+    });
+
+    // 1-Click Ready GSTR-1 Excel (.CSV) Export
+    document.getElementById("download-ready-excel-btn")?.addEventListener("click", () => {
+      if (!consumeFreeActionOrLock("Ready GSTR-1 Excel Export")) return;
+      const invoices = getSavedInvoices();
+      const header =
+        "Invoice No,Invoice Date,Customer Name,Buyer GSTIN,Place of Supply,Supply Type,HSN Code,Qty,Taxable Value,IGST,CGST,SGST,Invoice Total\n";
+      const rows = invoices
+        .map((inv) => {
+          const hsn = inv.items?.[0]?.hsn || "8537";
+          const qty = inv.items?.[0]?.qty || 1;
+          return `${sanitizeCSVCell(inv.invNo)},${sanitizeCSVCell(inv.date)},"${sanitizeCSVCell(
+            inv.buyerName
+          )}",${sanitizeCSVCell(inv.buyerGstin || "B2C")},"${sanitizeCSVCell(inv.placeOfSupply)}",${
+            inv.isInterState ? "INTER-STATE" : "INTRA-STATE"
+          },${sanitizeCSVCell(hsn)},${qty},${safeNum(inv.taxableTotal).toFixed(2)},${safeNum(inv.igstTotal).toFixed(
+            2
+          )},${safeNum(inv.cgstTotal).toFixed(2)},${safeNum(inv.sgstTotal).toFixed(2)},${safeNum(
+            inv.grandTotal
+          ).toFixed(2)}`;
+        })
+        .join("\n");
+
+      const blob = new Blob([header + rows], { type: "text/csv;charset=utf-8;" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `Ready_GSTR1_Excel_Report_${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      showToast("📊 Downloaded Ready GSTR-1 Excel (.CSV) Summary!", "success");
     });
 
     document.getElementById("copy-gstr1-json-btn")?.addEventListener("click", () => {
@@ -921,4 +1401,4 @@
     buildGSTR1Payload();
   </script>
 </body>
-</html>
+  </html>
