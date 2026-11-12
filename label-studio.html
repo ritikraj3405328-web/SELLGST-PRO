@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en" class="overflow-x-hidden scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+
+  <!-- ===================================================================== -->
+  <!-- 100% SEO-FRIENDLY META TAGS, OPENGRAPH & GOOGLE JSON-LD SCHEMA        -->
+  <!-- ===================================================================== -->
+  <title>4x6 Shipping Label Cropper & Custom Thank You Card Maker (Meesho, Flipkart, Amazon) — SellGST Pro</title>
+  <meta name="description" content="Free 4x6 Thermal Shipping Label Cropper for Meesho, Flipkart & Amazon. Add a custom Hindi/English Thank You Card & 5-Star Review badge at the bottom of every label and save ₹3 per parcel!" />
+  <meta name="keywords" content="Meesho label cropper, Flipkart 4x6 thermal label cropper, Amazon shipping label cropper, e-commerce thank you card maker, print thank you on shipping label, SellGST Pro" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://sellgst-pro.pages.dev/label-studio.html" />
+
+  <!-- Open Graph / WhatsApp / Social Media Preview Tags -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="4x6 Shipping Label & Custom Thank You Card Studio — SellGST Pro" />
+  <meta property="og:description" content="Stop wasting money on separate Thank You cards! Auto-crop Meesho, Flipkart & Amazon labels to 4x6 thermal size and stamp your custom Hindi/English 5-Star Thank You message at the bottom." />
+  <meta property="og:url" content="https://sellgst-pro.pages.dev/label-studio.html" />
+  <meta name="theme-color" content="#081B4B" />
+  <link rel="manifest" href="./manifest.json" />
+
+  <!-- Structured Data for Google Rich Results -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SellGST Pro 4x6 Shipping Label & Thank You Card Studio",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web, Android, iOS, Windows",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "INR"
+    },
+    "description": "Crop Meesho, Flipkart, and Amazon shipping labels to 4x6 thermal ratio and attach a custom Hindi/English 5-Star Thank You card at the bottom."
+  }
+  </script>
+
+  <!-- 0.1s Instant Module Preload & Speculative Prefetch -->
+  <link rel="modulepreload" href="./assets/js/security-core.js" />
+  <link rel="modulepreload" href="./assets/js/i18n.js" />
+  <link rel="prefetch" href="./index.html" as="document" />
+  <link rel="prefetch" href="./app.html" as="document" />
+  <link rel="prefetch" href="./ecom-audit.html" as="document" />
+  <link rel="prefetch" href="./invoice.html" as="document" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Noto+Sans+Devanagari:wght@500;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- PDF.js & jsPDF for Direct PDF/Image Label Upload & 1-Click 4x6 Thermal PDF Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '"Noto Sans Devanagari"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          },
+          colors: {
+            navy: '#081B4B',
+            royal: '#5B2EFF',
+            mint: '#10E594'
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    html, body {
+      max-width: 100vw;
+      overflow-x: hidden;
+      background: linear-gradient(135deg, #DDE3FF 0%, #EEF2FF 48%, #D6F5F8 100%);
+      color: #0F172A;
+      font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', sans-serif;
+      font-size: 14px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .bento-card {
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(16px);
+      border-radius: 26px;
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 18px 40px -15px rgba(91, 46, 255, 0.14), 0 4px 12px rgba(15, 23, 42, 0.04);
+      transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease;
+      min-width: 0;
+    }
+    .purple-3d-card {
+      background: linear-gradient(135deg, #6A3BFF 0%, #5B2EFF 55%, #3F16C4 100%);
+      border-radius: 26px;
+      box-shadow: 0 22px 45px -12px rgba(91, 46, 255, 0.38);
+      min-width: 0;
+    }
+    @keyframes shrink7s {
+      from { width: 100%; }
+      to { width: 0%; }
+    }
+    .pwa-timer-bar {
+      animation: shrink7s 7s linear forwards;
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printable-thermal-wrapper,
+      #printable-thermal-wrapper * {
+        visibility: visible;
+      }
+      .no-print {
+        display: none !important;
+      }
+      #printable-thermal-wrapper {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        background: #FFFFFF;
+        padding: 0;
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen w-full overflow-x-hidden pb-24 lg:pb-12 lg:pl-24">
+
+  <!-- DESKTOP FLOATING 3D LEFT PILL SIDEBAR (ADMIN HIDDEN FROM REGULAR USERS) -->
+  <aside class="hidden lg:flex fixed left-4 top-4 bottom-4 w-16 bg-white/95 backdrop-blur-xl border border-white rounded-full shadow-xl shadow-indigo-500/10 flex-col items-center justify-between py-5 z-40 no-print">
+    <a href="./index.html" title="Home Page" class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#081B4B] via-[#5B2EFF] to-[#10E594] text-white flex items-center justify-center font-black text-sm shadow-md">
+      🏠
+    </a>
+    <nav class="flex flex-col items-center gap-3">
+      <a href="./app.html" title="3D Financial Dashboard" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+        📊
+      </a>
+      <a href="./invoice.html" title="Custom Navy GST Invoice" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+        🧾
+      </a>
+      <a href="./ecom-audit.html" title="Profit/Loss & E-Com Audit" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+        📦
+      </a>
+      <a href="./label-studio.html" title="4x6 Label & Custom Thank You Card Studio" class="w-11 h-11 rounded-2xl bg-[#5B2EFF] text-white flex items-center justify-center text-base shadow-md transition">
+        🏷️
+      </a>
+      <a href="./gst-filing.html" title="1-Click GSTR-1 JSON" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+        🏛️
+      </a>
+      <a href="./qr-studio.html" title="Dynamic QR & Google Reviews" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+        🔳
+      </a>
+      <a href="./admin.html" data-admin-only title="Master Admin Console" class="hidden w-11 h-11 rounded-2xl bg-rose-50 text-rose-600 hover:bg-rose-100 flex items-center justify-center text-base transition">
+        🛡️
+      </a>
+    </nav>
+    <div class="flex flex-col items-center gap-2">
+      <button type="button" data-open-account title="My Personal Account & DPDP Privacy" class="w-10 h-10 rounded-full bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] flex items-center justify-center text-sm shadow-sm">
+        👤
+      </button>
+      <button type="button" id="sidebar-logout-btn" title="Logout" class="w-10 h-10 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center text-sm">
+        ⏻
+      </button>
+    </div>
+  </aside>
+
+  <!-- MOBILE FLOATING BOTTOM DOCK -->
+  <nav class="lg:hidden fixed bottom-2.5 inset-x-3 bg-white/95 backdrop-blur-xl text-slate-700 rounded-3xl px-2 py-2.5 shadow-2xl border border-indigo-100 z-40 flex items-center justify-around no-print">
+    <a href="./app.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">📊</span>
+      <span>Dashboard</span>
+    </a>
+    <a href="./invoice.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">🧾</span>
+      <span>GST Bill</span>
+    </a>
+    <a href="./ecom-audit.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">📦</span>
+      <span>Profit/Audit</span>
+    </a>
+    <a href="./label-studio.html" class="flex flex-col items-center gap-0.5 text-[#5B2EFF] font-extrabold text-[10px]">
+      <span class="text-base">🏷️</span>
+      <span>ThankYou Label</span>
+    </a>
+    <a href="./qr-studio.html" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#5B2EFF] font-semibold text-[10px]">
+      <span class="text-base">🔳</span>
+      <span>QR Studio</span>
+    </a>
+  </nav>
+
+  <!-- MAIN CONTAINER -->
+  <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-2 sm:pt-3 space-y-5 overflow-x-hidden">
+
+    <!-- CLEAN TOP HEADER BAR -->
+    <header class="bg-white/95 backdrop-blur-xl rounded-3xl border border-white px-4 sm:px-6 py-2.5 shadow-lg shadow-indigo-500/5 flex flex-wrap items-center justify-between gap-2.5 no-print">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <a
+          href="./index.html"
+          data-i18n="nav_home"
+          class="px-3.5 py-2 rounded-2xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow-sm transition flex items-center gap-1.5 shrink-0"
+        >
+          🏠 Home
+        </a>
+        <div class="min-w-0">
+          <h1 class="font-extrabold text-sm sm:text-[15px] text-[#081B4B] truncate">
+            4×6 Shipping Label &amp; Custom Thank You Card Studio
+          </h1>
+          <p class="text-[11px] text-slate-500 truncate">
+            Meesho, Flipkart &amp; Amazon Fixed Ratio • Hindi/English Custom 5-Star Thank You Strip • Save ₹3/Order
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-end ml-auto">
+        <select
+          data-lang-switcher
+          aria-label="Language"
+          class="px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none max-w-[95px] sm:max-w-none truncate"
+        ></select>
+
+        <!-- 7-SECOND AUTO-HIDING PWA INSTALL BUTTON -->
+        <button
+          type="button"
+          id="pwa-install-btn"
+          data-pwa-install
+          class="relative overflow-hidden px-3 py-1.5 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#081B4B] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap flex items-center gap-1.5"
+        >
+          <span data-i18n="install_app_btn">📲 Install App</span>
+          <span id="pwa-sec-badge" class="px-1.5 py-0.2 rounded-full bg-white/20 text-[10px] font-mono">7s</span>
+          <span class="absolute bottom-0 left-0 h-0.5 bg-[#10E594] pwa-timer-bar"></span>
+        </button>
+
+        <button
+          type="button"
+          data-open-account
+          data-i18n="nav_account"
+          class="px-3 py-1.5 rounded-full bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] text-xs font-extrabold border border-indigo-100 transition whitespace-nowrap"
+        >
+          👤 My Account
+        </button>
+
+        <button
+          type="button"
+          data-pro-badge
+          data-unlock-pro="MONTHLY"
+          class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-[#5B2EFF] to-[#4318FF] text-white shadow-md whitespace-nowrap"
+        >
+          Unlock Pro ⚡
+        </button>
+      </div>
+    </header>
+
+    <!-- =================================================================== -->
+    <!-- HERO SAVINGS BANNER: WHY PRINT SEPARATE THANK YOU CARDS?            -->
+    <!-- =================================================================== -->
+    <section data-3d-tilt class="purple-3d-card text-white p-5 sm:p-6 flex flex-wrap items-center justify-between gap-4 relative overflow-hidden no-print">
+      <div class=" -top-12 -right-12 w-44 h-44 rounded-full bg-white/10 pointer-events-none absolute"></div>
+      <div class="space-y-1.5 max-w-2xl">
+        <div class="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-white/15 text-[#10E594] text-[11px] font-extrabold">
+          <span>💡 ZERO EXTRA PAPER COST • MEESHO • FLIPKART • AMAZON</span>
+        </div>
+        <h2 class="text-base sm:text-xl font-extrabold text-white">
+          अलग से Thank You Card छपवाने में हर ऑर्डर पर ₹3 बर्बाद करना बंद करें!
+        </h2>
+        <p class="text-xs sm:text-[13px] text-indigo-100 leading-relaxed">
+          जब आप Meesho, Flipkart या Amazon का लेबल डाउनलोड करते हैं, तो नीचे की जगह खाली छूट जाती है। यहाँ अपना लेबल (PDF या Photo) डालें और नीचे अपनी भाषा (हिंदी/English) में <strong>⭐⭐⭐⭐⭐ 5-Star Rating &amp; Thank You Card</strong> बिल्कुल सही साइज में जोड़ें!
+        </p>
+      </div>
+
+      <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-3.5 text-center shrink-0">
+        <div class="text-[10px] uppercase tracking-wider text-indigo-200 font-bold">1,000 Orders Monthly Savings</div>
+        <div class="text-2xl font-black font-mono text-[#10E594] mt-0.5">₹3,000 / mo Saved</div>
+        <div class="text-[10px] text-white/90 font-semibold mt-0.5">+ 3x More 5-Star Product Reviews ⭐</div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- MAIN STUDIO WORKSPACE: CONTROLS (LEFT 6) + LIVE 4x6 PREVIEW (RIGHT) -->
+    <!-- =================================================================== -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+      <!-- LEFT 6 COLS: UPLOAD, RATIO, CUSTOM HINDI/ENGLISH TEXT & SIZE SLIDERS -->
+      <div class="lg:col-span-6 space-y-5 no-print">
+
+        <!-- CARD 1: UPLOAD SHIPPING LABEL (PDF OR IMAGE) & SELECT MARKETPLACE RATIO -->
+        <div class="bento-card p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+              <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#5B2EFF]">STEP 01 • LABEL &amp; RATIO</span>
+              <h3 class="text-base font-extrabold text-[#081B4B]">Upload Shipping Label (PDF or Image)</h3>
+            </div>
+            <button
+              type="button"
+              id="reset-demo-label-btn"
+              class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-[#081B4B]"
+            >
+              🔄 Load Demo Label
+            </button>
+          </div>
+
+          <!-- Marketplace Ratio Buttons -->
+          <div>
+            <label class="block text-xs font-extrabold text-slate-700 mb-1.5">
+              Select Marketplace Fixed Aspect Ratio:
+            </label>
+            <div class="grid grid-cols-3 gap-2 p-1 bg-slate-100 rounded-2xl text-xs font-extrabold">
+              <button type="button" data-market-ratio="MEESHO" class="market-ratio-btn py-2.5 rounded-xl bg-[#5B2EFF] text-white shadow-sm transition">
+                🛍️ Meesho (4×6)
+              </button>
+              <button type="button" data-market-ratio="FLIPKART" class="market-ratio-btn py-2.5 rounded-xl text-slate-600 hover:text-[#081B4B] transition">
+                🛒 Flipkart (4×6)
+              </button>
+              <button type="button" data-market-ratio="AMAZON" class="market-ratio-btn py-2.5 rounded-xl text-slate-600 hover:text-[#081B4B] transition">
+                📦 Amazon (4×6)
+              </button>
+            </div>
+          </div>
+
+          <!-- File Upload Dropzone (Accepts both PDF and Images!) -->
+          <label
+            for="shipping-label-file-input"
+            class="border-2 border-dashed border-indigo-300 hover:border-[#5B2EFF] bg-indigo-50/40 rounded-2xl p-4 flex items-center gap-3.5 cursor-pointer transition group"
+          >
+            <div class="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-2xl shrink-0 group-hover:scale-105 transition">
+              📤
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="text-xs font-extrabold text-[#5B2EFF] uppercase">UPLOAD LABEL (.PDF, .JPG, .PNG)</div>
+              <div class="text-sm font-extrabold text-[#081B4B] truncate">Meesho / Flipkart / Amazon Label चुनें</div>
+              <div id="uploaded-label-status" class="text-[11px] font-mono text-slate-500 truncate mt-0.5">
+                Showing Realistic AGNI VOLT Demo Label
+              </div>
+            </div>
+            <input type="file" id="shipping-label-file-input" accept="image/*,.pdf" class="hidden" />
+          </label>
+        </div>
+
+        <!-- CARD 2: CUSTOM THANK YOU MESSAGE (HINDI / ENGLISH / ANY LANGUAGE) -->
+        <div class="bento-card p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+            <div>
+              <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">STEP 02 • CUSTOM THANK YOU CARD</span>
+              <h3 class="text-base font-extrabold text-[#081B4B]">Write Your Custom Thank You &amp; 5-Star Message</h3>
+            </div>
+            <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-[10px] font-extrabold">
+              Auto-Saved
+            </span>
+          </div>
+
+          <!-- 1-Click Language & Message Presets -->
+          <div>
+            <label class="block text-[11px] font-bold text-slate-500 mb-1.5">
+              1-Click Ready Templates (Click to fill in Hindi, English or Hinglish):
+            </label>
+            <div class="flex flex-wrap gap-1.5">
+              <button
+                type="button"
+                data-tpl-lang="HINDI"
+                class="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 text-xs font-extrabold transition"
+              >
+                🇮🇳 हिंदी (5-Star अपील)
+              </button>
+              <button
+                type="button"
+                data-tpl-lang="ENGLISH"
+                class="px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] border border-indigo-200 text-xs font-extrabold transition"
+              >
+                🇬🇧 English (5-Star Review)
+              </button>
+              <button
+                type="button"
+                data-tpl-lang="HINGLISH"
+                class="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 text-xs font-extrabold transition"
+              >
+                🔥 Hinglish (Thank You)
+              </button>
+              <button
+                type="button"
+                data-tpl-lang="DISCOUNT"
+                class="px-3 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-900 border border-purple-200 text-xs font-extrabold transition"
+              >
+                🎁 Next Order Cashback
+              </button>
+            </div>
+          </div>
+
+          <!-- Input 1: Business / Brand Name + Headline -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div>
+              <label for="ty-brand-name" class="block font-extrabold text-[#081B4B] mb-1">
+                1. Your Business / Brand Name *
+              </label>
+              <input
+                type="text"
+                id="ty-brand-name"
+                value="AGNI VOLT ELECTRONIC"
+                placeholder="e.g. AGNI VOLT ELECTRONIC"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-300 font-extrabold text-[#081B4B] focus:outline-none focus:ring-2 focus:ring-[#5B2EFF]"
+              />
+            </div>
+
+            <div>
+              <label for="ty-header-title" class="block font-extrabold text-[#081B4B] mb-1">
+                2. Thank You Heading
+              </label>
+              <input
+                type="text"
+                id="ty-header-title"
+                value="🙏 THANK YOU FOR YOUR ORDER!"
+                placeholder="e.g. 🙏 THANK YOU FOR YOUR ORDER!"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-300 font-extrabold text-[#081B4B] focus:outline-none focus:ring-2 focus:ring-[#5B2EFF]"
+              />
+            </div>
+          </div>
+
+          <!-- Input 2: Custom Hindi / English Message Box -->
+          <div class="text-xs">
+            <label for="ty-custom-msg" class="block font-extrabold text-[#081B4B] mb-1">
+              3. Custom Message Box (हिंदी, English या किसी भी भाषा में लिखें) *
+            </label>
+            <textarea
+              id="ty-custom-msg"
+              rows="2"
+              placeholder="Write your custom message in Hindi or English..."
+              class="w-full p-3 rounded-xl bg-slate-50 border border-slate-300 font-bold text-slate-900 leading-snug focus:outline-none focus:ring-2 focus:ring-[#5B2EFF]"
+            >हमारा प्रोडक्ट खरीदने के लिए धन्यवाद! 🙏 यदि आपको प्रोडक्ट पसंद आया हो, तो कृपया ऐप में जाकर हमारे ब्रांड को 5-Star (⭐⭐⭐⭐⭐) रेटिंग और फोटो रिव्यू ज़रूर दें।</textarea>
+          </div>
+
+          <!-- Input 3: Support WhatsApp / Footer Offer + Optional QR Link -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div>
+              <label for="ty-footer-contact" class="block font-bold text-slate-700 mb-1">
+                4. Support WhatsApp / Offer Line
+              </label>
+              <input
+                type="text"
+                id="ty-footer-contact"
+                value="💬 Support WhatsApp: +91-7808990039 | 100% Genuine"
+                class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-300 font-mono text-[11px] font-bold text-[#081B4B]"
+              />
+            </div>
+
+            <div>
+              <label for="ty-qr-link" class="block font-bold text-slate-700 mb-1">
+                5. Mini QR Link (Review / WhatsApp URL)
+              </label>
+              <input
+                type="text"
+                id="ty-qr-link"
+                value="https://wa.me/917808990039"
+                class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-300 font-mono text-[11px] text-[#081B4B]"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 3: SIZE, HEIGHT & RATIO SLIDERS ("SIZE JYADA KAM KARNE KA OPTION") -->
+        <div class="bento-card p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+              <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#5B2EFF]">STEP 03 • SIZE &amp; RATIO CONTROLS</span>
+              <h3 class="text-base font-extrabold text-[#081B4B]">Adjust Strip Size, Font Size &amp; Label Crop</h3>
+            </div>
+            <button
+              type="button"
+              id="reset-sliders-btn"
+              class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-[11px] font-bold text-slate-700"
+            >
+              Reset Size
+            </button>
+          </div>
+
+          <div class="space-y-3.5 text-xs">
+            <!-- Slider 1: Bottom Thank You Box Height (Small / Compact / Medium / Large) -->
+            <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200">
+              <div class="flex justify-between font-extrabold text-[#081B4B] mb-1">
+                <span>📏 Thank You Box Size (Height at Bottom)</span>
+                <span id="val-strip-height" class="font-mono text-[#5B2EFF]">88 px (Compact Fit)</span>
+              </div>
+              <input
+                type="range"
+                id="slider-strip-height"
+                min="56"
+                max="145"
+                step="2"
+                value="88"
+                class="w-full accent-[#5B2EFF] cursor-pointer h-2 bg-indigo-200 rounded-lg"
+              />
+              <div class="flex justify-between text-[10px] text-slate-400 font-semibold mt-1">
+                <span>Small (56px)</span>
+                <span>Recommended Compact (88px)</span>
+                <span>Large (145px)</span>
+              </div>
+            </div>
+
+            <!-- Slider 2: Text Font Size -->
+            <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200">
+              <div class="flex justify-between font-extrabold text-[#081B4B] mb-1">
+                <span>🔤 Custom Message Font Size (अक्षरों का साइज)</span>
+                <span id="val-font-size" class="font-mono text-[#5B2EFF]">11.5 px</span>
+              </div>
+              <input
+                type="range"
+                id="slider-font-size"
+                min="9"
+                max="16"
+                step="0.5"
+                value="11.5"
+                class="w-full accent-[#5B2EFF] cursor-pointer h-2 bg-indigo-200 rounded-lg"
+              />
+            </div>
+
+            <!-- Slider 3: Uploaded Label Vertical Crop Ratio -->
+            <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200">
+              <div class="flex justify-between font-extrabold text-[#081B4B] mb-1">
+                <span>✂️ Uploaded Label Vertical Crop Ratio</span>
+                <span id="val-crop-ratio" class="font-mono text-[#5B2EFF]">100% (Full Label)</span>
+              </div>
+              <input
+                type="range"
+                id="slider-crop-ratio"
+                min="48"
+                max="100"
+                step="2"
+                value="100"
+                class="w-full accent-[#5B2EFF] cursor-pointer h-2 bg-indigo-200 rounded-lg"
+              />
+              <div class="flex justify-between text-[10px] text-slate-400 font-semibold mt-1">
+                <span>Top Half Only (50% A4)</span>
+                <span>75% Crop</span>
+                <span>Full Label (100%)</span>
+              </div>
+            </div>
+
+            <!-- Visual Checkboxes (5-Star Badge, Mini QR, Dark/White Thermal Theme) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+              <label class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200 font-bold text-[#081B4B] cursor-pointer">
+                <input type="checkbox" id="chk-show-stars" checked class="w-4 h-4 accent-[#5B2EFF] rounded" />
+                <span>⭐ Show 5-Star Rating Badge</span>
+              </label>
+
+              <label class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200 font-bold text-[#081B4B] cursor-pointer">
+                <input type="checkbox" id="chk-show-qr" checked class="w-4 h-4 accent-[#5B2EFF] rounded" />
+                <span>🔳 Show Mini QR Code on Strip</span>
+              </label>
+
+              <label class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200 font-bold text-[#081B4B] cursor-pointer">
+                <input type="checkbox" id="chk-cut-line" checked class="w-4 h-4 accent-[#5B2EFF] rounded" />
+                <span>✂️ Dashed Scissors Cut-Line</span>
+              </label>
+
+              <label class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200 font-bold text-[#081B4B] cursor-pointer">
+                <input type="checkbox" id="chk-dark-theme" class="w-4 h-4 accent-[#5B2EFF] rounded" />
+                <span>🖤 Inverted Black Thermal Strip</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT 6 COLS: LIVE HIGH-RES 4x6 THERMAL LABEL + THANK YOU CARD PREVIEW -->
+      <div class="lg:col-span-6 lg:sticky lg:top-4 space-y-4">
+        <div class="bento-card p-4 sm:p-6 flex flex-col items-center justify-center bg-slate-100/90 border-2 border-[#081B4B]/15">
+
+          <!-- Top Action Buttons Above Preview -->
+          <div class="w-full flex flex-wrap items-center justify-between gap-2 mb-3 no-print">
+            <div>
+              <span class="px-2.5 py-0.5 rounded-full bg-[#081B4B] text-[#10E594] font-mono text-[10px] font-extrabold">
+                LIVE 4×6 INCH (101.6 × 152.4 mm)
+              </span>
+              <span id="preview-ratio-badge" class="ml-1 text-xs font-extrabold text-[#081B4B]">
+                Meesho Thermal Ratio
+              </span>
+            </div>
+
+            <div class="flex items-center gap-1.5">
+              <button
+                type="button"
+                id="download-label-pdf-btn"
+                class="px-3.5 py-2 rounded-xl bg-[#5B2EFF] hover:bg-indigo-700 text-white font-extrabold text-xs shadow transition"
+              >
+                ⬇ Download 4×6 PDF
+              </button>
+              <button
+                type="button"
+                id="download-label-png-btn"
+                class="px-3.5 py-2 rounded-xl bg-[#10E594] hover:bg-emerald-300 text-[#081B4B] font-extrabold text-xs shadow-sm transition"
+              >
+                ⬇ PNG
+              </button>
+              <button
+                type="button"
+                id="print-label-btn"
+                class="px-3 py-2 rounded-xl bg-[#081B4B] text-white font-extrabold text-xs shadow transition"
+              >
+                🖨️ Print
+              </button>
+            </div>
+          </div>
+
+          <!-- Printable 4x6 Canvas Container (High-DPI 600x900 internal resolution = exact 4:6 ratio) -->
+          <div id="printable-thermal-wrapper" class="w-full flex justify-center">
+            <canvas
+              id="label-studio-canvas"
+              width="600"
+              height="900"
+              class="bg-white rounded-xl shadow-2xl border-2 border-slate-900 max-w-full h-auto"
+              style="max-height: 680px;"
+            ></canvas>
+          </div>
+
+          <p class="text-[11px] font-bold text-slate-500 mt-3 text-center no-print">
+            ✅ 100% Scannable Barcode &amp; QR • Fits All 4×6 Thermal Printers (Zebra, TSC, Xprinter) &amp; A4 Sheets
+          </p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- BOTTOM PERSONAL ACCOUNT, DPDP PRIVACY (✔️) & LOGOUT BAR             -->
+    <!-- =================================================================== -->
+    <section data-3d-tilt class="bento-card p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3 no-print">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-[#5B2EFF] flex items-center justify-center text-base font-bold shrink-0">
+          🛡️
+        </div>
+        <div class="min-w-0">
+          <div class="text-xs font-extrabold text-[#081B4B]">My Personal Data &amp; DPDP Act 2023 Privacy Controls</div>
+          <div class="text-[11px] text-slate-500 truncate">
+            Manage your store GSTIN, view subscription validity, or permanently delete your account &amp; data with confirmation tick (✔️).
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2 ml-auto">
+        <button
+          type="button"
+          data-open-account
+          class="px-4 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] font-extrabold text-xs transition"
+        >
+          👤 My Account &amp; Delete Option (✔️)
+        </button>
+        <button
+          type="button"
+          id="bottom-logout-btn"
+          class="px-4 py-2 rounded-xl bg-[#081B4B] hover:bg-rose-600 text-white font-extrabold text-xs shadow transition flex items-center gap-1.5"
+        >
+          <span>⏻ Logout</span>
+        </button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- 4x6 SHIPPING LABEL & CUSTOM THANK YOU CARD STUDIO ENGINE -->
+  <script type="module">
+    import {
+      AppState,
+      subscribeAppState,
+      consumeFreeActionOrLock,
+      showToast,
+      logoutUser,
+      syncProDOMElements,
+      init3DTiltCards
+    } from "./assets/js/security-core.js";
+
+    init3DTiltCards();
+
+    // 1. 7-Second Countdown Badge on Install App Button
+    const secBadge = document.getElementById("pwa-sec-badge");
+    let remainingSec = 7;
+    const secInterval = setInterval(() => {
+      remainingSec -= 1;
+      if (secBadge && remainingSec > 0) {
+        secBadge.textContent = `${remainingSec}s`;
+      } else {
+        clearInterval(secInterval);
+      }
+    }, 1000);
+
+    // =========================================================================
+    // 2. PRESET LANGUAGE TEMPLATES (HINDI, ENGLISH, HINGLISH, DISCOUNT)
+    // =========================================================================
+    const THANK_YOU_TEMPLATES = {
+      HINDI: {
+        title: "🙏 आपके ऑर्डर के लिए धन्यवाद! (THANK YOU)",
+        msg: "हमारा प्रोडक्ट खरीदने के लिए शुक्रिया! यदि आपको प्रोडक्ट पसंद आया हो, तो कृपया ऐप में जाकर हमारे ब्रांड को 5-Star (⭐⭐⭐⭐⭐) रेटिंग और फोटो रिव्यू ज़रूर दें।"
+      },
+      ENGLISH: {
+        title: "🙏 THANK YOU FOR SHOPPING WITH US!",
+        msg: "We hope you love your purchase! Every order is packed with care. Please support our small business by leaving a 5-Star (⭐⭐⭐⭐⭐) rating & review!"
+      },
+      HINGLISH: {
+        title: "🙏 THANK YOU SO MUCH FOR YOUR ORDER!",
+        msg: "Humara product kharidne ke liye shukriya! Agar aapko product pasand aaya ho, to please app mein jaakar humein 5-Star (⭐⭐⭐⭐⭐) rating zaroor dein!"
+      },
+      DISCOUNT: {
+        title: "🎁 RATE US 5 STARS & GET CASHBACK / DISCOUNT!",
+        msg: "कृपया हमारे प्रोडक्ट को ⭐⭐⭐⭐⭐ 5-Star रेटिंग दें और उसका स्क्रीनशॉट हमारे नीचे दिए गए WhatsApp नंबर पर भेजें—पाएं अगले ऑर्डर पर विशेष छूट!"
+      }
+    };
+
+    const STORAGE_KEY_TY = "sellgst_custom_thankyou_settings";
+    let selectedMarketplace = "MEESHO";
+    let uploadedLabelImage = null;
+    let miniQrImage = null;
+    let lastQrUrlLoaded = "";
+
+    // Restore saved seller Thank You settings
+    function restoreThankYouSettings() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY_TY);
+        if (raw) {
+          const data = JSON.parse(raw);
+          if (data.brand) document.getElementById("ty-brand-name").value = data.brand;
+          if (data.title) document.getElementById("ty-header-title").value = data.title;
+          if (data.msg) document.getElementById("ty-custom-msg").value = data.msg;
+          if (data.footer) document.getElementById("ty-footer-contact").value = data.footer;
+          if (data.qrLink) document.getElementById("ty-qr-link").value = data.qrLink;
+          if (data.stripHeight) document.getElementById("slider-strip-height").value = data.stripHeight;
+          if (data.fontSize) document.getElementById("slider-font-size").value = data.fontSize;
+        } else if (AppState.profile?.businessName && AppState.profile.businessName !== "S.K.P.S DIGITAL") {
+          document.getElementById("ty-brand-name").value = AppState.profile.businessName;
+        }
+      } catch (_) {}
+    }
+
+    function saveThankYouSettings() {
+      try {
+        const payload = {
+          brand: document.getElementById("ty-brand-name").value,
+          title: document.getElementById("ty-header-title").value,
+          msg: document.getElementById("ty-custom-msg").value,
+          footer: document.getElementById("ty-footer-contact").value,
+          qrLink: document.getElementById("ty-qr-link").value,
+          stripHeight: document.getElementById("slider-strip-height").value,
+          fontSize: document.getElementById("slider-font-size").value
+        };
+        localStorage.setItem(STORAGE_KEY_TY, JSON.stringify(payload));
+      } catch (_) {}
+    }
+
+    restoreThankYouSettings();
+
+    // Load Mini QR Code Image for Strip
+    function refreshMiniQrImage() {
+      const qrTarget = document.getElementById("ty-qr-link").value.trim() || "https://sellgst-pro.pages.dev";
+      if (qrTarget === lastQrUrlLoaded && miniQrImage) {
+        scheduleCanvasRender();
+        return;
+      }
+      lastQrUrlLoaded = qrTarget;
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        miniQrImage = img;
+        scheduleCanvasRender();
+      };
+      img.src = `https://api.qrserver.com/v1/create-qr-code/?size=140x140&margin=2&data=${encodeURIComponent(qrTarget)}`;
+    }
+
+    // =========================================================================
+    // 3. HIGH-DPI 4x6 THERMAL CANVAS RENDERER (REPLICA + UPLOADED LABEL + STRIP)
+    // =========================================================================
+    const canvas = document.getElementById("label-studio-canvas");
+    const ctx = canvas.getContext("2d");
+    let renderPending = false;
+
+    function scheduleCanvasRender() {
+      if (renderPending) return;
+      renderPending = true;
+      requestAnimationFrame(() => {
+        renderPending = false;
+        renderFullThermalLabel();
+      });
+    }
+
+    // Helper to wrap Hindi/English multiline text cleanly inside a given width
+    function drawWrappedText(context, text, x, y, maxWidth, lineHeight, maxLines = 3) {
+      const words = String(text || "").split(/\s+/);
+      let line = "";
+      let currentY = y;
+      let linesDrawn = 0;
+
+      for (let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + " ";
+        const metrics = context.measureText(testLine);
+        if (metrics.width > maxWidth && n > 0) {
+          context.fillText(line.trim(), x, currentY);
+          line = words[n] + " ";
+          currentY += lineHeight;
+          linesDrawn += 1;
+          if (linesDrawn >= maxLines - 1) {
+            // Last allowed line: append remaining words truncated if needed
+            const rest = words.slice(n).join(" ");
+            context.fillText(rest.slice(0, 68), x, currentY);
+            return currentY + lineHeight;
+          }
+        } else {
+          line = testLine;
+        }
+      }
+      if (line.trim()) {
+        context.fillText(line.trim(), x, currentY);
+        currentY += lineHeight;
+      }
+      return currentY;
+    }
+
+    // Draws an authentic Meesho / Flipkart / Amazon shipping label replica (matching 1000174519.jpg)
+    function drawRealisticDefaultShippingLabel(availHeight) {
+      const brand = (document.getElementById("ty-brand-name").value.trim() || "AGNI VOLT ELECTRONIC").toUpperCase();
+      const pad = 18;
+      const w = canvas.width - pad * 2;
+
+      ctx.strokeStyle = "#0F172A";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(pad, pad, w, availHeight - pad - 6);
+
+      // Top Section: Customer Address (Left) + Courier Prepaid Box (Right)
+      const topSplitY = Math.round(availHeight * 0.42);
+      ctx.beginPath();
+      ctx.moveTo(pad, topSplitY);
+      ctx.lineTo(pad + w, topSplitY);
+      ctx.stroke();
+
+      const midX = pad + Math.round(w * 0.54);
+      ctx.beginPath();
+      ctx.moveTo(midX, pad);
+      ctx.lineTo(midX, topSplitY);
+      ctx.stroke();
+
+      // Left: Customer Address & Return Address (Exact 1000174519.jpg layout)
+      ctx.fillStyle = "#0F172A";
+      ctx.textAlign = "left";
+      ctx.font = "bold 13px 'Plus Jakarta Sans', sans-serif";
+      ctx.fillText("Customer Address", pad + 10, pad + 22);
+
+      ctx.font = "800 17px 'Plus Jakarta Sans', sans-serif";
+      ctx.fillText("Ragani Raj", pad + 10, pad + 44);
+
+      ctx.font = "600 12px 'Plus Jakarta Sans', sans-serif";
+      ctx.fillStyle = "#1E293B";
+      ctx.fillText("Jawahar Navodaya Vidyalaya Staff", pad + 10, pad + 64);
+      ctx.fillText("Quarter, Bishnupur, Dakbanglow Road", pad + 10, pad + 81);
+      ctx.fillText("Begusarai, Bihar, 851101", pad + 10, pad + 98);
+
+      // Horizontal divider inside left box for Undelivered Return Address
+      const retY = pad + 114;
+      ctx.beginPath();
+      ctx.moveTo(pad, retY);
+      ctx.lineTo(midX, retY);
+      ctx.stroke();
+
+      ctx.fillStyle = "#0F172A";
+      ctx.font = "bold 11.5px 'Plus Jakarta Sans', sans-serif";
+      ctx.fillText("If undelivered, return to:", pad + 10, retY + 18);
+      ctx.font = "800 13px 'Plus Jakarta Sans', sans-serif";
+      ctx.fillText(brand.slice(0, 26), pad + 10, retY + 36);
+      ctx.font = "600 11.5px 'Plus Jakarta Sans', sans-serif";
+      ctx.fillText("5, Ram Janki Path, Patna, Bihar, 800026", pad + 10, retY + 54);
+
+      // Right: Prepaid & Courier (Shadowfax / Delhivery / Ekart) + Barcode & QR
+      const courierName =
+        selectedMarketplace === "FLIPKART"
+          ? "E-Kart Logistics"
+          : selectedMarketplace === "AMAZON"
+          ? "Amazon ATS EasyShip"
+          : "Shadowfax";
+
+      ctx.fillStyle = "#0F172A";
+      ctx.fillRect(midX + 8, pad + 8, w - (midX - pad) - 16, 26);
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = "bold 12px 'Plus Jakarta Sans', sans-serif";
+      ctx.fillText("Prepaid: Do not collect cash", midX + 16, pad + 25);
+
+      ctx.fillStyle = "#0F172A";
+      ctx.font = "800 16px 'Plus Jakarta Sans', sans-serif";
+      ctx.fillText(courierName, midX + 12, pad + 54);
+
+      ctx.fillRect(midX + 12, pad + 62, 54, 18);
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = "bold 11px 'JetBrains Mono', monospace";
+      ctx.fillText("Pickup", midX + 19, pad + 75);
+
+      ctx.fillStyle = "#0F172A";
+      ctx.font = "800 15px 'JetBrains Mono', monospace";
+      ctx.fillText("E34_BGS_Begu", midX + 12, pad + 98);
+      ctx.font = "600 11px 'JetBrains Mono', monospace";
+      ctx.fillText("Return Code: 800026,3927556", midX + 12, pad + 115);
+
+      // Draw Crisp AWB Barcode
+      ctx.font = "bold 13px 'JetBrains Mono', monospace";
+      ctx.fillText("SF3755420832FPL", midX + 35, topSplitY - 56);
+      for (let bx = midX + 14; bx < pad + w - 16; bx += 5) {
+        const barW = bx % 15 === 0 ? 3.2 : bx % 10 === 0 ? 1.2 : 2.2;
+        ctx.fillRect(bx, topSplitY - 50, barW, 40);
+      }
+
+      // Middle Section: Product Details (SKU, Size, Qty, Color, Order No.)
+      const prodY = topSplitY;
+      const prodH = 74;
+      ctx.beginPath();
+      ctx.moveTo(pad, prodY + prodH);
+      ctx.lineTo(pad + w, prodY + prodH);
+      ctx.stroke();
+
+      ctx.font = "800 13px 'Plus Jakarta Sans', sans-serif";
+      ctx.fillText("Product Details", pad + 10, prodY + 20);
+
+      ctx.font = "bold 12px 'Plus Jakarta Sans', sans-serif";
+      ctx.fillText("SKU", pad + 10, prodY + 40);
+      ctx.fillText("Size", pad + 140, prodY + 40);
+      ctx.fillText("Qty", pad + 240, prodY + 40);
+      ctx.fillText("Color", pad + 310, prodY + 40);
+      ctx.fillText("Order No.", pad + 410, prodY + 40);
+
+      ctx.font = "600 12.5px 'JetBrains Mono', monospace";
+      ctx.fillText("Lunch-42 / RT-01", pad + 10, prodY + 60);
+      ctx.fillText("Free Size", pad + 140, prodY + 60);
+      ctx.fillText("1", pad + 240, prodY + 60);
+      ctx.fillText("Blue", pad + 310, prodY + 60);
+      ctx.fillText("310391955173_1", pad + 410, prodY + 60);
+
+      // Tax Invoice Section (Bottom of standard label)
+      const invY = prodY + prodH;
+      ctx.fillStyle = "#F8FAFC";
+      ctx.fillRect(pad + 1, invY + 1, w - 2, 24);
+      ctx.fillStyle = "#0F172A";
+      ctx.font = "800 12px 'Plus Jakarta Sans', sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("TAX INVOICE — ORIGINAL FOR RECIPIENT", pad + w / 2, invY + 17);
+      ctx.textAlign = "left";
+
+      ctx.beginPath();
+      ctx.moveTo(pad, invY + 25);
+      ctx.lineTo(pad + w, invY + 25);
+      ctx.stroke();
+
+      ctx.font = "bold 11px 'Plus Jakarta Sans', sans-serif";
+      ctx.fillText(`Sold By: ${brand}`, pad + 10, invY + 44);
+      ctx.font = "600 10.5px 'JetBrains Mono', monospace";
+      ctx.fillText(`GSTIN: ${AppState.profile?.gstin || "10FVMPK3196C1ZI"}`, pad + 10, invY + 60);
+      ctx.fillText("Invoice No: rwy40724   |   Date: 12-11-2026", pad + 280, invY + 44);
+      ctx.fillText("Place of Supply: 10-Bihar", pad + 280, invY + 60);
+
+      ctx.beginPath();
+      ctx.moveTo(pad, invY + 70);
+      ctx.lineTo(pad + w, invY + 70);
+      ctx.stroke();
+
+      // Compact Invoice Item Table
+      ctx.font = "bold 10.5px 'Plus Jakarta Sans', sans-serif";
+      ctx.fillText("Description", pad + 10, invY + 88);
+      ctx.fillText("HSN", pad + 225, invY + 88);
+      ctx.fillText("Qty", pad + 285, invY + 88);
+      ctx.fillText("Taxable", pad + 335, invY + 88);
+      ctx.fillText("GST", pad + 420, invY + 88);
+      ctx.fillText("Total", pad + 495, invY + 88);
+
+      ctx.font = "600 11px 'JetBrains Mono', monospace";
+      ctx.fillText("Premium Double Decker Box", pad + 10, invY + 108);
+      ctx.fillText("732393", pad + 225, invY + 108);
+      ctx.fillText("1", pad + 285, invY + 108);
+      ctx.fillText("Rs.111.95", pad + 335, invY + 108);
+      ctx.fillText("Rs.10.07", pad + 420, invY + 108);
+      ctx.font = "800 11.5px 'JetBrains Mono', monospace";
+      ctx.fillText("Rs.188.00", pad + 490, invY + 108);
+    }
+
+    function renderFullThermalLabel() {
+      const stripHeightSliderVal = Number(document.getElementById("slider-strip-height").value) || 88;
+      // Scale slider value for 600x900 high-DPI canvas
+      const stripH = Math.round(stripHeightSliderVal * 1.95);
+      const fontSizeSliderVal = Number(document.getElementById("slider-font-size").value) || 11.5;
+      const baseFontPx = Math.round(fontSizeSliderVal * 1.45);
+      const cropRatioPct = Number(document.getElementById("slider-crop-ratio").value) || 100;
+
+      const showStars = document.getElementById("chk-show-stars").checked;
+      const showQr = document.getElementById("chk-show-qr").checked;
+      const showCutLine = document.getElementById("chk-cut-line").checked;
+      const isDarkTheme = document.getElementById("chk-dark-theme").checked;
+
+      const brandName = (document.getElementById("ty-brand-name").value.trim() || "AGNI VOLT ELECTRONIC").toUpperCase();
+      const headerTitle = document.getElementById("ty-header-title").value.trim() || "🙏 THANK YOU FOR YOUR ORDER!";
+      const customMsg = document.getElementById("ty-custom-msg").value.trim();
+      const footerContact = document.getElementById("ty-footer-contact").value.trim();
+
+      // Update UI value labels
+      document.getElementById("val-strip-height").textContent = `${stripHeightSliderVal} px (${
+        stripHeightSliderVal <= 70 ? "Mini" : stripHeightSliderVal <= 98 ? "Compact Fit" : "Large"
+      })`;
+      document.getElementById("val-font-size").textContent = `${fontSizeSliderVal} px`;
+      document.getElementById("val-crop-ratio").textContent = `${cropRatioPct}%`;
+
+      // 1. Clear full 600x900 canvas
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Available height for the shipping label above the Thank You card strip
+      const labelAreaHeight = canvas.height - stripH - 12;
+
+      // 2. Render Uploaded Label OR Realistic Default Label in top area
+      if (uploadedLabelImage) {
+        const srcW = uploadedLabelImage.width;
+        const srcH = Math.round(uploadedLabelImage.height * (cropRatioPct / 100));
+        ctx.drawImage(
+          uploadedLabelImage,
+          0,
+          0,
+          srcW,
+          srcH,
+          14,
+          12,
+          canvas.width - 28,
+          labelAreaHeight - 16
+        );
+      } else {
+        drawRealisticDefaultShippingLabel(labelAreaHeight);
+      }
+
+      // 3. Draw Optional Scissors Cut-Line above the Thank You Card
+      const stripTopY = canvas.height - stripH - 10;
+      if (showCutLine) {
+        ctx.save();
+        ctx.strokeStyle = "#475569";
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([7, 5]);
+        ctx.beginPath();
+        ctx.moveTo(18, stripTopY - 4);
+        ctx.lineTo(canvas.width - 18, stripTopY - 4);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // 4. Draw the Custom Thank You & 5-Star Rating Card Box at the Bottom
+      const boxX = 16;
+      const boxY = stripTopY + 2;
+      const boxW = canvas.width - 32;
+      const boxH = stripH - 6;
+
+      if (isDarkTheme) {
+        ctx.fillStyle = "#0F172A";
+        ctx.fillRect(boxX, boxY, boxW, boxH);
+      } else {
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(boxX, boxY, boxW, boxH);
+        ctx.strokeStyle = "#0F172A";
+        ctx.lineWidth = 2.8;
+        ctx.strokeRect(boxX, boxY, boxW, boxH);
+      }
+
+      // Top Header Ribbon inside the Thank You Card
+      const ribbonH = Math.min(34, Math.max(24, Math.round(boxH * 0.24)));
+      ctx.fillStyle = isDarkTheme ? "#1E293B" : "#0F172A";
+      ctx.fillRect(boxX, boxY, boxW, ribbonH);
+
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = `800 ${Math.max(12, baseFontPx - 1)}px 'Plus Jakarta Sans', 'Noto Sans Devanagari', sans-serif`;
+      ctx.textAlign = "left";
+      ctx.fillText(`${brandName}  —  ${headerTitle}`.slice(0, 56), boxX + 12, boxY + Math.round(ribbonH * 0.7));
+
+      // Right side of ribbon: 5-Star Badge if enabled
+      if (showStars) {
+        ctx.fillStyle = "#FACC15";
+        ctx.font = `800 ${Math.max(12, baseFontPx - 1)}px 'Plus Jakarta Sans', sans-serif`;
+        ctx.textAlign = "right";
+        ctx.fillText("★★★★★ 5-STAR", boxX + boxW - 12, boxY + Math.round(ribbonH * 0.7));
+      }
+
+      // Content area inside Thank You Card (Left: Custom Hindi/English Text + Footer, Right: Optional Mini QR)
+      const qrSize = showQr ? Math.min(boxH - ribbonH - 14, 104) : 0;
+      const textMaxW = showQr ? boxW - qrSize - 34 : boxW - 24;
+      const textStartX = boxX + 12;
+      let textStartY = boxY + ribbonH + Math.max(18, baseFontPx + 4);
+
+      ctx.textAlign = "left";
+      ctx.fillStyle = isDarkTheme ? "#FFFFFF" : "#0F172A";
+      ctx.font = `700 ${baseFontPx}px 'Plus Jakarta Sans', 'Noto Sans Devanagari', sans-serif`;
+
+      const lineHeight = Math.round(baseFontPx * 1.32);
+      const maxAllowedLines = boxH < 135 ? 2 : 3;
+      drawWrappedText(ctx, customMsg, textStartX, textStartY, textMaxW, lineHeight, maxAllowedLines);
+
+      // Bottom Footer Contact / Offer Line + 5-Star Visual Graphic
+      if (footerContact && boxH >= 115) {
+        const footerY = boxY + boxH - 10;
+        ctx.fillStyle = isDarkTheme ? "#34D399" : "#0F172A";
+        ctx.font = `800 ${Math.max(11, baseFontPx - 2)}px 'JetBrains Mono', 'Noto Sans Devanagari', monospace`;
+        ctx.fillText(footerContact.slice(0, 62), textStartX, footerY);
+      }
+
+      // Draw Mini QR Code on the right of the Thank You Card
+      if (showQr && miniQrImage && qrSize >= 44) {
+        const qrX = boxX + boxW - qrSize - 10;
+        const qrY = boxY + ribbonH + Math.round((boxH - ribbonH - qrSize) / 2);
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(qrX - 3, qrY - 3, qrSize + 6, qrSize + 6);
+        ctx.strokeStyle = "#0F172A";
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(qrX - 3, qrY - 3, qrSize + 6, qrSize + 6);
+        ctx.drawImage(miniQrImage, qrX, qrY, qrSize, qrSize);
+      }
+    }
+
+    // =========================================================================
+    // 4. PDF & IMAGE SHIPPING LABEL UPLOAD HANDLER (SUPPORTS .PDF & .JPG/.PNG)
+    // =========================================================================
+    document.getElementById("shipping-label-file-input")?.addEventListener("change", async (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      if (!consumeFreeActionOrLock("4x6 Label & Thank You Card Studio")) {
+        e.target.value = "";
+        return;
+      }
+
+      const statusEl = document.getElementById("uploaded-label-status");
+      statusEl.textContent = `Processing: ${file.name}...`;
+
+      // Handle PDF shipping labels directly in RAM using PDF.js
+      if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
+        try {
+          if (window.pdfjsLib) {
+            window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+              "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+            const arrayBuf = await file.arrayBuffer();
+            const pdf = await window.pdfjsLib.getDocument({ data: arrayBuf }).promise;
+            const page = await pdf.getPage(1);
+            const viewport = page.getViewport({ scale: 2.2 });
+            const tempCanvas = document.createElement("canvas");
+            tempCanvas.width = viewport.width;
+            tempCanvas.height = viewport.height;
+            await page.render({ canvasContext: tempCanvas.getContext("2d"), viewport }).promise;
+
+            const img = new Image();
+            img.onload = () => {
+              uploadedLabelImage = img;
+              statusEl.textContent = `Loaded PDF: ${file.name}`;
+              scheduleCanvasRender();
+              showToast("✅ PDF Shipping Label cropped & Thank You Card attached!", "success");
+            };
+            img.src = tempCanvas.toDataURL("image/png");
+            return;
+          }
+        } catch (err) {
+          showToast("Could not parse PDF directly. You can also upload a screenshot/image of the label.", "warning");
+        }
+      }
+
+      // Handle Image (.jpg, .png, .webp) shipping labels
+      const img = new Image();
+      img.onload = () => {
+        uploadedLabelImage = img;
+        statusEl.textContent = `Loaded Image: ${file.name}`;
+        scheduleCanvasRender();
+        showToast("✅ Shipping Label loaded with Custom Thank You Card at the bottom!", "success");
+      };
+      img.src = URL.createObjectURL(file);
+    });
+
+    // Marketplace Ratio Buttons
+    document.querySelectorAll("[data-market-ratio]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        selectedMarketplace = btn.getAttribute("data-market-ratio");
+        document.querySelectorAll(".market-ratio-btn").forEach((b) => {
+          b.className = "market-ratio-btn py-2.5 rounded-xl text-slate-600 hover:text-[#081B4B] transition";
+        });
+        btn.className = "market-ratio-btn py-2.5 rounded-xl bg-[#5B2EFF] text-white shadow-sm transition";
+
+        const badge = document.getElementById("preview-ratio-badge");
+        const cropSlider = document.getElementById("slider-crop-ratio");
+
+        if (selectedMarketplace === "MEESHO") {
+          badge.textContent = "Meesho 4×6 Thermal Ratio";
+          cropSlider.value = "100";
+        } else if (selectedMarketplace === "FLIPKART") {
+          badge.textContent = "Flipkart 4×6 Thermal Ratio";
+          cropSlider.value = "92";
+        } else {
+          badge.textContent = "Amazon EasyShip 4×6 Ratio";
+          cropSlider.value = "96";
+        }
+        scheduleCanvasRender();
+      });
+    });
+
+    // 1-Click Language Template Buttons
+    document.querySelectorAll("[data-tpl-lang]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const key = btn.getAttribute("data-tpl-lang");
+        const tpl = THANK_YOU_TEMPLATES[key];
+        if (tpl) {
+          document.getElementById("ty-header-title").value = tpl.title;
+          document.getElementById("ty-custom-msg").value = tpl.msg;
+          saveThankYouSettings();
+          scheduleCanvasRender();
+          showToast(`Applied ${key} Thank You & 5-Star Template!`, "info", 2200);
+        }
+      });
+    });
+
+    // Live Input & Slider Listeners
+    [
+      "ty-brand-name",
+      "ty-header-title",
+      "ty-custom-msg",
+      "ty-footer-contact",
+      "slider-strip-height",
+      "slider-font-size",
+      "slider-crop-ratio"
+    ].forEach((id) => {
+      document.getElementById(id)?.addEventListener("input", () => {
+        saveThankYouSettings();
+        scheduleCanvasRender();
+      });
+    });
+
+    document.getElementById("ty-qr-link")?.addEventListener("change", () => {
+      saveThankYouSettings();
+      refreshMiniQrImage();
+    });
+
+    ["chk-show-stars", "chk-show-qr", "chk-cut-line", "chk-dark-theme"].forEach((id) => {
+      document.getElementById(id)?.addEventListener("change", scheduleCanvasRender);
+    });
+
+    document.getElementById("reset-sliders-btn")?.addEventListener("click", () => {
+      document.getElementById("slider-strip-height").value = "88";
+      document.getElementById("slider-font-size").value = "11.5";
+      document.getElementById("slider-crop-ratio").value = "100";
+      saveThankYouSettings();
+      scheduleCanvasRender();
+      showToast("Reset Thank You Strip size to recommended compact fit!", "info");
+    });
+
+    document.getElementById("reset-demo-label-btn")?.addEventListener("click", () => {
+      uploadedLabelImage = null;
+      document.getElementById("uploaded-label-status").textContent = "Showing Realistic AGNI VOLT Demo Label";
+      scheduleCanvasRender();
+    });
+
+    // =========================================================================
+    // 5. EXPORT 4x6 THERMAL PDF, PNG & DIRECT PRINT
+    // =========================================================================
+    document.getElementById("download-label-pdf-btn")?.addEventListener("click", () => {
+      if (!consumeFreeActionOrLock("4x6 Thermal Label PDF Download")) return;
+      const imgData = canvas.toDataURL("image/jpeg", 0.98);
+      if (window.jspdf && window.jspdf.jsPDF) {
+        // Exact 4x6 inch (101.6mm x 152.4mm) thermal roll PDF
+        const pdf = new window.jspdf.jsPDF({
+          orientation: "portrait",
+          unit: "mm",
+          format: [101.6, 152.4]
+        });
+        pdf.addImage(imgData, "JPEG", 0, 0, 101.6, 152.4);
+        pdf.save(`SellGST_4x6_Label_ThankYou_${Date.now()}.pdf`);
+        showToast("✅ 4×6 Inch Thermal PDF with Thank You Card downloaded!", "success");
+      } else {
+        window.print();
+      }
+    });
+
+    document.getElementById("download-label-png-btn")?.addEventListener("click", () => {
+      if (!consumeFreeActionOrLock("4x6 Thermal Label PNG Download")) return;
+      const a = document.createElement("a");
+      a.href = canvas.toDataURL("image/png");
+      a.download = `SellGST_4x6_Label_ThankYou_${Date.now()}.png`;
+      a.click();
+      showToast("✅ High-Res 4×6 Thermal PNG downloaded!", "success");
+    });
+
+    document.getElementById("print-label-btn")?.addEventListener("click", () => {
+      if (!consumeFreeActionOrLock("4x6 Thermal Label Print")) return;
+      window.print();
+    });
+
+    document.getElementById("sidebar-logout-btn")?.addEventListener("click", logoutUser);
+    document.getElementById("bottom-logout-btn")?.addEventListener("click", logoutUser);
+
+    subscribeAppState(() => {
+      syncProDOMElements();
+    });
+
+    refreshMiniQrImage();
+    scheduleCanvasRender();
+  </script>
+</body>
+</html>
