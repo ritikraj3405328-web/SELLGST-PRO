@@ -194,10 +194,10 @@
     }
   </style>
 </head>
-<body class="min-h-screen w-full overflow-x-hidden pb-24 lg:pb-12 flex flex-col justify-start">
+<body class="min-h-screen w-full overflow-x-hidden pb-12 flex flex-col justify-start">
 
   <!-- ===================================================================== -->
-  <!-- SLIDE-OUT LEFT SIDEBAR DRAWER ("⚡ ALL SUPER TOOLS MENU" LIKE SCREENSHOT) -->
+  <!-- SLIDE-OUT LEFT SIDEBAR DRAWER ("⚡ ALL SUPER TOOLS MENU")              -->
   <!-- ===================================================================== -->
   <div
     id="super-tools-backdrop"
@@ -260,7 +260,7 @@
             </div>
           </a>
 
-          <!-- Highlighted Visual Validator Item with Blue Pill (Like Screenshot) -->
+          <!-- Highlighted Visual Validator Item with Blue Pill -->
           <div class="p-2.5 rounded-2xl bg-blue-50/70 border border-blue-100 space-y-2">
             <a
               href="./json-validator.html"
@@ -313,7 +313,6 @@
             2. E-COM AUDIT, BILLING &amp; WAREHOUSE
           </div>
 
-          <!-- User Dashboard with EDIT / TRACK Pill & Live Sub-Stats (Matches Screenshot) -->
           <div class="p-2.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
             <a
               href="./app.html"
@@ -412,7 +411,7 @@
       </div>
     </div>
 
-    <!-- Bottom Trial / Quota Card + Upgrade Pro & Sign-In Buttons (Matches Screenshot) -->
+    <!-- Bottom Trial / Quota Card + Upgrade Pro & Sign-In Buttons -->
     <div class="p-4 border-t border-slate-100 space-y-2.5 bg-white">
       <div class="p-3.5 rounded-2xl bg-rose-50/80 border border-rose-200/80 space-y-2">
         <div class="flex items-start gap-2 text-rose-700 font-extrabold text-xs">
@@ -449,38 +448,14 @@
     </div>
   </aside>
 
-  <!-- MOBILE FLOATING BOTTOM DOCK (SINGLE HOME ICON 🏠 + MENU TRIGGER) -->
-  <nav class="lg:hidden fixed bottom-2.5 inset-x-3 bg-white/95 backdrop-blur-xl text-slate-700 rounded-3xl px-2 py-2.5 shadow-2xl border border-indigo-100 z-40 flex items-center justify-around">
-    <a href="./index.html" class="flex flex-col items-center gap-0.5 text-[#5B2EFF] font-extrabold text-[10px]">
-      <span class="text-base">🏠</span>
-      <span data-i18n="nav_home_text">Home</span>
-    </a>
-    <a href="./gst-filing.html" class="flex flex-col items-center gap-0.5 text-slate-500 hover:text-[#5B2EFF] font-semibold text-[10px]">
-      <span class="text-base">🏛️</span>
-      <span>GST Filing</span>
-    </a>
-    <a href="./ecom-audit.html" class="flex flex-col items-center gap-0.5 text-slate-500 hover:text-[#5B2EFF] font-semibold text-[10px]">
-      <span class="text-base">📦</span>
-      <span>Profit/Audit</span>
-    </a>
-    <a href="./invoice.html" class="flex flex-col items-center gap-0.5 text-slate-500 hover:text-[#5B2EFF] font-semibold text-[10px]">
-      <span class="text-base">🧾</span>
-      <span>Navy Bill</span>
-    </a>
-    <button
-      type="button"
-      data-open-super-menu
-      class="flex flex-col items-center gap-0.5 text-[#081B4B] hover:text-[#5B2EFF] font-extrabold text-[10px]"
-    >
-      <span class="text-base">☰</span>
-      <span>All Tools</span>
-    </button>
-  </nav>
+  <!-- MAIN CONTAINER -->
+  <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-3 sm:pt-4 space-y-5 overflow-x-hidden">
 
-  <!-- CLEAN TOP NAVIGATION BAR WITH PROMINENT 3-LINE (☰) BUTTON -->
-  <header class="sticky top-1 z-30 max-w-7xl mx-auto w-full px-3 sm:px-6 mt-1">
-    <nav class="bg-white/95 backdrop-blur-xl border border-white rounded-3xl px-3.5 sm:px-6 py-2.5 shadow-lg shadow-indigo-500/5 flex items-center justify-between gap-2">
-      <!-- Left: 3-Line Hamburger Button (☰) + Brand Logo -->
+    <!-- =================================================================== -->
+    <!-- CLEAN TOP HEADER BAR (EXACTLY MATCHES QR-STUDIO.HTML STRUCTURE)     -->
+    <!-- RED-MARKED SUBTITLE & REDUNDANT SUPER-TOOLS HEADER PILL REMOVED     -->
+    <!-- =================================================================== -->
+    <header class="bg-white/95 backdrop-blur-xl rounded-3xl border border-white px-4 sm:px-6 py-3 shadow-lg shadow-indigo-500/5 flex flex-wrap items-center justify-between gap-2.5">
       <div class="flex items-center gap-2.5 min-w-0">
         <button
           type="button"
@@ -497,24 +472,18 @@
           <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-[#081B4B] via-[#5B2EFF] to-[#10E594] text-white flex items-center justify-center font-black text-xs shadow-md shrink-0">
             S₹
           </div>
-          <div class="min-w-0">
-            <div class="flex items-center gap-1.5">
-              <span class="font-extrabold text-sm sm:text-base tracking-tight text-[#081B4B] truncate">SellGST</span>
-              <span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-[#5B2EFF] text-white shrink-0">3D PRO</span>
-            </div>
-            <p class="hidden sm:block text-[11px] text-slate-500 truncate">
-              1-Click GST Filing • E-Com Profit/Loss Audit • Navy Billing
-            </p>
+          <div class="flex items-center gap-1.5 min-w-0">
+            <h1 class="font-extrabold text-sm sm:text-base tracking-tight text-[#081B4B] truncate">SellGST</h1>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#5B2EFF] text-white shrink-0">3D PRO</span>
           </div>
         </a>
       </div>
 
-      <!-- Right: Compact Action Controls -->
-      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+      <div class="flex items-center gap-2 flex-wrap justify-end ml-auto">
         <select
           data-lang-switcher
           aria-label="Select Language"
-          class="px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none max-w-[88px] sm:max-w-none truncate"
+          class="px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none max-w-[95px] truncate"
         ></select>
 
         <!-- 7-SECOND AUTO-HIDING PWA INSTALL BUTTON -->
@@ -522,249 +491,216 @@
           type="button"
           id="pwa-install-btn"
           data-pwa-install
-          class="relative overflow-hidden px-3 py-1.5 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#081B4B] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap flex items-center gap-1"
+          class="relative overflow-hidden px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#081B4B] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap flex items-center gap-1.5"
         >
-          <span data-i18n="install_app_btn">📲 Install</span>
+          <span data-i18n="install_app_btn">📲 Install App</span>
           <span id="pwa-sec-badge" class="px-1.5 py-0.2 rounded-full bg-white/20 text-[10px] font-mono">7s</span>
           <span class="absolute bottom-0 left-0 h-0.5 bg-[#10E594] pwa-timer-bar"></span>
         </button>
 
         <button
           type="button"
-          data-open-super-menu
-          class="hidden md:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] text-xs font-extrabold border border-indigo-200 transition whitespace-nowrap"
+          data-open-account
+          class="px-3 py-1.5 rounded-full bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] text-xs font-extrabold border border-indigo-100 transition whitespace-nowrap"
         >
-          <span>⚡ All 10 Super Tools</span>
+          👤 My Account
         </button>
 
         <button
           type="button"
-          data-open-account
-          class="px-3 py-1.5 rounded-full bg-[#081B4B] hover:bg-[#5B2EFF] text-white text-xs font-extrabold shadow-xs transition whitespace-nowrap"
+          data-pro-badge
+          data-unlock-pro="MONTHLY"
+          class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-[#5B2EFF] to-[#4318FF] text-white shadow-md whitespace-nowrap"
         >
-          👤 Account
+          Unlock Pro ⚡
         </button>
       </div>
-    </nav>
-  </header>
+    </header>
 
-  <!-- ===================================================================== -->
-  <!-- PURPOSEFUL, ZERO-CLUTTER FRONT WORKSPACE (LIVE CALCULATOR & 3D GAUGE) -->
-  <!-- ===================================================================== -->
-  <main class="max-w-7xl mx-auto w-full px-3 sm:px-6 mt-3 space-y-5 flex-1">
+    <!-- =================================================================== -->
+    <!-- PURPOSEFUL FRONT WORKSPACE (LIVE CALCULATOR & 3D GAUGE)             -->
+    <!-- =================================================================== -->
+    <main class="space-y-5 flex-1">
 
-    <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
 
-      <!-- Left 7 Cols: Live Interactive Store Valuation & Marketplace Leak Calculator -->
-      <div data-3d-tilt class="bento-card p-5 sm:p-7 lg:col-span-7 flex flex-col justify-between space-y-5">
-        <div class="space-y-2.5">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <span data-i18n="hero_badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 text-[#5B2EFF] text-[11px] font-extrabold">
-              💎 INDIA'S #1 3D E-COM VALUATION, AUDIT &amp; GST SUPER-APP
-            </span>
-            <button
-              type="button"
-              data-pro-badge
-              data-unlock-pro="MONTHLY"
-              class="px-3 py-1 rounded-full text-[11px] font-extrabold bg-[#5B2EFF] text-white shadow-sm"
-            >
-              Unlock Pro ⚡
-            </button>
-          </div>
-
-          <h1 data-i18n="hero_heading" class="text-xl sm:text-3xl font-extrabold text-[#081B4B] leading-tight">
-            Stop Losing 12% of Your E-Commerce Payouts to Unclaimed RTOs &amp; Weight Fraud.
-          </h1>
-
-          <p data-i18n="hero_subtext" class="text-xs sm:text-sm text-slate-600 leading-relaxed">
-            100% Client-Side RAM CSV Audit for <strong>Amazon, Flipkart &amp; Meesho</strong> + Custom Navy GST Billing, Dynamic QR &amp; 1-Click GSTR-1 JSON.
-          </p>
-        </div>
-
-        <!-- Functional Tool on Front Page: Live Interactive 3D Valuation & Leak Recovery Calculator -->
-        <div class="p-4 rounded-2xl bg-slate-50/90 border border-slate-200/80 space-y-3">
-          <div class="flex items-center justify-between text-xs">
-            <span class="font-extrabold text-[#081B4B]">Monthly Marketplace Orders (Drag to Calculate Leak &amp; Valuation)</span>
-            <span id="order-vol-label" class="font-mono font-black text-sm text-[#5B2EFF]">1,500 Orders / mo</span>
-          </div>
-
-          <input
-            type="range"
-            id="order-vol-slider"
-            min="100"
-            max="25000"
-            step="100"
-            value="1500"
-            aria-label="Monthly Marketplace Orders"
-            class="w-full accent-[#5B2EFF] cursor-pointer h-2 bg-indigo-100 rounded-lg"
-          />
-
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1 text-center">
-            <div class="p-2.5 rounded-xl bg-white border border-slate-200/80">
-              <div class="text-[10px] font-bold text-slate-400">Unreturned RTO (&gt;30d)</div>
-              <div id="calc-rto-loss" class="font-mono font-extrabold text-sm text-rose-600 mt-0.5">₹18,750.00</div>
+        <!-- Left 7 Cols: Live Interactive Store Valuation & Marketplace Leak Calculator -->
+        <div data-3d-tilt class="bento-card p-5 sm:p-7 lg:col-span-7 flex flex-col justify-between space-y-5">
+          <div class="space-y-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span data-i18n="hero_badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 text-[#5B2EFF] text-[11px] font-extrabold">
+                💎 INDIA'S #1 3D E-COM VALUATION, AUDIT &amp; GST SUPER-APP
+              </span>
+              <button
+                type="button"
+                data-pro-badge
+                data-unlock-pro="MONTHLY"
+                class="px-3 py-1 rounded-full text-[11px] font-extrabold bg-[#5B2EFF] text-white shadow-sm"
+              >
+                Unlock Pro ⚡
+              </button>
             </div>
-            <div class="p-2.5 rounded-xl bg-white border border-slate-200/80">
-              <div class="text-[10px] font-bold text-slate-400">Weight Slab Overcharge</div>
-              <div id="calc-weight-loss" class="font-mono font-extrabold text-sm text-amber-600 mt-0.5">₹8,400.00</div>
-            </div>
-            <div class="p-2.5 rounded-xl bg-[#10E594]/25 border border-emerald-400/50">
-              <div class="text-[10px] font-extrabold text-emerald-950">Est. Yearly Recovery</div>
-              <div id="calc-yearly-save" class="font-mono font-black text-sm text-[#081B4B] mt-0.5">₹3,25,800.00</div>
-            </div>
-          </div>
-        </div>
 
-        <!-- Primary Action Buttons (Including 1-Click Open All Super Tools Drawer) -->
-        <div class="flex flex-wrap items-center gap-2.5 pt-1">
-          <button
-            type="button"
-            data-open-super-menu
-            class="px-5 py-3 rounded-2xl bg-[#5B2EFF] hover:bg-indigo-700 text-white font-extrabold text-xs sm:text-[13px] shadow-xl shadow-indigo-500/25 transition flex items-center gap-2 cursor-pointer"
-          >
-            <span>☰ Open All Super Tools Menu (10 Tools)</span>
-          </button>
+            <h2 data-i18n="hero_heading" class="text-xl sm:text-3xl font-extrabold text-[#081B4B] leading-tight">
+              Stop Losing 12% of Your E-Commerce Payouts to Unclaimed RTOs &amp; Weight Fraud.
+            </h2>
 
-          <a
-            href="./gst-filing.html"
-            class="px-4 py-3 rounded-2xl bg-[#081B4B] hover:bg-slate-900 text-white font-extrabold text-xs sm:text-[13px] shadow-md transition flex items-center gap-1.5"
-          >
-            <span>🏛️ 1-Click GSTR-1 JSON</span>
-          </a>
-
-          <a
-            href="./ecom-audit.html"
-            class="px-4 py-3 rounded-2xl bg-[#10E594] hover:bg-emerald-300 text-[#081B4B] font-extrabold text-xs sm:text-[13px] shadow-sm transition flex items-center gap-1.5"
-          >
-            <span>📦 Scan Profit/Loss CSV</span>
-          </a>
-        </div>
-      </div>
-
-      <!-- Right 5 Cols: 3D Purple Business Valuation Card + Speedometer Gauge -->
-      <div class="lg:col-span-5 flex flex-col justify-between gap-5">
-
-        <!-- Royal Purple 3D Valuation Card -->
-        <div data-3d-tilt class="purple-3d-card text-white p-5 sm:p-6 relative overflow-hidden">
-          <div class=" -top-10 -right-10 w-36 h-36 rounded-full bg-white/10 pointer-events-none absolute"></div>
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-indigo-100">Financial Analysis • Live Valuation</span>
-            <span class="px-2.5 py-0.5 rounded-full bg-[#10E594] text-[#081B4B] font-mono text-[10px] font-extrabold">12x MULTIPLE</span>
+            <p data-i18n="hero_subtext" class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              100% Client-Side RAM CSV Audit for <strong>Amazon, Flipkart &amp; Meesho</strong> + Custom Navy GST Billing, Dynamic QR &amp; 1-Click GSTR-1 JSON.
+            </p>
           </div>
 
-          <div class="my-3">
-            <div class="text-[11px] uppercase tracking-wider text-indigo-200">Estimated Business Valuation</div>
-            <div id="calc-store-valuation" class="text-2xl sm:text-3xl font-black font-mono tracking-tight text-white mt-0.5">
-              ₹21,60,000.00
+          <!-- Functional Tool on Front Page: Live Interactive 3D Valuation & Leak Recovery Calculator -->
+          <div class="p-4 rounded-2xl bg-slate-50/90 border border-slate-200/80 space-y-3">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-extrabold text-[#081B4B]">Monthly Marketplace Orders (Drag to Calculate Leak &amp; Valuation)</span>
+              <span id="order-vol-label" class="font-mono font-black text-sm text-[#5B2EFF]">1,500 Orders / mo</span>
+            </div>
+
+            <input
+              type="range"
+              id="order-vol-slider"
+              min="100"
+              max="25000"
+              step="100"
+              value="1500"
+              aria-label="Monthly Marketplace Orders"
+              class="w-full accent-[#5B2EFF] cursor-pointer h-2 bg-indigo-100 rounded-lg"
+            />
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1 text-center">
+              <div class="p-2.5 rounded-xl bg-white border border-slate-200/80">
+                <div class="text-[10px] font-bold text-slate-400">Unreturned RTO (&gt;30d)</div>
+                <div id="calc-rto-loss" class="font-mono font-extrabold text-sm text-rose-600 mt-0.5">₹18,750.00</div>
+              </div>
+              <div class="p-2.5 rounded-xl bg-white border border-slate-200/80">
+                <div class="text-[10px] font-bold text-slate-400">Weight Slab Overcharge</div>
+                <div id="calc-weight-loss" class="font-mono font-extrabold text-sm text-amber-600 mt-0.5">₹8,400.00</div>
+              </div>
+              <div class="p-2.5 rounded-xl bg-[#10E594]/25 border border-emerald-400/50">
+                <div class="text-[10px] font-extrabold text-emerald-950">Est. Yearly Recovery</div>
+                <div id="calc-yearly-save" class="font-mono font-black text-sm text-[#081B4B] mt-0.5">₹3,25,800.00</div>
+              </div>
             </div>
           </div>
 
-          <!-- Inner White Floating Split Pill -->
-          <div class="bg-white text-[#081B4B] rounded-2xl p-3.5 shadow-lg grid grid-cols-2 gap-3 text-center">
-            <div class="border-r border-slate-100 pr-2">
-              <div class="text-[10px] font-bold text-slate-400">Monthly Leak Risk</div>
-              <div id="calc-monthly-leak" class="text-sm font-black text-rose-600 font-mono mt-0.5">₹27,150.00</div>
-            </div>
-            <div class="pl-2">
-              <div class="text-[10px] font-bold text-slate-400">Monthly GMV Sales</div>
-              <div id="calc-monthly-gmv" class="text-sm font-black text-[#5B2EFF] font-mono mt-0.5">₹4,50,000.00</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 3D Speedometer & Ring Analytics Preview Card -->
-        <div data-3d-tilt class="bento-card p-5 flex flex-col justify-between space-y-3">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-extrabold text-[#081B4B]">3D Profit &amp; Compliance Gauge</span>
+          <!-- Primary Action Buttons -->
+          <div class="flex flex-wrap items-center gap-2.5 pt-1">
             <button
               type="button"
               data-open-super-menu
-              class="px-2.5 py-0.5 rounded-full bg-[#5B2EFF] text-white text-[10px] font-bold"
+              class="px-5 py-3 rounded-2xl bg-[#5B2EFF] hover:bg-indigo-700 text-white font-extrabold text-xs sm:text-[13px] shadow-xl shadow-indigo-500/25 transition flex items-center gap-2 cursor-pointer"
             >
-              All Tools ☰
+              <span>☰ Open All Super Tools Menu (10 Tools)</span>
             </button>
-          </div>
 
-          <div class="grid grid-cols-2 gap-3 items-center">
-            <div class="text-center">
-              <svg viewBox="0 0 130 76" class="w-28 h-16 mx-auto overflow-visible float-3d">
-                <defs>
-                  <linearGradient id="homeGaugeGrad" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stop-color="#5B2EFF" />
-                    <stop offset="100%" stop-color="#10E594" />
-                  </linearGradient>
-                </defs>
-                <path d="M 15 66 A 50 50 0 0 1 115 66" fill="none" stroke="#E2E8F0" stroke-width="10" stroke-linecap="round" />
-                <path d="M 15 66 A 50 50 0 0 1 108 42" fill="none" stroke="url(#homeGaugeGrad)" stroke-width="10" stroke-linecap="round" />
-                <polygon id="home-gauge-needle" points="65,66 62,66 65,22 68,66" fill="#081B4B" transform="rotate(28 65 66)" />
-                <circle cx="65" cy="66" r="5" fill="#081B4B" />
-              </svg>
-              <div class="text-[11px] font-extrabold text-[#081B4B]">94.8% Audit Score</div>
+            <a
+              href="./gst-filing.html"
+              class="px-4 py-3 rounded-2xl bg-[#081B4B] hover:bg-slate-900 text-white font-extrabold text-xs sm:text-[13px] shadow-md transition flex items-center gap-1.5"
+            >
+              <span>🏛️ 1-Click GSTR-1 JSON</span>
+            </a>
+
+            <a
+              href="./ecom-audit.html"
+              class="px-4 py-3 rounded-2xl bg-[#10E594] hover:bg-emerald-300 text-[#081B4B] font-extrabold text-xs sm:text-[13px] shadow-sm transition flex items-center gap-1.5"
+            >
+              <span>📦 Scan Profit/Loss CSV</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right 5 Cols: 3D Purple Business Valuation Card + Speedometer Gauge -->
+        <div class="lg:col-span-5 flex flex-col justify-between gap-5">
+
+          <!-- Royal Purple 3D Valuation Card -->
+          <div data-3d-tilt class="purple-3d-card text-white p-5 sm:p-6 relative overflow-hidden">
+            <div class=" -top-10 -right-10 w-36 h-36 rounded-full bg-white/10 pointer-events-none absolute"></div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-indigo-100">Financial Analysis • Live Valuation</span>
+              <span class="px-2.5 py-0.5 rounded-full bg-[#10E594] text-[#081B4B] font-mono text-[10px] font-extrabold">12x MULTIPLE</span>
             </div>
 
-            <div class="text-center">
-              <svg viewBox="0 0 90 90" class="w-16 h-16 mx-auto">
-                <circle cx="45" cy="45" r="32" fill="none" stroke="#E2E8F0" stroke-width="9" />
-                <circle cx="45" cy="45" r="32" fill="none" stroke="#5B2EFF" stroke-width="10" stroke-dasharray="130 200" stroke-linecap="round" transform="rotate(-90 45 45)" />
-                <circle cx="45" cy="45" r="32" fill="none" stroke="#10E594" stroke-width="8" stroke-dasharray="55 200" stroke-dashoffset="-135" stroke-linecap="round" transform="rotate(-90 45 45)" />
-                <text x="45" y="48" text-anchor="middle" class="font-mono font-black text-xs" fill="#081B4B">900</text>
-              </svg>
-              <div class="text-[11px] font-extrabold text-emerald-700 mt-0.5">Index Prime</div>
+            <div class="my-3">
+              <div class="text-[11px] uppercase tracking-wider text-indigo-200">Estimated Business Valuation</div>
+              <div id="calc-store-valuation" class="text-2xl sm:text-3xl font-black font-mono tracking-tight text-white mt-0.5">
+                ₹21,60,000.00
+              </div>
+            </div>
+
+            <!-- Inner White Floating Split Pill -->
+            <div class="bg-white text-[#081B4B] rounded-2xl p-3.5 shadow-lg grid grid-cols-2 gap-3 text-center">
+              <div class="border-r border-slate-100 pr-2">
+                <div class="text-[10px] font-bold text-slate-400">Monthly Leak Risk</div>
+                <div id="calc-monthly-leak" class="text-sm font-black text-rose-600 font-mono mt-0.5">₹27,150.00</div>
+              </div>
+              <div class="pl-2">
+                <div class="text-[10px] font-bold text-slate-400">Monthly GMV Sales</div>
+                <div id="calc-monthly-gmv" class="text-sm font-black text-[#5B2EFF] font-mono mt-0.5">₹4,50,000.00</div>
+              </div>
             </div>
           </div>
 
-          <div class="flex items-center justify-between text-[11px] pt-1 border-t border-slate-100">
-            <span class="text-slate-500 font-semibold">DPDP Act 2023 Compliant</span>
-            <a href="./app.html" class="font-extrabold text-[#5B2EFF] hover:underline">Full 3D Analytics →</a>
+          <!-- 3D Speedometer & Ring Analytics Preview Card -->
+          <div data-3d-tilt class="bento-card p-5 flex flex-col justify-between space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-extrabold text-[#081B4B]">3D Profit &amp; Compliance Gauge</span>
+              <button
+                type="button"
+                data-open-super-menu
+                class="px-2.5 py-0.5 rounded-full bg-[#5B2EFF] text-white text-[10px] font-bold"
+              >
+                All Tools ☰
+              </button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 items-center">
+              <div class="text-center">
+                <svg viewBox="0 0 130 76" class="w-28 h-16 mx-auto overflow-visible float-3d">
+                  <defs>
+                    <linearGradient id="homeGaugeGrad" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stop-color="#5B2EFF" />
+                      <stop offset="100%" stop-color="#10E594" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M 15 66 A 50 50 0 0 1 115 66" fill="none" stroke="#E2E8F0" stroke-width="10" stroke-linecap="round" />
+                  <path d="M 15 66 A 50 50 0 0 1 108 42" fill="none" stroke="url(#homeGaugeGrad)" stroke-width="10" stroke-linecap="round" />
+                  <polygon id="home-gauge-needle" points="65,66 62,66 65,22 68,66" fill="#081B4B" transform="rotate(28 65 66)" />
+                  <circle cx="65" cy="66" r="5" fill="#081B4B" />
+                </svg>
+                <div class="text-[11px] font-extrabold text-[#081B4B]">94.8% Audit Score</div>
+              </div>
+
+              <div class="text-center">
+                <svg viewBox="0 0 90 90" class="w-16 h-16 mx-auto">
+                  <circle cx="45" cy="45" r="32" fill="none" stroke="#E2E8F0" stroke-width="9" />
+                  <circle cx="45" cy="45" r="32" fill="none" stroke="#5B2EFF" stroke-width="10" stroke-dasharray="130 200" stroke-linecap="round" transform="rotate(-90 45 45)" />
+                  <circle cx="45" cy="45" r="32" fill="none" stroke="#10E594" stroke-width="8" stroke-dasharray="55 200" stroke-dashoffset="-135" stroke-linecap="round" transform="rotate(-90 45 45)" />
+                  <text x="45" y="48" text-anchor="middle" class="font-mono font-black text-xs" fill="#081B4B">900</text>
+                </svg>
+                <div class="text-[11px] font-extrabold text-emerald-700 mt-0.5">Index Prime</div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between text-[11px] pt-1 border-t border-slate-100">
+              <span class="text-slate-500 font-semibold">100% RAM Client-Side Privacy</span>
+              <a href="./app.html" class="font-extrabold text-[#5B2EFF] hover:underline">Full 3D Analytics →</a>
+            </div>
           </div>
+
         </div>
 
-      </div>
+      </section>
 
-    </section>
+    </main>
 
-    <!-- =================================================================== -->
-    <!-- BOTTOM PERSONAL ACCOUNT, DPDP PRIVACY (✔️) & LOGOUT BAR             -->
-    <!-- =================================================================== -->
-    <section data-3d-tilt class="bento-card p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
-      <div class="flex items-center gap-3 min-w-0">
-        <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-[#5B2EFF] flex items-center justify-center text-base font-bold shrink-0">
-          🛡️
-        </div>
-        <div class="min-w-0">
-          <div class="text-xs font-extrabold text-[#081B4B]">My Personal Data &amp; DPDP Act 2023 Privacy Controls</div>
-          <div class="text-[11px] text-slate-500 truncate">
-            Manage your store GSTIN, view subscription validity, or permanently delete your account &amp; data with confirmation tick (✔️).
-          </div>
-        </div>
-      </div>
-
-      <div class="flex flex-wrap items-center gap-2 ml-auto">
-        <button
-          type="button"
-          data-open-account
-          class="px-4 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] font-extrabold text-xs transition"
-        >
-          👤 My Account &amp; Delete Option (✔️)
-        </button>
-        <button
-          type="button"
-          id="bottom-logout-btn"
-          class="px-4 py-2 rounded-xl bg-[#081B4B] hover:bg-rose-600 text-white font-extrabold text-xs shadow transition flex items-center gap-1.5"
-        >
-          <span>⏻ Logout</span>
-        </button>
-      </div>
-    </section>
-
-  </main>
+  </div>
 
   <!-- INTERACTIVE 3D VALUATION SLIDER, DRAWER CONTROLLER & 7s PWA SCRIPT -->
   <script type="module">
     import {
       evaluateSubscriptionHealth,
       formatINR,
-      logoutUser,
       syncProDOMElements,
       init3DTiltCards
     } from "./assets/js/security-core.js";
@@ -778,7 +714,6 @@
 
     function openSuperToolsDrawer() {
       if (!drawer || !backdrop) return;
-      // Update live counts inside drawer
       try {
         const savedBills = JSON.parse(localStorage.getItem("sellgst_invoices") || "[]");
         const billsEl = document.getElementById("drawer-saved-bills-count");
@@ -870,8 +805,6 @@
         updateValuationMetrics();
       });
     });
-
-    document.getElementById("bottom-logout-btn")?.addEventListener("click", logoutUser);
   </script>
 </body>
 </html>
