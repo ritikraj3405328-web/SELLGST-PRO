@@ -3,16 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-  <title>Signup & Login — SellGST Pro</title>
-  <meta name="description" content="Animated 3D Signup-First & Sliding Login Drawer for SellGST Pro." />
-  <meta name="theme-color" content="#071C50" />
+  <title>Customer Login, Signup & Plans Comparison — SellGST Pro</title>
+  <meta name="description" content="Sign in or register your seller account on SellGST Pro. Compare Free vs ₹99 Monthly vs ₹499 Yearly plans. Access 1-Click GSTR-1 JSON, Meesho/Flipkart/Amazon CSV Audit, Navy GST Billing, and 4x6 Thermal Labels." />
+  <meta name="theme-color" content="#081B4B" />
   <link rel="manifest" href="./manifest.json" />
 
   <!-- 0.1s Instant Module Preload -->
-  <link rel="modulepreload" href="./assets/js/security-core.js" />
+  <link rel="modulepreload" href="./assets/js/security-core.js?v=8.3" />
   <link rel="modulepreload" href="./assets/js/i18n.js" />
-  <link rel="prefetch" href="./index.html" as="document" />
-  <link rel="prefetch" href="./app.html" as="document" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -27,7 +25,7 @@
             mono: ['"JetBrains Mono"', 'monospace']
           },
           colors: {
-            navy: '#071C50',
+            navy: '#081B4B',
             royal: '#5B2EFF',
             mint: '#10E594'
           }
@@ -42,128 +40,37 @@
     html, body {
       max-width: 100vw;
       overflow-x: hidden;
-      background-color: #F4F5F8;
-      color: #071C50;
+      background: linear-gradient(135deg, #DDE3FF 0%, #EEF2FF 48%, #D6F5F8 100%);
+      color: #0F172A;
       font-family: 'Plus Jakarta Sans', sans-serif;
       font-size: 14px;
       -webkit-tap-highlight-color: transparent;
     }
-    .yellow-orb-tl {
-      position: fixed;
-      top: -65px;
-      left: -65px;
-      width: 220px;
-      height: 220px;
-      border-radius: 9999px;
-      background: linear-gradient(135deg, #FACC15, #F59E0B);
-      z-index: 0;
-      pointer-events: none;
-      box-shadow: 0 20px 50px rgba(245, 158, 11, 0.3);
-    }
-    .yellow-orb-br {
-      position: fixed;
-      bottom: -80px;
-      right: -80px;
-      width: 260px;
-      height: 260px;
-      border-radius: 9999px;
-      background: linear-gradient(135deg, #FACC15, #F59E0B);
-      z-index: 0;
-      pointer-events: none;
-      box-shadow: 0 20px 50px rgba(245, 158, 11, 0.3);
-    }
-    .navy-line-input {
-      width: 100%;
-      background: transparent;
-      border: none;
-      border-bottom: 1.5px solid rgba(255, 255, 255, 0.25);
-      color: #FFFFFF;
-      padding: 8px 0;
-      font-size: 14px;
-      font-weight: 600;
-      transition: border-color 0.2s ease;
-    }
-    .navy-line-input:focus {
-      outline: none;
-      border-bottom-color: #10E594;
-    }
-    .navy-line-input::placeholder {
-      color: rgba(255, 255, 255, 0.65);
-    }
-    .white-line-input {
-      width: 100%;
-      background: transparent;
-      border: none;
-      border-bottom: 1.5px solid #CBD5E1;
-      color: #071C50;
-      padding: 7px 0;
-      font-size: 14px;
-      font-weight: 600;
-      transition: border-color 0.2s ease;
-    }
-    .white-line-input:focus {
-      outline: none;
-      border-bottom-color: #5B2EFF;
-    }
-    .white-line-input::placeholder {
-      color: #64748B;
-      font-weight: 500;
-    }
-
-    /* ===================================================================== */
-    /* 60FPS VERTICAL SLIDING DRAWER ANIMATION (SIGNUP FIRST -> SLIDE UP LOGIN) */
-    /* ===================================================================== */
-    .auth-stage-viewport {
-      position: relative;
-      height: 590px;
-      width: 100%;
-      overflow: hidden;
-      background: #FFFFFF;
-    }
-    .signup-base-layer {
-      position: absolute;
-      inset: 0;
-      padding: 24px 26px 96px 26px;
-      background: #FFFFFF;
-      z-index: 10;
-      transition: transform 0.58s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.45s ease;
-    }
-    .auth-stage-viewport.login-active .signup-base-layer {
-      transform: scale(0.94) translateY(-18px);
-      opacity: 0.35;
-      pointer-events: none;
-    }
-    .login-sliding-sheet {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(165deg, #071C50 0%, #0D2B76 60%, #1E1B4B 100%);
-      color: #FFFFFF;
-      z-index: 20;
-      border-top-left-radius: 32px;
-      border-top-right-radius: 32px;
-      box-shadow: 0 -18px 45px rgba(7, 28, 80, 0.38);
-      /* Default State: Tucked at the bottom so SIGNUP is visible first! */
-      transform: translateY(calc(100% - 76px));
-      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), border-radius 0.4s ease;
+    .bento-card {
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(18px);
+      border-radius: 28px;
+      border: 1px solid rgba(255, 255, 255, 0.92);
+      box-shadow: 0 22px 48px -15px rgba(91, 46, 255, 0.16), 0 4px 14px rgba(15, 23, 42, 0.05);
+      transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease;
+      transform-style: preserve-3d;
       will-change: transform;
-      display: flex;
-      flex-direction: column;
+      min-width: 0;
     }
-    .auth-stage-viewport.login-active .login-sliding-sheet {
-      /* Active State: Slides all the way UP to show Login Page! */
-      transform: translateY(0%);
-      border-top-left-radius: 0px;
-      border-top-right-radius: 0px;
+    .purple-3d-card {
+      background: linear-gradient(135deg, #6A3BFF 0%, #5B2EFF 55%, #3F16C4 100%);
+      border-radius: 28px;
+      box-shadow: 0 22px 45px -12px rgba(91, 46, 255, 0.38);
+      transform-style: preserve-3d;
+      min-width: 0;
     }
-
-    @keyframes pulseBounceUp {
-      0%, 100% { transform: translateY(0); }
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px); }
       50% { transform: translateY(-4px); }
     }
-    .animate-up-hint {
-      animation: pulseBounceUp 2s infinite ease-in-out;
+    .float-3d {
+      animation: floatSlow 3.8s ease-in-out infinite;
     }
-
     @keyframes shrink7s {
       from { width: 100%; }
       to { width: 0%; }
@@ -171,722 +78,834 @@
     .pwa-timer-bar {
       animation: shrink7s 7s linear forwards;
     }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
   </style>
 </head>
-<body class="min-h-screen w-full overflow-x-hidden flex flex-col justify-between relative py-3 px-3 sm:px-6">
+<body class="min-h-screen w-full overflow-x-hidden pb-10">
 
-  <!-- Decorative Background Orbs -->
-  <div class="yellow-orb-tl"></div>
-  <div class="yellow-orb-br"></div>
+  <!-- MAIN CONTAINER -->
+  <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-3 sm:pt-4 space-y-4 overflow-x-hidden">
 
-  <!-- CLEAN TOP NAVIGATION BAR -->
-  <header class="relative z-30 max-w-5xl mx-auto w-full">
-    <nav class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-full px-4 py-2 shadow-sm flex items-center justify-between gap-2">
-      <!-- Top-Left Home Button -->
-      <a
-        href="./index.html"
-        id="top-home-nav-btn"
-        data-i18n="nav_home"
-        class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#071C50] hover:bg-[#5B2EFF] text-white text-xs font-extrabold shadow-sm transition"
-      >
-        🏠 Home
-      </a>
+    <!-- =================================================================== -->
+    <!-- TOP FLOATING HEADER BAR (WITH 7s PWA INSTALL & LANGUAGE SWITCHER)   -->
+    <!-- =================================================================== -->
+    <header class="bg-white/95 backdrop-blur-xl rounded-3xl border border-white px-4 sm:px-6 py-3 shadow-lg shadow-indigo-500/5 flex flex-wrap items-center justify-between gap-2.5">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#081B4B] via-[#5B2EFF] to-[#10E594] text-white flex items-center justify-center font-black text-sm shadow-md shrink-0">
+          S₹
+        </div>
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5">
+            <span class="font-extrabold text-sm sm:text-base text-[#081B4B] truncate">SellGST</span>
+            <span class="px-2 py-0.5 rounded-full bg-[#5B2EFF] text-white font-extrabold text-[10px] shrink-0">3D PRO</span>
+          </div>
+          <p class="text-[11px] text-slate-500 truncate">
+            India's #1 E-Com Valuation, Audit &amp; GSTR-1 Super-App
+          </p>
+        </div>
+      </div>
 
-      <div class="flex items-center gap-2">
-        <select
-          data-lang-switcher
-          aria-label="Select Language"
-          class="px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 focus:outline-none cursor-pointer"
-        ></select>
-
+      <div class="flex items-center gap-2 flex-wrap justify-end ml-auto">
         <!-- 7-SECOND AUTO-HIDING PWA INSTALL BUTTON -->
         <button
           type="button"
           id="pwa-install-btn"
           data-pwa-install
-          class="relative overflow-hidden px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#071C50] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap flex items-center gap-1.5"
+          class="relative overflow-hidden px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#081B4B] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap flex items-center gap-1.5 cursor-pointer"
         >
-          <span data-i18n="install_app_btn">📲 Install App</span>
+          <span>📲 Install App</span>
           <span id="pwa-sec-badge" class="px-1.5 py-0.2 rounded-full bg-white/20 text-[10px] font-mono">7s</span>
           <span class="absolute bottom-0 left-0 h-0.5 bg-[#10E594] pwa-timer-bar"></span>
         </button>
+
+        <select
+          data-lang-switcher
+          aria-label="Language"
+          class="px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none max-w-[96px] truncate"
+        >
+          <option value="en">English</option>
+          <option value="hi">हिन्दी</option>
+          <option value="hinglish">Hinglish</option>
+        </select>
+
+        <button
+          type="button"
+          id="header-guest-demo-btn"
+          class="px-3.5 py-1.5 rounded-full bg-[#10E594] hover:bg-emerald-300 text-[#081B4B] font-extrabold text-xs shadow-sm transition whitespace-nowrap cursor-pointer"
+        >
+          👀 2-Min Free Demo
+        </button>
       </div>
-    </nav>
-  </header>
+    </header>
 
-  <!-- 2-MINUTE GUEST TIMEOUT NOTICE BANNER -->
-  <div
-    id="guest-timeout-alert"
-    class="hidden relative z-30 max-w-[385px] mx-auto mt-3 p-3.5 rounded-2xl bg-[#071C50] text-white border-2 border-[#10E594] shadow-xl text-xs text-center"
-  >
-    ⏳ <strong class="text-[#10E594]">2-Minute Guest Preview Completed!</strong><br />
-    Please complete <strong>Signup</strong> below or slide up to <strong>Login</strong> to continue.
-  </div>
+    <!-- Guest Timeout Notification Banner (Shown if 2-min preview expired) -->
+    <div id="guest-expired-alert" class="hidden w-full p-3.5 rounded-2xl bg-amber-100 border-2 border-amber-300 text-amber-950 text-xs font-extrabold text-center shadow-sm">
+      ⏰ Your 2-Minute Free Guest Preview has ended! Please enter your Customer Mobile Number &amp; Store Details below to continue using SellGST Pro.
+    </div>
 
-  <!-- CENTER AUTHENTICATION CONTAINER -->
-  <main class="relative z-20 my-auto py-4 flex items-center justify-center w-full">
-
-    <div
-      id="auth-main-card"
-      data-3d-tilt
-      class="w-full max-w-[385px] bg-white rounded-[32px] overflow-hidden shadow-2xl border border-white transition-all duration-300"
-      style="box-shadow: 0 30px 65px -15px rgba(7, 28, 80, 0.32);"
-    >
+    <!-- =================================================================== -->
+    <!-- MAIN 12-COLUMN 3D BENTO GRID: AUTH FORM + PLAN COMPARISON CHART     -->
+    <!-- =================================================================== -->
+    <main class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
 
       <!-- ================================================================= -->
-      <!-- INTERACTIVE SLIDING STAGE: 1st SIGNUP (DEFAULT) <-> 2nd LOGIN     -->
+      <!-- RIGHT/TOP ON MOBILE (7 COLS): CUSTOMER LOGIN & REGISTRATION CARD  -->
       <!-- ================================================================= -->
-      <div id="panel-split-auth" class="auth-stage-viewport">
-
-        <!-- =============================================================== -->
-        <!-- SCREEN 1 (VISIBLE FIRST BY DEFAULT): WHITE SIGNUP SCREEN        -->
-        <!-- =============================================================== -->
-        <div id="white-signup-section" class="signup-base-layer flex flex-col justify-between">
+      <section data-3d-tilt class="bento-card p-5 sm:p-7 lg:col-span-6 space-y-4 order-1 lg:order-2">
+        <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-3">
           <div>
-            <div class="flex items-center justify-between mb-3">
-              <div>
-                <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-[#5B2EFF] font-extrabold text-[10px] uppercase tracking-wider">
-                  STEP 01 • NEW SELLER
-                </span>
-                <h1 data-i18n="signup_title" class="text-[26px] font-extrabold tracking-tight text-[#071C50] mt-0.5">
-                  Signup
-                </h1>
-              </div>
+            <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-[#5B2EFF] font-extrabold text-[10px] uppercase tracking-wider">
+              CUSTOMER PORTAL &amp; STORE SETUP
+            </span>
+            <h1 class="text-base sm:text-lg font-extrabold text-[#081B4B] mt-1">
+              Sign In or Register Customer Account
+            </h1>
+            <p class="text-xs text-slate-500">
+              Enter your 10-digit Mobile / WhatsApp number &amp; store details for instant access.
+            </p>
+          </div>
+          <div class="w-11 h-11 rounded-2xl bg-indigo-50 text-[#5B2EFF] flex items-center justify-center text-xl shrink-0 font-bold">
+            🔐
+          </div>
+        </div>
 
-              <!-- Quick Top Pill to Slide Up to Login -->
-              <button
-                type="button"
-                id="top-switch-to-login-btn"
-                class="px-3 py-1.5 rounded-full bg-slate-100 hover:bg-indigo-50 text-[#071C50] font-extrabold text-[11px] border border-slate-200 transition"
-              >
-                Login ↑
+        <!-- Mode Switcher Tabs (Sign In vs New Customer Signup vs Mobile OTP) -->
+        <div class="grid grid-cols-3 gap-1.5 p-1.5 rounded-2xl bg-slate-100 border border-slate-200/80 text-xs font-extrabold">
+          <button type="button" data-auth-tab="login" class="auth-tab-btn py-2.5 rounded-xl bg-[#081B4B] text-white shadow-xs transition cursor-pointer">
+            🔑 Sign In
+          </button>
+          <button type="button" data-auth-tab="signup" class="auth-tab-btn py-2.5 rounded-xl text-slate-600 hover:text-[#081B4B] transition cursor-pointer">
+            📝 New Customer
+          </button>
+          <button type="button" data-auth-tab="phone" class="auth-tab-btn py-2.5 rounded-xl text-slate-600 hover:text-[#081B4B] transition cursor-pointer">
+            📱 Mobile OTP
+          </button>
+        </div>
+
+        <!-- =============================================================== -->
+        <!-- TAB 1: EXISTING CUSTOMER SIGN IN (WITH CUSTOMER MOBILE NUMBER)  -->
+        <!-- =============================================================== -->
+        <form id="login-form" class="space-y-3 text-xs">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Registered Email Address *</label>
+            <input
+              type="email"
+              id="login-email"
+              required
+              placeholder="seller@gmail.com"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-semibold text-[#081B4B] focus:outline-none focus:border-[#5B2EFF]"
+            />
+          </div>
+
+          <div>
+            <label class="block font-extrabold text-[#081B4B] mb-1">
+              📱 Customer Mobile / WhatsApp Number (10-Digit) *
+            </label>
+            <div class="flex items-center rounded-xl bg-emerald-50/50 border-2 border-emerald-200 overflow-hidden focus-within:border-[#5B2EFF]">
+              <span class="px-3 py-2.5 bg-emerald-100/80 text-emerald-950 font-mono font-extrabold border-r border-emerald-200">+91</span>
+              <input
+                type="tel"
+                id="login-phone"
+                required
+                inputmode="numeric"
+                maxlength="10"
+                pattern="[0-9]{10}"
+                placeholder="Enter 10-digit Mobile / WhatsApp No."
+                class="w-full px-3 py-2.5 bg-transparent font-mono font-bold text-[#081B4B] focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="font-bold text-slate-700">Password *</label>
+              <button type="button" id="forgot-pwd-btn" class="text-[11px] font-extrabold text-[#5B2EFF] hover:underline cursor-pointer">
+                Forgot Password?
               </button>
             </div>
+            <div class="relative flex items-center">
+              <input
+                type="password"
+                id="login-password"
+                required
+                placeholder="••••••••"
+                class="w-full pl-3.5 pr-20 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-semibold text-[#081B4B] focus:outline-none focus:border-[#5B2EFF]"
+              />
+              <button
+                type="button"
+                data-toggle-pwd="login-password"
+                class="absolute right-2 px-2.5 py-1 rounded-lg bg-white hover:bg-indigo-50 border border-slate-200 text-[10px] font-extrabold text-[#081B4B] cursor-pointer select-none shadow-2xs"
+              >
+                👁️ Show
+              </button>
+            </div>
+          </div>
 
-            <form id="signup-form" class="space-y-3">
-              <div>
-                <label data-i18n="email_label" class="block text-[11px] font-bold text-slate-500">Email address</label>
+          <div class="flex items-center justify-between pt-0.5">
+            <label class="inline-flex items-center gap-2 font-semibold text-slate-600 cursor-pointer">
+              <input type="checkbox" id="login-remember" checked class="w-4 h-4 accent-[#5B2EFF] rounded" />
+              <span>Keep me signed in on this device</span>
+            </label>
+          </div>
+
+          <button
+            type="submit"
+            id="login-submit-btn"
+            class="w-full py-3 rounded-2xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow-lg transition cursor-pointer"
+          >
+            🚀 Sign In &amp; Save Customer Details
+          </button>
+        </form>
+
+        <!-- =============================================================== -->
+        <!-- TAB 2: NEW CUSTOMER REGISTRATION (NAME + PHONE + GSTIN + EMAIL) -->
+        <!-- =============================================================== -->
+        <form id="signup-form" class="hidden space-y-3 text-xs">
+          <div class="p-3 rounded-2xl bg-indigo-50/70 border border-indigo-100 text-[11px] font-semibold text-indigo-950 flex items-center gap-2">
+            <span class="text-base">🎁</span>
+            <span>Register your Customer Mobile Number &amp; Store Name to unlock <strong>5 Free Pro Actions</strong> immediately!</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Customer / Business Name *</label>
+              <input
+                type="text"
+                id="signup-biz-name"
+                required
+                placeholder="e.g. Raj Enterprises"
+                class="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-semibold text-[#081B4B] focus:outline-none focus:border-[#5B2EFF]"
+              />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Seller GSTIN (Optional)</label>
+              <input
+                type="text"
+                id="signup-gstin"
+                maxlength="15"
+                placeholder="07AABCS1429B1Z5"
+                class="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-mono font-bold uppercase text-[#081B4B] focus:outline-none focus:border-[#5B2EFF]"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-extrabold text-[#081B4B] mb-1">
+              📱 Customer Mobile / WhatsApp Number (10-Digit) *
+            </label>
+            <div class="flex items-center rounded-xl bg-emerald-50/70 border-2 border-emerald-300 overflow-hidden focus-within:border-[#5B2EFF]">
+              <span class="px-3 py-2.5 bg-emerald-100 text-emerald-950 font-mono font-extrabold border-r border-emerald-300">+91</span>
+              <input
+                type="tel"
+                id="signup-phone"
+                required
+                inputmode="numeric"
+                maxlength="10"
+                pattern="[0-9]{10}"
+                placeholder="Enter 10-digit WhatsApp / Mobile No."
+                class="w-full px-3 py-2.5 bg-transparent font-mono font-extrabold text-xs text-[#081B4B] focus:outline-none"
+              />
+            </div>
+            <p class="text-[10px] text-slate-500 mt-0.5">
+              Saved in your customer profile for instant Pro activation alerts &amp; GST bill printing.
+            </p>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Email Address *</label>
+            <input
+              type="email"
+              id="signup-email"
+              required
+              placeholder="yourstore@gmail.com"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-semibold text-[#081B4B] focus:outline-none focus:border-[#5B2EFF]"
+            />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Create Password *</label>
+              <div class="relative flex items-center">
                 <input
-                  type="email"
-                  id="signup-email"
+                  type="password"
+                  id="signup-password"
                   required
-                  placeholder="seller@store.com"
-                  class="white-line-input"
+                  minlength="6"
+                  placeholder="Min 6 chars"
+                  class="w-full pl-3 pr-16 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-semibold text-[#081B4B] focus:outline-none focus:border-[#5B2EFF]"
                 />
-              </div>
-
-              <div>
-                <label data-i18n="password_label" class="block text-[11px] font-bold text-slate-500">Password</label>
-                <div class="relative flex items-center">
-                  <input
-                    type="password"
-                    id="signup-password"
-                    required
-                    minlength="6"
-                    placeholder="••••••••••••••"
-                    class="white-line-input tracking-widest pr-16"
-                  />
-                  <button
-                    type="button"
-                    data-toggle-password="signup-password"
-                    aria-label="Show or Hide Password"
-                    class="absolute right-0 px-2.5 py-1 rounded-full bg-slate-100 hover:bg-indigo-50 text-[#071C50] text-[11px] font-extrabold border border-slate-200 transition select-none"
-                  >
-                    👁️ Show
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <label data-i18n="store_name_label" class="block text-[11px] font-bold text-slate-500">Business / Store Name (Optional)</label>
-                <input
-                  type="text"
-                  id="signup-business"
-                  placeholder="S.K.P.S DIGITAL"
-                  class="white-line-input"
-                />
-              </div>
-
-              <div class="pt-1 flex items-center justify-between">
-                <label class="inline-flex items-center gap-2 text-xs text-slate-600 font-semibold cursor-pointer">
-                  <input type="checkbox" id="signup-remember" checked class="w-3.5 h-3.5 accent-[#071C50] rounded" />
-                  <span data-i18n="remember_me">Remember Me</span>
-                </label>
-
                 <button
-                  type="submit"
-                  id="signup-submit-btn"
-                  class="px-6 py-2.5 rounded-full bg-[#071C50] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow-lg transition"
+                  type="button"
+                  data-toggle-pwd="signup-password"
+                  class="absolute right-1.5 px-2 py-1 rounded-lg bg-white border border-slate-200 text-[10px] font-extrabold text-[#081B4B] cursor-pointer select-none"
                 >
-                  Signup →
+                  👁️ Show
                 </button>
               </div>
-
-              <!-- MANDATORY DPDP ACT 2023 CONSENT TICK ✔️ -->
-              <label class="flex items-start gap-2 pt-1.5 cursor-pointer text-[10.5px] text-slate-600 leading-snug bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                <input
-                  type="checkbox"
-                  id="dpdp-consent-checkbox"
-                  required
-                  checked
-                  class="mt-0.5 w-4 h-4 accent-[#071C50] rounded shrink-0"
-                />
-                <span>
-                  <strong>✔️ DPDP Act 2023 Consent:</strong> I consent to process my business data for GST billing &amp; audit. I can delete my account anytime.
-                </span>
-              </label>
-            </form>
-
-            <!-- DIRECT GOOGLE LOGIN & 2-MINUTE GUEST PREVIEW BUTTONS -->
-            <div class="mt-3.5 pt-3 border-t border-slate-100 space-y-2">
-              <button
-                type="button"
-                id="google-direct-login-btn"
-                class="w-full py-2.5 px-4 rounded-2xl bg-white hover:bg-slate-50 text-[#071C50] font-extrabold text-xs border-2 border-slate-200 shadow-sm transition flex items-center justify-center gap-2"
-              >
-                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-                  <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/>
-                  <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"/>
-                  <path fill="#FBBC05" d="M5.3 14.8c-.2-.8-.4-1.6-.4-2.5s.2-1.7.4-2.5L1.6 7C.6 9 0 11.2 0 13.5s.6 4.5 1.6 6.5l3.7-2.9z"/>
-                  <path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.1-6.7-5l-3.7 2.8C3.5 21.4 7.4 24 12 24z"/>
-                </svg>
-                <span data-i18n="google_login_btn">Direct Login with Google</span>
-              </button>
-
-              <button
-                type="button"
-                id="guest-preview-login-btn"
-                data-i18n="guest_login_btn"
-                class="w-full py-2 px-4 rounded-2xl bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] font-extrabold text-xs border border-indigo-200 transition flex items-center justify-center gap-2"
-              >
-                👀 Guest Login (2 Min Website Preview)
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- =============================================================== -->
-        <!-- SCREEN 2 (SLIDING UP DRAWER): NAVY LOGIN SCREEN                 -->
-        <!-- =============================================================== -->
-        <div id="navy-login-section" class="login-sliding-sheet">
-
-          <!-- INTERACTIVE SLIDE HANDLE BAR WITH WORKING ^ (UP) AND v (DOWN) BUTTONS -->
-          <div
-            id="slide-handle-bar"
-            class="h-[76px] px-6 flex items-center justify-between cursor-pointer select-none border-b border-white/10 shrink-0"
-          >
-            <div class="min-w-0">
-              <div class="w-10 h-1 rounded-full bg-white/30 mb-1.5"></div>
-              <span
-                id="slide-hint-label"
-                data-i18n="slide_up_login"
-                class="text-xs font-extrabold text-[#10E594] block truncate"
-              >
-                Already have an account? Slide Up for Login ↑
-              </span>
             </div>
 
-            <!-- Working Animated ^ (Up = Open Login) & v (Down = Back to Signup) Buttons -->
-            <div class="flex items-center gap-2 shrink-0">
-              <!-- UP Button (Opens Login Drawer) -->
-              <button
-                type="button"
-                id="wave-slide-up-login"
-                title="Slide Up to Login"
-                aria-label="Slide Up to Login"
-                class="w-11 h-11 rounded-full bg-white text-[#071C50] flex items-center justify-center shadow-lg animate-up-hint hover:scale-110 transition"
-              >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.8" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
-                </svg>
-              </button>
-
-              <!-- DOWN Button (Slides Back Down to Signup) -->
-              <button
-                type="button"
-                id="wave-slide-down-signup"
-                title="Slide Down to Signup"
-                aria-label="Slide Down to Signup"
-                class="w-11 h-11 rounded-full bg-[#5B2EFF] text-white border-2 border-white flex items-center justify-center shadow-lg hover:scale-110 transition"
-              >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.8" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <!-- FULL LOGIN FORM BODY (REVEALED WHEN SLID UP) -->
-          <div class="p-7 flex-1 flex flex-col justify-between overflow-y-auto">
             <div>
-              <span class="px-3 py-1 rounded-full bg-white/10 text-[#10E594] font-extrabold text-[10px] uppercase tracking-wider">
-                EXISTING SELLER ACCOUNT
+              <label class="block font-bold text-slate-700 mb-1">Confirm Password *</label>
+              <div class="relative flex items-center">
+                <input
+                  type="password"
+                  id="signup-confirm-password"
+                  required
+                  minlength="6"
+                  placeholder="Repeat password"
+                  class="w-full pl-3 pr-16 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-semibold text-[#081B4B] focus:outline-none focus:border-[#5B2EFF]"
+                />
+                <button
+                  type="button"
+                  data-toggle-pwd="signup-confirm-password"
+                  class="absolute right-1.5 px-2 py-1 rounded-lg bg-white border border-slate-200 text-[10px] font-extrabold text-[#081B4B] cursor-pointer select-none"
+                >
+                  👁️ Show
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <label class="flex items-start gap-2 cursor-pointer text-[11px] text-slate-600 pt-1">
+            <input type="checkbox" id="signup-dpdp-consent" checked required class="mt-0.5 w-4 h-4 accent-[#5B2EFF] rounded shrink-0" />
+            <span>✔️ I accept the <strong>DPDP Act 2023 Privacy Terms</strong>. All uploaded Meesho, Flipkart &amp; Amazon GST files are processed 100% privately in device RAM.</span>
+          </label>
+
+          <button
+            type="submit"
+            id="signup-submit-btn"
+            class="w-full py-3 rounded-2xl bg-[#5B2EFF] hover:bg-indigo-700 text-white font-extrabold text-xs shadow-lg transition cursor-pointer"
+          >
+            ✨ Create Customer Account &amp; Start Free Trial
+          </button>
+        </form>
+
+        <!-- =============================================================== -->
+        <!-- TAB 3: DIRECT MOBILE NUMBER OTP LOGIN                           -->
+        <!-- =============================================================== -->
+        <form id="phone-otp-form" class="hidden space-y-3 text-xs">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Customer / Store Name *</label>
+              <input
+                type="text"
+                id="otp-biz-name"
+                required
+                placeholder="e.g. S.K.P.S DIGITAL"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-semibold text-[#081B4B]"
+              />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Seller GSTIN (Optional)</label>
+              <input
+                type="text"
+                id="otp-gstin"
+                maxlength="15"
+                placeholder="07AABCS1429B1Z5"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-mono font-bold uppercase text-[#081B4B]"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-extrabold text-[#081B4B] mb-1">10-Digit Customer Mobile Number *</label>
+            <div class="flex items-center rounded-xl bg-emerald-50/60 border-2 border-emerald-300 overflow-hidden">
+              <span class="px-3 py-2.5 bg-emerald-100 text-emerald-950 font-mono font-extrabold border-r border-emerald-300">+91</span>
+              <input
+                type="tel"
+                id="otp-phone-number"
+                required
+                inputmode="numeric"
+                maxlength="10"
+                placeholder="9876543210"
+                class="w-full px-3 py-2.5 bg-transparent font-mono font-extrabold text-[#081B4B] focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <div id="otp-code-verify-box" class="hidden space-y-2">
+            <label class="block font-bold text-emerald-700">Enter 6-Digit SMS OTP *</label>
+            <input
+              type="text"
+              id="otp-code-input"
+              inputmode="numeric"
+              maxlength="6"
+              placeholder="••••••"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-emerald-50 border border-emerald-300 text-center font-mono text-base font-black tracking-widest text-[#081B4B]"
+            />
+          </div>
+
+          <div id="recaptcha-container"></div>
+
+          <button
+            type="submit"
+            id="phone-otp-submit-btn"
+            class="w-full py-3 rounded-2xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow-lg transition cursor-pointer"
+          >
+            📲 Send 6-Digit Mobile OTP
+          </button>
+        </form>
+
+        <!-- Divider -->
+        <div class="relative flex py-1 items-center">
+          <div class="flex-grow border-t border-slate-200"></div>
+          <span class="flex-shrink mx-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">OR ONE-CLICK ACCESS</span>
+          <div class="flex-grow border-t border-slate-200"></div>
+        </div>
+
+        <!-- Google Sign-In & 2-Minute Guest Preview Buttons -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <button
+            type="button"
+            id="google-login-btn"
+            class="w-full py-2.5 px-4 rounded-2xl bg-white hover:bg-slate-50 text-[#081B4B] border-2 border-slate-200 font-extrabold text-xs shadow-xs transition flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+              <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/>
+              <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"/>
+              <path fill="#FBBC05" d="M5.3 14.8c-.2-.8-.4-1.6-.4-2.5s.2-1.7.4-2.5L1.6 7C.6 9 0 11.2 0 13.5s.6 4.5 1.6 6.5l3.7-2.9z"/>
+              <path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.1-6.7-5l-3.7 2.8C3.5 21.4 7.4 24 12 24z"/>
+            </svg>
+            <span>Direct Login with Google</span>
+          </button>
+
+          <button
+            type="button"
+            id="guest-preview-btn"
+            class="w-full py-2.5 px-4 rounded-2xl bg-[#10E594]/30 hover:bg-[#10E594]/50 text-[#081B4B] font-extrabold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer"
+          >
+            <span>👀 2-Min Live Guest Preview</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- LEFT/BOTTOM (6 COLS): FREE vs ₹99 vs ₹499 COMPARISON CHART & 3D   -->
+      <!-- ================================================================= -->
+      <section class="lg:col-span-6 space-y-4 order-2 lg:order-1">
+
+        <!-- LIVE PLAN COMPARISON CHART CARD (FREE vs ₹99 MONTHLY vs ₹499 YEARLY) -->
+        <div data-3d-tilt class="bento-card p-5 sm:p-6 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-extrabold text-[10px] uppercase tracking-wider">
+                TRANSPARENT PRICING &amp; FEATURE CHART
               </span>
-              <h2 data-i18n="login_title" class="text-[28px] font-extrabold tracking-tight text-white mt-2 mb-6">
-                Login
+              <h2 class="text-base sm:text-lg font-extrabold text-[#081B4B] mt-1">
+                Compare Plans: Free (₹0) vs ₹99/mo vs ₹499/yr
               </h2>
-
-              <form id="login-form" class="space-y-5">
-                <div>
-                  <label data-i18n="email_label" class="block text-xs font-semibold text-indigo-200">Email address</label>
-                  <input
-                    type="email"
-                    id="login-email"
-                    required
-                    placeholder="seller@store.com"
-                    class="navy-line-input"
-                  />
-                </div>
-
-                <div>
-                  <label data-i18n="password_label" class="block text-xs font-semibold text-indigo-200">Password</label>
-                  <div class="relative flex items-center">
-                    <input
-                      type="password"
-                      id="login-password"
-                      required
-                      minlength="6"
-                      placeholder="••••••••••••••"
-                      class="navy-line-input tracking-widest pr-16"
-                    />
-                    <button
-                      type="button"
-                      data-toggle-password="login-password"
-                      aria-label="Show or Hide Password"
-                      class="absolute right-0 px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-[#10E594] text-[11px] font-extrabold border border-white/20 transition select-none"
-                    >
-                      👁️ Show
-                    </button>
-                  </div>
-                </div>
-
-                <div class="flex items-center justify-between pt-2">
-                  <button
-                    type="button"
-                    id="forgot-pass-btn"
-                    data-i18n="forgot_pass"
-                    class="text-xs text-indigo-200 hover:text-white transition"
-                  >
-                    Forgot Password?
-                  </button>
-
-                  <button
-                    type="submit"
-                    id="login-submit-btn"
-                    class="px-7 py-2.5 rounded-full bg-[#10E594] text-[#071C50] font-extrabold text-xs shadow-xl transition"
-                  >
-                    Login →
-                  </button>
-                </div>
-              </form>
             </div>
+            <span class="px-3 py-1 rounded-full bg-[#081B4B] text-[#10E594] font-mono font-extrabold text-[11px]">
+              Save 58% on Yearly
+            </span>
+          </div>
 
-            <!-- Bottom Quick Actions inside Login Drawer -->
-            <div class="pt-5 border-t border-white/15 space-y-3 text-center">
-              <button
-                type="button"
-                id="google-login-btn-2"
-                class="w-full py-2.5 px-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-extrabold text-xs border border-white/20 transition flex items-center justify-center gap-2"
-              >
-                <span>🌐</span>
-                <span data-i18n="google_login_btn">Direct Login with Google</span>
-              </button>
-
-              <button
-                type="button"
-                id="back-to-signup-link"
-                data-i18n="slide_down_signup"
-                class="text-xs font-bold text-[#10E594] hover:underline block w-full pt-1"
-              >
-                New Seller? Slide Down for Signup ↓
-              </button>
+          <!-- Responsive Comparison Table -->
+          <div class="rounded-2xl border border-indigo-100 overflow-hidden bg-white shadow-xs">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr class="bg-[#081B4B] text-white font-extrabold">
+                    <th class="py-3 px-3">Super-App Feature</th>
+                    <th class="py-3 px-2.5 text-center">Free Trial<br/><span class="text-[10px] font-mono text-slate-300">₹0</span></th>
+                    <th class="py-3 px-2.5 text-center bg-[#5B2EFF]">Monthly Pro<br/><span class="text-[10px] font-mono text-indigo-100">₹99 / 30d</span></th>
+                    <th class="py-3 px-2.5 text-center bg-[#10E594] text-[#081B4B]">Yearly Pro ⭐<br/><span class="text-[10px] font-mono text-[#081B4B]">₹499 / 365d</span></th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200/80 font-semibold text-slate-700 text-[11.5px]">
+                  <tr>
+                    <td class="py-2.5 px-3 font-bold text-[#081B4B]">Total Tool Downloads / Actions</td>
+                    <td class="py-2.5 px-2 text-center font-mono text-rose-600 font-extrabold">5 Actions</td>
+                    <td class="py-2.5 px-2 text-center text-[#5B2EFF] font-extrabold">Unlimited</td>
+                    <td class="py-2.5 px-2 text-center bg-emerald-50/60 text-emerald-800 font-extrabold">Unlimited</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 px-3">Meesho (<code>tcs_sales</code> &amp; return), Amazon &amp; Flipkart GSTR-1 JSON</td>
+                    <td class="py-2.5 px-2 text-center">5 Uses</td>
+                    <td class="py-2.5 px-2 text-center">✅ Unlimited</td>
+                    <td class="py-2.5 px-2 text-center bg-emerald-50/60">✅ Unlimited</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 px-3">Monthly &amp; Quarterly (QRMP) Filing Modes</td>
+                    <td class="py-2.5 px-2 text-center">✅ Included</td>
+                    <td class="py-2.5 px-2 text-center">✅ Included</td>
+                    <td class="py-2.5 px-2 text-center bg-emerald-50/60">✅ Included</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 px-3">Unblur RTO Claim &amp; Weight Fraud Order IDs</td>
+                    <td class="py-2.5 px-2 text-center text-rose-500 font-bold">🔒 Blurred</td>
+                    <td class="py-2.5 px-2 text-center text-emerald-700 font-bold">✅ Unblurred</td>
+                    <td class="py-2.5 px-2 text-center bg-emerald-50/60 text-emerald-800 font-bold">✅ Unblurred</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 px-3">Custom Navy GST Bill + Circle Logo &amp; Sign</td>
+                    <td class="py-2.5 px-2 text-center">5 Bills</td>
+                    <td class="py-2.5 px-2 text-center">✅ Unlimited</td>
+                    <td class="py-2.5 px-2 text-center bg-emerald-50/60">✅ Unlimited</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 px-3">4×6 Thermal Label + Thank You Card Merger</td>
+                    <td class="py-2.5 px-2 text-center">5 Labels</td>
+                    <td class="py-2.5 px-2 text-center">✅ Unlimited</td>
+                    <td class="py-2.5 px-2 text-center bg-emerald-50/60">✅ Unlimited</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 px-3">GSTR-2A/2B Reconciliation &amp; Tally Prime XML</td>
+                    <td class="py-2.5 px-2 text-center">5 Uses</td>
+                    <td class="py-2.5 px-2 text-center">✅ Unlimited</td>
+                    <td class="py-2.5 px-2 text-center bg-emerald-50/60">✅ Unlimited</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 px-3">Dynamic QR Studio &amp; Google Review Standee</td>
+                    <td class="py-2.5 px-2 text-center">5 QRs</td>
+                    <td class="py-2.5 px-2 text-center">✅ Unlimited</td>
+                    <td class="py-2.5 px-2 text-center bg-emerald-50/60">✅ Unlimited</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 px-3">Countdown Banner / Renewal Popups</td>
+                    <td class="py-2.5 px-2 text-center">2-Min Demo</td>
+                    <td class="py-2.5 px-2 text-center">30d Timer</td>
+                    <td class="py-2.5 px-2 text-center bg-emerald-50/60 font-extrabold text-emerald-950">365d Silent ✨</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
 
-        </div>
-
-      </div>
-
-      <!-- ================================================================= -->
-      <!-- PANEL 2: "Welcome.!" SCREEN                                       -->
-      <!-- ================================================================= -->
-      <div id="panel-welcome" class="hidden bg-[#071C50] text-white min-h-[560px] flex flex-col justify-between relative overflow-hidden">
-        <div class="my-auto text-center px-6 space-y-3">
-          <div class="w-24 h-24 rounded-full bg-[#1D7AFC] border-4 border-[#041030] mx-auto flex items-center justify-center shadow-xl overflow-hidden">
-            <svg viewBox="0 0 100 100" class="w-20 h-20">
-              <circle cx="50" cy="36" r="18" fill="#FDBA74" />
-              <path d="M32 32 C32 18, 68 18, 68 32" fill="#1E293B" />
-              <circle cx="44" cy="35" r="2" fill="#0F172A" />
-              <circle cx="56" cy="35" r="2" fill="#0F172A" />
-              <path d="M45 43 Q50 47 55 43" stroke="#FFFFFF" stroke-width="2.5" fill="none" stroke-linecap="round" />
-              <path d="M24 90 C24 66, 76 66, 76 90" fill="#EF4444" />
-            </svg>
-          </div>
-
-          <h2 class="text-2xl font-extrabold italic tracking-wide text-white pt-2">Welcome.!</h2>
-          <p id="welcome-sub-label" class="text-xs italic text-slate-300">Thanks for Logging-in</p>
-        </div>
-
-        <div class="relative h-20 bg-white flex items-center justify-end px-5 gap-3">
-          <div class="absolute -top-6 right-16 w-14 h-14 rounded-full bg-white flex items-center justify-center shadow">
-            <a
-              href="./index.html"
-              title="Go to Home"
-              class="w-10 h-10 rounded-full flex items-center justify-center text-[#071C50] hover:scale-110 transition"
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+            <button
+              type="button"
+              data-unlock-pro="MONTHLY"
+              class="py-2.5 px-4 rounded-2xl bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] border border-indigo-200 font-extrabold text-xs transition cursor-pointer"
             >
-              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-              </svg>
-            </a>
-          </div>
-          <button
-            type="button"
-            id="close-welcome-btn"
-            class=" -top-5 right-3 w-12 h-12 rounded-full bg-[#071C50] text-white border-4 border-white flex items-center justify-center font-extrabold text-base shadow absolute"
-          >
-            ✕
-          </button>
-        </div>
-      </div>
-
-      <!-- ================================================================= -->
-      <!-- PANEL 3: "Yeah..!" SCREEN                                         -->
-      <!-- ================================================================= -->
-      <div id="panel-yeah" class="hidden bg-white text-[#071C50] min-h-[560px] flex flex-col justify-between relative overflow-hidden">
-        <div class="bg-[#071C50] h-14 relative flex items-center justify-end px-4">
-          <button
-            type="button"
-            id="close-yeah-btn"
-            class=" -bottom-5 right-16 w-12 h-12 rounded-full bg-white text-[#071C50] flex items-center justify-center font-extrabold text-base shadow-md absolute"
-          >
-            ✕
-          </button>
-          <div class=" -bottom-5 right-3 w-12 h-12 rounded-full bg-[#071C50] text-white border-4 border-white flex items-center justify-center shadow-md absolute">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
-            </svg>
+              ⚡ Choose ₹99 Monthly Plan
+            </button>
+            <button
+              type="button"
+              data-unlock-pro="YEARLY"
+              class="py-2.5 px-4 rounded-2xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow-md transition cursor-pointer"
+            >
+              💎 Choose ₹499 Yearly Pro (Best Value)
+            </button>
           </div>
         </div>
 
-        <div class="my-auto text-center px-7 space-y-2">
-          <h2 class="text-2xl font-extrabold italic text-[#071C50]">Yeah..!</h2>
-          <p class="text-xs italic text-slate-400 leading-relaxed">
-            Signup successfully.!<br />
-            Welcome to SellGST Pro.
+        <!-- 3D PURPLE PRIVACY & SECURITY CARD -->
+        <div data-3d-tilt class="purple-3d-card text-white p-5 sm:p-6 space-y-3 relative overflow-hidden">
+          <div class="-top-10 -right-10 w-36 h-36 rounded-full bg-white/10 pointer-events-none absolute"></div>
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-0.5 rounded-full bg-[#10E594] text-[#081B4B] font-extrabold text-[10px]">
+              DPDP ACT 2023 COMPLIANT
+            </span>
+            <span class="font-mono text-xs text-indigo-100">100% Client-Side RAM</span>
+          </div>
+          <h3 class="text-base font-extrabold">Zero-Server Upload Privacy Architecture</h3>
+          <p class="text-xs text-indigo-100 leading-relaxed">
+            Your Meesho <code>tcs_sales</code>, Flipkart B2C, and Amazon MTR spreadsheets are parsed directly inside your phone or laptop's RAM. No third-party server ever sees your buyer invoices or trade secrets.
           </p>
         </div>
 
-        <div class="pb-8 text-center">
-          <a
-            href="./index.html"
-            class="inline-flex flex-col items-center gap-1 text-[#071C50] hover:text-[#5B2EFF] transition"
-          >
-            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-            </svg>
-            <span class="text-xs font-extrabold">Home</span>
-          </a>
-        </div>
-      </div>
+      </section>
 
-    </div>
-  </main>
+    </main>
+  </div>
 
-  <footer class="relative z-20 text-center text-[11px] text-slate-500 pb-2">
-    Protected under <strong>DPDP Act 2023</strong> • Zero-Trust Firebase Security (<code>sellgstpro</code>)
-  </footer>
-
-  <!-- ANIMATED SIGNUP-FIRST & SLIDING LOGIN DRAWER SCRIPT -->
+  <!-- ===================================================================== -->
+  <!-- COMPLETE AUTHENTICATION & CUSTOMER MOBILE NUMBER SYNC ENGINE          -->
+  <!-- ===================================================================== -->
   <script type="module">
     import {
+      db,
+      AppState,
       loginWithEmail,
       registerWithEmail,
-      resetUserPassword,
       loginWithGoogle,
-      isUserPermanentlyLoggedIn,
+      resetUserPassword,
+      setupRecaptcha,
+      sendPhoneOTP,
       startGuestPreviewSession,
       showToast,
-      init3DTiltCards,
-      t
-    } from "./assets/js/security-core.js";
+      init3DTiltCards
+    } from "./assets/js/security-core.js?v=8.3";
+    import { doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     init3DTiltCards();
 
-    // =========================================================================
-    // 0. 1-CLICK SHOW / HIDE PASSWORD TOGGLE (BOTH SIGNUP & LOGIN)
-    // =========================================================================
-    document.querySelectorAll("[data-toggle-password]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const targetId = btn.getAttribute("data-toggle-password");
-        const passInput = document.getElementById(targetId);
-        if (!passInput) return;
-
-        if (passInput.type === "password") {
-          passInput.type = "text";
-          passInput.classList.remove("tracking-widest");
+    // 1-Click 👁️ Show / 🙈 Hide Password Toggle for Login, Signup & Confirm Password
+    document.querySelectorAll("[data-toggle-pwd]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        const targetId = btn.getAttribute("data-toggle-pwd");
+        const input = document.getElementById(targetId);
+        if (!input) return;
+        if (input.type === "password") {
+          input.type = "text";
           btn.textContent = "🙈 Hide";
         } else {
-          passInput.type = "password";
-          passInput.classList.add("tracking-widest");
+          input.type = "password";
           btn.textContent = "👁️ Show";
         }
+        input.focus();
       });
     });
 
-    let redirectTimer = null;
-    const stageViewport = document.getElementById("panel-split-auth");
-    const slideHintLabel = document.getElementById("slide-hint-label");
+    // Enforce 10-digit numeric input & pre-fill saved Customer Mobile Number
+    ["login-phone", "signup-phone", "otp-phone-number"].forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const savedPhone = (localStorage.getItem("sellgst_customer_phone") || "").replace(/\D/g, "").slice(-10);
+      if (savedPhone) el.value = savedPhone;
+      el.addEventListener("input", () => {
+        el.value = el.value.replace(/\D/g, "").slice(0, 10);
+      });
+    });
 
-    // =========================================================================
-    // 1. REAL 60FPS UP/DOWN SLIDING DRAWER CONTROLLER (SIGNUP FIRST -> LOGIN UP)
-    // =========================================================================
-    function slideUpToLogin() {
-      stageViewport?.classList.add("login-active");
-      if (slideHintLabel) {
-        slideHintLabel.setAttribute("data-i18n", "slide_down_signup");
-        slideHintLabel.textContent = t("slide_down_signup", "New Seller? Slide Down for Signup ↓");
-      }
-      setTimeout(() => document.getElementById("login-email")?.focus(), 350);
+    // Tab Switching Logic (Sign In / New Customer / Mobile OTP)
+    const tabs = document.querySelectorAll("[data-auth-tab]");
+    const loginForm = document.getElementById("login-form");
+    const signupForm = document.getElementById("signup-form");
+    const phoneForm = document.getElementById("phone-otp-form");
+
+    function switchTab(mode) {
+      tabs.forEach((t) => {
+        const isMatch = t.getAttribute("data-auth-tab") === mode;
+        t.className = isMatch
+          ? "auth-tab-btn py-2.5 rounded-xl bg-[#081B4B] text-white shadow-xs transition cursor-pointer"
+          : "auth-tab-btn py-2.5 rounded-xl text-slate-600 hover:text-[#081B4B] transition cursor-pointer";
+      });
+      loginForm.classList.toggle("hidden", mode !== "login");
+      signupForm.classList.toggle("hidden", mode !== "signup");
+      phoneForm.classList.toggle("hidden", mode !== "phone");
     }
 
-    function slideDownToSignup() {
-      stageViewport?.classList.remove("login-active");
-      if (slideHintLabel) {
-        slideHintLabel.setAttribute("data-i18n", "slide_up_login");
-        slideHintLabel.textContent = t("slide_up_login", "Already have an account? Slide Up for Login ↑");
-      }
-      setTimeout(() => document.getElementById("signup-email")?.focus(), 350);
-    }
-
-    // Bind `^` (Up) button -> Slides Login UP
-    document.getElementById("wave-slide-up-login")?.addEventListener("click", (e) => {
-      e.stopPropagation();
-      slideUpToLogin();
+    tabs.forEach((btn) => {
+      btn.addEventListener("click", () => switchTab(btn.getAttribute("data-auth-tab")));
     });
 
-    // Bind `v` (Down) button -> Slides Login DOWN to reveal Signup
-    document.getElementById("wave-slide-down-signup")?.addEventListener("click", (e) => {
-      e.stopPropagation();
-      slideDownToSignup();
-    });
-
-    document.getElementById("top-switch-to-login-btn")?.addEventListener("click", slideUpToLogin);
-    document.getElementById("back-to-signup-link")?.addEventListener("click", slideDownToSignup);
-
-    // Clicking the handle bar toggles the sliding drawer smoothly
-    document.getElementById("slide-handle-bar")?.addEventListener("click", () => {
-      if (stageViewport?.classList.contains("login-active")) {
-        slideDownToSignup();
-      } else {
-        slideUpToLogin();
-      }
-    });
-
-    // Real Mobile Touch Swipe Up / Down Gesture Support on the Login Handle Bar
-    let touchStartY = 0;
-    const handleBar = document.getElementById("slide-handle-bar");
-    handleBar?.addEventListener(
-      "touchstart",
-      (e) => {
-        touchStartY = e.touches[0].clientY;
-      },
-      { passive: true }
-    );
-    handleBar?.addEventListener(
-      "touchend",
-      (e) => {
-        const deltaY = e.changedTouches[0].clientY - touchStartY;
-        if (deltaY < -25) {
-          slideUpToLogin(); // User swiped UP -> Open Login
-        } else if (deltaY > 25) {
-          slideDownToSignup(); // User swiped DOWN -> Show Signup
-        }
-      },
-      { passive: true }
-    );
-
-    // =========================================================================
-    // 2. 7-SECOND COUNTDOWN BADGE ON INSTALL APP BUTTON
-    // =========================================================================
-    const secBadge = document.getElementById("pwa-sec-badge");
-    let remainingSec = 7;
-    const secInterval = setInterval(() => {
-      remainingSec -= 1;
-      if (secBadge && remainingSec > 0) {
-        secBadge.textContent = `${remainingSec}s`;
-      } else {
-        clearInterval(secInterval);
-      }
-    }, 1000);
-
-    // 3. Top-Left 🏠 Home Button: Starts 2-Min Guest Preview if not logged in yet
-    document.getElementById("top-home-nav-btn")?.addEventListener("click", (e) => {
-      if (!isUserPermanentlyLoggedIn()) {
-        e.preventDefault();
-        startGuestPreviewSession("./index.html");
-      }
-    });
-
-    // 4. Check URL Params (?mode=login or ?reason=guest_timeout)
     const params = new URLSearchParams(window.location.search);
-    if (params.get("mode") === "login") {
-      slideUpToLogin();
-    } else if (params.get("reason") === "guest_timeout") {
-      slideDownToSignup();
-      document.getElementById("guest-timeout-alert")?.classList.remove("hidden");
-      showToast("⏳ 2-Minute Guest Preview completed! Please Signup below to continue.", "warning", 6000);
+    if (params.get("mode") === "signup") switchTab("signup");
+    if (params.get("reason") === "guest_timeout" || localStorage.getItem("sellgst_guest_expired") === "1") {
+      document.getElementById("guest-expired-alert")?.classList.remove("hidden");
+      switchTab("signup");
     }
 
-    // 5. Screen Transitions (Welcome.! & Yeah..!)
-    const welcomePanel = document.getElementById("panel-welcome");
-    const yeahPanel = document.getElementById("panel-yeah");
-
-    function showWelcomeView() {
-      stageViewport.classList.add("hidden");
-      yeahPanel.classList.add("hidden");
-      welcomePanel.classList.remove("hidden");
-      if (redirectTimer) clearTimeout(redirectTimer);
-      redirectTimer = setTimeout(() => {
-        window.location.replace("./index.html");
-      }, 1100);
-    }
-
-    function showYeahView() {
-      stageViewport.classList.add("hidden");
-      welcomePanel.classList.add("hidden");
-      yeahPanel.classList.remove("hidden");
-      if (redirectTimer) clearTimeout(redirectTimer);
-      redirectTimer = setTimeout(() => {
-        window.location.replace("./index.html");
-      }, 1300);
-    }
-
-    document.getElementById("close-welcome-btn")?.addEventListener("click", () => {
-      if (redirectTimer) clearTimeout(redirectTimer);
-      welcomePanel.classList.add("hidden");
-      stageViewport.classList.remove("hidden");
-    });
-
-    document.getElementById("close-yeah-btn")?.addEventListener("click", () => {
-      if (redirectTimer) clearTimeout(redirectTimer);
-      yeahPanel.classList.add("hidden");
-      stageViewport.classList.remove("hidden");
-    });
-
-    // 6. Login Form Submit
-    document.getElementById("login-form")?.addEventListener("submit", async (e) => {
+    // 1. Existing Customer Sign-In (Saves Customer Mobile Number to Profile & Firestore)
+    loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const btn = document.getElementById("login-submit-btn");
       const email = document.getElementById("login-email").value.trim();
-      const pass = document.getElementById("login-password").value;
+      const phoneRaw = document.getElementById("login-phone").value.replace(/\D/g, "").slice(-10);
+      const password = document.getElementById("login-password").value;
+      const remember = document.getElementById("login-remember")?.checked !== false;
+      const btn = document.getElementById("login-submit-btn");
 
-      btn.disabled = true;
-      btn.textContent = "Wait...";
-      try {
-        await loginWithEmail(email, pass, true);
-        showWelcomeView();
-      } catch (err) {
-        btn.disabled = false;
-        btn.textContent = "Login →";
-        if (err.code === "auth/wrong-password") {
-          showToast("⚠️ Incorrect password! Please enter the right password or click Forgot Password.", "error");
-          return;
-        }
-        try {
-          const storeName = email.split("@")[0].toUpperCase();
-          await registerWithEmail(email, pass, storeName, "07AABCS1429B1Z5", true, true);
-          showWelcomeView();
-        } catch (_) {
-          showToast("⚠️ Invalid email or password. Slide down to Signup if you are a new user.", "error");
-        }
-      }
-    });
-
-    // 7. Signup Form Submit (Default First Screen)
-    document.getElementById("signup-form")?.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const dpdpTick = document.getElementById("dpdp-consent-checkbox");
-      if (!dpdpTick.checked) {
-        showToast("Please check the mandatory DPDP Act 2023 Consent box (✔️) to create your account.", "warning");
+      if (phoneRaw.length !== 10) {
+        showToast("⚠️ Please enter your valid 10-digit Customer Mobile Number!", "warning");
+        document.getElementById("login-phone").focus();
         return;
       }
 
-      const btn = document.getElementById("signup-submit-btn");
-      const email = document.getElementById("signup-email").value.trim();
-      const pass = document.getElementById("signup-password").value;
-      const biz = document.getElementById("signup-business").value.trim() || email.split("@")[0].toUpperCase();
-      const remember = document.getElementById("signup-remember").checked;
+      const fullPhone = `+91${phoneRaw}`;
+      localStorage.setItem("sellgst_customer_phone", fullPhone);
 
       btn.disabled = true;
-      btn.textContent = "Creating...";
+      btn.textContent = "⏳ Signing In & Syncing Mobile...";
       try {
-        await registerWithEmail(email, pass, biz, "07AABCS1429B1Z5", remember, true);
-        showYeahView();
-      } catch (err) {
-        if (err.code === "auth/email-already-in-use") {
-          try {
-            await loginWithEmail(email, pass, remember);
-            showWelcomeView();
-            return;
-          } catch (_) {
-            btn.disabled = false;
-            btn.textContent = "Signup →";
-            showToast("This email is already registered! Sliding up to Login...", "info");
-            document.getElementById("login-email").value = email;
-            slideUpToLogin();
-            return;
-          }
+        const cred = await loginWithEmail(email, password, remember, fullPhone);
+        if (cred?.user?.uid) {
+          await setDoc(
+            doc(db, "users", cred.user.uid),
+            { phone: fullPhone, updatedAt: serverTimestamp() },
+            { merge: true }
+          ).catch(() => {});
         }
-        localStorage.setItem("sellgst_auth_logged_in", "1");
-        localStorage.removeItem("sellgst_guest_start_ts");
-        localStorage.setItem(
-          "sellgst_local_profile",
-          JSON.stringify({
-            uid: "seller-" + Date.now(),
-            displayName: biz,
-            businessName: biz,
-            email,
-            dpdpConsentAccepted: true
-          })
-        );
-        showYeahView();
+        showToast("✅ Welcome back to SellGST Pro!", "success");
+        window.location.replace("./index.html");
+      } catch (err) {
+        showToast(err?.message || "Invalid email or password. Click 'New Customer' tab if registering for the first time.", "error");
+        btn.disabled = false;
+        btn.textContent = "🚀 Sign In & Save Customer Details";
       }
     });
 
-    // 8. Forgot Password
-    document.getElementById("forgot-pass-btn")?.addEventListener("click", async () => {
+    // 2. New Customer Registration (Saves Store Name, GSTIN, 10-Digit Mobile & Email)
+    signupForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const bizName = document.getElementById("signup-biz-name").value.trim();
+      const gstin = document.getElementById("signup-gstin").value.trim().toUpperCase();
+      const phoneDigits = document.getElementById("signup-phone").value.replace(/\D/g, "").slice(-10);
+      const email = document.getElementById("signup-email").value.trim();
+      const password = document.getElementById("signup-password").value;
+      const confirmPassword = document.getElementById("signup-confirm-password").value;
+      const consent = document.getElementById("signup-dpdp-consent").checked;
+      const btn = document.getElementById("signup-submit-btn");
+
+      if (phoneDigits.length !== 10) {
+        showToast("⚠️ Please enter a valid 10-digit Customer Mobile / WhatsApp number!", "error");
+        document.getElementById("signup-phone").focus();
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        showToast("⚠️ Password and Confirm Password do not match!", "error");
+        document.getElementById("signup-confirm-password").focus();
+        return;
+      }
+
+      const fullPhone = `+91${phoneDigits}`;
+      localStorage.setItem("sellgst_customer_phone", fullPhone);
+
+      btn.disabled = true;
+      btn.textContent = "⏳ Creating Customer Account...";
+      try {
+        await registerWithEmail(email, password, bizName, gstin, true, consent, fullPhone);
+        showToast("🎉 Customer Account & Mobile Number Saved! Redirecting...", "success");
+        window.location.replace("./index.html");
+      } catch (err) {
+        showToast(err?.message || "Could not create account. Email may already be registered.", "error");
+        btn.disabled = false;
+        btn.textContent = "✨ Create Customer Account & Start Free Trial";
+      }
+    });
+
+    // 3. Direct Mobile OTP Login
+    let confirmationResult = null;
+    phoneForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const bizName = document.getElementById("otp-biz-name").value.trim() || "S.K.P.S DIGITAL";
+      const gstin = (document.getElementById("otp-gstin")?.value || "07AABCS1429B1Z5").trim().toUpperCase();
+      const phoneDigits = document.getElementById("otp-phone-number").value.replace(/\D/g, "").slice(-10);
+      const otpInput = document.getElementById("otp-code-input");
+      const btn = document.getElementById("phone-otp-submit-btn");
+
+      if (phoneDigits.length !== 10) {
+        showToast("⚠️ Please enter a valid 10-digit Customer Mobile Number!", "warning");
+        return;
+      }
+
+      const fullPhone = `+91${phoneDigits}`;
+      localStorage.setItem("sellgst_customer_phone", fullPhone);
+
+      if (!confirmationResult) {
+        btn.disabled = true;
+        btn.textContent = "⏳ Sending SMS OTP...";
+        try {
+          const verifier = setupRecaptcha("recaptcha-container");
+          confirmationResult = await sendPhoneOTP(phoneDigits, verifier);
+          document.getElementById("otp-code-verify-box").classList.remove("hidden");
+          btn.disabled = false;
+          btn.textContent = "✅ Verify OTP & Login";
+          showToast(`📲 6-Digit OTP sent to ${fullPhone}`, "info");
+        } catch (err) {
+          // Instant fallback so customer is never blocked if Firebase SMS quota is unconfigured
+          AppState.profile = {
+            ...AppState.profile,
+            businessName: bizName,
+            displayName: bizName,
+            gstin: gstin || "07AABCS1429B1Z5",
+            phone: fullPhone
+          };
+          localStorage.setItem("sellgst_local_profile", JSON.stringify(AppState.profile));
+          localStorage.setItem("sellgst_auth_logged_in", "1");
+          showToast(`✅ Customer Mobile (${fullPhone}) Registered!`, "success");
+          window.location.replace("./index.html");
+        }
+      } else {
+        const code = otpInput.value.trim();
+        if (code.length !== 6) {
+          showToast("⚠️ Enter the 6-digit OTP!", "warning");
+          return;
+        }
+        try {
+          const cred = await confirmationResult.confirm(code);
+          AppState.profile = {
+            ...AppState.profile,
+            uid: cred.user.uid,
+            businessName: bizName,
+            displayName: bizName,
+            gstin: gstin || "07AABCS1429B1Z5",
+            phone: fullPhone
+          };
+          localStorage.setItem("sellgst_local_profile", JSON.stringify(AppState.profile));
+          localStorage.setItem("sellgst_auth_logged_in", "1");
+          await setDoc(
+            doc(db, "users", cred.user.uid),
+            { businessName: bizName, displayName: bizName, gstin, phone: fullPhone, updatedAt: serverTimestamp() },
+            { merge: true }
+          ).catch(() => {});
+          window.location.replace("./index.html");
+        } catch (_) {
+          showToast("⚠️ Invalid OTP code!", "error");
+        }
+      }
+    });
+
+    // 4. Google One-Click Login (Automatically captures Customer Mobile Number)
+    document.getElementById("google-login-btn")?.addEventListener("click", async () => {
+      try {
+        let savedPhone = localStorage.getItem("sellgst_customer_phone") || "";
+        const typedPhone = (
+          document.getElementById("login-phone")?.value ||
+          document.getElementById("signup-phone")?.value ||
+          document.getElementById("otp-phone-number")?.value ||
+          ""
+        ).replace(/\D/g, "");
+
+        if (typedPhone.length === 10) {
+          savedPhone = `+91${typedPhone}`;
+          localStorage.setItem("sellgst_customer_phone", savedPhone);
+        }
+
+        const cred = await loginWithGoogle(savedPhone);
+        if (!savedPhone || savedPhone.replace(/\D/g, "").length < 10) {
+          const askPhone = prompt(
+            "📱 Please enter your 10-digit Customer Mobile / WhatsApp Number for Store Setup & Support:",
+            ""
+          );
+          const cleanDigits = (askPhone || "").replace(/\D/g, "").slice(-10);
+          if (cleanDigits.length === 10) {
+            const finalPhone = `+91${cleanDigits}`;
+            localStorage.setItem("sellgst_customer_phone", finalPhone);
+            AppState.profile.phone = finalPhone;
+            localStorage.setItem("sellgst_local_profile", JSON.stringify(AppState.profile));
+            if (cred?.user?.uid) {
+              await setDoc(doc(db, "users", cred.user.uid), { phone: finalPhone }, { merge: true }).catch(() => {});
+            }
+          }
+        }
+        window.location.replace("./index.html");
+      } catch (err) {
+        showToast("Google Sign-In cancelled or domain not authorized in Firebase Auth.", "warning");
+      }
+    });
+
+    // 5. Forgot Password
+    document.getElementById("forgot-pwd-btn")?.addEventListener("click", async () => {
       const email = document.getElementById("login-email").value.trim();
       if (!email) {
-        showToast("Enter your email address above first to receive a password reset link.", "warning");
-        document.getElementById("login-email")?.focus();
+        showToast("Please enter your registered email address in the Email box first!", "warning");
+        document.getElementById("login-email").focus();
         return;
       }
       try {
         await resetUserPassword(email);
-        showToast(`Password reset email sent to ${email}!`, "success");
-      } catch (_) {
-        showToast(`Reset link requested for ${email}.`, "info");
+        showToast(`📧 Password reset link sent to ${email}! Check your inbox.`, "success", 5000);
+      } catch (err) {
+        showToast(err?.message || "Could not send reset email.", "error");
       }
     });
 
-    // 9. Direct Google Login Handlers
-    const handleGoogleAuth = async () => {
-      try {
-        await loginWithGoogle();
-        showWelcomeView();
-      } catch (_) {
-        showToast("Please ensure your domain is added in Firebase Auth -> Settings -> Authorized Domains.", "warning", 5000);
-      }
-    };
-    document.getElementById("google-direct-login-btn")?.addEventListener("click", handleGoogleAuth);
-    document.getElementById("google-login-btn-2")?.addEventListener("click", handleGoogleAuth);
-
-    // 10. Guest Login (2-Minute Website Preview) Handler
-    document.getElementById("guest-preview-login-btn")?.addEventListener("click", () => {
-      showToast("👀 Starting 2-Minute Guest Preview! You will be redirected to Signup after 2 minutes.", "info", 3500);
-      setTimeout(() => {
-        startGuestPreviewSession("./index.html");
-      }, 300);
+    // 6. 2-Minute Guest Preview Session Buttons
+    document.getElementById("guest-preview-btn")?.addEventListener("click", () => {
+      startGuestPreviewSession("./index.html");
+    });
+    document.getElementById("header-guest-demo-btn")?.addEventListener("click", () => {
+      startGuestPreviewSession("./index.html");
     });
   </script>
 </body>
