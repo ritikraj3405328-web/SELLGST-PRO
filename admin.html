@@ -8,8 +8,8 @@
   <meta name="theme-color" content="#081B4B" />
   <link rel="manifest" href="./manifest.json" />
 
-  <!-- 0.1s Instant Module Preload (With ?v=7.4 Cache-Buster for Cloudflare Pages) -->
-  <link rel="modulepreload" href="./assets/js/security-core.js?v=7.4" />
+  <!-- 0.1s Instant Module Preload (With ?v=7.5 Cache-Buster for Cloudflare Pages) -->
+  <link rel="modulepreload" href="./assets/js/security-core.js?v=7.5" />
   <link rel="modulepreload" href="./assets/js/i18n.js" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -125,18 +125,29 @@
         </div>
       </div>
 
-      <!-- Standard PIN Unlock Form -->
+      <!-- Standard PIN Unlock Form (WITH 👁️ SHOW / 🙈 HIDE BUTTON) -->
       <form id="admin-pin-unlock-form" class="space-y-3" onsubmit="return false;">
-        <input
-          type="password"
-          id="admin-pin-input"
-          required
-          inputmode="numeric"
-          maxlength="6"
-          placeholder="••••••"
-          autocomplete="off"
-          class="w-full px-4 py-3 rounded-2xl bg-slate-50 border-2 border-slate-200 text-center font-mono text-xl font-black tracking-[0.45em] text-[#081B4B] focus:outline-none focus:border-[#5B2EFF]"
-        />
+        <div class="relative flex items-center">
+          <input
+            type="password"
+            id="admin-pin-input"
+            required
+            inputmode="numeric"
+            maxlength="6"
+            placeholder="••••••"
+            autocomplete="off"
+            class="w-full pl-4 pr-20 py-3 rounded-2xl bg-slate-50 border-2 border-slate-200 text-center font-mono text-xl font-black tracking-[0.35em] text-[#081B4B] focus:outline-none focus:border-[#5B2EFF]"
+          />
+          <button
+            type="button"
+            data-toggle-pin="admin-pin-input"
+            aria-label="Show or Hide PIN"
+            class="absolute right-2.5 px-2.5 py-1.5 rounded-xl bg-white hover:bg-indigo-50 text-[#081B4B] border border-slate-200 font-extrabold text-[11px] shadow-2xs transition cursor-pointer select-none"
+          >
+            👁️ Show
+          </button>
+        </div>
+
         <div id="admin-attempts-left-pill" class="text-[11px] font-bold text-slate-400">
           Security Status: 3 of 3 attempts remaining
         </div>
@@ -207,15 +218,28 @@
             placeholder="Enter 6-Digit OTP"
             class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-300 text-center font-mono font-extrabold text-xs tracking-widest"
           />
-          <input
-            type="password"
-            id="admin-new-pin-input"
-            inputmode="numeric"
-            minlength="6"
-            maxlength="6"
-            placeholder="Enter New 6-Digit PIN"
-            class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-300 text-center font-mono font-extrabold text-xs tracking-widest"
-          />
+
+          <!-- OTP Reset New PIN Input with 👁️ Show / 🙈 Hide Button -->
+          <div class="relative flex items-center">
+            <input
+              type="password"
+              id="admin-new-pin-input"
+              inputmode="numeric"
+              minlength="6"
+              maxlength="6"
+              placeholder="Enter New 6-Digit PIN"
+              class="w-full pl-3 pr-16 py-2 rounded-xl bg-slate-50 border border-slate-300 text-center font-mono font-extrabold text-xs tracking-widest text-[#081B4B]"
+            />
+            <button
+              type="button"
+              data-toggle-pin="admin-new-pin-input"
+              aria-label="Show or Hide New PIN"
+              class="absolute right-2 px-2 py-1 rounded-lg bg-white hover:bg-indigo-50 text-[#081B4B] border border-slate-200 font-extrabold text-[10px] shadow-2xs transition cursor-pointer select-none"
+            >
+              👁️ Show
+            </button>
+          </div>
+
           <button
             type="button"
             id="verify-otp-save-pin-btn"
@@ -436,7 +460,7 @@
             </label>
           </div>
 
-          <!-- Merchant UPI, Plan Prices & Optional New 6-Digit Admin PIN (NO PLAINTEXT VALUE IN HTML!) -->
+          <!-- Merchant UPI, Plan Prices & Optional New 6-Digit Admin PIN (WITH 👁️ SHOW / 🙈 HIDE BUTTON) -->
           <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
             <div>
               <label class="block font-bold text-slate-600 mb-1">Merchant UPI ID</label>
@@ -456,17 +480,27 @@
             </div>
             <div class="col-span-2 sm:col-span-1">
               <label class="block font-bold text-rose-600 mb-1">New 6-Digit PIN</label>
-              <input
-                type="password"
-                id="cfg-admin-pin"
-                inputmode="numeric"
-                minlength="6"
-                maxlength="6"
-                value=""
-                placeholder="•••••• (Keep/Change)"
-                autocomplete="new-password"
-                class="w-full px-3 py-2 rounded-xl bg-rose-50/60 border border-rose-200 font-mono font-extrabold text-[#081B4B] tracking-widest"
-              />
+              <div class="relative flex items-center">
+                <input
+                  type="password"
+                  id="cfg-admin-pin"
+                  inputmode="numeric"
+                  minlength="6"
+                  maxlength="6"
+                  value=""
+                  placeholder="••••••"
+                  autocomplete="new-password"
+                  class="w-full pl-2.5 pr-14 py-2 rounded-xl bg-rose-50/60 border border-rose-200 font-mono font-extrabold text-[#081B4B] tracking-widest"
+                />
+                <button
+                  type="button"
+                  data-toggle-pin="cfg-admin-pin"
+                  aria-label="Show or Hide New PIN"
+                  class="absolute right-1.5 px-2 py-1 rounded-lg bg-white hover:bg-rose-100 text-[#081B4B] border border-rose-200 font-extrabold text-[10px] shadow-2xs transition cursor-pointer select-none"
+                >
+                  👁️ Show
+                </button>
+              </div>
             </div>
           </div>
 
@@ -633,7 +667,7 @@
   </div>
 
   <!-- ===================================================================== -->
-  <!-- ZERO-PLAINTEXT SHA-256 CRYPTOGRAPHIC PIN ENGINE (NO PASSWORD IN CODE) -->
+  <!-- ZERO-PLAINTEXT SHA-256 CRYPTOGRAPHIC PIN ENGINE + 👁️ SHOW/HIDE TOGGLE -->
   <!-- ===================================================================== -->
   <script>
     (function initZeroPlaintextAdminPinGate() {
@@ -643,15 +677,33 @@
       const PIN_LOCKOUT_UNTIL_KEY = "sellgst_admin_lockout_until";
       const OWNER_EMAIL_KEY = "sellgst_owner_recovery_email";
 
-      // Purge any old plaintext PIN keys from localStorage so even DevTools Storage tab never shows a raw PIN!
+      // 1-Click 👁️ Show / 🙈 Hide Toggle for all Admin PIN inputs (Outside Lock, Inside Config & OTP Reset)
+      document.querySelectorAll("[data-toggle-pin]").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          const targetId = btn.getAttribute("data-toggle-pin");
+          const inp = document.getElementById(targetId);
+          if (!inp) return;
+          if (inp.type === "password") {
+            inp.type = "text";
+            btn.textContent = "🙈 Hide";
+          } else {
+            inp.type = "password";
+            btn.textContent = "👁️ Show";
+          }
+          inp.focus();
+        });
+      });
+
+      // Purge any old plaintext PIN keys from localStorage
       localStorage.removeItem("sellgst_owner_admin_pin");
       localStorage.removeItem("sellgst_owner_admin_pin_6d");
 
       // One-time reset of stuck lockout counter
-      if (!localStorage.getItem("sellgst_pin_v74_reset")) {
+      if (!localStorage.getItem("sellgst_pin_v75_reset")) {
         localStorage.removeItem(PIN_LOCKOUT_UNTIL_KEY);
         localStorage.setItem(PIN_FAIL_COUNT_KEY, "0");
-        localStorage.setItem("sellgst_pin_v74_reset", "1");
+        localStorage.setItem("sellgst_pin_v75_reset", "1");
       }
 
       const pinOverlay = document.getElementById("admin-pin-lock-overlay");
@@ -666,7 +718,15 @@
         cfgOwnerEmailInput.value = localStorage.getItem(OWNER_EMAIL_KEY) || "ritikraj3405328@gmail.com";
       }
 
-      // WebCrypto SHA-256 One-Way Hash Function (Irreversible 64-char hex digest)
+      // Enforce numeric-only digits on all PIN inputs
+      ["admin-pin-input", "cfg-admin-pin", "admin-new-pin-input", "admin-otp-code-input"].forEach((id) => {
+        const el = document.getElementById(id);
+        el?.addEventListener("input", () => {
+          el.value = el.value.replace(/\D/g, "").slice(0, 6);
+        });
+      });
+
+      // WebCrypto SHA-256 One-Way Hash Function
       async function computeSha256Hex(str) {
         const data = new TextEncoder().encode("SELLGST_SALT_v7_" + String(str));
         const hashBuffer = await crypto.subtle.digest("SHA-256", data);
@@ -695,17 +755,14 @@
         const clean = String(enteredRaw || "").trim();
         if (!clean) return false;
 
-        // 1. If a custom SHA-256 hash was saved by Owner, verify strictly against SHA-256 hash
         const savedHash = localStorage.getItem(PIN_HASH_STORAGE_KEY);
         if (savedHash) {
           const candidateHash = await computeSha256Hex(clean);
           if (candidateHash === savedHash) return true;
         }
 
-        // 2. Verify against one-way mathematical digest (no plaintext PIN in source code!)
         const digest = computeInitialDigest(clean);
         if (digest === 1943223816338 || digest === 113234882) {
-          // Automatically upgrade and store as WebCrypto SHA-256 hash
           await window.saveEncryptedAdminPin(clean);
           return true;
         }
@@ -800,7 +857,10 @@
           localStorage.setItem(PIN_FAIL_COUNT_KEY, "0");
           localStorage.removeItem(PIN_LOCKOUT_UNTIL_KEY);
           sessionStorage.setItem(PIN_SESSION_UNLOCKED_KEY, "1");
-          if (pinInput) pinInput.value = "";
+          if (pinInput) {
+            pinInput.value = "";
+            pinInput.type = "password";
+          }
           hidePinOverlayNow();
           if (window.SellGSTCore?.showToast) {
             window.SellGSTCore.showToast("🔓 SHA-256 Verified! Master Admin Console Unlocked.", "success");
@@ -902,7 +962,7 @@
       syncProDOMElements,
       renderPendingPaymentBanner,
       init3DTiltCards
-    } from "./assets/js/security-core.js?v=7.4";
+    } from "./assets/js/security-core.js?v=7.5";
     import {
       collection,
       doc,
