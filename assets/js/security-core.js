@@ -1,11 +1,14 @@
 /**
- * SellGST Pro — Principal Security Core v8.3 (100% Full Uncut Edition)
- * Includes:
- * 1. Force Cache-Healer for Cloudflare Pages (`sellgst-pro.pages.dev`)
- * 2. Customer 10-Digit Mobile / WhatsApp Number Sync across Login, Signup, My Account & Admin Queue
- * 3. Full Plan Comparison Chart (Free ₹0 vs Monthly ₹99 vs Yearly ₹499) inside Upgrade Modal
- * 4. Full Uncut Conversational AI GST & Marketplace Helper Engine
- * File: /assets/js/security-core.js
+ * SellGST Pro — Principal Security Core v8.4 (100% Full Uncut Master Engine)
+ * File 1 of 6: /assets/js/security-core.js
+ *
+ * Fixes & Features Included:
+ * 1. Auto-populates empty language dropdowns across all pages (Fixes blank language button bug)
+ * 2. Removes overlapping bottom navbars & fixes top header spacing automatically
+ * 3. Injects ☰ All Super Tools Drawer Menu & 24/7 Gemini AI Helper on all pages
+ * 4. Syncs Customer 10-Digit Mobile / WhatsApp Number across Login, Signup, My Account & Admin Queue
+ * 5. Displays Clean Free (₹0) vs Monthly (₹99) vs Yearly (₹499) Comparison Chart inside Upgrade Modal
+ * 6. Force Cache-Healer for Cloudflare Pages (sellgst-pro.pages.dev)
  */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -65,8 +68,7 @@ googleProvider.setCustomParameters({ prompt: "select_account" });
 
 /**
  * FORCE CACHE-HEALER FOR CLOUDFLARE PAGES:
- * Overwrites Chrome's stuck 1-year `immutable` disk cache for `/assets/js/security-core.js` and `/assets/js/i18n.js`
- * so every sub-page (`app.html`, `invoice.html`, `label-studio.html`, `qr-studio.html`, `admin.html`) loads fresh code!
+ * Ensures all sub-pages always load fresh JS from Cloudflare Pages instead of stale disk cache.
  */
 (function selfHealDomainAndCache() {
   try {
@@ -80,19 +82,19 @@ googleProvider.setCustomParameters({ prompt: "select_account" });
       return;
     }
 
-    const healBaseUrls = [
-      "/assets/js/security-core.js",
-      "/assets/js/i18n.js",
-      "./assets/js/security-core.js",
-      "./assets/js/i18n.js",
-      "/sw.js"
-    ];
-    healBaseUrls.forEach((u) => {
-      fetch(u, { cache: "reload" }).catch(() => {});
-    });
-
-    const healKey = "sellgst_v8_3_sw_healed";
+    const healKey = "sellgst_v8_4_sw_healed";
     if (!localStorage.getItem(healKey)) {
+      const healBaseUrls = [
+        "/assets/js/security-core.js",
+        "/assets/js/i18n.js",
+        "./assets/js/security-core.js",
+        "./assets/js/i18n.js",
+        "/sw.js"
+      ];
+      healBaseUrls.forEach((u) => {
+        fetch(u, { cache: "reload" }).catch(() => {});
+      });
+
       if ("caches" in window) {
         caches.keys().then((names) => {
           names.forEach((n) => caches.delete(n));
@@ -108,6 +110,9 @@ googleProvider.setCustomParameters({ prompt: "select_account" });
   } catch (_) {}
 })();
 
+/**
+ * Fixes top layout spacing and ensures language dropdowns are never blank on any sub-page.
+ */
 export function fixTopLayoutSpacingGap() {
   if (!document.body) return;
   document.body.classList.remove("justify-between");
@@ -123,11 +128,23 @@ export function fixTopLayoutSpacingGap() {
     main.classList.remove("mt-5");
     main.classList.add("mt-2.5");
   }
+
+  // Ensure every [data-lang-switcher] select has visible options (fixes blank pill in sub-pages)
+  document.querySelectorAll("select[data-lang-switcher]").forEach((sel) => {
+    if (sel.options.length === 0) {
+      sel.innerHTML = `
+        <option value="en">English</option>
+        <option value="hi">हिन्दी</option>
+        <option value="hinglish">Hinglish</option>
+      `;
+    }
+    const savedLang = localStorage.getItem("sellgst_lang") || "en";
+    sel.value = savedLang;
+  });
 }
 
 /**
- * Automatically removes the redundant bottom navigation bar and bottom inline DPDP card
- * from ALL pages (DPDP Act & Delete Account remain inside the "My Account" modal).
+ * Removes redundant fixed bottom navbars that overlap content on mobile screens.
  */
 export function removeRedundantBottomSections() {
   try {
@@ -2048,9 +2065,9 @@ function getSmartContextualReply(queryText = "") {
     return (
       "🏛️ **Meesho, Amazon & Flipkart GSTR-1 Filing Steps:**\n\n" +
       "1. **☰ Menu → GSTR-1 Filing (`gst-filing.html`)** kholein.\n" +
-      "2. Upar apna **Platform Tab** chunein: **Meesho** (`tcs_sales` + `tcs_sales_return`), **Amazon MTR**, ya **Flipkart**.\n" +
+      "2. Upar apna **Platform Tab** chunein: **Meesho** (`tcs_sales` + `tcs_sales_return` ya seedha `.ZIP` file), **Amazon MTR**, ya **Flipkart**.\n" +
       "3. Apna **Filing Frequency (Monthly ya Quarterly QRMP)** select karein.\n" +
-      "4. Apni unzipped `.CSV` ya `.XLSX` file upload karein — negative sales returns automatic net-off ho jayenge aur **1-Click Ready GSTR-1 (.JSON)** aur **Portal Excel (.CSV)** download ho jayega!"
+      "4. File upload karte hi **1-Click Ready GSTR-1 (.JSON)** aur **GST Officer Scrutiny Excel (.CSV)** download ho jayega!"
     );
   }
 
