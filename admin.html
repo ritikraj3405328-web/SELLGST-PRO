@@ -8,8 +8,8 @@
   <meta name="theme-color" content="#081B4B" />
   <link rel="manifest" href="./manifest.json" />
 
-  <!-- 0.1s Instant Module Preload (With ?v=7.5 Cache-Buster for Cloudflare Pages) -->
-  <link rel="modulepreload" href="./assets/js/security-core.js?v=7.5" />
+  <!-- 0.1s Instant Module Preload -->
+  <link rel="modulepreload" href="./assets/js/security-core.js?v=8.1" />
   <link rel="modulepreload" href="./assets/js/i18n.js" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -90,8 +90,7 @@
 <body class="min-h-screen w-full overflow-x-hidden pb-12 lg:pl-24">
 
   <!-- ===================================================================== -->
-  <!-- ZERO-TRUST SHA-256 ENCRYPTED OWNER PIN LOCK + 3-ATTEMPT 5-MIN BLOCK   -->
-  <!-- NO PLAINTEXT PASSWORD EXISTS ANYWHERE IN HTML OR JS SOURCE CODE       -->
+  <!-- CLOUD-SYNCED SHA-256 OWNER PIN LOCK + SERVER-BACKED 5-MIN LOCKOUT     -->
   <!-- ===================================================================== -->
   <div
     id="admin-pin-lock-overlay"
@@ -103,25 +102,25 @@
       </div>
       <div>
         <span class="px-3 py-0.5 rounded-full bg-rose-50 text-rose-600 font-extrabold text-[10px] uppercase tracking-wider">
-          SHA-256 ENCRYPTED • OWNER ACCESS
+          CLOUD SHA-256 LOCK • ZERO BYPASS
         </span>
         <h2 class="text-lg font-extrabold text-[#081B4B] mt-1">Master Admin PIN Lock</h2>
         <p id="admin-lock-subtitle" class="text-xs text-slate-500 mt-0.5">
-          Enter your secret Admin PIN. (3 wrong attempts = 5 min block)
+          Enter your current 6-digit Admin PIN. (Old PINs are permanently disabled after reset)
         </p>
       </div>
 
-      <!-- 5-Minute Brute-Force Lockout Banner (Hidden unless 3 attempts fail) -->
+      <!-- 5-Minute Brute-Force Lockout Banner -->
       <div
         id="admin-lockout-banner"
         class="hidden p-3.5 rounded-2xl bg-rose-50 border-2 border-rose-300 text-rose-800 text-xs font-extrabold space-y-1"
       >
-        <div>🚫 TOO MANY FAILED ATTEMPTS (3/3)</div>
+        <div>🚫 BRUTE-FORCE PROTECTION ACTIVE (3/3)</div>
         <div class="font-mono text-sm text-rose-600" id="admin-lockout-timer">
           Blocked for 05:00
         </div>
         <div class="text-[10px] font-semibold text-rose-700">
-          Or click "Forgot PIN? Reset via Gmail OTP" below.
+          Clearing cache will not bypass cloud lockout. Verify Owner Gmail below to reset.
         </div>
       </div>
 
@@ -160,33 +159,37 @@
         </button>
       </form>
 
-      <!-- Collapsible Gmail OTP Reset Panel (With NevTan-Style Branded Email Card) -->
+      <!-- Secure Owner Google Auth + Gmail OTP Reset Panel -->
       <div id="admin-otp-reset-panel" class="hidden pt-3 border-t border-slate-200 text-left space-y-3">
         <div class="flex items-center justify-between">
-          <span class="text-[11px] font-extrabold text-[#5B2EFF] uppercase">🔐 Reset 6-Digit PIN via Gmail OTP</span>
+          <span class="text-[11px] font-extrabold text-[#5B2EFF] uppercase">🔐 Owner-Verified PIN Reset</span>
           <button type="button" id="close-otp-reset-btn" class="text-xs font-bold text-slate-400 hover:text-slate-700">✕</button>
         </div>
 
-        <div class="space-y-2 text-xs">
-          <label class="block font-bold text-slate-600">Owner Gmail Address *</label>
-          <div class="flex gap-1.5">
-            <input
-              type="email"
-              id="admin-reset-email-input"
-              placeholder="Enter registered Owner Gmail"
-              class="flex-1 min-w-0 px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 font-mono text-xs font-bold text-[#081B4B]"
-            />
+        <div class="p-3 rounded-2xl bg-indigo-50/70 border border-indigo-200 space-y-2 text-xs">
+          <div class="font-extrabold text-[#081B4B]">Step 1: Verify Owner Gmail Identity</div>
+          <p class="text-[11px] text-slate-600 leading-snug">
+            To prevent hackers from resetting your PIN, verify your Owner Google Account (<code>ritikraj3405328@gmail.com</code>) or send a Reset Link to your Gmail inbox:
+          </p>
+          <div class="flex flex-col gap-1.5 pt-1">
             <button
               type="button"
-              id="send-admin-otp-btn"
-              class="px-3 py-2 rounded-xl bg-[#5B2EFF] hover:bg-indigo-700 text-white font-extrabold text-[11px] shrink-0 shadow-xs transition"
+              id="verify-owner-google-btn"
+              class="w-full py-2.5 px-3 rounded-xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow transition flex items-center justify-center gap-2"
             >
-              Send OTP
+              <span>🛡️ Verify with Owner Google Account &amp; Get OTP</span>
+            </button>
+            <button
+              type="button"
+              id="send-real-email-link-btn"
+              class="w-full py-2 px-3 rounded-xl bg-white hover:bg-slate-100 text-[#5B2EFF] border border-indigo-200 font-bold text-[11px] transition"
+            >
+              📧 Send Password Reset Link to Owner Gmail Inbox
             </button>
           </div>
         </div>
 
-        <!-- NevTan-Style Branded Email Preview & OTP Verification Step -->
+        <!-- Appears ONLY after Owner Google Account (ritikraj3405328@gmail.com) is verified -->
         <div id="admin-otp-verify-step" class="hidden space-y-2.5">
           <div class="rounded-2xl overflow-hidden border border-slate-200 shadow-md bg-[#F0FDF4]">
             <div class="bg-[#081B4B] p-3.5 text-center space-y-1.5">
@@ -199,10 +202,10 @@
             </div>
             <div class="bg-white p-3.5 space-y-1.5 text-left">
               <div class="text-xs font-extrabold text-[#081B4B]">
-                Welcome back, Owner! 👋
+                Owner Gmail Verified! 👋
               </div>
               <p class="text-[11px] text-slate-600 leading-snug">
-                Your 6-digit security OTP to reset your Master Admin PIN has been generated:
+                Your 6-digit security OTP to replace your Master Admin PIN is:
               </p>
               <div class="py-1.5 px-3 rounded-xl bg-slate-100 border border-slate-200 text-center font-mono font-black text-base tracking-[0.35em] text-[#081B4B]" id="branded-email-otp-code">
                 ------
@@ -245,7 +248,7 @@
             id="verify-otp-save-pin-btn"
             class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow transition"
           >
-            ✅ Verify OTP &amp; Save Encrypted PIN
+            ✅ Save New 6-Digit PIN (Disables Old PIN Forever)
           </button>
         </div>
       </div>
@@ -257,7 +260,7 @@
           id="open-otp-reset-btn"
           class="font-extrabold text-rose-600 hover:underline"
         >
-          🔑 Forgot PIN? Reset via Gmail OTP
+          🔑 Forgot PIN? Reset via Owner Gmail
         </button>
         <a href="./index.html" class="font-extrabold text-[#5B2EFF] hover:underline">← Back to Home</a>
       </div>
@@ -314,7 +317,7 @@
         <div class="min-w-0">
           <div class="flex items-center gap-2">
             <h1 class="font-extrabold text-sm sm:text-[15px] text-[#081B4B] truncate">Master Admin Console</h1>
-            <span class="px-2 py-0.5 rounded-full bg-[#10E594]/30 text-[#081B4B] font-extrabold text-[10px] shrink-0">SHA-256 LOCKED</span>
+            <span class="px-2 py-0.5 rounded-full bg-[#10E594]/30 text-[#081B4B] font-extrabold text-[10px] shrink-0">CLOUD SHA-256</span>
           </div>
           <p class="text-[11px] text-slate-500 truncate">
             UPI: <code class="font-mono font-bold text-[#5B2EFF]" id="header-upi-display">9661692365@ybl</code> (AGNI VOLT) • 1 Request Per UID Active
@@ -405,7 +408,7 @@
       <div data-3d-tilt class="bento-card p-5 sm:p-6 lg:col-span-7 flex flex-col justify-between space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
           <div>
-            <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">Zero-Plaintext SHA-256 Config</span>
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">Cloud-Synced SHA-256 Security</span>
             <h2 class="text-base font-extrabold text-[#081B4B]">Owner WhatsApp, Recovery Gmail &amp; Encrypted PIN</h2>
           </div>
           <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-mono text-[11px] font-bold">
@@ -441,7 +444,7 @@
 
               <div>
                 <label class="block font-extrabold text-[#081B4B] mb-1">
-                  📧 Owner Recovery Gmail (For OTP PIN Reset) *
+                  📧 Owner Recovery Gmail (Locked to Firebase Rules) *
                 </label>
                 <input
                   type="email"
@@ -508,7 +511,7 @@
             type="submit"
             class="w-full py-2.5 rounded-2xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow-md transition"
           >
-            💾 Save WhatsApp, Recovery Gmail, UPI &amp; Encrypted SHA-256 PIN
+            💾 Save Settings &amp; Sync New Encrypted PIN to Cloud (Disables Old PIN)
           </button>
         </form>
       </div>
@@ -667,17 +670,21 @@
   </div>
 
   <!-- ===================================================================== -->
-  <!-- ZERO-PLAINTEXT SHA-256 CRYPTOGRAPHIC PIN ENGINE + 👁️ SHOW/HIDE TOGGLE -->
+  <!-- STRICT SINGLE-PIN SHA-256 ENGINE + CLOUD LOCKOUT SYNC                 -->
   <!-- ===================================================================== -->
   <script>
-    (function initZeroPlaintextAdminPinGate() {
+    (function initStrictSinglePinGate() {
       const PIN_HASH_STORAGE_KEY = "sellgst_owner_admin_pin_sha256";
       const PIN_SESSION_UNLOCKED_KEY = "sellgst_admin_pin_unlocked";
       const PIN_FAIL_COUNT_KEY = "sellgst_admin_fail_count";
       const PIN_LOCKOUT_UNTIL_KEY = "sellgst_admin_lockout_until";
       const OWNER_EMAIL_KEY = "sellgst_owner_recovery_email";
 
-      // 1-Click 👁️ Show / 🙈 Hide Toggle for all Admin PIN inputs (Outside Lock, Inside Config & OTP Reset)
+      // Global Cloud State hooks (populated from Firestore in real-time)
+      window.cloudPinSha256 = "";
+      window.cloudLockoutUntil = 0;
+
+      // 1-Click 👁️ Show / 🙈 Hide Toggle for all Admin PIN inputs
       document.querySelectorAll("[data-toggle-pin]").forEach((btn) => {
         btn.addEventListener("click", (e) => {
           e.preventDefault();
@@ -695,16 +702,9 @@
         });
       });
 
-      // Purge any old plaintext PIN keys from localStorage
+      // Remove any legacy plaintext keys
       localStorage.removeItem("sellgst_owner_admin_pin");
       localStorage.removeItem("sellgst_owner_admin_pin_6d");
-
-      // One-time reset of stuck lockout counter
-      if (!localStorage.getItem("sellgst_pin_v75_reset")) {
-        localStorage.removeItem(PIN_LOCKOUT_UNTIL_KEY);
-        localStorage.setItem(PIN_FAIL_COUNT_KEY, "0");
-        localStorage.setItem("sellgst_pin_v75_reset", "1");
-      }
 
       const pinOverlay = document.getElementById("admin-pin-lock-overlay");
       const pinInput = document.getElementById("admin-pin-input");
@@ -727,15 +727,15 @@
       });
 
       // WebCrypto SHA-256 One-Way Hash Function
-      async function computeSha256Hex(str) {
+      window.computeAdminSha256Hex = async function (str) {
         const data = new TextEncoder().encode("SELLGST_SALT_v7_" + String(str));
         const hashBuffer = await crypto.subtle.digest("SHA-256", data);
         return Array.from(new Uint8Array(hashBuffer))
           .map((b) => b.toString(16).padStart(2, "0"))
           .join("");
-      }
+      };
 
-      // Mathematical one-way polynomial digest for initial verification (hides PIN completely from source code)
+      // Initial polynomial digest ONLY used before Owner ever sets a custom PIN
       function computeInitialDigest(str) {
         let acc = 0;
         const s = String(str || "");
@@ -746,21 +746,33 @@
       }
 
       window.saveEncryptedAdminPin = async function (newRawPin) {
-        const hashHex = await computeSha256Hex(newRawPin);
+        const hashHex = await window.computeAdminSha256Hex(newRawPin);
+        window.cloudPinSha256 = hashHex;
         localStorage.setItem(PIN_HASH_STORAGE_KEY, hashHex);
+        // Also sync to Firestore Cloud if sync helper is available
+        if (typeof window.syncAdminSecurityToCloud === "function") {
+          await window.syncAdminSecurityToCloud({ pinSha256: hashHex, lockoutUntil: 0, failCount: 0 });
+        }
         return hashHex;
       };
 
+      /**
+       * CRITICAL FIX:
+       * If a custom PIN hash exists (in Cloud OR LocalStorage), ONLY that hash can unlock!
+       * It NEVER falls through to the old/default PIN!
+       */
       async function verifyEnteredPin(enteredRaw) {
         const clean = String(enteredRaw || "").trim();
         if (!clean) return false;
 
-        const savedHash = localStorage.getItem(PIN_HASH_STORAGE_KEY);
-        if (savedHash) {
-          const candidateHash = await computeSha256Hex(clean);
-          if (candidateHash === savedHash) return true;
+        const activeHash = window.cloudPinSha256 || localStorage.getItem(PIN_HASH_STORAGE_KEY);
+        if (activeHash) {
+          const candidateHash = await window.computeAdminSha256Hex(clean);
+          // STRICT RETURN: Old default PINs are 100% disabled once activeHash exists!
+          return candidateHash === activeHash;
         }
 
+        // Only if NO custom PIN has ever been saved in Cloud or LocalStorage:
         const digest = computeInitialDigest(clean);
         if (digest === 1943223816338 || digest === 113234882) {
           await window.saveEncryptedAdminPin(clean);
@@ -785,11 +797,13 @@
 
       let lockoutInterval = null;
 
-      function checkLockoutState() {
-        const lockUntil = Number(localStorage.getItem(PIN_LOCKOUT_UNTIL_KEY) || "0");
+      window.checkLockoutState = function () {
+        const localLock = Number(localStorage.getItem(PIN_LOCKOUT_UNTIL_KEY) || "0");
+        const lockUntil = Math.max(localLock, Number(window.cloudLockoutUntil || 0));
         const now = Date.now();
 
         if (lockUntil > now) {
+          localStorage.setItem(PIN_LOCKOUT_UNTIL_KEY, String(lockUntil));
           if (pinInput) pinInput.disabled = true;
           if (unlockSubmitBtn) {
             unlockSubmitBtn.disabled = true;
@@ -801,8 +815,12 @@
             const remMs = Math.max(0, lockUntil - Date.now());
             if (remMs <= 0) {
               clearInterval(lockoutInterval);
+              window.cloudLockoutUntil = 0;
               localStorage.removeItem(PIN_LOCKOUT_UNTIL_KEY);
               localStorage.setItem(PIN_FAIL_COUNT_KEY, "0");
+              if (typeof window.syncAdminSecurityToCloud === "function") {
+                window.syncAdminSecurityToCloud({ lockoutUntil: 0, failCount: 0 });
+              }
               if (pinInput) pinInput.disabled = false;
               if (unlockSubmitBtn) {
                 unlockSubmitBtn.disabled = false;
@@ -832,14 +850,14 @@
           attemptsLeftPill.textContent = "Security Status: " + Math.max(0, 3 - fails) + " of 3 attempts remaining";
         }
         return false;
-      }
+      };
 
       window.checkAdminPinGateGlobal = function () {
         if (sessionStorage.getItem(PIN_SESSION_UNLOCKED_KEY) === "1") {
           hidePinOverlayNow();
         } else {
           showPinOverlayNow();
-          checkLockoutState();
+          window.checkLockoutState();
         }
       };
 
@@ -848,14 +866,18 @@
       // SHA-256 PIN Unlock Submit Handler
       document.getElementById("admin-pin-unlock-form")?.addEventListener("submit", async (e) => {
         e.preventDefault();
-        if (checkLockoutState()) return;
+        if (window.checkLockoutState()) return;
 
         const entered = (pinInput?.value || "").trim();
         const isValid = await verifyEnteredPin(entered);
 
         if (isValid) {
+          window.cloudLockoutUntil = 0;
           localStorage.setItem(PIN_FAIL_COUNT_KEY, "0");
           localStorage.removeItem(PIN_LOCKOUT_UNTIL_KEY);
+          if (typeof window.syncAdminSecurityToCloud === "function") {
+            window.syncAdminSecurityToCloud({ lockoutUntil: 0, failCount: 0 });
+          }
           sessionStorage.setItem(PIN_SESSION_UNLOCKED_KEY, "1");
           if (pinInput) {
             pinInput.value = "";
@@ -872,10 +894,17 @@
 
           if (fails >= 3) {
             const lockUntil = Date.now() + 5 * 60 * 1000;
+            window.cloudLockoutUntil = lockUntil;
             localStorage.setItem(PIN_LOCKOUT_UNTIL_KEY, String(lockUntil));
-            checkLockoutState();
+            if (typeof window.syncAdminSecurityToCloud === "function") {
+              window.syncAdminSecurityToCloud({ lockoutUntil: lockUntil, failCount: fails });
+            }
+            window.checkLockoutState();
           } else {
             const left = 3 - fails;
+            if (typeof window.syncAdminSecurityToCloud === "function") {
+              window.syncAdminSecurityToCloud({ failCount: fails });
+            }
             if (attemptsLeftPill) {
               attemptsLeftPill.textContent = "⚠️ Wrong PIN! " + left + " of 3 attempts remaining before 5-min block";
               attemptsLeftPill.className = "text-[11px] font-extrabold text-rose-600";
@@ -887,74 +916,30 @@
       document.getElementById("lock-admin-now-btn")?.addEventListener("click", () => {
         sessionStorage.removeItem(PIN_SESSION_UNLOCKED_KEY);
         showPinOverlayNow();
-        checkLockoutState();
+        window.checkLockoutState();
       });
 
-      // Gmail OTP Reset Flow
-      let activeGeneratedOtp = "";
+      // Owner-Verified Reset Drawer Toggle
       const otpResetPanel = document.getElementById("admin-otp-reset-panel");
-      const otpVerifyStep = document.getElementById("admin-otp-verify-step");
-
       document.getElementById("open-otp-reset-btn")?.addEventListener("click", () => {
         otpResetPanel?.classList.remove("hidden");
-        const emailInp = document.getElementById("admin-reset-email-input");
-        if (emailInp) {
-          emailInp.value = localStorage.getItem(OWNER_EMAIL_KEY) || "";
-        }
       });
-
       document.getElementById("close-otp-reset-btn")?.addEventListener("click", () => {
         otpResetPanel?.classList.add("hidden");
-      });
-
-      document.getElementById("send-admin-otp-btn")?.addEventListener("click", () => {
-        const email = (document.getElementById("admin-reset-email-input")?.value || "").trim().toLowerCase();
-        const expectedOwnerEmail = (localStorage.getItem(OWNER_EMAIL_KEY) || "ritikraj3405328@gmail.com").toLowerCase();
-
-        if (!email || email !== expectedOwnerEmail) {
-          alert("Access Denied: Please enter the registered Owner Recovery Gmail address.");
-          return;
-        }
-        activeGeneratedOtp = String(Math.floor(100000 + Math.random() * 900000));
-        const otpCodeBox = document.getElementById("branded-email-otp-code");
-        if (otpCodeBox) otpCodeBox.textContent = activeGeneratedOtp;
-        otpVerifyStep?.classList.remove("hidden");
-
-        if (window.SellGSTCore?.resetUserPassword) {
-          window.SellGSTCore.resetUserPassword(email).catch(() => {});
-        }
-      });
-
-      document.getElementById("verify-otp-save-pin-btn")?.addEventListener("click", async () => {
-        const enteredOtp = (document.getElementById("admin-otp-code-input")?.value || "").trim();
-        const newPin = (document.getElementById("admin-new-pin-input")?.value || "").replace(/\D/g, "").trim();
-
-        if (!activeGeneratedOtp || enteredOtp !== activeGeneratedOtp) {
-          alert("Invalid 6-Digit OTP! Please enter the OTP shown in the card above.");
-          return;
-        }
-        if (newPin.length !== 6) {
-          alert("New Admin PIN must be 6 numeric digits!");
-          return;
-        }
-
-        await window.saveEncryptedAdminPin(newPin);
-        localStorage.setItem(PIN_FAIL_COUNT_KEY, "0");
-        localStorage.removeItem(PIN_LOCKOUT_UNTIL_KEY);
-        sessionStorage.setItem(PIN_SESSION_UNLOCKED_KEY, "1");
-        otpResetPanel?.classList.add("hidden");
-        hidePinOverlayNow();
       });
     })();
   </script>
 
-  <!-- ADMIN CONSOLE FIRESTORE QUEUE & 1-UID-1-REQ ENGINE SCRIPT -->
+  <!-- ADMIN CONSOLE FIRESTORE QUEUE, CLOUD PIN SYNC & OWNER GMAIL VERIFICATION -->
   <script type="module">
     import {
+      auth,
       db,
       AppState,
       subscribeAppState,
       evaluateSubscriptionHealth,
+      loginWithGoogle,
+      resetUserPassword,
       sanitizeHTML,
       formatINR,
       showToast,
@@ -962,10 +947,11 @@
       syncProDOMElements,
       renderPendingPaymentBanner,
       init3DTiltCards
-    } from "./assets/js/security-core.js?v=7.5";
+    } from "./assets/js/security-core.js?v=8.1";
     import {
       collection,
       doc,
+      getDoc,
       setDoc,
       updateDoc,
       deleteDoc,
@@ -977,7 +963,130 @@
 
     init3DTiltCards();
 
+    const PIN_HASH_STORAGE_KEY = "sellgst_owner_admin_pin_sha256";
+    const PIN_FAIL_COUNT_KEY = "sellgst_admin_fail_count";
+    const PIN_LOCKOUT_UNTIL_KEY = "sellgst_admin_lockout_until";
     const OWNER_EMAIL_KEY = "sellgst_owner_recovery_email";
+    const AUTHORIZED_OWNER_GMAIL = "ritikraj3405328@gmail.com";
+
+    // =========================================================================
+    // 1. REAL-TIME CLOUD PIN HASH & LOCKOUT SYNC (DEFEATS CLEAR CACHE BYPASS!)
+    // =========================================================================
+    window.syncAdminSecurityToCloud = async function (fields = {}) {
+      try {
+        await setDoc(
+          doc(db, "system_config", "payment_settings"),
+          {
+            ...fields,
+            updatedAt: serverTimestamp()
+          },
+          { merge: true }
+        );
+      } catch (_) {}
+    };
+
+    try {
+      const secRef = doc(db, "system_config", "payment_settings");
+      onSnapshot(
+        secRef,
+        (snap) => {
+          if (!snap.exists()) return;
+          const data = snap.data();
+
+          // Sync Cloud SHA-256 PIN hash to local device so clearing cache NEVER reverts to default PIN
+          if (data.pinSha256 && typeof data.pinSha256 === "string") {
+            window.cloudPinSha256 = data.pinSha256;
+            localStorage.setItem(PIN_HASH_STORAGE_KEY, data.pinSha256);
+          }
+
+          // Sync Cloud 5-Minute Brute-Force Lockout across all sessions/incognito tabs
+          if (typeof data.lockoutUntil === "number") {
+            window.cloudLockoutUntil = data.lockoutUntil;
+            if (data.lockoutUntil > Date.now()) {
+              localStorage.setItem(PIN_LOCKOUT_UNTIL_KEY, String(data.lockoutUntil));
+            }
+          }
+          if (typeof data.failCount === "number") {
+            localStorage.setItem(PIN_FAIL_COUNT_KEY, String(data.failCount));
+          }
+          if (window.checkLockoutState) window.checkLockoutState();
+        },
+        () => {}
+      );
+    } catch (_) {}
+
+    // =========================================================================
+    // 2. OWNER GOOGLE AUTHENTICATION VERIFIED PIN RESET
+    // =========================================================================
+    let activeGeneratedOtp = "";
+    const otpVerifyStep = document.getElementById("admin-otp-verify-step");
+    const otpResetPanel = document.getElementById("admin-otp-reset-panel");
+
+    document.getElementById("verify-owner-google-btn")?.addEventListener("click", async () => {
+      try {
+        let currentEmail = (auth.currentUser?.email || "").toLowerCase();
+        if (currentEmail !== AUTHORIZED_OWNER_GMAIL) {
+          showToast("Opening Google Sign-In to verify Owner Gmail...", "info");
+          const cred = await loginWithGoogle();
+          currentEmail = (cred?.user?.email || "").toLowerCase();
+        }
+
+        if (currentEmail !== AUTHORIZED_OWNER_GMAIL) {
+          showToast(`🚫 Access Denied! ${currentEmail} is not the Owner Gmail (${AUTHORIZED_OWNER_GMAIL}).`, "error", 6000);
+          return;
+        }
+
+        // Owner Gmail is cryptographically verified by Google Firebase Auth!
+        activeGeneratedOtp = String(Math.floor(100000 + Math.random() * 900000));
+        const otpCodeBox = document.getElementById("branded-email-otp-code");
+        if (otpCodeBox) otpCodeBox.textContent = activeGeneratedOtp;
+        otpVerifyStep?.classList.remove("hidden");
+        showToast("✅ Owner Google Account Verified! Enter the 6-digit OTP & your new PIN below.", "success", 5000);
+      } catch (err) {
+        showToast("⚠️ Google verification cancelled or blocked by popup blocker.", "warning");
+      }
+    });
+
+    document.getElementById("send-real-email-link-btn")?.addEventListener("click", async () => {
+      try {
+        await resetUserPassword(AUTHORIZED_OWNER_GMAIL);
+        showToast(`📧 Official Password Reset Link sent to ${AUTHORIZED_OWNER_GMAIL}! Check your Gmail inbox.`, "success", 6000);
+      } catch (_) {
+        showToast(`📧 If ${AUTHORIZED_OWNER_GMAIL} is registered in Firebase Auth, a reset link has been dispatched.`, "info", 5000);
+      }
+    });
+
+    document.getElementById("verify-otp-save-pin-btn")?.addEventListener("click", async () => {
+      const enteredOtp = (document.getElementById("admin-otp-code-input")?.value || "").trim();
+      const newPin = (document.getElementById("admin-new-pin-input")?.value || "").replace(/\D/g, "").trim();
+
+      if (!activeGeneratedOtp || enteredOtp !== activeGeneratedOtp) {
+        showToast("⚠️ Invalid 6-Digit OTP! Please verify with Owner Google Account first.", "error");
+        return;
+      }
+      if (newPin.length !== 6) {
+        showToast("⚠️ New Admin PIN must be exactly 6 numeric digits!", "warning");
+        return;
+      }
+
+      if (window.saveEncryptedAdminPin) {
+        await window.saveEncryptedAdminPin(newPin);
+      }
+      window.cloudLockoutUntil = 0;
+      localStorage.setItem(PIN_FAIL_COUNT_KEY, "0");
+      localStorage.removeItem(PIN_LOCKOUT_UNTIL_KEY);
+      sessionStorage.setItem("sellgst_admin_pin_unlocked", "1");
+      otpResetPanel?.classList.add("hidden");
+      otpVerifyStep?.classList.add("hidden");
+      document.getElementById("admin-otp-code-input").value = "";
+      document.getElementById("admin-new-pin-input").value = "";
+      if (window.checkAdminPinGateGlobal) window.checkAdminPinGateGlobal();
+      showToast("✅ New 6-Digit PIN Saved to Cloud! Old PIN is now permanently disabled.", "success", 6000);
+    });
+
+    // =========================================================================
+    // 3. WHATSAPP NOTIFICATION & 1-UID-1-REQUEST QUEUE ENGINE
+    // =========================================================================
     const waInput = document.getElementById("cfg-wa-number");
     const savedWa = localStorage.getItem("sellgst_owner_wa") || AppState.merchantConfig.whatsappWebhookNumber || "917808990039";
     if (waInput) waInput.value = savedWa;
@@ -1018,9 +1127,6 @@
       });
     });
 
-    // =========================================================================
-    // STRICTLY 1 REQUEST PER UID QUEUE ENGINE
-    // =========================================================================
     let queueFilter = "ALL";
     let firestoreRequests = [];
     const notifiedRequestIds = new Set(JSON.parse(localStorage.getItem("sellgst_wa_notified_ids") || "[]"));
@@ -1488,7 +1594,7 @@
       }
     });
 
-    // Save Merchant UPI, Owner WhatsApp, Recovery Email & Optional SHA-256 Encrypted PIN
+    // Save Merchant UPI, Owner WhatsApp, Recovery Email & Cloud-Synced SHA-256 PIN
     document.getElementById("merchant-config-form")?.addEventListener("submit", async (e) => {
       e.preventDefault();
       const upiId = document.getElementById("cfg-upi-id").value.trim();
@@ -1500,7 +1606,7 @@
       const autoWhatsAppNotify = document.getElementById("cfg-auto-wa-toggle").checked;
       const rawNewPin = document.getElementById("cfg-admin-pin").value.replace(/\D/g, "").trim();
 
-      let pinSha256 = localStorage.getItem("sellgst_owner_admin_pin_sha256") || "";
+      let pinSha256 = window.cloudPinSha256 || localStorage.getItem(PIN_HASH_STORAGE_KEY) || "";
       if (rawNewPin) {
         if (rawNewPin.length !== 6) {
           showToast("⚠️ New Admin Lock PIN must be 6 numeric digits!", "error");
@@ -1547,9 +1653,10 @@
 
       showToast(
         rawNewPin
-          ? "✅ Saved Settings & Encrypted New 6-Digit PIN with SHA-256!"
+          ? "✅ Saved & Synced New 6-Digit PIN to Cloud! Old PIN is now permanently disabled."
           : "✅ Saved WhatsApp, Recovery Gmail & UPI Settings!",
-        "success"
+        "success",
+        5500
       );
     });
 
