@@ -1,5 +1,10 @@
 /**
- * SellGST Pro — Principal Security Core v8.0 (100% Full Uncut + Auto-Cache Healer for All Pages on Cloudflare)
+ * SellGST Pro — Principal Security Core v8.3 (100% Full Uncut Edition)
+ * Includes:
+ * 1. Force Cache-Healer for Cloudflare Pages (`sellgst-pro.pages.dev`)
+ * 2. Customer 10-Digit Mobile / WhatsApp Number Sync across Login, Signup, My Account & Admin Queue
+ * 3. Full Plan Comparison Chart (Free ₹0 vs Monthly ₹99 vs Yearly ₹499) inside Upgrade Modal
+ * 4. Full Uncut Conversational AI GST & Marketplace Helper Engine
  * File: /assets/js/security-core.js
  */
 
@@ -61,7 +66,7 @@ googleProvider.setCustomParameters({ prompt: "select_account" });
 /**
  * FORCE CACHE-HEALER FOR CLOUDFLARE PAGES:
  * Overwrites Chrome's stuck 1-year `immutable` disk cache for `/assets/js/security-core.js` and `/assets/js/i18n.js`
- * so every sub-page (`app.html`, `invoice.html`, `label-studio.html`, `qr-studio.html`, `admin.html`) loads fresh v8.0 code!
+ * so every sub-page (`app.html`, `invoice.html`, `label-studio.html`, `qr-studio.html`, `admin.html`) loads fresh code!
  */
 (function selfHealDomainAndCache() {
   try {
@@ -75,7 +80,6 @@ googleProvider.setCustomParameters({ prompt: "select_account" });
       return;
     }
 
-    // Force-overwrite the base URLs in Chrome's HTTP disk cache using { cache: "reload" }
     const healBaseUrls = [
       "/assets/js/security-core.js",
       "/assets/js/i18n.js",
@@ -87,7 +91,7 @@ googleProvider.setCustomParameters({ prompt: "select_account" });
       fetch(u, { cache: "reload" }).catch(() => {});
     });
 
-    const healKey = "sellgst_v8_0_sw_healed";
+    const healKey = "sellgst_v8_3_sw_healed";
     if (!localStorage.getItem(healKey)) {
       if ("caches" in window) {
         caches.keys().then((names) => {
@@ -122,7 +126,7 @@ export function fixTopLayoutSpacingGap() {
 }
 
 /**
- * Automatically removes the red-marked bottom navigation bar and bottom inline DPDP card
+ * Automatically removes the redundant bottom navigation bar and bottom inline DPDP card
  * from ALL pages (DPDP Act & Delete Account remain inside the "My Account" modal).
  */
 export function removeRedundantBottomSections() {
@@ -269,7 +273,7 @@ const DEFAULT_PROFILE = {
   uid: "seller-local-01",
   displayName: "S.K.P.S DIGITAL",
   email: "example@mail.com",
-  phone: "+919999999999",
+  phone: localStorage.getItem("sellgst_customer_phone") || "+919999999999",
   gstin: "07AABCS1429B1Z5",
   businessName: "S.K.P.S DIGITAL",
   addressLine1: "Okhla Industrial Area,",
@@ -300,6 +304,10 @@ function getInitialHydratedProfile() {
     const raw = localStorage.getItem("sellgst_local_profile");
     if (raw) {
       const parsed = { ...DEFAULT_PROFILE, ...JSON.parse(raw) };
+      const savedCustomerPhone = localStorage.getItem("sellgst_customer_phone");
+      if (savedCustomerPhone && (!parsed.phone || parsed.phone === "+919999999999")) {
+        parsed.phone = savedCustomerPhone;
+      }
       if (parsed.isPro) {
         parsed.paymentPending = false;
       }
@@ -500,7 +508,7 @@ export function consumeFreeActionOrLock(featureName = "Feature") {
   let used = status.freeActionsUsed;
   if (used >= FREE_USAGE_MAX_LIMIT) {
     showToast(
-      `🔒 Free Limit (${FREE_USAGE_MAX_LIMIT}/${FREE_USAGE_MAX_LIMIT}) reached for ${featureName}! Upgrade to Pro to continue.`,
+      `🔒 Free Limit (${FREE_USAGE_MAX_LIMIT}/${FREE_USAGE_MAX_LIMIT}) reached for ${featureName}! Compare plans & upgrade to Pro.`,
       "warning",
       5000
     );
@@ -886,6 +894,7 @@ function startUserRealtimeListeners(user) {
   if (!user || !user.uid) return;
 
   const userRef = doc(db, "users", user.uid);
+  const localCustomerPhone = localStorage.getItem("sellgst_customer_phone") || "";
 
   AppState.listeners.userUnsub = onSnapshot(
     userRef,
@@ -896,7 +905,7 @@ function startUserRealtimeListeners(user) {
           uid: user.uid,
           displayName: user.displayName || user.email?.split("@")[0] || "S.K.P.S DIGITAL",
           email: user.email || AppState.profile.email || "",
-          phone: user.phoneNumber || AppState.profile.phone || "",
+          phone: user.phoneNumber || localCustomerPhone || AppState.profile.phone || "",
           businessName: user.displayName || AppState.profile.businessName || "S.K.P.S DIGITAL",
           isPro: Boolean(AppState.profile.isPro),
           isAdmin: false,
@@ -926,6 +935,7 @@ function startUserRealtimeListeners(user) {
           ...AppState.profile,
           ...data,
           uid: user.uid,
+          phone: data.phone || localCustomerPhone || AppState.profile.phone || "",
           isPro: isNowPro,
           paymentPending: isNowPro ? false : Boolean(data.paymentPending),
           planName: data.planName || (isNowPro ? "MONTHLY" : "FREE"),
@@ -1073,6 +1083,10 @@ export function syncProDOMElements() {
     el.textContent = AppState.profile.gstin || "07AABCS1429B1Z5";
   });
 
+  document.querySelectorAll("[data-user-phone]").forEach((el) => {
+    el.textContent = AppState.profile.phone || localStorage.getItem("sellgst_customer_phone") || "+919999999999";
+  });
+
   const rawUid = AppState.user?.uid || AppState.profile?.uid || "seller-01";
   document.querySelectorAll("[data-masked-uid]").forEach((el) => {
     el.textContent = `UID: #${rawUid} (Active Store)`;
@@ -1136,10 +1150,12 @@ export function renderPendingPaymentBanner() {
     DEFAULT_OWNER_WHATSAPP
   ).replace(/\D/g, "");
   const uid = AppState.user?.uid || AppState.profile.uid || "seller";
+  const custPhone = AppState.profile.phone || localStorage.getItem("sellgst_customer_phone") || "N/A";
   const adminUrl = `${window.location.origin}${window.location.pathname.replace(/\/[^/]*$/, "")}/admin.html`;
   const waText =
     `🔔 *SellGST Pro — Pending UPI Payment Alert*\n\n` +
     `• *Seller:* ${AppState.profile.businessName || "Seller Store"}\n` +
+    `• *Customer Mobile:* ${custPhone}\n` +
     `• *UID:* ${uid}\n` +
     `• *UTR No:* ${utrDisplay}\n` +
     `• *Status:* PENDING VERIFICATION\n\n` +
@@ -1176,6 +1192,9 @@ function renderBroadcastBanner(data) {
   el.innerHTML = `📢 ${sanitizeHTML(data.message)}`;
 }
 
+// ============================================================================
+// UPGRADE PRO MODAL WITH FULL FREE vs ₹99 vs ₹499 FEATURE COMPARISON CHART
+// ============================================================================
 export function openProPaymentModal(defaultPlan = "MONTHLY") {
   const health = evaluateSubscriptionHealth();
 
@@ -1202,59 +1221,128 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
   modal = document.createElement("div");
   modal.id = "sellgst-upi-modal";
   modal.className =
-    "fixed inset-0 z-[9990] bg-slate-950/65 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto";
+    "fixed inset-0 z-[9990] bg-slate-950/65 backdrop-blur-sm flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto";
+
+  const comparisonTableHTML = `
+    <div class="mt-3 rounded-2xl border border-indigo-100 overflow-hidden bg-slate-50/80">
+      <div class="bg-[#081B4B] text-white px-3 py-2 text-[11px] font-extrabold flex items-center justify-between">
+        <span>📊 PLAN COMPARISON (FREE vs ₹${cfg.monthlyPrice} vs ₹${cfg.yearlyPrice})</span>
+        <span class="text-[#10E594] font-mono text-[10px]">All 10 Super-Tools</span>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-[11px]">
+          <thead>
+            <tr class="bg-indigo-50/90 text-[#081B4B] border-b border-indigo-100 font-extrabold">
+              <th class="py-2 px-2.5">Feature / Super-Tool</th>
+              <th class="py-2 px-2 text-center">Free (₹0)</th>
+              <th class="py-2 px-2 text-center text-[#5B2EFF]">₹${cfg.monthlyPrice}/mo</th>
+              <th class="py-2 px-2 text-center bg-emerald-100/80 text-emerald-950">₹${cfg.yearlyPrice}/yr ⭐</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200/70 font-semibold text-slate-700">
+            <tr>
+              <td class="py-1.5 px-2.5">Total Tool Downloads / Actions</td>
+              <td class="py-1.5 px-2 text-center font-mono text-rose-600 font-bold">5 Uses Only</td>
+              <td class="py-1.5 px-2 text-center text-emerald-700 font-extrabold">Unlimited</td>
+              <td class="py-1.5 px-2 text-center bg-emerald-50/50 text-emerald-800 font-extrabold">Unlimited</td>
+            </tr>
+            <tr>
+              <td class="py-1.5 px-2.5">Meesho (<code>tcs_sales</code>), Amazon &amp; Flipkart GSTR-1 JSON</td>
+              <td class="py-1.5 px-2 text-center">5 Trials</td>
+              <td class="py-1.5 px-2 text-center">✅ Full</td>
+              <td class="py-1.5 px-2 text-center bg-emerald-50/50">✅ Full</td>
+            </tr>
+            <tr>
+              <td class="py-1.5 px-2.5">Monthly &amp; Quarterly (QRMP) GSTR-1 Modes</td>
+              <td class="py-1.5 px-2 text-center">✅</td>
+              <td class="py-1.5 px-2 text-center">✅</td>
+              <td class="py-1.5 px-2 text-center bg-emerald-50/50">✅</td>
+            </tr>
+            <tr>
+              <td class="py-1.5 px-2.5">Unblur RTO &amp; Weight Fraud Order IDs</td>
+              <td class="py-1.5 px-2 text-center text-rose-500">🔒 Blurred</td>
+              <td class="py-1.5 px-2 text-center">✅ Unblurred</td>
+              <td class="py-1.5 px-2 text-center bg-emerald-50/50">✅ Unblurred</td>
+            </tr>
+            <tr>
+              <td class="py-1.5 px-2.5">Navy GST Bill, 4×6 Label &amp; QR Studio</td>
+              <td class="py-1.5 px-2 text-center">5 Uses</td>
+              <td class="py-1.5 px-2 text-center">✅ Unlimited</td>
+              <td class="py-1.5 px-2 text-center bg-emerald-50/50">✅ Unlimited</td>
+            </tr>
+            <tr>
+              <td class="py-1.5 px-2.5">2A/2B Reconciliation &amp; Tally Prime XML</td>
+              <td class="py-1.5 px-2 text-center">5 Uses</td>
+              <td class="py-1.5 px-2 text-center">✅ Unlimited</td>
+              <td class="py-1.5 px-2 text-center bg-emerald-50/50">✅ Unlimited</td>
+            </tr>
+            <tr>
+              <td class="py-1.5 px-2.5">Plan Validity &amp; Renewal Banner</td>
+              <td class="py-1.5 px-2 text-center">2m Preview</td>
+              <td class="py-1.5 px-2 text-center">30d Timer</td>
+              <td class="py-1.5 px-2 text-center bg-emerald-50/50 font-extrabold text-emerald-900">365d Silent ✨</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
 
   const planSelectorHTML = isMonthlyUserUpgrading
     ? `
-      <div class="mt-4 p-4 rounded-2xl border-2 border-[#5B2EFF] bg-indigo-50/50 relative">
+      <div class="mt-3 p-3.5 rounded-2xl border-2 border-[#5B2EFF] bg-indigo-50/50 relative">
         <span class="absolute -top-2.5 right-3 bg-emerald-500 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full">1 YEAR • NO COUNTDOWN</span>
         <div class="text-xs font-extrabold text-[#5B2EFF]">UPGRADE TO YEARLY PRO PASS</div>
-        <div class="text-2xl font-black text-[#081B4B] mt-0.5">₹${cfg.yearlyPrice}<span class="text-xs font-medium text-slate-500"> / 12 Months</span></div>
-        <p class="text-[11px] text-slate-600 mt-1">Unlocks all features + Dynamic QR Studio for 365 days without any renewal popups.</p>
+        <div class="text-xl font-black text-[#081B4B] mt-0.5">₹${cfg.yearlyPrice}<span class="text-xs font-medium text-slate-500"> / 12 Months</span></div>
+        <p class="text-[11px] text-slate-600 mt-1">Unlocks all 10 features + Dynamic QR Studio for 365 days without any renewal popups.</p>
       </div>
     `
     : `
-      <div class="grid grid-cols-2 gap-3 mt-4">
-        <button type="button" data-plan-select="MONTHLY" class="plan-card-btn p-3.5 rounded-2xl border-2 text-left transition ${
+      <div class="grid grid-cols-2 gap-2.5 mt-3">
+        <button type="button" data-plan-select="MONTHLY" class="plan-card-btn p-3 rounded-2xl border-2 text-left transition ${
           selectedPlan === "MONTHLY" ? "border-[#5B2EFF] bg-indigo-50/40" : "border-slate-200"
         }">
-          <div class="text-xs font-bold text-slate-500">MONTHLY PRO</div>
-          <div class="text-xl font-black text-slate-900 mt-0.5">₹${cfg.monthlyPrice}<span class="text-xs font-medium text-slate-500">/30d</span></div>
+          <div class="text-[11px] font-bold text-slate-500">MONTHLY PRO</div>
+          <div class="text-lg font-black text-slate-900">₹${cfg.monthlyPrice}<span class="text-[11px] font-medium text-slate-500">/30d</span></div>
         </button>
-        <button type="button" data-plan-select="YEARLY" class="plan-card-btn p-3.5 rounded-2xl border-2 text-left transition relative ${
+        <button type="button" data-plan-select="YEARLY" class="plan-card-btn p-3 rounded-2xl border-2 text-left transition relative ${
           selectedPlan === "YEARLY" ? "border-[#5B2EFF] bg-indigo-50/40" : "border-slate-200"
         }">
-          <span class="absolute -top-2.5 right-2.5 bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">SAVE 58%</span>
-          <div class="text-xs font-bold text-slate-500">YEARLY PRO</div>
-          <div class="text-xl font-black text-slate-900 mt-0.5">₹${cfg.yearlyPrice}<span class="text-xs font-medium text-slate-500">/1yr</span></div>
+          <span class="absolute -top-2.5 right-2 bg-emerald-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full">SAVE 58%</span>
+          <div class="text-[11px] font-bold text-slate-500">YEARLY PRO</div>
+          <div class="text-lg font-black text-slate-900">₹${cfg.yearlyPrice}<span class="text-[11px] font-medium text-slate-500">/1yr</span></div>
         </button>
       </div>
     `;
 
-  modal.innerHTML = `
-    <div class="bg-white rounded-3xl border border-indigo-100 shadow-2xl max-w-md w-full p-5 sm:p-7 relative my-auto">
-      <button type="button" id="close-upi-modal-btn" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 font-bold">✕</button>
+  const prefilledPhone = (AppState.profile.phone || localStorage.getItem("sellgst_customer_phone") || "")
+    .replace(/\D/g, "")
+    .slice(-10);
 
-      <div class="flex items-center gap-2 mb-2">
-        <span class="px-3 py-1 rounded-full text-[11px] font-bold bg-indigo-50 text-[#5B2EFF]">INSTANT UPI UNLOCK</span>
+  modal.innerHTML = `
+    <div class="bg-white rounded-3xl border border-indigo-100 shadow-2xl max-w-lg w-full p-4 sm:p-6 relative my-auto">
+      <button type="button" id="close-upi-modal-btn" class="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 font-bold">✕</button>
+
+      <div class="flex items-center gap-2 mb-1">
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-[#5B2EFF]">INSTANT UPI UNLOCK</span>
         <span class="text-[11px] font-semibold text-slate-500">Zero-Commission Direct Bank</span>
       </div>
 
-      <h3 class="text-lg font-extrabold text-slate-900">${
-        isMonthlyUserUpgrading ? "Upgrade to Yearly Pro (₹499)" : "Unlock SellGST Pro"
+      <h3 class="text-base sm:text-lg font-extrabold text-slate-900">${
+        isMonthlyUserUpgrading ? "Upgrade to Yearly Pro (₹499)" : "Compare Plans & Unlock SellGST Pro"
       }</h3>
-      <p class="text-[13px] text-slate-500 mt-1">Unblur all RTO & Weight Fraud Order IDs, unlimited custom GST bills, 1-click GSTR-1 JSON & Dynamic QR Studio.</p>
 
+      ${comparisonTableHTML}
       ${planSelectorHTML}
 
-      <div class="mt-4 bg-slate-50 rounded-2xl p-4 text-center border border-slate-200">
+      <div class="mt-3 bg-slate-50 rounded-2xl p-3.5 text-center border border-slate-200">
         <div class="text-xs font-bold text-slate-700 mb-2">
           Step 1: Scan QR or Tap UPI App (<span id="upi-plan-label">${sanitizeHTML(planTitle)} — ₹${amount}</span>)
         </div>
-        <div class="bg-white p-3 rounded-2xl inline-block shadow-sm border border-slate-100">
-          <img id="upi-dynamic-qr" src="${qrUrl}" alt="Scan UPI QR Code" class="w-40 h-40 mx-auto rounded-lg object-contain" />
+        <div class="bg-white p-2.5 rounded-2xl inline-block shadow-sm border border-slate-100">
+          <img id="upi-dynamic-qr" src="${qrUrl}" alt="Scan UPI QR Code" class="w-36 h-36 mx-auto rounded-lg object-contain" />
         </div>
-        <div class="mt-2.5 text-xs text-slate-600 flex flex-wrap items-center justify-center gap-1.5">
+        <div class="mt-2 text-[11px] text-slate-600 flex flex-wrap items-center justify-center gap-1.5">
           <span>Merchant: <strong class="text-slate-900">${sanitizeHTML(cfg.payeeName)}</strong></span>
           <span>•</span>
           <span class="font-mono bg-white px-2 py-0.5 rounded border border-slate-200 text-slate-900">${sanitizeHTML(
@@ -1262,38 +1350,52 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
           )}</span>
         </div>
 
-        <a id="upi-deeplink-btn" href="${upiUri}" class="mt-3 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-[#5B2EFF] hover:bg-indigo-700 text-white font-bold text-[13px] shadow-md transition">
+        <a id="upi-deeplink-btn" href="${upiUri}" class="mt-2.5 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-[#5B2EFF] hover:bg-indigo-700 text-white font-bold text-xs shadow-md transition">
           <span>📱 Pay ₹<span id="upi-btn-amt">${amount}</span> via PhonePe / GPay / Paytm</span>
         </a>
       </div>
 
-      <form id="upi-utr-form" class="mt-4 space-y-3">
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">
-            Step 2: Enter 12-Digit Bank UPI UTR / Reference No. *
-          </label>
-          <input
-            type="text"
-            id="upi-utr-input"
-            required
-            inputmode="numeric"
-            pattern="[0-9]{12}"
-            minlength="12"
-            maxlength="12"
-            placeholder="Enter exact 12-digit UTR (e.g. 431988776655)"
-            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono font-bold tracking-wider focus:outline-none focus:ring-2 focus:ring-[#5B2EFF]"
-          />
-          <p class="text-[10.5px] text-slate-500 mt-1">
-            🔒 1 Request per UID: Submitting updates your single verification request in real-time.
-          </p>
+      <form id="upi-utr-form" class="mt-3 space-y-2.5 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">
+              Customer Mobile No. (10-Digit) *
+            </label>
+            <input
+              type="tel"
+              id="upi-customer-phone"
+              required
+              inputmode="numeric"
+              maxlength="10"
+              value="${escapeAttr(prefilledPhone)}"
+              placeholder="9876543210"
+              class="w-full px-3 py-2 rounded-xl border border-slate-300 font-mono font-bold text-[#081B4B] focus:outline-none focus:ring-2 focus:ring-[#5B2EFF]"
+            />
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">
+              Step 2: 12-Digit UPI UTR No. *
+            </label>
+            <input
+              type="text"
+              id="upi-utr-input"
+              required
+              inputmode="numeric"
+              pattern="[0-9]{12}"
+              minlength="12"
+              maxlength="12"
+              placeholder="e.g. 431988776655"
+              class="w-full px-3 py-2 rounded-xl border border-slate-300 font-mono font-bold tracking-wider text-[#081B4B] focus:outline-none focus:ring-2 focus:ring-[#5B2EFF]"
+            />
+          </div>
         </div>
 
         <button
           type="submit"
           id="upi-submit-btn"
-          class="w-full py-3.5 px-5 rounded-2xl bg-[#081B4B] hover:bg-slate-900 text-white font-extrabold text-[13px] shadow-lg transition flex items-center justify-center gap-2"
+          class="w-full py-3 px-5 rounded-2xl bg-[#081B4B] hover:bg-slate-900 text-white font-extrabold text-xs shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
         >
-          <span>✅ Submit 12-Digit UTR & Notify Admin on WhatsApp</span>
+          <span>✅ Submit 12-Digit UTR &amp; Notify Admin on WhatsApp</span>
         </button>
       </form>
     </div>
@@ -1335,6 +1437,11 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
     utrInputEl.value = utrInputEl.value.replace(/\D/g, "").slice(0, 12);
   });
 
+  const phoneInputEl = modal.querySelector("#upi-customer-phone");
+  phoneInputEl.addEventListener("input", () => {
+    phoneInputEl.value = phoneInputEl.value.replace(/\D/g, "").slice(0, 10);
+  });
+
   modal.querySelector("#close-upi-modal-btn").addEventListener("click", () => closeProPaymentModal());
   modal.addEventListener("click", (e) => {
     if (e.target === modal) closeProPaymentModal();
@@ -1344,12 +1451,24 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
     e.preventDefault();
     const submitBtn = modal.querySelector("#upi-submit-btn");
     const utrNumber = utrInputEl.value.replace(/\D/g, "").trim();
+    const custPhoneDigits = phoneInputEl.value.replace(/\D/g, "").slice(-10);
+
+    if (custPhoneDigits.length !== 10) {
+      showToast("⚠️ Please enter your 10-digit Customer Mobile Number!", "warning");
+      phoneInputEl.focus();
+      return;
+    }
 
     if (!/^\d{12}$/.test(utrNumber)) {
       showToast("⚠️ Please enter a valid 12-digit numeric bank UPI UTR number!", "error");
       utrInputEl.focus();
       return;
     }
+
+    const fullCustPhone = `+91${custPhoneDigits}`;
+    localStorage.setItem("sellgst_customer_phone", fullCustPhone);
+    AppState.profile.phone = fullCustPhone;
+    localStorage.setItem("sellgst_local_profile", JSON.stringify(AppState.profile));
 
     const uid = AppState.user?.uid || AppState.profile.uid || "seller-local-01";
     const singleRequestId = `req_${uid}`;
@@ -1361,7 +1480,7 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
       uid,
       userName: AppState.profile.businessName || AppState.profile.displayName || "S.K.P.S DIGITAL",
       userEmail: AppState.profile.email || AppState.user?.email || "seller@sellgst.pro",
-      userPhone: AppState.profile.phone || "",
+      userPhone: fullCustPhone,
       planName: currentPlan,
       planDurationDays: durationDays,
       expectedExpiryISO,
@@ -1382,6 +1501,7 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
     const waText =
       `🔔 *SellGST Pro — Pending UPI Payment Alert*\n\n` +
       `• *Seller:* ${payload.userName}\n` +
+      `• *Customer Mobile:* ${fullCustPhone}\n` +
       `• *Email:* ${payload.userEmail}\n` +
       `• *UID:* ${uid}\n` +
       `• *Plan:* ${currentPlan} (₹${currentAmount} • ${durationDays} Days)\n` +
@@ -1405,7 +1525,7 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
     try {
       if (AppState.user) {
         await setDoc(doc(db, "payment_requests", singleRequestId), payload, { merge: true });
-        await setDoc(doc(db, "users", uid), { paymentPending: true }, { merge: true });
+        await setDoc(doc(db, "users", uid), { paymentPending: true, phone: fullCustPhone }, { merge: true });
       }
     } catch (_) {}
 
@@ -1413,7 +1533,7 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
     renderPendingPaymentBanner();
     closeProPaymentModal();
 
-    showToast("⏳ UTR Submitted! (1 Active Request for your UID)", "warning", 6000);
+    showToast("⏳ UTR & Customer Mobile Submitted! Admin notified on WhatsApp.", "warning", 6000);
 
     if (!waWindow) {
       setTimeout(() => {
@@ -1446,6 +1566,7 @@ export function openUserAccountModal() {
   }
 
   const rawUid = prof.uid || "seller-01";
+  const currentPhone = prof.phone || localStorage.getItem("sellgst_customer_phone") || "";
 
   modal = document.createElement("div");
   modal.id = "sellgst-user-account-modal";
@@ -1461,7 +1582,7 @@ export function openUserAccountModal() {
           👤
         </div>
         <div class="min-w-0">
-          <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-[#5B2EFF] font-extrabold text-[10px]">MY ACCOUNT & DPDP PRIVACY</span>
+          <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-[#5B2EFF] font-extrabold text-[10px]">MY ACCOUNT &amp; CUSTOMER DETAILS</span>
           <h3 class="text-base font-extrabold text-[#081B4B] truncate mt-0.5">${sanitizeHTML(
             prof.businessName || prof.displayName
           )}</h3>
@@ -1475,22 +1596,34 @@ export function openUserAccountModal() {
           <span class="font-extrabold text-[#5B2EFF]">${sanitizeHTML(planBadgeText)}</span>
         </div>
         <div class="flex items-center justify-between">
+          <span class="font-bold text-slate-500">Customer Mobile:</span>
+          <span class="font-mono font-bold text-[#081B4B]">${sanitizeHTML(currentPhone || "Not Set")}</span>
+        </div>
+        <div class="flex items-center justify-between">
           <span class="font-bold text-slate-500">Registered GSTIN:</span>
           <span class="font-mono font-bold text-[#081B4B]">${sanitizeHTML(prof.gstin || "07AABCS1429B1Z5")}</span>
         </div>
         <div class="flex items-center justify-between">
           <span class="font-bold text-slate-500">DPDP Act 2023 Consent:</span>
-          <span class="text-emerald-600 font-bold">✔️ Verified & Encrypted</span>
+          <span class="text-emerald-600 font-bold">✔️ Verified &amp; Encrypted</span>
         </div>
       </div>
 
       <form id="user-personal-form" class="space-y-2.5 text-xs">
-        <div class="font-extrabold text-[#081B4B]">Edit My Store & Personal Data</div>
-        <div>
-          <label class="block font-semibold text-slate-600 mb-0.5">Business / Store Name</label>
-          <input type="text" id="acc-biz-name" value="${escapeAttr(
-            prof.businessName || ""
-          )}" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 font-semibold" />
+        <div class="font-extrabold text-[#081B4B]">Edit Customer &amp; Store Details</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div>
+            <label class="block font-semibold text-slate-600 mb-0.5">Business / Store Name *</label>
+            <input type="text" id="acc-biz-name" value="${escapeAttr(
+              prof.businessName || ""
+            )}" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 font-semibold" />
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-600 mb-0.5">Customer Mobile No. *</label>
+            <input type="tel" id="acc-phone" maxlength="13" value="${escapeAttr(
+              currentPhone
+            )}" required placeholder="+919876543210" class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 font-mono font-bold" />
+          </div>
         </div>
         <div class="grid grid-cols-2 gap-2">
           <div>
@@ -1507,27 +1640,27 @@ export function openUserAccountModal() {
           </div>
         </div>
         <button type="submit" class="w-full py-2.5 rounded-xl bg-[#5B2EFF] hover:bg-indigo-700 text-white font-extrabold text-xs shadow transition">
-          💾 Save Personal Profile
+          💾 Save Customer Profile
         </button>
       </form>
 
       <div class="p-3.5 rounded-2xl bg-rose-50/70 border border-rose-200 space-y-2.5 text-xs">
         <div class="font-extrabold text-rose-800 flex items-center gap-1.5">
-          <span>🛡️ DPDP Act 2023 — Right to Erasure & Delete Account</span>
+          <span>🛡️ DPDP Act 2023 — Right to Erasure &amp; Delete Account</span>
         </div>
         <p class="text-[11px] text-rose-700 leading-relaxed">
-          Under the Digital Personal Data Protection (DPDP) Act, you can permanently erase your account, saved GST invoices, party khata, and personal data.
+          Under the Digital Personal Data Protection (DPDP) Act 2023, you can permanently erase your account, saved GST invoices, party khata, and personal data at any time.
         </p>
         <label class="flex items-start gap-2 cursor-pointer text-[11px] font-bold text-rose-900">
           <input type="checkbox" id="dpdp-delete-confirm-tick" class="mt-0.5 w-4 h-4 accent-rose-600 rounded shrink-0" />
-          <span>✔️ I confirm that I want to permanently delete my account and erase all my personal & business data.</span>
+          <span>✔️ I confirm that I want to permanently delete my account and erase all my personal &amp; business data.</span>
         </label>
         <button
           type="button"
           id="dpdp-delete-account-btn"
           class="w-full py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs shadow transition"
         >
-          🗑️ Permanently Delete My Account & Data
+          🗑️ Permanently Delete My Account &amp; Data
         </button>
       </div>
 
@@ -1568,13 +1701,17 @@ export function openUserAccountModal() {
   modal.querySelector("#user-personal-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const businessName = modal.querySelector("#acc-biz-name").value.trim();
+    const phoneDigits = modal.querySelector("#acc-phone").value.replace(/\D/g, "").slice(-10);
+    const phone = phoneDigits.length === 10 ? `+91${phoneDigits}` : modal.querySelector("#acc-phone").value.trim();
     const gstin = modal.querySelector("#acc-gstin").value.trim().toUpperCase();
     const upiId = modal.querySelector("#acc-upi").value.trim();
 
+    localStorage.setItem("sellgst_customer_phone", phone);
     AppState.profile = {
       ...AppState.profile,
       businessName,
       displayName: businessName,
+      phone,
       gstin,
       upiId
     };
@@ -1584,13 +1721,13 @@ export function openUserAccountModal() {
       try {
         await setDoc(
           doc(db, "users", AppState.user.uid),
-          { businessName, displayName: businessName, gstin, upiId },
+          { businessName, displayName: businessName, phone, gstin, upiId },
           { merge: true }
         );
       } catch (_) {}
     }
     syncProDOMElements();
-    showToast("Personal & Store profile updated!", "success");
+    showToast("Customer Profile & Mobile Number saved!", "success");
     closeAccModal();
   });
 
@@ -1641,7 +1778,7 @@ export function openSuperToolsMenu() {
       if (subEl) subEl.textContent = "Monthly Pro Active • Upgrade to ₹499 Yearly";
     } else {
       if (titleEl) titleEl.textContent = `Free Trial Quota: ${health.freeActionsRemaining}/5 Left`;
-      if (subEl) subEl.textContent = `Left: ${health.freeActionsRemaining} Free Uses, 5 Custom Downloads`;
+      if (subEl) subEl.textContent = `Left: ${health.freeActionsRemaining} Free Uses, Compare ₹99/₹499 Plans`;
     }
   } catch (_) {}
 
@@ -1729,7 +1866,7 @@ function injectGlobalSuperToolsMenu() {
             <a href="./gst-filing.html" class="flex items-center justify-between px-3 py-2.5 rounded-2xl bg-slate-50 hover:bg-indigo-50/80 text-slate-800 font-bold transition">
               <div class="flex items-center gap-3 min-w-0">
                 <span class="text-base shrink-0">🏛️</span>
-                <span class="truncate">E-Com CSV to GSTR-1 JSON</span>
+                <span class="truncate">Meesho/Amazon/Flipkart GSTR-1</span>
               </div>
               <span class="px-2 py-0.5 rounded-md bg-emerald-600 text-white font-extrabold text-[10px] shrink-0">1-CLICK</span>
             </a>
@@ -1823,15 +1960,15 @@ function injectGlobalSuperToolsMenu() {
 
           <div class="space-y-1.5">
             <div class="px-2 text-[10.5px] font-extrabold uppercase tracking-wider text-slate-400">
-              3. PLANS &amp; UPGRADE
+              3. PLANS &amp; FEATURE COMPARISON
             </div>
 
             <button type="button" data-unlock-pro="YEARLY" class="w-full flex items-center justify-between px-3 py-2.5 rounded-2xl hover:bg-indigo-50 text-slate-800 font-extrabold transition text-left">
               <div class="flex items-center gap-3">
                 <span class="text-base">💳</span>
-                <span>Plans &amp; Pricing (₹99 / ₹499)</span>
+                <span>Compare Free vs ₹99 vs ₹499</span>
               </div>
-              <span class="px-2 py-0.5 rounded-md bg-purple-100 text-[#5B2EFF] font-extrabold text-[10px]">PRO</span>
+              <span class="px-2 py-0.5 rounded-md bg-purple-100 text-[#5B2EFF] font-extrabold text-[10px]">CHART</span>
             </button>
           </div>
         </div>
@@ -1851,7 +1988,7 @@ function injectGlobalSuperToolsMenu() {
             data-unlock-pro="YEARLY"
             class="w-full py-2.5 px-4 rounded-xl bg-[#2563EB] hover:bg-blue-700 text-white font-extrabold text-xs shadow-md transition uppercase tracking-wide"
           >
-            UPGRADE PRO (₹499)
+            COMPARE &amp; UPGRADE PRO
           </button>
         </div>
 
@@ -1874,16 +2011,25 @@ function injectGlobalSuperToolsMenu() {
   document.getElementById("super-tools-backdrop")?.addEventListener("click", () => closeSuperToolsMenu());
 }
 
+// ============================================================================
+// FULL UNCUT CONVERSATIONAL AI GST & E-COM KNOWLEDGE ENGINE
+// ============================================================================
 function getSmartContextualReply(queryText = "") {
   const raw = String(queryText || "").trim();
   const q = raw.toLowerCase();
 
   if (/^(hi+|hello+|hey+|namaste|hlo|kaise ho|kya haal hai|good morning|good evening)[\s!?.]*$/i.test(q)) {
-    return "Hi! 👋 Main aapka SellGST Pro AI Helper hoon. Bataiye, aaj main aapki kya madad kar sakta hoon?";
+    return (
+      "Hi! 👋 Main aapka SellGST Pro AI Helper hoon.\n\n" +
+      "Aap mujhse **Meesho (`tcs_sales`), Flipkart, Amazon GSTR-1 JSON**, **Monthly vs Quarterly Filing**, **RTO Profit/Loss Audit**, ya kisi bhi **GST Calculation** ke baare mein puch sakte hain!"
+    );
   }
 
   const numMatch = q.match(/(\d+(?:\.\d+)?)/g);
-  if (numMatch && (q.includes("gst") || q.includes("tax") || q.includes("%") || q.includes("kitna") || q.includes("calculate"))) {
+  if (
+    numMatch &&
+    (q.includes("gst") || q.includes("tax") || q.includes("%") || q.includes("kitna") || q.includes("calculate"))
+  ) {
     const amount = Number(numMatch[0]) || 0;
     const rate = numMatch[1] ? Number(numMatch[1]) : 18;
     const gstAmt = (amount * rate) / 100;
@@ -1894,11 +2040,39 @@ function getSmartContextualReply(queryText = "") {
       `• **CGST (${rate / 2}%):** ₹${(gstAmt / 2).toFixed(2)}\n` +
       `• **SGST (${rate / 2}%):** ₹${(gstAmt / 2).toFixed(2)}\n` +
       `• **Total GST (${rate}%):** ₹${gstAmt.toFixed(2)}\n` +
-      `• **Total Payable Amount:** **₹${total.toFixed(2)}**`
+      `• **Total Invoice Amount:** **₹${total.toFixed(2)}**`
     );
   }
 
-  return `Main aapki baat samajh gaya! Aapne pucha: **"${sanitizeHTML(raw)}"**\n\nBataiye, ismein aapko exact kya dikkat aa rahi hai? Main aapko step-by-step solution dunga!`;
+  if (q.includes("meesho") || q.includes("tcs_sales") || q.includes("flipkart") || q.includes("amazon") || q.includes("gstr-1") || q.includes("json")) {
+    return (
+      "🏛️ **Meesho, Amazon & Flipkart GSTR-1 Filing Steps:**\n\n" +
+      "1. **☰ Menu → GSTR-1 Filing (`gst-filing.html`)** kholein.\n" +
+      "2. Upar apna **Platform Tab** chunein: **Meesho** (`tcs_sales` + `tcs_sales_return`), **Amazon MTR**, ya **Flipkart**.\n" +
+      "3. Apna **Filing Frequency (Monthly ya Quarterly QRMP)** select karein.\n" +
+      "4. Apni unzipped `.CSV` ya `.XLSX` file upload karein — negative sales returns automatic net-off ho jayenge aur **1-Click Ready GSTR-1 (.JSON)** aur **Portal Excel (.CSV)** download ho jayega!"
+    );
+  }
+
+  if (q.includes("rto") || q.includes("profit") || q.includes("loss") || q.includes("claim")) {
+    return (
+      "📈 **Order-Wise Profit/Loss & Unreturned RTO Claim Steps:**\n\n" +
+      "1. **E-Com Audit (`ecom-audit.html`)** page par jayein.\n" +
+      "2. Apni Order/Payment settlement CSV upload karein aur Product Cost + Packing Cost dalein.\n" +
+      "3. Tool turant har order ka Profit/Loss aur **30 din se zyada atke hue RTO Orders** ki claim list nikal dega!"
+    );
+  }
+
+  if (q.includes("plan") || q.includes("price") || q.includes("99") || q.includes("499") || q.includes("pro")) {
+    return (
+      "💎 **SellGST Pro Plans Comparison:**\n\n" +
+      "• **Free Plan (₹0):** 5 Free Tool Actions + 2-Min Guest Demo.\n" +
+      "• **Monthly Pro (₹99 / 30 Days):** Unlimited GSTR-1 JSON, Unblurred RTO Order IDs, Unlimited Navy Bills, 4×6 Labels & QR Studio.\n" +
+      "• **Yearly Pro (₹499 / 365 Days):** Save 58%! Full 1-Year Unlimited Access with zero countdown banners."
+    );
+  }
+
+  return `Main aapki baat samajh gaya! Aapne pucha: **"${sanitizeHTML(raw)}"**\n\nBataiye, kya aapko **GSTR-1 CSV Upload**, **2A/2B Reconciliation**, **Navy GST Bill**, ya **Pro Plan Activation** mein madad chahiye?`;
 }
 
 function injectFloatingAIAssistant() {
@@ -1962,15 +2136,18 @@ function injectFloatingAIAssistant() {
       <button type="button" data-ai-chip="15000 par 18% GST kitna hoga?" class="px-3 py-1.5 rounded-full bg-white border border-slate-200 hover:border-[#5B2EFF] text-xs font-semibold text-slate-800 whitespace-nowrap shadow-sm">
         🧮 Calculate 18% GST
       </button>
-      <button type="button" data-ai-chip="How do I check Flipkart & Amazon Profit/Loss from CSV?" class="px-3 py-1.5 rounded-full bg-white border border-slate-200 hover:border-[#5B2EFF] text-xs font-semibold text-slate-800 whitespace-nowrap shadow-sm">
-        🟢🔴 Profit/Loss Help
+      <button type="button" data-ai-chip="Meesho tcs_sales aur tcs_sales_return CSV kaise upload karein?" class="px-3 py-1.5 rounded-full bg-white border border-slate-200 hover:border-[#5B2EFF] text-xs font-semibold text-slate-800 whitespace-nowrap shadow-sm">
+        🏛️ Meesho GSTR-1 Help
+      </button>
+      <button type="button" data-ai-chip="Free vs 99 vs 499 plan mein kya farq hai?" class="px-3 py-1.5 rounded-full bg-white border border-slate-200 hover:border-[#5B2EFF] text-xs font-semibold text-slate-800 whitespace-nowrap shadow-sm">
+        💎 Compare Plans
       </button>
     </div>
 
     <div id="ai-chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-50/60 text-[13px]">
       <div class="bg-white p-3.5 rounded-2xl rounded-tl-sm border border-slate-200 shadow-sm text-slate-800 leading-relaxed">
         👋 <strong>Hi! Main aapka SellGST Pro AI Helper hoon.</strong><br/>
-        Aap mujhse <strong>Hindi, Hinglish ya English</strong> mein koi bhi sawal ya GST calculation puch sakte hain.
+        Aap mujhse <strong>Hindi, Hinglish ya English</strong> mein Meesho/Flipkart/Amazon GSTR-1, RTO claims, ya GST calculation puch sakte hain.
       </div>
     </div>
 
@@ -2100,8 +2277,11 @@ async function sendAIMessage(messageText) {
   container.scrollTop = container.scrollHeight;
 }
 
-export async function loginWithEmail(email, password, rememberMe = true) {
+export async function loginWithEmail(email, password, rememberMe = true, phone = "") {
   const cleanEmail = email.trim();
+  const cleanPhone = phone || localStorage.getItem("sellgst_customer_phone") || AppState.profile.phone || "";
+  if (cleanPhone) localStorage.setItem("sellgst_customer_phone", cleanPhone);
+
   try {
     await setPersistence(auth, rememberMe ? browserLocalPersistence : browserSessionPersistence);
   } catch (_) {}
@@ -2111,7 +2291,8 @@ export async function loginWithEmail(email, password, rememberMe = true) {
     uid: cred.user.uid,
     displayName: cred.user.displayName || cleanEmail.split("@")[0].toUpperCase(),
     businessName: cred.user.displayName || AppState.profile.businessName || cleanEmail.split("@")[0].toUpperCase(),
-    email: cleanEmail
+    email: cleanEmail,
+    phone: cleanPhone
   };
   AppState.profile = updatedProfile;
   localStorage.setItem("sellgst_local_profile", JSON.stringify(updatedProfile));
@@ -2121,10 +2302,20 @@ export async function loginWithEmail(email, password, rememberMe = true) {
   return cred;
 }
 
-export async function registerWithEmail(email, password, businessName, gstin, rememberMe = true, dpdpConsent = true) {
+export async function registerWithEmail(
+  email,
+  password,
+  businessName,
+  gstin,
+  rememberMe = true,
+  dpdpConsent = true,
+  phone = ""
+) {
   const cleanEmail = email.trim();
   const cleanBiz = (businessName || cleanEmail.split("@")[0].toUpperCase() || "S.K.P.S DIGITAL").trim();
   const cleanGstin = (gstin || "07AABCS1429B1Z5").trim().toUpperCase();
+  const cleanPhone = (phone || localStorage.getItem("sellgst_customer_phone") || "").trim();
+  if (cleanPhone) localStorage.setItem("sellgst_customer_phone", cleanPhone);
 
   try {
     await setPersistence(auth, rememberMe ? browserLocalPersistence : browserSessionPersistence);
@@ -2142,6 +2333,7 @@ export async function registerWithEmail(email, password, businessName, gstin, re
     businessName: cleanBiz,
     gstin: cleanGstin,
     email: cleanEmail,
+    phone: cleanPhone,
     isPro: false,
     isAdmin: false,
     subscriptionStatus: "FREE",
@@ -2168,14 +2360,16 @@ export async function resetUserPassword(email) {
   return sendPasswordResetEmail(auth, email.trim());
 }
 
-export async function loginWithGoogle() {
+export async function loginWithGoogle(phone = "") {
   const cred = await signInWithPopup(auth, googleProvider);
+  const cleanPhone = phone || localStorage.getItem("sellgst_customer_phone") || AppState.profile.phone || "";
   const updatedProfile = {
     ...AppState.profile,
     uid: cred.user.uid,
     displayName: cred.user.displayName || "S.K.P.S DIGITAL",
     businessName: cred.user.displayName || AppState.profile.businessName || "S.K.P.S DIGITAL",
     email: cred.user.email || "",
+    phone: cleanPhone,
     dpdpConsentAccepted: true
   };
   AppState.profile = updatedProfile;
