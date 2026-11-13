@@ -10,34 +10,54 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == uid;
     }
 
+    // SERVER-SIDE MASTER ADMIN LOCK:
+    // Only your verified Owner Gmail OR a user document explicitly marked isAdmin == true by you has Admin power
     function isAdmin() {
-      return isSignedIn() &&
-        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+      return isSignedIn() && (
+        request.auth.token.email == 'ritikraj3405328@gmail.com' ||
+        (
+          exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true
+        )
+      );
     }
 
     function isValidString(val, minLen, maxLen) {
       return val is string && val.size() >= minLen && val.size() <= maxLen;
     }
 
+    // Blocks new users from creating an account with isAdmin: true or isPro: true
     function hasSafeInitialUserFields() {
       let data = request.resource.data;
-      return (!('isAdmin' in data) || data.isAdmin == false);
+      return (!('isAdmin' in data) || data.isAdmin == false) &&
+             (!('isPro' in data) || data.isPro == false) &&
+             (!('subscriptionStatus' in data) || data.subscriptionStatus == 'FREE');
     }
 
-    // Allows Admin Console approval updates while protecting against unauthorized admin escalation
-    function isSafeUserUpdate() {
+    // Blocks regular users/hackers from escalating their own profile to isPro: true or isAdmin: true from browser console
+    function doesNotEscalateUserPrivileges() {
       let incoming = request.resource.data;
       let existing = resource.data;
       let adminUnchanged = incoming.get('isAdmin', false) == existing.get('isAdmin', false);
-      return adminUnchanged;
+      let proUnchanged =
+        incoming.get('isPro', false) == existing.get('isPro', false) &&
+        incoming.get('subscriptionStatus', 'FREE') == existing.get('subscriptionStatus', 'FREE') &&
+        incoming.get('planName', 'FREE') == existing.get('planName', 'FREE') &&
+        incoming.get('planExpiryISO', null) == existing.get('planExpiryISO', null);
+
+      let isSafeExpiryDowngrade =
+        incoming.get('isPro', false) == false &&
+        incoming.get('planName', 'FREE') == 'FREE' &&
+        (incoming.get('subscriptionStatus', 'FREE') == 'EXPIRED' || incoming.get('subscriptionStatus', 'FREE') == 'FREE');
+
+      return adminUnchanged && (proUnchanged || isSafeExpiryDowngrade);
     }
 
-    // Zero-Trust Isolation: Every seller's invoices, party numbers & inventory are 100% private to their UID
+    // 1. STRICT UID ISOLATION FOR SELLER DATA (Invoices, Party Khata, Inventory)
     match /users/{uid} {
-      allow read: if isSignedIn();
+      allow read: if isOwner(uid) || isAdmin();
       allow create: if isOwner(uid) && hasSafeInitialUserFields();
-      allow update: if isAdmin() || (isSignedIn() && isSafeUserUpdate());
+      allow update: if isAdmin() || (isOwner(uid) && doesNotEscalateUserPrivileges());
       allow delete: if isOwner(uid) || isAdmin();
 
       match /invoices/{invoiceId} {
@@ -63,21 +83,33 @@ service cloud.firestore {
       }
     }
 
+    // 2. PAYMENT REQUESTS (1 Request Per UID — Users can ONLY submit PENDING, ONLY Admin can APPROVE)
     match /payment_requests/{requestId} {
-      allow read: if isSignedIn();
+      allow read: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+
       allow create: if isSignedIn() &&
         request.resource.data.uid == request.auth.uid &&
         request.resource.data.status == "PENDING" &&
         request.resource.data.planAmount is number &&
         request.resource.data.planAmount >= 1 &&
-        isValidString(request.resource.data.utrNumber, 6, 36);
+        isValidString(request.resource.data.utrNumber, 12, 12);
 
-      allow update, delete: if isSignedIn();
+      // Users can update their own pending UTR, but CANNOT set status to "APPROVED"
+      allow update: if isAdmin() || (
+        isSignedIn() &&
+        resource.data.uid == request.auth.uid &&
+        request.resource.data.uid == request.auth.uid &&
+        request.resource.data.status == "PENDING" &&
+        isValidString(request.resource.data.utrNumber, 12, 12)
+      );
+
+      allow delete: if isAdmin();
     }
 
+    // 3. SYSTEM CONFIG (UPI ID, Prices, Broadcast Banner — ONLY Admin can modify)
     match /system_config/{docId} {
       allow read: if true;
-      allow write: if isSignedIn();
+      allow write: if isAdmin();
     }
 
     match /{document=**} {
