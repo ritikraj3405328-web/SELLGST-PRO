@@ -1,17 +1,16 @@
 /**
- * SellGST Pro — Cloudflare Pages 0.1s Instant Cache-Healing Service Worker
- * Fixes stuck JS cache and Chrome ERR_FAILED redirects on sellgst-pro.pages.dev
+ * SellGST Pro — Cloudflare Pages Force Cache-Healer Service Worker v8.0
+ * Automatically overwrites stuck immutable JS cache across all pages on sellgst-pro.pages.dev
  * File: /sw.js
  */
 
-const CACHE_NAME = "sellgst-pro-clean-v7.2";
+const CACHE_NAME = "sellgst-pro-clean-v8.0";
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
-  // Purge ALL old caches on sellgst-pro.pages.dev immediately
   event.waitUntil(
     caches
       .keys()
@@ -23,14 +22,15 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
 
-  // Never intercept HTML or JS module requests on Cloudflare Pages so Edge serves fresh files in 0.1s
-  if (
-    event.request.mode === "navigate" ||
-    event.request.destination === "document" ||
-    event.request.destination === "script" ||
-    event.request.url.endsWith(".html") ||
-    event.request.url.includes("/assets/js/")
-  ) {
+  const url = new URL(event.request.url);
+
+  // CRITICAL FIX FOR CLOUDFLARE PAGES:
+  // Force Chrome to bypass its old 1-year "immutable" disk cache for all JS modules & CSS assets
+  // so app.html, invoice.html, label-studio.html, qr-studio.html & admin.html always get the latest code!
+  if (url.pathname.includes("/assets/js/") || url.pathname.endsWith(".js")) {
+    event.respondWith(
+      fetch(new Request(event.request.url, { cache: "reload" })).catch(() => fetch(event.request))
+    );
     return;
   }
 });
