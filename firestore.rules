@@ -11,7 +11,7 @@ service cloud.firestore {
     }
 
     // SERVER-SIDE MASTER ADMIN LOCK:
-    // Only your verified Owner Gmail OR a user document explicitly marked isAdmin == true by you has Admin power
+    // Only your verified Owner Gmail OR a user document explicitly marked isAdmin == true has Admin power
     function isAdmin() {
       return isSignedIn() && (
         request.auth.token.email == 'ritikraj3405328@gmail.com' ||
@@ -106,7 +106,7 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
-    // 3. SYSTEM CONFIG (UPI ID, Prices, Broadcast Banner — ONLY Admin can modify)
+    // 3. SYSTEM CONFIG (UPI ID, Prices, Broadcast Banner, Cloud PIN Hash — ONLY Admin can modify)
     match /system_config/{docId} {
       allow read: if true;
       allow write: if isAdmin();
