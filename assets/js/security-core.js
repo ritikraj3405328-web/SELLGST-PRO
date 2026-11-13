@@ -1,5 +1,5 @@
 /**
- * SellGST Pro — Principal Security Core v6.9 (100% Full Uncut Original + 1-UID-1-Request + Global ☰ Sidebar + Clean Bottom UI)
+ * SellGST Pro — Principal Security Core v8.0 (100% Full Uncut + Auto-Cache Healer for All Pages on Cloudflare)
  * File: /assets/js/security-core.js
  */
 
@@ -58,6 +58,11 @@ export const db = getFirestore(app);
 export const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: "select_account" });
 
+/**
+ * FORCE CACHE-HEALER FOR CLOUDFLARE PAGES:
+ * Overwrites Chrome's stuck 1-year `immutable` disk cache for `/assets/js/security-core.js` and `/assets/js/i18n.js`
+ * so every sub-page (`app.html`, `invoice.html`, `label-studio.html`, `qr-studio.html`, `admin.html`) loads fresh v8.0 code!
+ */
 (function selfHealDomainAndCache() {
   try {
     const host = window.location.hostname;
@@ -70,18 +75,28 @@ googleProvider.setCustomParameters({ prompt: "select_account" });
       return;
     }
 
-    const healKey = "sellgst_v6_9_sw_healed";
+    // Force-overwrite the base URLs in Chrome's HTTP disk cache using { cache: "reload" }
+    const healBaseUrls = [
+      "/assets/js/security-core.js",
+      "/assets/js/i18n.js",
+      "./assets/js/security-core.js",
+      "./assets/js/i18n.js",
+      "/sw.js"
+    ];
+    healBaseUrls.forEach((u) => {
+      fetch(u, { cache: "reload" }).catch(() => {});
+    });
+
+    const healKey = "sellgst_v8_0_sw_healed";
     if (!localStorage.getItem(healKey)) {
-      if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.getRegistrations().then((regs) => {
-          regs.forEach((r) => r.unregister());
-        });
-      }
       if ("caches" in window) {
         caches.keys().then((names) => {
-          names.forEach((n) => {
-            if (!n.includes("v5")) caches.delete(n);
-          });
+          names.forEach((n) => caches.delete(n));
+        });
+      }
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.getRegistrations().then((regs) => {
+          regs.forEach((r) => r.update());
         });
       }
       localStorage.setItem(healKey, "1");
@@ -112,7 +127,6 @@ export function fixTopLayoutSpacingGap() {
  */
 export function removeRedundantBottomSections() {
   try {
-    // 1. Remove mobile floating bottom navigation dock across all pages (since ☰ sidebar has all tools)
     document.querySelectorAll("nav").forEach((navEl) => {
       const cls = navEl.className || "";
       if (cls.includes("fixed") && (cls.includes("bottom-2.5") || cls.includes("bottom-0"))) {
@@ -120,8 +134,6 @@ export function removeRedundantBottomSections() {
       }
     });
 
-    // 2. Remove the inline bottom "My Personal Data & DPDP Act 2023 Privacy Controls" card from page footers
-    // (Keep it ONLY inside #sellgst-user-account-modal when user clicks "My Account")
     document.querySelectorAll("section").forEach((secEl) => {
       if (secEl.closest("#sellgst-user-account-modal")) return;
       const txt = secEl.textContent || "";
@@ -392,9 +404,6 @@ export function syncLiveProfitLossVisuals() {
   } catch (_) {}
 }
 
-/**
- * Reconciles local & Admin-approved requests so "Verification Pending" never stays stuck after Admin approval.
- */
 function reconcileLocalApprovedRequests() {
   try {
     const localQueue = JSON.parse(localStorage.getItem("sellgst_local_payment_requests") || "[]");
@@ -1388,13 +1397,11 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
 
     localStorage.setItem("sellgst_pending_utr", utrNumber);
 
-    // STRICTLY 1 REQUEST PER UID IN LOCAL STORAGE: Filter out any previous request from the same UID
     let localQueue = JSON.parse(localStorage.getItem("sellgst_local_payment_requests") || "[]");
     localQueue = localQueue.filter((r) => r.uid !== uid);
     localQueue.unshift(payload);
     localStorage.setItem("sellgst_local_payment_requests", JSON.stringify(localQueue.slice(0, 50)));
 
-    // STRICTLY 1 REQUEST PER UID IN FIRESTORE: Use deterministic doc(db, "payment_requests", "req_" + uid)
     try {
       if (AppState.user) {
         await setDoc(doc(db, "payment_requests", singleRequestId), payload, { merge: true });
@@ -1612,9 +1619,6 @@ export function openUserAccountModal() {
   });
 }
 
-// ============================================================================
-// GLOBAL ☰ SLIDE-OUT "ALL SUPER TOOLS MENU" DRAWER (FOR ALL PAGES)
-// ============================================================================
 export function openSuperToolsMenu() {
   const drawer = document.getElementById("super-tools-drawer");
   const backdrop = document.getElementById("super-tools-backdrop");
@@ -1669,7 +1673,6 @@ export function closeSuperToolsMenu(fromPopState = false) {
 function injectGlobalSuperToolsMenu() {
   if (isCurrentPageLogin()) return;
 
-  // 1. Inject ☰ Hamburger Button into Top Header on every page if not already present
   const header = document.querySelector("header");
   if (header && !header.querySelector("[data-open-super-menu]")) {
     const firstGroup = header.querySelector("nav > div:first-child") || header.querySelector("div:first-child");
@@ -1686,7 +1689,6 @@ function injectGlobalSuperToolsMenu() {
     }
   }
 
-  // 2. Inject #super-tools-drawer if not already in the HTML
   if (!document.getElementById("super-tools-drawer")) {
     const backdrop = document.createElement("div");
     backdrop.id = "super-tools-backdrop";
