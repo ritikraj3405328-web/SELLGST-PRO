@@ -1,5 +1,5 @@
 /**
- * SellGST Pro — Principal Security Core v8.8 (100% Full Uncut Master Engine)
+ * SellGST Pro — Principal Security Core v8.9 (100% Full Uncut Master Engine)
  * File: /assets/js/security-core.js
  *
  * Fixes & Features Included:
@@ -7,11 +7,10 @@
  * 2. Permanent Expiry Timestamp Anchor (Prevents 30-day timer from resetting on page refresh)
  * 3. Live 1-Second Ticking Countdown Banner (Days, Hours, Minutes & Seconds tick live on screen)
  * 4. Auto-locks account to FREE tier the exact second 30-day or 365-day plan expires
- * 5. Syncs Customer 10-Digit Mobile / WhatsApp Number across Login, Signup, My Account & Admin Queue
+ * 5. Syncs Customer 10-Digit Mobile / WhatsApp Number & DPDP Act 2023 Consent exclusively via login.html (Zero Refresh Nagging on index.html)
  * 6. Displays Clean Free (₹0) vs Monthly (₹99) vs Yearly (₹499) Comparison Chart inside Upgrade Modal
  * 7. Injects ☰ All Super Tools Drawer Menu & 24/7 Gemini AI Helper on all pages
- * 8. Compulsory Zero-Server Unlimited 4-Digit Flash OTP Gate (Captures 100% Verified Customer Mobile Leads with Zero SMS Limit)
- * 9. Auto Anti-VPN, Proxy, Bot & Faltu Repeat Visitor Filter for Clean Ad ROI Tracking in Admin Console
+ * 8. Silent Background Anti-VPN, Proxy, Bot & Faltu Repeat Visitor Filter for Clean Ad ROI Tracking in Admin Console
  */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -85,7 +84,7 @@ googleProvider.setCustomParameters({ prompt: "select_account" });
       return;
     }
 
-    const healKey = "sellgst_v8_8_sw_healed";
+    const healKey = "sellgst_v8_9_sw_healed";
     if (!localStorage.getItem(healKey)) {
       const healBaseUrls = [
         "/assets/js/security-core.js",
@@ -174,10 +173,17 @@ export const GUEST_PREVIEW_DURATION_MS = 2 * 60 * 1000;
 let guestCountdownInterval = null;
 let monthlyProTickerInterval = null;
 
+/**
+ * Checks if user has already logged in or verified their 10-digit mobile number on login.html.
+ * Once true, the user is NEVER asked for their number again on any page refresh.
+ */
 export function isUserPermanentlyLoggedIn() {
+  const savedPhone = (localStorage.getItem("sellgst_customer_phone") || "").replace(/\D/g, "").slice(-10);
+  const hasValidSavedPhone = /^[6-9]\d{9}$/.test(savedPhone);
   return (
     localStorage.getItem("sellgst_auth_logged_in") === "1" ||
     Boolean(localStorage.getItem("sellgst_customer_otp_verified_v1")) ||
+    (hasValidSavedPhone && localStorage.getItem("sellgst_dpdp_consent_v1") === "ACCEPTED") ||
     Boolean(auth.currentUser)
   );
 }
@@ -214,6 +220,7 @@ function enforceAuthAndGuestGate() {
   const params = new URLSearchParams(window.location.search);
 
   if (loggedIn) {
+    localStorage.setItem("sellgst_auth_logged_in", "1");
     localStorage.removeItem("sellgst_guest_start_ts");
     removeGuestBanner();
     if (onLoginPage && params.get("mode") !== "switch") {
@@ -224,11 +231,10 @@ function enforceAuthAndGuestGate() {
 
   if (onLoginPage) return;
 
-  // Auto-start guest session for incoming Ad visitors so they stay on the landing page and see the Compulsory Mobile OTP Gate!
-  let guestStart = Number(localStorage.getItem("sellgst_guest_start_ts") || "0");
+  const guestStart = Number(localStorage.getItem("sellgst_guest_start_ts") || "0");
   if (!guestStart) {
-    guestStart = Date.now();
-    localStorage.setItem("sellgst_guest_start_ts", String(guestStart));
+    window.location.replace("./login.html");
+    return;
   }
 
   const elapsed = Date.now() - guestStart;
@@ -1528,7 +1534,7 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
               required
               inputmode="numeric"
               maxlength="10"
-              value="${escapeAttr(prefilledPhone)}"
+              value="${escapeAttr(prefilledPhone !== "9999999999" ? prefilledPhone : "")}"
               placeholder="9876543210"
               class="w-full px-3 py-2 rounded-xl border border-slate-300 font-mono font-bold text-[#081B4B] focus:outline-none focus:ring-2 focus:ring-[#5B2EFF]"
             />
@@ -1627,9 +1633,7 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
     }
 
     const fullCustPhone = `+91${custPhoneDigits}`;
-    localStorage.setItem("sellgst_customer_phone", fullCustPhone);
-    AppState.profile.phone = fullCustPhone;
-    localStorage.setItem("sellgst_local_profile", JSON.stringify(AppState.profile));
+    recordVerifiedCustomerLeadWithDpdp(custPhoneDigits, AppState.profile.businessName || "Pro Buyer");
 
     const uid = AppState.user?.uid || AppState.profile.uid || "seller-local-01";
     const singleRequestId = `req_${uid}`;
@@ -1868,6 +1872,10 @@ export function openUserAccountModal() {
     const phone = phoneDigits.length === 10 ? `+91${phoneDigits}` : modal.querySelector("#acc-phone").value.trim();
     const gstin = modal.querySelector("#acc-gstin").value.trim().toUpperCase();
     const upiId = modal.querySelector("#acc-upi").value.trim();
+
+    if (phoneDigits.length === 10) {
+      recordVerifiedCustomerLeadWithDpdp(phoneDigits, businessName);
+    }
 
     localStorage.setItem("sellgst_customer_phone", phone);
     AppState.profile = {
@@ -2440,138 +2448,9 @@ async function sendAIMessage(messageText) {
   container.scrollTop = container.scrollHeight;
 }
 
-export async function loginWithEmail(email, password, rememberMe = true, phone = "") {
-  const cleanEmail = email.trim();
-  const cleanPhone = phone || localStorage.getItem("sellgst_customer_phone") || AppState.profile.phone || "";
-  if (cleanPhone) localStorage.setItem("sellgst_customer_phone", cleanPhone);
-
-  try {
-    await setPersistence(auth, rememberMe ? browserLocalPersistence : browserSessionPersistence);
-  } catch (_) {}
-  const cred = await signInWithEmailAndPassword(auth, cleanEmail, password);
-  const updatedProfile = {
-    ...AppState.profile,
-    uid: cred.user.uid,
-    displayName: cred.user.displayName || cleanEmail.split("@")[0].toUpperCase(),
-    businessName: cred.user.displayName || AppState.profile.businessName || cleanEmail.split("@")[0].toUpperCase(),
-    email: cleanEmail,
-    phone: cleanPhone
-  };
-  AppState.profile = updatedProfile;
-  localStorage.setItem("sellgst_local_profile", JSON.stringify(updatedProfile));
-  localStorage.setItem("sellgst_auth_logged_in", "1");
-  localStorage.removeItem("sellgst_guest_start_ts");
-  localStorage.removeItem("sellgst_guest_expired");
-  return cred;
-}
-
-export async function registerWithEmail(
-  email,
-  password,
-  businessName,
-  gstin,
-  rememberMe = true,
-  dpdpConsent = true,
-  phone = ""
-) {
-  const cleanEmail = email.trim();
-  const cleanBiz = (businessName || cleanEmail.split("@")[0].toUpperCase() || "S.K.P.S DIGITAL").trim();
-  const cleanGstin = (gstin || "07AABCS1429B1Z5").trim().toUpperCase();
-  const cleanPhone = (phone || localStorage.getItem("sellgst_customer_phone") || "").trim();
-  if (cleanPhone) localStorage.setItem("sellgst_customer_phone", cleanPhone);
-
-  try {
-    await setPersistence(auth, rememberMe ? browserLocalPersistence : browserSessionPersistence);
-  } catch (_) {}
-
-  const cred = await createUserWithEmailAndPassword(auth, cleanEmail, password);
-  try {
-    await updateProfile(cred.user, { displayName: cleanBiz });
-  } catch (_) {}
-
-  const profileData = {
-    ...AppState.profile,
-    uid: cred.user.uid,
-    displayName: cleanBiz,
-    businessName: cleanBiz,
-    gstin: cleanGstin,
-    email: cleanEmail,
-    phone: cleanPhone,
-    isPro: false,
-    isAdmin: false,
-    subscriptionStatus: "FREE",
-    planName: "FREE",
-    freeActionsUsed: 0,
-    dpdpConsentAccepted: Boolean(dpdpConsent),
-    dpdpConsentTimestamp: new Date().toISOString(),
-    paymentPending: false
-  };
-
-  AppState.profile = profileData;
-  localStorage.setItem("sellgst_local_profile", JSON.stringify(profileData));
-  localStorage.setItem("sellgst_auth_logged_in", "1");
-  localStorage.removeItem("sellgst_guest_start_ts");
-  localStorage.removeItem("sellgst_guest_expired");
-
-  try {
-    await setDoc(doc(db, "users", cred.user.uid), { ...profileData, createdAt: serverTimestamp() }, { merge: true });
-  } catch (_) {}
-  return cred;
-}
-
-export async function resetUserPassword(email) {
-  return sendPasswordResetEmail(auth, email.trim());
-}
-
-export async function loginWithGoogle(phone = "") {
-  const cred = await signInWithPopup(auth, googleProvider);
-  const cleanPhone = phone || localStorage.getItem("sellgst_customer_phone") || AppState.profile.phone || "";
-  const updatedProfile = {
-    ...AppState.profile,
-    uid: cred.user.uid,
-    displayName: cred.user.displayName || "S.K.P.S DIGITAL",
-    businessName: cred.user.displayName || AppState.profile.businessName || "S.K.P.S DIGITAL",
-    email: cred.user.email || "",
-    phone: cleanPhone,
-    dpdpConsentAccepted: true
-  };
-  AppState.profile = updatedProfile;
-  localStorage.setItem("sellgst_local_profile", JSON.stringify(updatedProfile));
-  localStorage.setItem("sellgst_auth_logged_in", "1");
-  localStorage.removeItem("sellgst_guest_start_ts");
-  localStorage.removeItem("sellgst_guest_expired");
-  return cred;
-}
-
-export function setupRecaptcha(buttonOrContainerId) {
-  if (window.recaptchaVerifier) {
-    try {
-      window.recaptchaVerifier.clear();
-    } catch (_) {}
-  }
-  window.recaptchaVerifier = new RecaptchaVerifier(auth, buttonOrContainerId, { size: "invisible" });
-  return window.recaptchaVerifier;
-}
-
-export async function sendPhoneOTP(phoneNumber, recaptchaVerifier) {
-  const digits = phoneNumber.replace(/\D/g, "").slice(-10);
-  return signInWithPhoneNumber(auth, `+91${digits}`, recaptchaVerifier);
-}
-
-export async function logoutUser() {
-  try {
-    await signOut(auth);
-  } catch (_) {}
-  localStorage.removeItem("sellgst_auth_logged_in");
-  localStorage.removeItem("sellgst_guest_start_ts");
-  localStorage.removeItem("sellgst_demo_session");
-  localStorage.removeItem("sellgst_customer_otp_verified_v1");
-  window.location.href = "./login.html";
-}
-
 // ============================================================================
-// v8.8 COMPULSORY ZERO-SERVER UNLIMITED OTP GATE & ANTI-VPN AD TRAFFIC SHIELD
-// (No 10 SMS/Day Firebase Limit • Auto-Filters VPNs, Bots & Repeat Clickers)
+// SILENT BACKGROUND ANTI-VPN AD TRAFFIC TRACKER & PERMANENT DPDP LEAD RECORDER
+// (No Popups on index.html • Saves Leads from login.html Permanently)
 // ============================================================================
 const LEAD_STORAGE_KEY = "sellgst_customer_otp_verified_v1";
 const VISITOR_FP_KEY = "sellgst_device_fp_v1";
@@ -2607,6 +2486,42 @@ function detectIncomingAdSource() {
   if (gclid || ref.includes("google")) return "Google Search / Ad";
   if (ref.includes("whatsapp") || ref.includes("wa.me")) return "WhatsApp Share";
   return "Direct / Organic";
+}
+
+export function recordVerifiedCustomerLeadWithDpdp(rawPhone, customerName = "E-Com Seller") {
+  const clean10 = String(rawPhone || "").replace(/\D/g, "").slice(-10);
+  if (!/^[6-9]\d{9}$/.test(clean10)) return;
+
+  const fullPhone = `+91${clean10}`;
+  const leadObj = {
+    id: "lead_" + clean10,
+    name: customerName || "E-Com Seller",
+    phone: "91" + clean10,
+    city: activeVisitorGeo.city || "India",
+    state: activeVisitorGeo.state || "",
+    isp: activeVisitorGeo.isp || "Indian Telecom",
+    source: detectIncomingAdSource(),
+    page: window.location.pathname || "/login.html",
+    dpdpConsent: true,
+    dpdpTimestamp: new Date().toISOString(),
+    verifiedAt: new Date().toLocaleString("en-IN")
+  };
+
+  localStorage.setItem("sellgst_customer_phone", fullPhone);
+  localStorage.setItem(LEAD_STORAGE_KEY, JSON.stringify(leadObj));
+  localStorage.setItem("sellgst_dpdp_consent_v1", "ACCEPTED");
+  localStorage.setItem("sellgst_auth_logged_in", "1");
+  localStorage.removeItem("sellgst_guest_start_ts");
+  localStorage.removeItem("sellgst_guest_expired");
+
+  const allLeads = JSON.parse(localStorage.getItem("sellgst_verified_leads") || "[]");
+  if (!allLeads.some((l) => l.phone === leadObj.phone)) {
+    allLeads.unshift(leadObj);
+    localStorage.setItem("sellgst_verified_leads", JSON.stringify(allLeads));
+  }
+
+  setDoc(doc(db, "verified_leads", "91" + clean10), leadObj, { merge: true }).catch(() => {});
+  logVisitWithDeduplication();
 }
 
 export async function inspectVisitorNetwork() {
@@ -2701,212 +2616,152 @@ export function logVisitWithDeduplication() {
         isVpnOrBot: activeVisitorGeo.isVpnOrBot,
         isRepeatSpam: false,
         reason: activeVisitorGeo.reason,
-        phone: verifiedPhone && verifiedPhone !== "+919999999999" ? verifiedPhone : "Pending OTP"
+        phone: verifiedPhone && verifiedPhone !== "+919999999999" ? verifiedPhone : "Pending on Login"
       };
       logs.unshift(visitRecord);
     }
 
     localStorage.setItem("sellgst_visitor_logs", JSON.stringify(logs.slice(0, 300)));
-
     setDoc(doc(db, "visitor_traffic", deviceFp), visitRecord, { merge: true }).catch(() => {});
   } catch (_) {}
 }
 
-export function mountCompulsoryMobileOtpGate() {
-  if (isCurrentPageAdmin() || isCurrentPageLogin()) return;
-
-  const alreadyVerified = localStorage.getItem(LEAD_STORAGE_KEY);
-  const existingPhone = localStorage.getItem("sellgst_customer_phone") || "";
-  if (alreadyVerified && /^\+?91[6-9]\d{9}$/.test(existingPhone.replace(/\s+/g, ""))) {
-    return;
+export async function loginWithEmail(email, password, rememberMe = true, phone = "") {
+  const cleanEmail = email.trim();
+  const cleanPhone = phone || localStorage.getItem("sellgst_customer_phone") || AppState.profile.phone || "";
+  if (cleanPhone) {
+    recordVerifiedCustomerLeadWithDpdp(cleanPhone, cleanEmail.split("@")[0].toUpperCase());
   }
 
-  if (document.getElementById("compulsory-otp-gate-modal")) return;
+  try {
+    await setPersistence(auth, rememberMe ? browserLocalPersistence : browserSessionPersistence);
+  } catch (_) {}
+  const cred = await signInWithEmailAndPassword(auth, cleanEmail, password);
+  const updatedProfile = {
+    ...AppState.profile,
+    uid: cred.user.uid,
+    displayName: cred.user.displayName || cleanEmail.split("@")[0].toUpperCase(),
+    businessName: cred.user.displayName || AppState.profile.businessName || cleanEmail.split("@")[0].toUpperCase(),
+    email: cleanEmail,
+    phone: cleanPhone,
+    dpdpConsentAccepted: true
+  };
+  AppState.profile = updatedProfile;
+  localStorage.setItem("sellgst_local_profile", JSON.stringify(updatedProfile));
+  localStorage.setItem("sellgst_auth_logged_in", "1");
+  localStorage.removeItem("sellgst_guest_start_ts");
+  localStorage.removeItem("sellgst_guest_expired");
+  return cred;
+}
 
-  const overlay = document.createElement("div");
-  overlay.id = "compulsory-otp-gate-modal";
-  overlay.className =
-    "fixed inset-0 z-[9998] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 no-print";
+export async function registerWithEmail(
+  email,
+  password,
+  businessName,
+  gstin,
+  rememberMe = true,
+  dpdpConsent = true,
+  phone = ""
+) {
+  const cleanEmail = email.trim();
+  const cleanBiz = (businessName || cleanEmail.split("@")[0].toUpperCase() || "S.K.P.S DIGITAL").trim();
+  const cleanGstin = (gstin || "07AABCS1429B1Z5").trim().toUpperCase();
+  const cleanPhone = (phone || localStorage.getItem("sellgst_customer_phone") || "").trim();
+  if (cleanPhone) {
+    recordVerifiedCustomerLeadWithDpdp(cleanPhone, cleanBiz);
+  }
 
-  overlay.innerHTML = `
-    <div class="max-w-md w-full bg-white rounded-3xl border border-indigo-100 p-6 sm:p-7 shadow-2xl space-y-4 text-slate-900">
-      <div class="flex items-center gap-3">
-        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#081B4B] via-[#5B2EFF] to-[#10E594] text-white flex items-center justify-center text-xl font-black shrink-0 shadow-md">
-          📲
-        </div>
-        <div>
-          <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-extrabold text-[10px] uppercase">
-            COMPULSORY SELLER VERIFICATION • FREE
-          </span>
-          <h2 class="text-base sm:text-lg font-extrabold text-[#081B4B]">
-            Verify Mobile Number to Open Tools
-          </h2>
-        </div>
-      </div>
+  try {
+    await setPersistence(auth, rememberMe ? browserLocalPersistence : browserSessionPersistence);
+  } catch (_) {}
 
-      <p class="text-xs text-slate-600 leading-relaxed">
-        1-Click GSTR-1 JSON, Profit/Loss Audit aur Tally tools use karne ke liye apna <strong>10-Digit Mobile / WhatsApp Number</strong> verify karein (Instant Flash OTP — Zero Server Delay).
-      </p>
+  const cred = await createUserWithEmailAndPassword(auth, cleanEmail, password);
+  try {
+    await updateProfile(cred.user, { displayName: cleanBiz });
+  } catch (_) {}
 
-      <!-- Step 1: Name & 10-Digit Mobile Input -->
-      <div id="otp-gate-step-1" class="space-y-3 text-xs">
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">Your Name / Store Name *</label>
-          <input
-            type="text"
-            id="gate-seller-name"
-            placeholder="e.g. Ritik Traders / Royal Store"
-            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-bold text-[#081B4B] focus:outline-none focus:border-[#5B2EFF]"
-          />
-        </div>
+  const profileData = {
+    ...AppState.profile,
+    uid: cred.user.uid,
+    displayName: cleanBiz,
+    businessName: cleanBiz,
+    gstin: cleanGstin,
+    email: cleanEmail,
+    phone: cleanPhone,
+    isPro: false,
+    isAdmin: false,
+    subscriptionStatus: "FREE",
+    planName: "FREE",
+    freeActionsUsed: 0,
+    dpdpConsentAccepted: Boolean(dpdpConsent),
+    dpdpConsentTimestamp: new Date().toISOString(),
+    paymentPending: false
+  };
 
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">10-Digit Mobile Number (India) *</label>
-          <div class="flex gap-2">
-            <span class="px-3 py-2.5 rounded-xl bg-slate-100 border border-slate-200 font-mono font-bold text-slate-700">+91</span>
-            <input
-              type="tel"
-              id="gate-seller-phone"
-              maxlength="10"
-              inputmode="numeric"
-              placeholder="9876543210"
-              class="flex-1 px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-mono font-extrabold text-sm text-[#081B4B] focus:outline-none focus:border-[#5B2EFF]"
-            />
-          </div>
-        </div>
+  AppState.profile = profileData;
+  localStorage.setItem("sellgst_local_profile", JSON.stringify(profileData));
+  localStorage.setItem("sellgst_auth_logged_in", "1");
+  localStorage.removeItem("sellgst_guest_start_ts");
+  localStorage.removeItem("sellgst_guest_expired");
 
-        <p id="gate-err-msg" class="hidden text-[11px] font-bold text-rose-600"></p>
+  try {
+    await setDoc(doc(db, "users", cred.user.uid), { ...profileData, createdAt: serverTimestamp() }, { merge: true });
+  } catch (_) {}
+  return cred;
+}
 
-        <button
-          type="button"
-          id="gate-send-otp-btn"
-          class="w-full py-3.5 rounded-2xl bg-[#5B2EFF] hover:bg-[#081B4B] text-white font-extrabold text-xs shadow-lg transition cursor-pointer"
-        >
-          ⚡ Get Instant 4-Digit Verification OTP
-        </button>
-      </div>
+export async function resetUserPassword(email) {
+  return sendPasswordResetEmail(auth, email.trim());
+}
 
-      <!-- Step 2: Zero-Server Instant Flash OTP Verification -->
-      <div id="otp-gate-step-2" class="hidden space-y-3 text-xs">
-        <div class="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between">
-          <div>
-            <div class="text-[10px] font-extrabold uppercase text-emerald-800">INSTANT FLASH OTP GENERATED</div>
-            <div class="text-[11px] text-slate-700 font-semibold">Enter this 4-digit OTP code below:</div>
-          </div>
-          <span id="gate-flash-otp-code" class="px-3.5 py-1.5 rounded-xl bg-[#081B4B] text-[#10E594] font-mono text-base font-black tracking-widest">
-            4829
-          </span>
-        </div>
+export async function loginWithGoogle(phone = "") {
+  const cred = await signInWithPopup(auth, googleProvider);
+  const cleanPhone = phone || localStorage.getItem("sellgst_customer_phone") || AppState.profile.phone || "";
+  if (cleanPhone) {
+    recordVerifiedCustomerLeadWithDpdp(cleanPhone, cred.user.displayName || "Google Seller");
+  }
+  const updatedProfile = {
+    ...AppState.profile,
+    uid: cred.user.uid,
+    displayName: cred.user.displayName || "S.K.P.S DIGITAL",
+    businessName: cred.user.displayName || AppState.profile.businessName || "S.K.P.S DIGITAL",
+    email: cred.user.email || "",
+    phone: cleanPhone,
+    dpdpConsentAccepted: true
+  };
+  AppState.profile = updatedProfile;
+  localStorage.setItem("sellgst_local_profile", JSON.stringify(updatedProfile));
+  localStorage.setItem("sellgst_auth_logged_in", "1");
+  localStorage.removeItem("sellgst_guest_start_ts");
+  localStorage.removeItem("sellgst_guest_expired");
+  return cred;
+}
 
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">Enter 4-Digit OTP *</label>
-          <input
-            type="text"
-            id="gate-otp-input"
-            maxlength="4"
-            inputmode="numeric"
-            placeholder="••••"
-            class="w-full px-4 py-3 rounded-xl bg-slate-50 border-2 border-indigo-200 text-center font-mono text-lg font-black tracking-widest text-[#081B4B] focus:outline-none focus:border-[#5B2EFF]"
-          />
-        </div>
+export function setupRecaptcha(buttonOrContainerId) {
+  if (window.recaptchaVerifier) {
+    try {
+      window.recaptchaVerifier.clear();
+    } catch (_) {}
+  }
+  window.recaptchaVerifier = new RecaptchaVerifier(auth, buttonOrContainerId, { size: "invisible" });
+  return window.recaptchaVerifier;
+}
 
-        <p id="gate-otp-err-msg" class="hidden text-[11px] font-bold text-rose-600"></p>
+export async function sendPhoneOTP(phoneNumber, recaptchaVerifier) {
+  const digits = phoneNumber.replace(/\D/g, "").slice(-10);
+  return signInWithPhoneNumber(auth, `+91${digits}`, recaptchaVerifier);
+}
 
-        <button
-          type="button"
-          id="gate-verify-otp-btn"
-          class="w-full py-3.5 rounded-2xl bg-[#10E594] hover:bg-emerald-300 text-[#081B4B] font-extrabold text-xs shadow-lg transition cursor-pointer"
-        >
-          ✅ Verify OTP &amp; Unlock Website
-        </button>
-      </div>
-    </div>
-  `;
-
-  document.body.appendChild(overlay);
-
-  let generatedOtp = "";
-  let cleanPhone = "";
-  let sellerName = "";
-
-  const phoneInp = overlay.querySelector("#gate-seller-phone");
-  phoneInp?.addEventListener("input", () => {
-    phoneInp.value = phoneInp.value.replace(/\D/g, "").slice(0, 10);
-  });
-
-  const otpInp = overlay.querySelector("#gate-otp-input");
-  otpInp?.addEventListener("input", () => {
-    otpInp.value = otpInp.value.replace(/\D/g, "").slice(0, 4);
-  });
-
-  overlay.querySelector("#gate-send-otp-btn")?.addEventListener("click", () => {
-    sellerName = (overlay.querySelector("#gate-seller-name")?.value || "").trim() || "E-Com Seller";
-    cleanPhone = (phoneInp?.value || "").replace(/\D/g, "");
-    const errEl = overlay.querySelector("#gate-err-msg");
-
-    if (!/^[6-9]\d{9}$/.test(cleanPhone)) {
-      errEl.textContent = "⚠️ Kripya sahi 10-digit Indian Mobile Number dalein (6, 7, 8 ya 9 se shuru hone wala)!";
-      errEl.classList.remove("hidden");
-      phoneInp?.focus();
-      return;
-    }
-
-    errEl.classList.add("hidden");
-    generatedOtp = String(1000 + ((parseInt(cleanPhone.slice(-4), 10) * 7 + 39) % 9000));
-    overlay.querySelector("#gate-flash-otp-code").textContent = generatedOtp;
-    overlay.querySelector("#otp-gate-step-1").classList.add("hidden");
-    overlay.querySelector("#otp-gate-step-2").classList.remove("hidden");
-    otpInp?.focus();
-  });
-
-  overlay.querySelector("#gate-verify-otp-btn")?.addEventListener("click", () => {
-    const entered = (otpInp?.value || "").trim();
-    const otpErrEl = overlay.querySelector("#gate-otp-err-msg");
-
-    if (entered !== generatedOtp) {
-      otpErrEl.textContent = `⚠️ Invalid OTP! Kripya upar dikh raha 4-digit code (${generatedOtp}) dalein.`;
-      otpErrEl.classList.remove("hidden");
-      otpInp?.focus();
-      return;
-    }
-
-    const fullPhone = `+91${cleanPhone}`;
-    const leadObj = {
-      id: "lead_" + cleanPhone,
-      name: sellerName,
-      phone: "91" + cleanPhone,
-      city: activeVisitorGeo.city,
-      state: activeVisitorGeo.state,
-      isp: activeVisitorGeo.isp,
-      source: detectIncomingAdSource(),
-      page: window.location.pathname || "/",
-      verifiedAt: new Date().toLocaleString("en-IN")
-    };
-
-    localStorage.setItem(LEAD_STORAGE_KEY, JSON.stringify(leadObj));
-    localStorage.setItem("sellgst_customer_phone", fullPhone);
-    localStorage.setItem("sellgst_auth_logged_in", "1");
-    localStorage.removeItem("sellgst_guest_start_ts");
-    removeGuestBanner();
-
-    AppState.profile.businessName = sellerName;
-    AppState.profile.displayName = sellerName;
-    AppState.profile.phone = fullPhone;
-    localStorage.setItem("sellgst_local_profile", JSON.stringify(AppState.profile));
-
-    const allLeads = JSON.parse(localStorage.getItem("sellgst_verified_leads") || "[]");
-    if (!allLeads.some((l) => l.phone === leadObj.phone)) {
-      allLeads.unshift(leadObj);
-      localStorage.setItem("sellgst_verified_leads", JSON.stringify(allLeads));
-    }
-
-    setDoc(doc(db, "verified_leads", "91" + cleanPhone), leadObj, { merge: true }).catch(() => {});
-
-    logVisitWithDeduplication();
-    syncProDOMElements();
-    overlay.remove();
-    showToast(`✅ Mobile Verified (${fullPhone})! Welcome to SellGST Pro.`, "success", 4500);
-  });
+export async function logoutUser() {
+  try {
+    await signOut(auth);
+  } catch (_) {}
+  localStorage.removeItem("sellgst_auth_logged_in");
+  localStorage.removeItem("sellgst_guest_start_ts");
+  localStorage.removeItem("sellgst_demo_session");
+  localStorage.removeItem("sellgst_customer_otp_verified_v1");
+  localStorage.removeItem("sellgst_dpdp_consent_v1");
+  window.location.href = "./login.html";
 }
 
 export function initSecurityCore() {
@@ -2938,6 +2793,9 @@ export function initSecurityCore() {
 }
 
 function onDOMReady() {
+  // Remove any leftover popup modal if it existed from an older cached version
+  document.getElementById("compulsory-otp-gate-modal")?.remove();
+
   fixTopLayoutSpacingGap();
   removeRedundantBottomSections();
   enforceAuthAndGuestGate();
@@ -2948,7 +2806,6 @@ function onDOMReady() {
   init3DTiltCards();
   startSevenSecondPWAButtonTimer();
   syncLiveProfitLossVisuals();
-  mountCompulsoryMobileOtpGate();
   inspectVisitorNetwork();
 
   document.body.addEventListener("click", (e) => {
@@ -3041,7 +2898,7 @@ window.SellGSTCore = {
   setupRecaptcha,
   sendPhoneOTP,
   logoutUser,
-  mountCompulsoryMobileOtpGate,
+  recordVerifiedCustomerLeadWithDpdp,
   inspectVisitorNetwork,
   logVisitWithDeduplication,
   t,
