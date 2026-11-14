@@ -1,14 +1,15 @@
 /**
- * SellGST Pro — Principal Security Core v8.4 (100% Full Uncut Master Engine)
- * File 1 of 6: /assets/js/security-core.js
+ * SellGST Pro — Principal Security Core v8.5 (100% Full Uncut Master Engine)
+ * File: /assets/js/security-core.js
  *
  * Fixes & Features Included:
- * 1. Auto-populates empty language dropdowns across all pages (Fixes blank language button bug)
- * 2. Removes overlapping bottom navbars & fixes top header spacing automatically
- * 3. Injects ☰ All Super Tools Drawer Menu & 24/7 Gemini AI Helper on all pages
- * 4. Syncs Customer 10-Digit Mobile / WhatsApp Number across Login, Signup, My Account & Admin Queue
- * 5. Displays Clean Free (₹0) vs Monthly (₹99) vs Yearly (₹499) Comparison Chart inside Upgrade Modal
- * 6. Force Cache-Healer for Cloudflare Pages (sellgst-pro.pages.dev)
+ * 1. Exact Expiry Math Fix (Math.floor instead of Math.ceil — fixes "30 Days & 22 Hours" bug)
+ * 2. Permanent Expiry Timestamp Anchor (Prevents 30-day timer from resetting on page refresh)
+ * 3. Live 1-Second Ticking Countdown Banner (Days, Hours, Minutes & Seconds tick live on screen)
+ * 4. Auto-locks account to FREE tier the exact second 30-day or 365-day plan expires
+ * 5. Syncs Customer 10-Digit Mobile / WhatsApp Number across Login, Signup, My Account & Admin Queue
+ * 6. Displays Clean Free (₹0) vs Monthly (₹99) vs Yearly (₹499) Comparison Chart inside Upgrade Modal
+ * 7. Injects ☰ All Super Tools Drawer Menu & 24/7 Gemini AI Helper on all pages
  */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -82,7 +83,7 @@ googleProvider.setCustomParameters({ prompt: "select_account" });
       return;
     }
 
-    const healKey = "sellgst_v8_4_sw_healed";
+    const healKey = "sellgst_v8_5_sw_healed";
     if (!localStorage.getItem(healKey)) {
       const healBaseUrls = [
         "/assets/js/security-core.js",
@@ -129,7 +130,6 @@ export function fixTopLayoutSpacingGap() {
     main.classList.add("mt-2.5");
   }
 
-  // Ensure every [data-lang-switcher] select has visible options (fixes blank pill in sub-pages)
   document.querySelectorAll("select[data-lang-switcher]").forEach((sel) => {
     if (sel.options.length === 0) {
       sel.innerHTML = `
@@ -170,6 +170,7 @@ export function removeRedundantBottomSections() {
 
 export const GUEST_PREVIEW_DURATION_MS = 2 * 60 * 1000;
 let guestCountdownInterval = null;
+let monthlyProTickerInterval = null;
 
 export function isUserPermanentlyLoggedIn() {
   return localStorage.getItem("sellgst_auth_logged_in") === "1" || Boolean(auth.currentUser);
@@ -316,6 +317,32 @@ const DEFAULT_PROFILE = {
   paymentPending: false
 };
 
+/**
+ * Helper to get or anchor a permanent expiry timestamp so page reloads never reset the 30-day timer.
+ */
+function resolveOrAnchorExpiryISO(uid, planName, candidateISO, fallbackStartISO) {
+  const anchorKey = `sellgst_anchored_expiry_${uid || "default"}_${planName || "MONTHLY"}`;
+  const durationMs = (planName === "YEARLY" ? 365 : 30) * 24 * 60 * 60 * 1000;
+
+  if (candidateISO && !isNaN(new Date(candidateISO).getTime())) {
+    localStorage.setItem(anchorKey, candidateISO);
+    return candidateISO;
+  }
+
+  const existingAnchored = localStorage.getItem(anchorKey);
+  if (existingAnchored && !isNaN(new Date(existingAnchored).getTime())) {
+    return existingAnchored;
+  }
+
+  const baseTime =
+    fallbackStartISO && !isNaN(new Date(fallbackStartISO).getTime())
+      ? new Date(fallbackStartISO).getTime()
+      : Date.now();
+  const computedISO = new Date(baseTime + durationMs).toISOString();
+  localStorage.setItem(anchorKey, computedISO);
+  return computedISO;
+}
+
 function getInitialHydratedProfile() {
   try {
     const raw = localStorage.getItem("sellgst_local_profile");
@@ -327,6 +354,12 @@ function getInitialHydratedProfile() {
       }
       if (parsed.isPro) {
         parsed.paymentPending = false;
+        parsed.planExpiryISO = resolveOrAnchorExpiryISO(
+          parsed.uid,
+          parsed.planName,
+          parsed.planExpiryISO,
+          parsed.planActivatedAt
+        );
       }
       return parsed;
     }
@@ -429,11 +462,16 @@ export function syncLiveProfitLossVisuals() {
   } catch (_) {}
 }
 
+/**
+ * Reconciles local queue without re-activating expired subscriptions.
+ */
 function reconcileLocalApprovedRequests() {
   try {
-    const localQueue = JSON.parse(localStorage.getItem("sellgst_local_payment_requests") || "[]");
+    const now = Date.now();
+    let localQueue = JSON.parse(localStorage.getItem("sellgst_local_payment_requests") || "[]");
     const pendingUtr = localStorage.getItem("sellgst_pending_utr");
     const currentUid = AppState.user?.uid || AppState.profile?.uid;
+    let queueModified = false;
 
     const approvedItem = localQueue.find(
       (r) =>
@@ -443,18 +481,28 @@ function reconcileLocalApprovedRequests() {
 
     if (approvedItem) {
       const cleanPlan = approvedItem.planName === "YEARLY" ? "YEARLY" : "MONTHLY";
-      const durationDays = cleanPlan === "YEARLY" ? 365 : 30;
-      const expiryISO =
-        approvedItem.expectedExpiryISO || new Date(Date.now() + durationDays * 24 * 60 * 60 * 1000).toISOString();
+      const expiryISO = resolveOrAnchorExpiryISO(
+        currentUid,
+        cleanPlan,
+        approvedItem.planExpiryISO || approvedItem.expectedExpiryISO || AppState.profile.planExpiryISO,
+        approvedItem.approvedAtISO || approvedItem.createdAtISO
+      );
 
-      localStorage.removeItem("sellgst_pending_utr");
-      AppState.pendingRequest = null;
-      AppState.profile.isPro = true;
-      AppState.profile.subscriptionStatus = "ACTIVE";
-      AppState.profile.planName = cleanPlan;
-      AppState.profile.planExpiryISO = expiryISO;
-      AppState.profile.paymentPending = false;
-      localStorage.setItem("sellgst_local_profile", JSON.stringify(AppState.profile));
+      const expTime = new Date(expiryISO).getTime();
+      if (!isNaN(expTime) && now >= expTime) {
+        // Mark expired in local queue so it NEVER re-activates Pro again!
+        approvedItem.status = "EXPIRED";
+        queueModified = true;
+      } else if (AppState.profile.subscriptionStatus !== "EXPIRED") {
+        localStorage.removeItem("sellgst_pending_utr");
+        AppState.pendingRequest = null;
+        AppState.profile.isPro = true;
+        AppState.profile.subscriptionStatus = "ACTIVE";
+        AppState.profile.planName = cleanPlan;
+        AppState.profile.planExpiryISO = expiryISO;
+        AppState.profile.paymentPending = false;
+        localStorage.setItem("sellgst_local_profile", JSON.stringify(AppState.profile));
+      }
     }
 
     const rejectedItem = localQueue.find(
@@ -466,9 +514,16 @@ function reconcileLocalApprovedRequests() {
       AppState.profile.paymentPending = false;
       localStorage.setItem("sellgst_local_profile", JSON.stringify(AppState.profile));
     }
+
+    if (queueModified) {
+      localStorage.setItem("sellgst_local_payment_requests", JSON.stringify(localQueue));
+    }
   } catch (_) {}
 }
 
+/**
+ * Evaluates subscription health with exact Math.floor days, hours, minutes, and seconds.
+ */
 export function evaluateSubscriptionHealth() {
   reconcileLocalApprovedRequests();
   const prof = AppState.profile;
@@ -478,11 +533,21 @@ export function evaluateSubscriptionHealth() {
     localStorage.removeItem("sellgst_pending_utr");
     prof.paymentPending = false;
     AppState.pendingRequest = null;
+
+    if (!prof.planExpiryISO) {
+      prof.planExpiryISO = resolveOrAnchorExpiryISO(
+        prof.uid,
+        prof.planName,
+        null,
+        prof.planActivatedAt
+      );
+      localStorage.setItem("sellgst_local_profile", JSON.stringify(prof));
+    }
   }
 
   if (prof.isPro && prof.planExpiryISO) {
     const expTime = new Date(prof.planExpiryISO).getTime();
-    if (!isNaN(expTime) && now > expTime) {
+    if (!isNaN(expTime) && now >= expTime) {
       prof.isPro = false;
       prof.planName = "FREE";
       prof.subscriptionStatus = "EXPIRED";
@@ -494,6 +559,7 @@ export function evaluateSubscriptionHealth() {
           { merge: true }
         ).catch(() => {});
       }
+      showToast("⏰ Your Pro Plan validity has ended. Renew anytime to continue unlimited access!", "warning", 6000);
     }
   }
 
@@ -505,14 +571,21 @@ export function evaluateSubscriptionHealth() {
   }
 
   const remainingMs = prof.planExpiryISO ? Math.max(0, new Date(prof.planExpiryISO).getTime() - now) : 0;
-  const remainingDays = Math.ceil(remainingMs / (1000 * 60 * 60 * 24));
+
+  // FIXED MATH: Uses Math.floor so 29.9 days shows "29d 22h" instead of "30d 22h"
+  const remainingDays = Math.floor(remainingMs / (1000 * 60 * 60 * 24));
   const remainingHours = Math.floor((remainingMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const remainingMinutes = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60));
+  const remainingSeconds = Math.floor((remainingMs % (1000 * 60)) / 1000);
 
   return {
     isPro: Boolean(prof.isPro),
     planName: prof.isPro ? (prof.planName === "YEARLY" ? "YEARLY" : "MONTHLY") : "FREE",
-    remainingDays: Number.isFinite(remainingDays) ? remainingDays : 30,
+    remainingMs,
+    remainingDays: Number.isFinite(remainingDays) ? remainingDays : 0,
     remainingHours: Number.isFinite(remainingHours) ? remainingHours : 0,
+    remainingMinutes: Number.isFinite(remainingMinutes) ? remainingMinutes : 0,
+    remainingSeconds: Number.isFinite(remainingSeconds) ? remainingSeconds : 0,
     freeActionsUsed: combinedUsed,
     freeActionsRemaining: Math.max(0, FREE_USAGE_MAX_LIMIT - combinedUsed)
   };
@@ -941,7 +1014,23 @@ function startUserRealtimeListeners(user) {
         const prevPro = AppState.profile.isPro;
         const prevPlan = AppState.profile.planName;
         const data = snap.data();
-        const isNowPro = Boolean(data.isPro || data.subscriptionStatus === "ACTIVE");
+
+        const rawIsPro = Boolean(data.isPro || data.subscriptionStatus === "ACTIVE");
+        const cleanPlan = data.planName || (rawIsPro ? "MONTHLY" : "FREE");
+        let anchoredExpiry = data.planExpiryISO || AppState.profile.planExpiryISO || null;
+
+        if (rawIsPro) {
+          anchoredExpiry = resolveOrAnchorExpiryISO(
+            user.uid,
+            cleanPlan,
+            data.planExpiryISO || AppState.profile.planExpiryISO,
+            data.planActivatedAt
+          );
+        }
+
+        const isExpiredNow =
+          anchoredExpiry && !isNaN(new Date(anchoredExpiry).getTime()) && Date.now() >= new Date(anchoredExpiry).getTime();
+        const isNowPro = rawIsPro && !isExpiredNow;
 
         if (isNowPro) {
           localStorage.removeItem("sellgst_pending_utr");
@@ -954,11 +1043,21 @@ function startUserRealtimeListeners(user) {
           uid: user.uid,
           phone: data.phone || localCustomerPhone || AppState.profile.phone || "",
           isPro: isNowPro,
+          planExpiryISO: anchoredExpiry,
+          subscriptionStatus: isExpiredNow ? "EXPIRED" : isNowPro ? "ACTIVE" : data.subscriptionStatus || "FREE",
           paymentPending: isNowPro ? false : Boolean(data.paymentPending),
-          planName: data.planName || (isNowPro ? "MONTHLY" : "FREE"),
+          planName: isNowPro ? cleanPlan : "FREE",
           isAdmin: Boolean(data.isAdmin)
         };
         localStorage.setItem("sellgst_local_profile", JSON.stringify(AppState.profile));
+
+        if (isExpiredNow && rawIsPro) {
+          setDoc(
+            userRef,
+            { isPro: false, planName: "FREE", subscriptionStatus: "EXPIRED" },
+            { merge: true }
+          ).catch(() => {});
+        }
 
         if ((!prevPro && AppState.profile.isPro) || (prevPlan !== AppState.profile.planName && AppState.profile.isPro)) {
           localStorage.removeItem("sellgst_pending_utr");
@@ -989,25 +1088,31 @@ function startUserRealtimeListeners(user) {
 
       if (latestApproved) {
         const cleanPlan = latestApproved.planName === "YEARLY" ? "YEARLY" : "MONTHLY";
-        const durationDays = cleanPlan === "YEARLY" ? 365 : 30;
-        const expiryISO =
-          latestApproved.planExpiryISO ||
-          latestApproved.expectedExpiryISO ||
-          new Date(Date.now() + durationDays * 24 * 60 * 60 * 1000).toISOString();
+        const expiryISO = resolveOrAnchorExpiryISO(
+          user.uid,
+          cleanPlan,
+          latestApproved.planExpiryISO || latestApproved.expectedExpiryISO || AppState.profile.planExpiryISO,
+          latestApproved.approvedAtISO || latestApproved.createdAtISO
+        );
 
-        const wasNotPro = !AppState.profile.isPro;
-        localStorage.removeItem("sellgst_pending_utr");
-        AppState.pendingRequest = null;
-        AppState.profile.isPro = true;
-        AppState.profile.subscriptionStatus = "ACTIVE";
-        AppState.profile.planName = cleanPlan;
-        AppState.profile.planExpiryISO = expiryISO;
-        AppState.profile.paymentPending = false;
-        localStorage.setItem("sellgst_local_profile", JSON.stringify(AppState.profile));
+        const expTime = new Date(expiryISO).getTime();
+        const isStillValid = isNaN(expTime) || Date.now() < expTime;
 
-        if (wasNotPro) {
-          showToast(`🎉 Admin Approved Your Payment! SellGST Pro (${cleanPlan}) is now ACTIVE!`, "success", 6000);
-          closeProPaymentModal();
+        if (isStillValid && AppState.profile.subscriptionStatus !== "EXPIRED") {
+          const wasNotPro = !AppState.profile.isPro;
+          localStorage.removeItem("sellgst_pending_utr");
+          AppState.pendingRequest = null;
+          AppState.profile.isPro = true;
+          AppState.profile.subscriptionStatus = "ACTIVE";
+          AppState.profile.planName = cleanPlan;
+          AppState.profile.planExpiryISO = expiryISO;
+          AppState.profile.paymentPending = false;
+          localStorage.setItem("sellgst_local_profile", JSON.stringify(AppState.profile));
+
+          if (wasNotPro) {
+            showToast(`🎉 Admin Approved Your Payment! SellGST Pro (${cleanPlan}) is now ACTIVE!`, "success", 6000);
+            closeProPaymentModal();
+          }
         }
       } else {
         AppState.pendingRequest = AppState.profile.isPro ? null : latestPending;
@@ -1046,6 +1151,35 @@ function loadCachedLocalProfile(user) {
   } catch (_) {}
 }
 
+/**
+ * Starts a 1-second live interval ticker when Monthly Pro is active so the countdown visibly ticks.
+ */
+function ensureMonthlyLiveTickerRunning() {
+  if (monthlyProTickerInterval) return;
+  monthlyProTickerInterval = setInterval(() => {
+    const health = evaluateSubscriptionHealth();
+    if (!health.isPro || health.planName !== "MONTHLY") {
+      clearInterval(monthlyProTickerInterval);
+      monthlyProTickerInterval = null;
+      syncProDOMElements();
+      return;
+    }
+
+    const liveClockEl = document.getElementById("sellgst-live-monthly-clock");
+    if (liveClockEl) {
+      const d = String(health.remainingDays).padStart(2, "0");
+      const h = String(health.remainingHours).padStart(2, "0");
+      const m = String(health.remainingMinutes).padStart(2, "0");
+      const s = String(health.remainingSeconds).padStart(2, "0");
+      liveClockEl.textContent = `${d}d : ${h}h : ${m}m : ${s}s`;
+    }
+
+    document.querySelectorAll("[data-pro-badge]").forEach((el) => {
+      el.textContent = `⏳ ${health.remainingDays}d ${health.remainingHours}h ${health.remainingMinutes}m left • Upgrade ₹499/yr ⚡`;
+    });
+  }, 1000);
+}
+
 export function syncProDOMElements() {
   const health = evaluateSubscriptionHealth();
   const isPro = health.isPro;
@@ -1058,8 +1192,7 @@ export function syncProDOMElements() {
       el.className =
         "px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-[#10E594] text-[#081B4B] shadow-sm whitespace-nowrap pointer-events-none";
     } else if (isPro && planName === "MONTHLY") {
-      const daysLabel = health.remainingDays > 0 ? `${health.remainingDays}d ${health.remainingHours}h left` : "30d left";
-      el.textContent = `⏳ ${daysLabel} • Upgrade ₹499/yr ⚡`;
+      el.textContent = `⏳ ${health.remainingDays}d ${health.remainingHours}h ${health.remainingMinutes}m left • Upgrade ₹499/yr ⚡`;
       el.className =
         "px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-amber-400 hover:bg-amber-300 text-[#081B4B] cursor-pointer shadow-md transition whitespace-nowrap";
     } else {
@@ -1128,14 +1261,19 @@ function renderMonthlyCountdownBanner(health) {
     fixTopLayoutSpacingGap();
   }
 
-  const daysText =
-    health.remainingDays > 0 ? `${health.remainingDays} Days & ${health.remainingHours} Hours` : "29 Days & 23 Hours";
+  const d = String(health.remainingDays).padStart(2, "0");
+  const h = String(health.remainingHours).padStart(2, "0");
+  const m = String(health.remainingMinutes).padStart(2, "0");
+  const s = String(health.remainingSeconds).padStart(2, "0");
+
   bar.innerHTML = `
-    <span>⏳ <strong>Monthly Pro Plan Active:</strong> <span class="text-[#10E594] font-mono font-bold">${daysText}</span> remaining before 30-day expiry.</span>
-    <button type="button" data-unlock-pro="YEARLY" class="px-3 py-0.5 rounded-full bg-[#10E594] text-[#081B4B] font-extrabold text-[11px] shadow hover:scale-105 transition">
+    <span>⏳ <strong>Monthly Pro Active:</strong> <span id="sellgst-live-monthly-clock" class="px-2 py-0.5 rounded bg-white/15 text-[#10E594] font-mono font-extrabold">${d}d : ${h}h : ${m}m : ${s}s</span> remaining before 30-day expiry.</span>
+    <button type="button" data-unlock-pro="YEARLY" class="px-3 py-0.5 rounded-full bg-[#10E594] text-[#081B4B] font-extrabold text-[11px] shadow hover:scale-105 transition cursor-pointer">
       Upgrade to Yearly @ ₹499 (1 Year No Interruptions) →
     </button>
   `;
+
+  ensureMonthlyLiveTickerRunning();
 }
 
 export function renderPendingPaymentBanner() {
@@ -1296,7 +1434,7 @@ export function openProPaymentModal(defaultPlan = "MONTHLY") {
             <tr>
               <td class="py-1.5 px-2.5">Plan Validity &amp; Renewal Banner</td>
               <td class="py-1.5 px-2 text-center">2m Preview</td>
-              <td class="py-1.5 px-2 text-center">30d Timer</td>
+              <td class="py-1.5 px-2 text-center">30d Live Clock</td>
               <td class="py-1.5 px-2 text-center bg-emerald-50/50 font-extrabold text-emerald-900">365d Silent ✨</td>
             </tr>
           </tbody>
@@ -1577,9 +1715,11 @@ export function openUserAccountModal() {
 
   let planBadgeText = "FREE TIER (5 Uses Limit)";
   if (health.isPro && health.planName === "YEARLY") {
-    planBadgeText = "YEARLY PRO ACTIVE (1 Year Validity)";
+    planBadgeText = `YEARLY PRO ACTIVE (${health.remainingDays}d ${health.remainingHours}h left)`;
   } else if (health.isPro && health.planName === "MONTHLY") {
-    planBadgeText = `MONTHLY PRO ACTIVE (${health.remainingDays}d ${health.remainingHours}h left)`;
+    planBadgeText = `MONTHLY PRO ACTIVE (${health.remainingDays}d ${health.remainingHours}h ${health.remainingMinutes}m left)`;
+  } else if (prof.subscriptionStatus === "EXPIRED") {
+    planBadgeText = "EXPIRED (Renew Pro for Unlimited Access)";
   }
 
   const rawUid = prof.uid || "seller-01";
@@ -1791,7 +1931,7 @@ export function openSuperToolsMenu() {
       if (titleEl) titleEl.textContent = `Yearly Pro Active (${health.remainingDays}d left)`;
       if (subEl) subEl.textContent = "Unlimited GSTR-1 JSON, Audits, Bills & QRs";
     } else if (health.isPro && health.planName === "MONTHLY") {
-      if (titleEl) titleEl.textContent = `Ends in: ${health.remainingDays}d ${health.remainingHours}h`;
+      if (titleEl) titleEl.textContent = `Ends in: ${health.remainingDays}d ${health.remainingHours}h ${health.remainingMinutes}m`;
       if (subEl) subEl.textContent = "Monthly Pro Active • Upgrade to ₹499 Yearly";
     } else {
       if (titleEl) titleEl.textContent = `Free Trial Quota: ${health.freeActionsRemaining}/5 Left`;
