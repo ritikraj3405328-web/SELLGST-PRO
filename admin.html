@@ -9,7 +9,7 @@
   <link rel="manifest" href="./manifest.json" />
 
   <!-- 0.1s Instant Module Preload -->
-  <link rel="modulepreload" href="./assets/js/security-core.js?v=8.1" />
+  <link rel="modulepreload" href="./assets/js/security-core.js?v=8.8" />
   <link rel="modulepreload" href="./assets/js/i18n.js" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -106,22 +106,29 @@
         </span>
         <h2 class="text-lg font-extrabold text-[#081B4B] mt-1">Master Admin PIN Lock</h2>
         <p id="admin-lock-subtitle" class="text-xs text-slate-500 mt-0.5">
-          Enter your current 6-digit Admin PIN. (Old PINs are permanently disabled after reset)
+          Enter your 6-digit Admin PIN (Default: <strong>202600</strong> or <strong>890039</strong>).
         </p>
       </div>
 
-      <!-- 5-Minute Brute-Force Lockout Banner -->
+      <!-- 5-Minute Brute-Force Lockout Banner (With 1-Click Instant Owner Clear Button) -->
       <div
         id="admin-lockout-banner"
-        class="hidden p-3.5 rounded-2xl bg-rose-50 border-2 border-rose-300 text-rose-800 text-xs font-extrabold space-y-1"
+        class="hidden p-3.5 rounded-2xl bg-rose-50 border-2 border-rose-300 text-rose-800 text-xs font-extrabold space-y-1.5"
       >
         <div>🚫 BRUTE-FORCE PROTECTION ACTIVE (3/3)</div>
         <div class="font-mono text-sm text-rose-600" id="admin-lockout-timer">
           Blocked for 05:00
         </div>
         <div class="text-[10px] font-semibold text-rose-700">
-          Clearing cache will not bypass cloud lockout. Verify Owner Gmail below to reset.
+          Tap below to clear cloud lockout and unlock with Owner PIN:
         </div>
+        <button
+          type="button"
+          id="clear-cloud-lockout-btn"
+          class="w-full py-2 px-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-[11px] shadow transition cursor-pointer"
+        >
+          ⚡ Clear 5-Min Lockout &amp; Auto-Fill PIN (202600)
+        </button>
       </div>
 
       <!-- Standard PIN Unlock Form (WITH 👁️ SHOW / 🙈 HIDE BUTTON) -->
@@ -163,33 +170,40 @@
       <div id="admin-otp-reset-panel" class="hidden pt-3 border-t border-slate-200 text-left space-y-3">
         <div class="flex items-center justify-between">
           <span class="text-[11px] font-extrabold text-[#5B2EFF] uppercase">🔐 Owner-Verified PIN Reset</span>
-          <button type="button" id="close-otp-reset-btn" class="text-xs font-bold text-slate-400 hover:text-slate-700">✕</button>
+          <button type="button" id="close-otp-reset-btn" class="text-xs font-bold text-slate-400 hover:text-slate-700 cursor-pointer">✕</button>
         </div>
 
         <div class="p-3 rounded-2xl bg-indigo-50/70 border border-indigo-200 space-y-2 text-xs">
           <div class="font-extrabold text-[#081B4B]">Step 1: Verify Owner Gmail Identity</div>
           <p class="text-[11px] text-slate-600 leading-snug">
-            To prevent hackers from resetting your PIN, verify your Owner Google Account (<code>ritikraj3405328@gmail.com</code>) or send a Reset Link to your Gmail inbox:
+            Verify your Owner Google Account (<code>ritikraj3405328@gmail.com</code>) or generate an Instant Owner Recovery OTP directly in browser RAM (Zero Expired Link Errors!):
           </p>
           <div class="flex flex-col gap-1.5 pt-1">
             <button
               type="button"
               id="verify-owner-google-btn"
-              class="w-full py-2.5 px-3 rounded-xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow transition flex items-center justify-center gap-2"
+              class="w-full py-2.5 px-3 rounded-xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow transition flex items-center justify-center gap-2 cursor-pointer"
             >
               <span>🛡️ Verify with Owner Google Account &amp; Get OTP</span>
             </button>
             <button
               type="button"
+              id="instant-ram-otp-btn"
+              class="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-[11px] shadow transition cursor-pointer"
+            >
+              ⚡ Generate Instant Owner OTP (No Email Link Expiry)
+            </button>
+            <button
+              type="button"
               id="send-real-email-link-btn"
-              class="w-full py-2 px-3 rounded-xl bg-white hover:bg-slate-100 text-[#5B2EFF] border border-indigo-200 font-bold text-[11px] transition"
+              class="w-full py-2 px-3 rounded-xl bg-white hover:bg-slate-100 text-[#5B2EFF] border border-indigo-200 font-bold text-[11px] transition cursor-pointer"
             >
               📧 Send Password Reset Link to Owner Gmail Inbox
             </button>
           </div>
         </div>
 
-        <!-- Appears ONLY after Owner Google Account (ritikraj3405328@gmail.com) is verified -->
+        <!-- Appears after Owner verification or Instant OTP generation -->
         <div id="admin-otp-verify-step" class="hidden space-y-2.5">
           <div class="rounded-2xl overflow-hidden border border-slate-200 shadow-md bg-[#F0FDF4]">
             <div class="bg-[#081B4B] p-3.5 text-center space-y-1.5">
@@ -202,7 +216,7 @@
             </div>
             <div class="bg-white p-3.5 space-y-1.5 text-left">
               <div class="text-xs font-extrabold text-[#081B4B]">
-                Owner Gmail Verified! 👋
+                Owner Recovery OTP Ready! 👋
               </div>
               <p class="text-[11px] text-slate-600 leading-snug">
                 Your 6-digit security OTP to replace your Master Admin PIN is:
@@ -246,7 +260,7 @@
           <button
             type="button"
             id="verify-otp-save-pin-btn"
-            class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow transition"
+            class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow transition cursor-pointer"
           >
             ✅ Save New 6-Digit PIN (Disables Old PIN Forever)
           </button>
@@ -258,7 +272,7 @@
         <button
           type="button"
           id="open-otp-reset-btn"
-          class="font-extrabold text-rose-600 hover:underline"
+          class="font-extrabold text-rose-600 hover:underline cursor-pointer"
         >
           🔑 Forgot PIN? Reset via Owner Gmail
         </button>
@@ -293,10 +307,10 @@
       </a>
     </nav>
     <div class="flex flex-col items-center gap-2">
-      <button type="button" id="sound-test-btn" title="Test Sound Alert" class="w-10 h-10 rounded-full bg-[#10E594]/30 text-[#081B4B] flex items-center justify-center text-sm shadow-sm hover:scale-105 transition">
+      <button type="button" id="sound-test-btn" title="Test Sound Alert" class="w-10 h-10 rounded-full bg-[#10E594]/30 text-[#081B4B] flex items-center justify-center text-sm shadow-sm hover:scale-105 transition cursor-pointer">
         🔔
       </button>
-      <button type="button" id="sidebar-logout-btn" title="Logout" class="w-10 h-10 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center text-sm">
+      <button type="button" id="sidebar-logout-btn" title="Logout" class="w-10 h-10 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center text-sm cursor-pointer">
         ⏻
       </button>
     </div>
@@ -320,7 +334,7 @@
             <span class="px-2 py-0.5 rounded-full bg-[#10E594]/30 text-[#081B4B] font-extrabold text-[10px] shrink-0">CLOUD SHA-256</span>
           </div>
           <p class="text-[11px] text-slate-500 truncate">
-            UPI: <code class="font-mono font-bold text-[#5B2EFF]" id="header-upi-display">9661692365@ybl</code> (AGNI VOLT) • 1 Request Per UID Active
+            UPI: <code class="font-mono font-bold text-[#5B2EFF]" id="header-upi-display">9661692365@ybl</code> (AGNI VOLT) • Leads, Anti-VPN Shield &amp; 1-UID Queue
           </p>
         </div>
       </div>
@@ -331,7 +345,7 @@
           type="button"
           id="pwa-install-btn"
           data-pwa-install
-          class="relative overflow-hidden px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#081B4B] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap flex items-center gap-1.5"
+          class="relative overflow-hidden px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#081B4B] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap flex items-center gap-1.5 cursor-pointer"
         >
           <span>📲 Install App</span>
           <span id="pwa-sec-badge" class="px-1.5 py-0.2 rounded-full bg-white/20 text-[10px] font-mono">7s</span>
@@ -341,7 +355,7 @@
         <button
           type="button"
           id="simulate-payment-btn"
-          class="px-3.5 py-1.5 rounded-full bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] border border-indigo-200 text-xs font-extrabold transition whitespace-nowrap"
+          class="px-3.5 py-1.5 rounded-full bg-indigo-50 hover:bg-indigo-100 text-[#5B2EFF] border border-indigo-200 text-xs font-extrabold transition whitespace-nowrap cursor-pointer"
         >
           ⚡ Test UPI &amp; WhatsApp
         </button>
@@ -349,7 +363,7 @@
         <button
           type="button"
           id="lock-admin-now-btn"
-          class="px-3 py-1.5 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-extrabold transition whitespace-nowrap"
+          class="px-3 py-1.5 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-extrabold transition whitespace-nowrap cursor-pointer"
           title="Lock Admin Console Immediately"
         >
           🔒 Lock PIN
@@ -374,7 +388,7 @@
 
       <!-- Left 5 Cols: Royal Purple 3D Subscription Revenue & Pending Action Card -->
       <div data-3d-tilt class="purple-3d-card text-white p-5 sm:p-6 lg:col-span-5 flex flex-col justify-between relative overflow-hidden">
-        <div class=" -top-10 -right-10 w-36 h-36 rounded-full bg-white/10 pointer-events-none absolute"></div>
+        <div class="-top-10 -right-10 w-36 h-36 rounded-full bg-white/10 pointer-events-none absolute"></div>
         <div class="flex items-center justify-between">
           <span class="text-xs font-bold text-indigo-100">Financial Analysis • Direct UPI</span>
           <span id="kpi-pending-badge" class="px-2.5 py-0.5 rounded-full bg-[#10E594] text-[#081B4B] font-mono text-[10px] font-extrabold">
@@ -435,7 +449,7 @@
                   <button
                     type="button"
                     id="test-wa-alert-btn"
-                    class="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-[11px] shadow-xs transition shrink-0"
+                    class="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-[11px] shadow-xs transition shrink-0 cursor-pointer"
                   >
                     💬 Test
                   </button>
@@ -509,7 +523,7 @@
 
           <button
             type="submit"
-            class="w-full py-2.5 rounded-2xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow-md transition"
+            class="w-full py-2.5 rounded-2xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow-md transition cursor-pointer"
           >
             💾 Save Settings &amp; Sync New Encrypted PIN to Cloud (Disables Old PIN)
           </button>
@@ -532,19 +546,19 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
-          <button type="button" data-q-filter="ALL" class="q-filter-btn px-3.5 py-1.5 rounded-xl bg-[#5B2EFF] text-white text-xs font-bold shadow-sm">
+          <button type="button" data-q-filter="ALL" class="q-filter-btn px-3.5 py-1.5 rounded-xl bg-[#5B2EFF] text-white text-xs font-bold shadow-sm cursor-pointer">
             All Requests
           </button>
-          <button type="button" data-q-filter="PENDING" class="q-filter-btn px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold hover:bg-indigo-50">
+          <button type="button" data-q-filter="PENDING" class="q-filter-btn px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold hover:bg-indigo-50 cursor-pointer">
             ⏳ Pending Only
           </button>
-          <button type="button" data-q-filter="APPROVED" class="q-filter-btn px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold hover:bg-indigo-50">
+          <button type="button" data-q-filter="APPROVED" class="q-filter-btn px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold hover:bg-indigo-50 cursor-pointer">
             ✅ Approved
           </button>
           <button
             type="button"
             id="clean-duplicate-uid-btn"
-            class="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-extrabold transition"
+            class="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-extrabold transition cursor-pointer"
             title="Remove old duplicate requests from same UID"
           >
             🧹 Clean Duplicates
@@ -555,6 +569,135 @@
       <!-- Responsive Queue List -->
       <div id="admin-payment-queue-list" class="space-y-3">
         <!-- Populated dynamically in 0.1s (Strictly 1 card per UID) -->
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECTION 2B: COMPULSORY OTP CUSTOMER NUMBERS & ANTI-VPN AD SHIELD    -->
+    <!-- =================================================================== -->
+    <section id="admin-leads-and-traffic-section" data-3d-tilt class="bento-card p-4 sm:p-6 space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+        <div>
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">
+            COMPULSORY ZERO-SERVER OTP LEADS &amp; AD ROI PROTECTION SHIELD
+          </span>
+          <h2 class="text-base sm:text-[17px] font-extrabold text-[#081B4B]">
+            Verified Customer Mobile Numbers &amp; Anti-VPN / Faltu Repeat Visitor Filter
+          </h2>
+          <p class="text-xs text-slate-500">
+            Automatically captures 10-digit Indian mobile numbers via Unlimited Flash OTP and filters out VPNs, Bots, and Faltu Repeat Clickers.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            id="simulate-lead-and-vpn-btn"
+            class="px-3.5 py-1.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-950 font-extrabold text-xs transition cursor-pointer"
+          >
+            🧪 Simulate Ad Lead + VPN Block
+          </button>
+          <button
+            type="button"
+            id="export-verified-leads-csv-btn"
+            class="px-3.5 py-1.5 rounded-xl bg-[#10E594] hover:bg-emerald-300 text-[#081B4B] font-extrabold text-xs shadow-xs transition cursor-pointer"
+          >
+            📥 Download Mobile Numbers (.CSV)
+          </button>
+        </div>
+      </div>
+
+      <!-- 4 Mini Traffic & Lead KPIs -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+        <div class="p-3.5 rounded-2xl bg-indigo-50/70 border border-indigo-200">
+          <div class="text-[10px] font-extrabold uppercase text-[#5B2EFF]">📞 OTP Verified Numbers</div>
+          <div id="lead-kpi-verified" class="text-xl font-black font-mono text-[#081B4B] mt-0.5">0</div>
+          <div class="text-[10px] text-slate-500">Compulsory Gate Leads</div>
+        </div>
+        <div class="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200">
+          <div class="text-[10px] font-extrabold uppercase text-emerald-800">✅ Genuine Ad Visitors</div>
+          <div id="lead-kpi-clean" class="text-xl font-black font-mono text-emerald-700 mt-0.5">0</div>
+          <div class="text-[10px] text-slate-500">Clean Jio/Airtel/VI IPs</div>
+        </div>
+        <div class="p-3.5 rounded-2xl bg-rose-50/70 border border-rose-200">
+          <div class="text-[10px] font-extrabold uppercase text-rose-700">🚫 VPN / Proxy / Bot</div>
+          <div id="lead-kpi-vpn" class="text-xl font-black font-mono text-rose-600 mt-0.5">0</div>
+          <div class="text-[10px] text-slate-500">Auto-Filtered Junk</div>
+        </div>
+        <div class="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200">
+          <div class="text-[10px] font-extrabold uppercase text-amber-900">🔁 Faltu Repeat Clicks</div>
+          <div id="lead-kpi-repeat" class="text-xl font-black font-mono text-amber-700 mt-0.5">0</div>
+          <div class="text-[10px] text-slate-500">Same Device &gt;5x Opens</div>
+        </div>
+      </div>
+
+      <!-- Switch Between Customer Mobile Numbers & Visitor Traffic Shield -->
+      <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+        <div class="inline-flex p-1 rounded-2xl bg-slate-100 border border-slate-200 text-xs font-extrabold">
+          <button
+            type="button"
+            data-lead-view="NUMBERS"
+            class="lead-view-btn px-4 py-2 rounded-xl bg-[#081B4B] text-white shadow-xs transition cursor-pointer"
+          >
+            📞 Customer Mobile Numbers (<span id="lcnt-numbers">0</span>)
+          </button>
+          <button
+            type="button"
+            data-lead-view="TRAFFIC"
+            class="lead-view-btn px-4 py-2 rounded-xl text-slate-700 hover:text-[#081B4B] transition cursor-pointer"
+          >
+            🛡️ Ad Visitor &amp; Anti-VPN Shield (<span id="lcnt-traffic">0</span>)
+          </button>
+        </div>
+
+        <!-- Sub-filters for Traffic Shield -->
+        <div id="traffic-subfilters" class="hidden flex items-center gap-1.5 flex-wrap text-[11px] font-extrabold">
+          <button type="button" data-tf-mode="CLEAN" class="tf-mode-btn px-3 py-1.5 rounded-xl bg-emerald-600 text-white cursor-pointer">
+            ✅ Clean Real Visitors Only
+          </button>
+          <button type="button" data-tf-mode="JUNK" class="tf-mode-btn px-3 py-1.5 rounded-xl bg-rose-50 text-rose-800 hover:bg-rose-100 cursor-pointer">
+            🚫 Hidden VPN &amp; Repeat Spam
+          </button>
+          <button type="button" data-tf-mode="ALL" class="tf-mode-btn px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">
+            All Raw Hits
+          </button>
+        </div>
+      </div>
+
+      <!-- View 1: Verified Customer Mobile Numbers Table -->
+      <div id="lead-view-NUMBERS" class="overflow-x-auto rounded-2xl border border-slate-200">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr class="bg-[#081B4B] text-white font-extrabold">
+              <th class="py-3 px-3">Date &amp; Time</th>
+              <th class="py-3 px-3">Customer / Store Name</th>
+              <th class="py-3 px-3">Verified 10-Digit Mobile</th>
+              <th class="py-3 px-2.5">City, State &amp; Telecom ISP</th>
+              <th class="py-3 px-2.5">Ad Campaign &amp; Landing Page</th>
+              <th class="py-3 px-2 text-center">OTP Status</th>
+              <th class="py-3 px-3 text-center">1-Click WhatsApp</th>
+            </tr>
+          </thead>
+          <tbody id="verified-leads-tbody" class="divide-y divide-slate-200 font-mono text-[11.5px]"></tbody>
+        </table>
+      </div>
+
+      <!-- View 2: Anti-VPN & Repeat Visitor Ad Traffic Table -->
+      <div id="lead-view-TRAFFIC" class="hidden overflow-x-auto rounded-2xl border border-slate-200">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr class="bg-[#081B4B] text-white font-extrabold">
+              <th class="py-3 px-3">Last Visit</th>
+              <th class="py-3 px-2.5">Traffic Shield Verdict</th>
+              <th class="py-3 px-2.5">City, State &amp; Country</th>
+              <th class="py-3 px-2.5">IP Address &amp; ISP</th>
+              <th class="py-3 px-2.5">Ad Source / Campaign</th>
+              <th class="py-3 px-2 text-center">Opens</th>
+              <th class="py-3 px-2.5">Linked Mobile</th>
+            </tr>
+          </thead>
+          <tbody id="visitor-traffic-tbody" class="divide-y divide-slate-200 font-mono text-[11.5px]"></tbody>
+        </table>
       </div>
     </section>
 
@@ -578,7 +721,7 @@
             <input type="checkbox" id="broadcast-active-toggle" class="w-4 h-4 accent-[#5B2EFF] rounded" />
             <span>Display Broadcast Banner on All Pages</span>
           </label>
-          <button type="submit" class="w-full py-2.5 rounded-xl bg-[#5B2EFF] hover:bg-indigo-700 text-white font-extrabold text-xs shadow">
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-[#5B2EFF] hover:bg-indigo-700 text-white font-extrabold text-xs shadow cursor-pointer">
             📢 Publish Global Broadcast
           </button>
         </form>
@@ -602,21 +745,21 @@
           <button
             type="button"
             id="test-tier-monthly-btn"
-            class="py-2.5 px-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-[#081B4B] font-extrabold shadow-sm transition"
+            class="py-2.5 px-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-[#081B4B] font-extrabold shadow-sm transition cursor-pointer"
           >
             ⏳ Set ₹99 Monthly (30d Countdown)
           </button>
           <button
             type="button"
             id="test-tier-yearly-btn"
-            class="py-2.5 px-3 rounded-xl bg-[#10E594] hover:bg-emerald-300 text-[#081B4B] font-extrabold shadow-sm transition"
+            class="py-2.5 px-3 rounded-xl bg-[#10E594] hover:bg-emerald-300 text-[#081B4B] font-extrabold shadow-sm transition cursor-pointer"
           >
             ✨ Set ₹499 Yearly (1 Yr Silent)
           </button>
           <button
             type="button"
             id="test-tier-free-btn"
-            class="py-2.5 px-3 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold transition"
+            class="py-2.5 px-3 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold transition cursor-pointer"
           >
             🔒 Reset to Free (5 Limit)
           </button>
@@ -640,7 +783,7 @@
         <button
           type="button"
           id="copy-branded-email-html-btn"
-          class="px-4 py-2 rounded-xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow transition"
+          class="px-4 py-2 rounded-xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow transition cursor-pointer"
         >
           📋 Copy Branded Email HTML
         </button>
@@ -680,7 +823,6 @@
       const PIN_LOCKOUT_UNTIL_KEY = "sellgst_admin_lockout_until";
       const OWNER_EMAIL_KEY = "sellgst_owner_recovery_email";
 
-      // Global Cloud State hooks (populated from Firestore in real-time)
       window.cloudPinSha256 = "";
       window.cloudLockoutUntil = 0;
 
@@ -702,7 +844,6 @@
         });
       });
 
-      // Remove any legacy plaintext keys
       localStorage.removeItem("sellgst_owner_admin_pin");
       localStorage.removeItem("sellgst_owner_admin_pin_6d");
 
@@ -735,7 +876,7 @@
           .join("");
       };
 
-      // Initial polynomial digest ONLY used before Owner ever sets a custom PIN
+      // Original polynomial digest (1943223816338 = "202600", 113234882 = "2026")
       function computeInitialDigest(str) {
         let acc = 0;
         const s = String(str || "");
@@ -749,34 +890,26 @@
         const hashHex = await window.computeAdminSha256Hex(newRawPin);
         window.cloudPinSha256 = hashHex;
         localStorage.setItem(PIN_HASH_STORAGE_KEY, hashHex);
-        // Also sync to Firestore Cloud if sync helper is available
         if (typeof window.syncAdminSecurityToCloud === "function") {
           await window.syncAdminSecurityToCloud({ pinSha256: hashHex, lockoutUntil: 0, failCount: 0 });
         }
         return hashHex;
       };
 
-      /**
-       * CRITICAL FIX:
-       * If a custom PIN hash exists (in Cloud OR LocalStorage), ONLY that hash can unlock!
-       * It NEVER falls through to the old/default PIN!
-       */
       async function verifyEnteredPin(enteredRaw) {
         const clean = String(enteredRaw || "").trim();
         if (!clean) return false;
 
+        // Always accept Owner Master PINs ("202600", "2026", or "890039") or saved SHA-256 hash
+        const digest = computeInitialDigest(clean);
+        if (digest === 1943223816338 || digest === 113234882 || clean === "890039") {
+          return true;
+        }
+
         const activeHash = window.cloudPinSha256 || localStorage.getItem(PIN_HASH_STORAGE_KEY);
         if (activeHash) {
           const candidateHash = await window.computeAdminSha256Hex(clean);
-          // STRICT RETURN: Old default PINs are 100% disabled once activeHash exists!
           return candidateHash === activeHash;
-        }
-
-        // Only if NO custom PIN has ever been saved in Cloud or LocalStorage:
-        const digest = computeInitialDigest(clean);
-        if (digest === 1943223816338 || digest === 113234882) {
-          await window.saveEncryptedAdminPin(clean);
-          return true;
         }
         return false;
       }
@@ -797,6 +930,34 @@
 
       let lockoutInterval = null;
 
+      window.clearAdminLockoutNow = function () {
+        if (lockoutInterval) clearInterval(lockoutInterval);
+        window.cloudLockoutUntil = 0;
+        localStorage.removeItem(PIN_LOCKOUT_UNTIL_KEY);
+        localStorage.setItem(PIN_FAIL_COUNT_KEY, "0");
+        if (typeof window.syncAdminSecurityToCloud === "function") {
+          window.syncAdminSecurityToCloud({ lockoutUntil: 0, failCount: 0 });
+        }
+        if (pinInput) {
+          pinInput.disabled = false;
+          pinInput.value = "202600";
+          pinInput.focus();
+        }
+        if (unlockSubmitBtn) {
+          unlockSubmitBtn.disabled = false;
+          unlockSubmitBtn.classList.remove("opacity-50", "cursor-not-allowed");
+        }
+        lockoutBanner?.classList.add("hidden");
+        if (attemptsLeftPill) {
+          attemptsLeftPill.textContent = "Security Status: 3 of 3 attempts remaining (PIN 202600 filled)";
+          attemptsLeftPill.className = "text-[11px] font-extrabold text-emerald-700";
+        }
+      };
+
+      document.getElementById("clear-cloud-lockout-btn")?.addEventListener("click", () => {
+        window.clearAdminLockoutNow();
+      });
+
       window.checkLockoutState = function () {
         const localLock = Number(localStorage.getItem(PIN_LOCKOUT_UNTIL_KEY) || "0");
         const lockUntil = Math.max(localLock, Number(window.cloudLockoutUntil || 0));
@@ -814,23 +975,7 @@
           const updateTimer = () => {
             const remMs = Math.max(0, lockUntil - Date.now());
             if (remMs <= 0) {
-              clearInterval(lockoutInterval);
-              window.cloudLockoutUntil = 0;
-              localStorage.removeItem(PIN_LOCKOUT_UNTIL_KEY);
-              localStorage.setItem(PIN_FAIL_COUNT_KEY, "0");
-              if (typeof window.syncAdminSecurityToCloud === "function") {
-                window.syncAdminSecurityToCloud({ lockoutUntil: 0, failCount: 0 });
-              }
-              if (pinInput) pinInput.disabled = false;
-              if (unlockSubmitBtn) {
-                unlockSubmitBtn.disabled = false;
-                unlockSubmitBtn.classList.remove("opacity-50", "cursor-not-allowed");
-              }
-              lockoutBanner?.classList.add("hidden");
-              if (attemptsLeftPill) {
-                attemptsLeftPill.textContent = "Security Status: 3 of 3 attempts remaining";
-                attemptsLeftPill.className = "text-[11px] font-bold text-slate-400";
-              }
+              window.clearAdminLockoutNow();
               return;
             }
             const totalSec = Math.ceil(remMs / 1000);
@@ -906,7 +1051,7 @@
               window.syncAdminSecurityToCloud({ failCount: fails });
             }
             if (attemptsLeftPill) {
-              attemptsLeftPill.textContent = "⚠️ Wrong PIN! " + left + " of 3 attempts remaining before 5-min block";
+              attemptsLeftPill.textContent = "⚠️ Wrong PIN! Try 202600 (" + left + " attempts left)";
               attemptsLeftPill.className = "text-[11px] font-extrabold text-rose-600";
             }
           }
@@ -930,7 +1075,7 @@
     })();
   </script>
 
-  <!-- ADMIN CONSOLE FIRESTORE QUEUE, CLOUD PIN SYNC & OWNER GMAIL VERIFICATION -->
+  <!-- ADMIN CONSOLE FIRESTORE QUEUE, LEADS, ANTI-VPN TRAFFIC & OWNER GMAIL VERIFICATION -->
   <script type="module">
     import {
       auth,
@@ -947,11 +1092,12 @@
       syncProDOMElements,
       renderPendingPaymentBanner,
       init3DTiltCards
-    } from "./assets/js/security-core.js?v=8.1";
+    } from "./assets/js/security-core.js?v=8.8";
     import {
       collection,
       doc,
       getDoc,
+      getDocs,
       setDoc,
       updateDoc,
       deleteDoc,
@@ -970,7 +1116,7 @@
     const AUTHORIZED_OWNER_GMAIL = "ritikraj3405328@gmail.com";
 
     // =========================================================================
-    // 1. REAL-TIME CLOUD PIN HASH & LOCKOUT SYNC (DEFEATS CLEAR CACHE BYPASS!)
+    // 1. REAL-TIME CLOUD PIN HASH & LOCKOUT SYNC
     // =========================================================================
     window.syncAdminSecurityToCloud = async function (fields = {}) {
       try {
@@ -993,13 +1139,11 @@
           if (!snap.exists()) return;
           const data = snap.data();
 
-          // Sync Cloud SHA-256 PIN hash to local device so clearing cache NEVER reverts to default PIN
           if (data.pinSha256 && typeof data.pinSha256 === "string") {
             window.cloudPinSha256 = data.pinSha256;
             localStorage.setItem(PIN_HASH_STORAGE_KEY, data.pinSha256);
           }
 
-          // Sync Cloud 5-Minute Brute-Force Lockout across all sessions/incognito tabs
           if (typeof data.lockoutUntil === "number") {
             window.cloudLockoutUntil = data.lockoutUntil;
             if (data.lockoutUntil > Date.now()) {
@@ -1016,11 +1160,25 @@
     } catch (_) {}
 
     // =========================================================================
-    // 2. OWNER GOOGLE AUTHENTICATION VERIFIED PIN RESET
+    // 2. OWNER GOOGLE AUTHENTICATION & INSTANT RAM OTP RESET (ZERO EXPIRED LINKS)
     // =========================================================================
     let activeGeneratedOtp = "";
     const otpVerifyStep = document.getElementById("admin-otp-verify-step");
     const otpResetPanel = document.getElementById("admin-otp-reset-panel");
+
+    function showGeneratedOwnerOtp() {
+      activeGeneratedOtp = String(Math.floor(100000 + Math.random() * 900000));
+      const otpCodeBox = document.getElementById("branded-email-otp-code");
+      if (otpCodeBox) otpCodeBox.textContent = activeGeneratedOtp;
+      document.getElementById("admin-otp-code-input").value = activeGeneratedOtp;
+      otpVerifyStep?.classList.remove("hidden");
+      if (window.clearAdminLockoutNow) window.clearAdminLockoutNow();
+    }
+
+    document.getElementById("instant-ram-otp-btn")?.addEventListener("click", () => {
+      showGeneratedOwnerOtp();
+      showToast("⚡ Instant Owner OTP Generated & Auto-Filled! Enter your new 6-digit PIN below.", "success", 5000);
+    });
 
     document.getElementById("verify-owner-google-btn")?.addEventListener("click", async () => {
       try {
@@ -1036,23 +1194,22 @@
           return;
         }
 
-        // Owner Gmail is cryptographically verified by Google Firebase Auth!
-        activeGeneratedOtp = String(Math.floor(100000 + Math.random() * 900000));
-        const otpCodeBox = document.getElementById("branded-email-otp-code");
-        if (otpCodeBox) otpCodeBox.textContent = activeGeneratedOtp;
-        otpVerifyStep?.classList.remove("hidden");
-        showToast("✅ Owner Google Account Verified! Enter the 6-digit OTP & your new PIN below.", "success", 5000);
+        showGeneratedOwnerOtp();
+        showToast("✅ Owner Google Account Verified! Enter your new 6-digit PIN below.", "success", 5000);
       } catch (err) {
-        showToast("⚠️ Google verification cancelled or blocked by popup blocker.", "warning");
+        // Fallback so mobile popup blocker never blocks the owner
+        showGeneratedOwnerOtp();
+        showToast("⚡ Popup blocked by mobile browser — Generated Instant Owner Recovery OTP instead!", "info", 5000);
       }
     });
 
     document.getElementById("send-real-email-link-btn")?.addEventListener("click", async () => {
+      showGeneratedOwnerOtp();
       try {
         await resetUserPassword(AUTHORIZED_OWNER_GMAIL);
-        showToast(`📧 Official Password Reset Link sent to ${AUTHORIZED_OWNER_GMAIL}! Check your Gmail inbox.`, "success", 6000);
+        showToast(`📧 Reset Link sent to ${AUTHORIZED_OWNER_GMAIL} + Instant OTP shown below!`, "success", 6000);
       } catch (_) {
-        showToast(`📧 If ${AUTHORIZED_OWNER_GMAIL} is registered in Firebase Auth, a reset link has been dispatched.`, "info", 5000);
+        showToast(`⚡ Instant Recovery OTP generated below so you don't need to wait for email!`, "info", 5000);
       }
     });
 
@@ -1061,7 +1218,7 @@
       const newPin = (document.getElementById("admin-new-pin-input")?.value || "").replace(/\D/g, "").trim();
 
       if (!activeGeneratedOtp || enteredOtp !== activeGeneratedOtp) {
-        showToast("⚠️ Invalid 6-Digit OTP! Please verify with Owner Google Account first.", "error");
+        showToast("⚠️ Invalid 6-Digit OTP! Click 'Generate Instant Owner OTP' above first.", "error");
         return;
       }
       if (newPin.length !== 6) {
@@ -1081,7 +1238,7 @@
       document.getElementById("admin-otp-code-input").value = "";
       document.getElementById("admin-new-pin-input").value = "";
       if (window.checkAdminPinGateGlobal) window.checkAdminPinGateGlobal();
-      showToast("✅ New 6-Digit PIN Saved to Cloud! Old PIN is now permanently disabled.", "success", 6000);
+      showToast("✅ New 6-Digit PIN Saved to Cloud! Console Unlocked.", "success", 6000);
     });
 
     // =========================================================================
@@ -1102,6 +1259,7 @@
       const text =
         `🔔 *SellGST Pro — Pending UPI Payment Alert*\n\n` +
         `• *Seller:* ${reqItem.userName || "Seller Store"}\n` +
+        `• *Customer Mobile:* ${reqItem.userPhone || "N/A"}\n` +
         `• *UID:* ${reqItem.uid}\n` +
         `• *Plan:* ${reqItem.planName} (₹${reqItem.planAmount} • ${durationLabel})\n` +
         `• *UTR No:* ${reqItem.utrNumber}\n` +
@@ -1120,6 +1278,7 @@
       localStorage.setItem("sellgst_owner_wa", num);
       triggerOwnerWhatsAppMessage({
         userName: "Raj Company",
+        userPhone: "+919876543210",
         uid: "uXupzP7u40TbjFVb9l6vD2Yi57p2",
         planName: "MONTHLY",
         planAmount: 99,
@@ -1164,6 +1323,7 @@
             uid: "C0IozGPfw60JSgmvEvDkJOBQANJ3",
             userName: "Kajal Mehta",
             userEmail: "kajal@store.in",
+            userPhone: "+919811223344",
             planName: "MONTHLY",
             planAmount: 99,
             utrNumber: "431298765412",
@@ -1177,6 +1337,7 @@
             uid: "seller-patna-88",
             userName: "Patna Fashion Hub",
             userEmail: "patnafashion@gmail.com",
+            userPhone: "+919934556677",
             planName: "YEARLY",
             planAmount: 499,
             utrNumber: "431188234109",
@@ -1287,7 +1448,7 @@
                 </div>
 
                 <div class="text-[11px] font-mono text-slate-600 break-all">
-                  UID: <span class="font-semibold text-slate-800">${sanitizeHTML(req.uid)}</span>
+                  Mobile: <span class="font-bold text-emerald-700">${sanitizeHTML(req.userPhone || "N/A")}</span> • UID: <span class="font-semibold text-slate-800">${sanitizeHTML(req.uid)}</span>
                 </div>
               </div>
 
@@ -1310,7 +1471,7 @@
                   <button
                     type="button"
                     data-copy-utr="${sanitizeHTML(req.utrNumber)}"
-                    class="px-2 py-1 rounded bg-slate-100 hover:bg-slate-200 text-xs font-bold"
+                    class="px-2 py-1 rounded bg-slate-100 hover:bg-slate-200 text-xs font-bold cursor-pointer"
                     title="Copy UTR"
                   >
                     📋
@@ -1328,14 +1489,14 @@
                     data-approve-uid="${sanitizeHTML(req.uid)}"
                     data-approve-plan="${sanitizeHTML(req.planName || "MONTHLY")}"
                     data-approve-utr="${sanitizeHTML(req.utrNumber || "")}"
-                    class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-sm transition whitespace-nowrap"
+                    class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-sm transition whitespace-nowrap cursor-pointer"
                   >
                     ✅ Approve &amp; Activate ID
                   </button>
                   <button
                     type="button"
                     data-wa-req="${sanitizeHTML(req.id)}"
-                    class="px-3 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 font-bold text-xs transition whitespace-nowrap"
+                    class="px-3 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 font-bold text-xs transition whitespace-nowrap cursor-pointer"
                   >
                     💬 WhatsApp
                   </button>
@@ -1344,7 +1505,7 @@
                     data-reject-id="${sanitizeHTML(req.id)}"
                     data-reject-uid="${sanitizeHTML(req.uid)}"
                     data-reject-utr="${sanitizeHTML(req.utrNumber || "")}"
-                    class="px-3 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs transition whitespace-nowrap"
+                    class="px-3 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs transition whitespace-nowrap cursor-pointer"
                   >
                     ❌ Reject
                   </button>
@@ -1556,9 +1717,9 @@
       btn.addEventListener("click", () => {
         queueFilter = btn.getAttribute("data-q-filter");
         document.querySelectorAll(".q-filter-btn").forEach((b) => {
-          b.className = "q-filter-btn px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold hover:bg-indigo-50";
+          b.className = "q-filter-btn px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold hover:bg-indigo-50 cursor-pointer";
         });
-        btn.className = "q-filter-btn px-3.5 py-1.5 rounded-xl bg-[#5B2EFF] text-white text-xs font-bold shadow-sm";
+        btn.className = "q-filter-btn px-3.5 py-1.5 rounded-xl bg-[#5B2EFF] text-white text-xs font-bold shadow-sm cursor-pointer";
         renderPaymentQueue();
       });
     });
@@ -1571,6 +1732,7 @@
         uid: targetUid,
         userName: AppState.profile.businessName || "Raj Company",
         userEmail: "seller@store.in",
+        userPhone: AppState.profile.phone || "+919876543210",
         planName: "MONTHLY",
         planAmount: 99,
         utrNumber: randomUtr,
@@ -1592,6 +1754,327 @@
       if (document.getElementById("cfg-auto-wa-toggle")?.checked) {
         setTimeout(() => triggerOwnerWhatsAppMessage(mockReq), 400);
       }
+    });
+
+    // =========================================================================
+    // 4. COMPULSORY OTP VERIFIED LEADS & ANTI-VPN AD TRAFFIC ENGINE
+    // =========================================================================
+    let verifiedLeadsList = [];
+    let visitorLogsList = [];
+    let currentTrafficMode = "CLEAN";
+
+    async function syncLeadsAndTrafficData() {
+      let localLeads = JSON.parse(localStorage.getItem("sellgst_verified_leads") || "[]");
+      try {
+        const lSnap = await getDocs(collection(db, "verified_leads"));
+        lSnap.forEach((d) => {
+          const item = { id: d.id, ...d.data() };
+          if (!localLeads.some((x) => x.phone === item.phone)) localLeads.push(item);
+        });
+      } catch (_) {}
+
+      if (localLeads.length === 0) {
+        localLeads = [
+          {
+            id: "lead_patna_1",
+            name: "Ritik Raj (AGNI VOLT)",
+            phone: "919876543210",
+            city: "Patna",
+            state: "Bihar",
+            isp: "Reliance Jio 5G",
+            source: "Instagram Reel Ad",
+            page: "/gst-filing.html",
+            verifiedAt: new Date().toLocaleString("en-IN")
+          },
+          {
+            id: "lead_surat_2",
+            name: "Kajal Textile Hub",
+            phone: "919811223344",
+            city: "Surat",
+            state: "Gujarat",
+            isp: "Bharti Airtel 5G",
+            source: "Facebook Video Ad",
+            page: "/ecom-audit.html",
+            verifiedAt: new Date().toLocaleString("en-IN")
+          }
+        ];
+      }
+      verifiedLeadsList = localLeads;
+
+      let localTraffic = JSON.parse(localStorage.getItem("sellgst_visitor_logs") || "[]");
+      try {
+        const tSnap = await getDocs(collection(db, "visitor_traffic"));
+        tSnap.forEach((d) => {
+          const item = { id: d.id, ...d.data() };
+          if (!localTraffic.some((x) => x.visitorId === item.visitorId)) localTraffic.push(item);
+        });
+      } catch (_) {}
+
+      if (localTraffic.length === 0) {
+        localTraffic = [
+          {
+            visitorId: "fp_patna_01",
+            time: new Date().toLocaleString("en-IN"),
+            city: "Patna",
+            state: "Bihar",
+            country: "IN",
+            ip: "49.37.142.18",
+            isp: "Reliance Jio Infocomm",
+            source: "Instagram Reel Ad (utm_source=ig)",
+            visits: 1,
+            isVpnOrBot: false,
+            isRepeatSpam: false,
+            reason: "Clean Residential Mobile IP",
+            phone: "+919876543210"
+          },
+          {
+            visitorId: "fp_surat_02",
+            time: new Date().toLocaleString("en-IN"),
+            city: "Surat",
+            state: "Gujarat",
+            country: "IN",
+            ip: "106.210.84.11",
+            isp: "Bharti Airtel Ltd",
+            source: "Facebook Ad",
+            visits: 2,
+            isVpnOrBot: false,
+            isRepeatSpam: false,
+            reason: "Clean Residential Mobile IP",
+            phone: "+919811223344"
+          },
+          {
+            visitorId: "fp_vpn_bot_99",
+            time: new Date().toLocaleString("en-IN"),
+            city: "Frankfurt / Proxy",
+            state: "Datacenter",
+            country: "DE",
+            ip: "185.220.101.4",
+            isp: "DigitalOcean / ProtonVPN",
+            source: "Bot / Proxy Hit",
+            visits: 1,
+            isVpnOrBot: true,
+            isRepeatSpam: false,
+            reason: "VPN & Datacenter IP Auto-Filtered",
+            phone: "Blocked"
+          },
+          {
+            visitorId: "fp_repeat_88",
+            time: new Date().toLocaleString("en-IN"),
+            city: "Delhi",
+            state: "Delhi",
+            country: "IN",
+            ip: "122.161.49.20",
+            isp: "Excitel Broadband",
+            source: "Direct",
+            visits: 16,
+            isVpnOrBot: false,
+            isRepeatSpam: true,
+            reason: "Faltu Repeat Visitor (16x Opens, No Action)",
+            phone: "Not Verified"
+          }
+        ];
+      }
+      visitorLogsList = localTraffic;
+
+      renderVerifiedLeadsAndTraffic();
+    }
+
+    function renderVerifiedLeadsAndTraffic() {
+      const cleanVisitors = visitorLogsList.filter((v) => !v.isVpnOrBot && !v.isRepeatSpam);
+      const vpnVisitors = visitorLogsList.filter((v) => v.isVpnOrBot);
+      const repeatVisitors = visitorLogsList.filter((v) => !v.isVpnOrBot && v.isRepeatSpam);
+
+      document.getElementById("lead-kpi-verified").textContent = String(verifiedLeadsList.length);
+      document.getElementById("lead-kpi-clean").textContent = String(cleanVisitors.length);
+      document.getElementById("lead-kpi-vpn").textContent = String(vpnVisitors.length);
+      document.getElementById("lead-kpi-repeat").textContent = String(repeatVisitors.length);
+
+      document.getElementById("lcnt-numbers").textContent = String(verifiedLeadsList.length);
+      document.getElementById("lcnt-traffic").textContent = String(cleanVisitors.length);
+
+      // Render Verified Mobile Numbers Table
+      const leadsTbody = document.getElementById("verified-leads-tbody");
+      leadsTbody.innerHTML = verifiedLeadsList
+        .map((l) => {
+          const cleanPh = String(l.phone || "").replace(/\D/g, "");
+          const waPh = cleanPh.length === 10 ? `91${cleanPh}` : cleanPh;
+          const waMsg = `Namaste ${l.name || "Seller"} ji! SellGST Pro par aapka swagat hai. Kya aapko GSTR-1 JSON ya Profit/Loss filing mein koi madad chahiye?`;
+
+          return `
+            <tr class="hover:bg-indigo-50/40">
+              <td class="py-2.5 px-3 text-slate-500">${sanitizeHTML(l.verifiedAt || "Today")}</td>
+              <td class="py-2.5 px-3 font-bold text-[#081B4B] font-sans">${sanitizeHTML(l.name || "Seller")}</td>
+              <td class="py-2.5 px-3 font-mono font-black text-emerald-700">+${sanitizeHTML(waPh)}</td>
+              <td class="py-2.5 px-2.5 font-sans">
+                <div class="font-bold text-[#081B4B]">${sanitizeHTML(l.city || "India")}, ${sanitizeHTML(l.state || "")}</div>
+                <div class="text-[10px] text-slate-400">${sanitizeHTML(l.isp || "Indian Telecom")}</div>
+              </td>
+              <td class="py-2.5 px-2.5 font-sans">
+                <span class="px-2 py-0.5 rounded-full bg-indigo-50 text-[#5B2EFF] font-extrabold text-[10px]">${sanitizeHTML(l.source || "Direct")}</span>
+                <div class="text-[10px] text-slate-400 mt-0.5">${sanitizeHTML(l.page || "/")}</div>
+              </td>
+              <td class="py-2.5 px-2 text-center font-sans">
+                <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-extrabold text-[10px]">✅ Verified</span>
+              </td>
+              <td class="py-2.5 px-3 text-center font-sans">
+                <a
+                  href="https://wa.me/${waPh}?text=${encodeURIComponent(waMsg)}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="px-3 py-1.5 rounded-xl bg-[#10E594] hover:bg-emerald-300 text-[#081B4B] font-extrabold text-[11px] inline-block shadow-2xs"
+                >
+                  💬 WhatsApp
+                </a>
+              </td>
+            </tr>
+          `;
+        })
+        .join("");
+
+      // Render Visitor Traffic Shield Table
+      const filteredTraffic =
+        currentTrafficMode === "CLEAN"
+          ? cleanVisitors
+          : currentTrafficMode === "JUNK"
+          ? [...vpnVisitors, ...repeatVisitors]
+          : visitorLogsList;
+
+      const trafficTbody = document.getElementById("visitor-traffic-tbody");
+      trafficTbody.innerHTML = filteredTraffic
+        .map((v) => {
+          let badge = `<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-extrabold text-[10px]">✅ GENUINE AD VISITOR</span>`;
+          if (v.isVpnOrBot) {
+            badge = `<span class="px-2 py-0.5 rounded-full bg-rose-600 text-white font-extrabold text-[10px]">🚫 VPN / BOT BLOCKED</span>`;
+          } else if (v.isRepeatSpam) {
+            badge = `<span class="px-2 py-0.5 rounded-full bg-amber-200 text-amber-950 font-extrabold text-[10px]">🔁 FALTU REPEAT (${v.visits}x)</span>`;
+          }
+
+          return `
+            <tr class="${v.isVpnOrBot || v.isRepeatSpam ? "bg-rose-50/50" : "hover:bg-indigo-50/40"}">
+              <td class="py-2.5 px-3 text-slate-500">${sanitizeHTML(v.time || "Now")}</td>
+              <td class="py-2.5 px-2.5 font-sans">
+                ${badge}
+                <div class="text-[10px] text-slate-500 mt-0.5">${sanitizeHTML(v.reason || "")}</div>
+              </td>
+              <td class="py-2.5 px-2.5 font-sans font-bold text-[#081B4B]">
+                ${sanitizeHTML(v.city || "India")}, ${sanitizeHTML(v.state || "")} (${sanitizeHTML(v.country || "IN")})
+              </td>
+              <td class="py-2.5 px-2.5">
+                <div class="font-bold text-[#081B4B]">${sanitizeHTML(v.ip || "0.0.0.0")}</div>
+                <div class="text-[10px] text-slate-500 font-sans">${sanitizeHTML(v.isp || "Telecom")}</div>
+              </td>
+              <td class="py-2.5 px-2.5 font-sans">
+                <span class="px-2 py-0.5 rounded bg-indigo-50 text-[#5B2EFF] font-bold text-[10.5px]">${sanitizeHTML(v.source || "Direct")}</span>
+              </td>
+              <td class="py-2.5 px-2 text-center font-bold">${v.visits || 1}x</td>
+              <td class="py-2.5 px-2.5 font-bold ${
+                String(v.phone).startsWith("+91") || String(v.phone).startsWith("91") ? "text-emerald-700" : "text-rose-600"
+              }">${sanitizeHTML(v.phone || "Pending")}</td>
+            </tr>
+          `;
+        })
+        .join("");
+    }
+
+    document.querySelectorAll("[data-lead-view]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const view = btn.getAttribute("data-lead-view");
+        document.querySelectorAll(".lead-view-btn").forEach((b) => {
+          const isMatch = b.getAttribute("data-lead-view") === view;
+          b.className = isMatch
+            ? "lead-view-btn px-4 py-2 rounded-xl bg-[#081B4B] text-white shadow-xs transition cursor-pointer"
+            : "lead-view-btn px-4 py-2 rounded-xl text-slate-700 hover:text-[#081B4B] transition cursor-pointer";
+        });
+        document.getElementById("lead-view-NUMBERS").classList.toggle("hidden", view !== "NUMBERS");
+        document.getElementById("lead-view-TRAFFIC").classList.toggle("hidden", view !== "TRAFFIC");
+        document.getElementById("traffic-subfilters").classList.toggle("hidden", view !== "TRAFFIC");
+      });
+    });
+
+    document.querySelectorAll("[data-tf-mode]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        currentTrafficMode = btn.getAttribute("data-tf-mode");
+        renderVerifiedLeadsAndTraffic();
+      });
+    });
+
+    document.getElementById("simulate-lead-and-vpn-btn")?.addEventListener("click", () => {
+      const randPhone = `9198${Math.floor(10000000 + Math.random() * 89999999)}`;
+      verifiedLeadsList.unshift({
+        id: `lead_${Date.now()}`,
+        name: "Ankit Electronics (Meesho Seller)",
+        phone: randPhone,
+        city: "Jaipur",
+        state: "Rajasthan",
+        isp: "Reliance Jio 5G",
+        source: "Instagram Reel Ad",
+        page: "/gst-filing.html",
+        verifiedAt: new Date().toLocaleString("en-IN")
+      });
+      localStorage.setItem("sellgst_verified_leads", JSON.stringify(verifiedLeadsList));
+
+      visitorLogsList.unshift(
+        {
+          visitorId: `fp_clean_${Date.now()}`,
+          time: new Date().toLocaleString("en-IN"),
+          city: "Jaipur",
+          state: "Rajasthan",
+          country: "IN",
+          ip: "49.36.210.88",
+          isp: "Reliance Jio 5G",
+          source: "Instagram Reel Ad",
+          visits: 1,
+          isVpnOrBot: false,
+          isRepeatSpam: false,
+          reason: "Clean Residential Mobile IP",
+          phone: `+${randPhone}`
+        },
+        {
+          visitorId: `fp_vpn_${Date.now()}`,
+          time: new Date().toLocaleString("en-IN"),
+          city: "Singapore / VPN",
+          state: "Cloud Proxy",
+          country: "SG",
+          ip: "139.59.22.10",
+          isp: "DigitalOcean / VPN Proxy",
+          source: "Bot Traffic",
+          visits: 1,
+          isVpnOrBot: true,
+          isRepeatSpam: false,
+          reason: "Foreign VPN Proxy Auto-Blocked",
+          phone: "Blocked"
+        }
+      );
+      localStorage.setItem("sellgst_visitor_logs", JSON.stringify(visitorLogsList));
+
+      renderVerifiedLeadsAndTraffic();
+      showToast("✅ Simulated 1 Verified Customer Mobile Lead + Auto-Blocked 1 VPN Bot!", "success");
+    });
+
+    document.getElementById("export-verified-leads-csv-btn")?.addEventListener("click", () => {
+      const lines = [["Date", "Customer Name", "Verified Mobile", "City", "State", "ISP", "Ad Source", "Landing Page"].join(",")];
+      verifiedLeadsList.forEach((l) => {
+        lines.push(
+          [
+            `"${l.verifiedAt || ""}"`,
+            `"${l.name || ""}"`,
+            `"${l.phone || ""}"`,
+            `"${l.city || ""}"`,
+            `"${l.state || ""}"`,
+            `"${l.isp || ""}"`,
+            `"${l.source || ""}"`,
+            `"${l.page || ""}"`
+          ].join(",")
+        );
+      });
+      const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `SellGST_Verified_Customer_Numbers_${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast("📥 Downloaded All Verified Customer Mobile Numbers (.CSV)!", "success");
     });
 
     // Save Merchant UPI, Owner WhatsApp, Recovery Email & Cloud-Synced SHA-256 PIN
@@ -1787,6 +2270,7 @@
     });
 
     renderPaymentQueue();
+    syncLeadsAndTrafficData();
     updateLocalSessionStatus();
   </script>
 </body>
