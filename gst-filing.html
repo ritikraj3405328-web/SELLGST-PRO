@@ -3,22 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-  <title>1-Click GSTR-1 (.JSON) & E-Com Report Converter — SellGST Pro</title>
-  <meta name="description" content="Convert Meesho (tcs_sales & tcs_sales_return ZIP/CSV/XLSX), Amazon MTR, and Flipkart GST reports into GST Portal-ready GSTR-1 JSON and Excel in 1 click." />
+  <title>1-Click GSTR-1 (.JSON) &amp; Marketplace GST Filing Studio — SellGST Pro</title>
+  <meta name="description" content="Convert Meesho (tcs_sales & tcs_sales_return), Amazon MTR, and Flipkart CSV, XLSX or ZIP reports into 1-Click GST Portal GSTR-1 JSON and GST Officer Audit Excel. Supports Monthly & Quarterly (QRMP) filing 100% privately in RAM." />
+  <meta name="keywords" content="Meesho tcs_sales to GSTR-1 JSON, Meesho tcs_sales_return calculator, Amazon MTR to GSTR-1 JSON, Flipkart GST report converter, Monthly Quarterly QRMP GSTR-1 JSON generator" />
+  <link rel="canonical" href="https://sellgst-pro.pages.dev/gst-filing.html" />
   <meta name="theme-color" content="#081B4B" />
   <link rel="manifest" href="./manifest.json" />
 
-  <!-- Instant Module Preload -->
-  <link rel="modulepreload" href="./assets/js/security-core.js?v=8.2" />
+  <!-- 0.1s Instant Module Preload -->
+  <link rel="modulepreload" href="./assets/js/security-core.js?v=8.4" />
   <link rel="modulepreload" href="./assets/js/i18n.js" />
-
-  <!-- SheetJS (XLSX/CSV) + JSZip (For Direct Meesho/Amazon ZIP Upload) -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+
+  <!-- SheetJS (XLSX Reader) + JSZip (Direct .ZIP Unpacker in Browser RAM) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -54,601 +56,18 @@
       background: rgba(255, 255, 255, 0.96);
       backdrop-filter: blur(16px);
       border-radius: 26px;
-      border: 1px solid rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.92);
       box-shadow: 0 18px 40px -15px rgba(91, 46, 255, 0.14), 0 4px 12px rgba(15, 23, 42, 0.04);
       transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease;
-      min-width: 0;
-    }
-    .platform-tab-active {
-      background: linear-gradient(135deg, #081B4B 0%, #5B2EFF 100%);
-      color: #FFFFFF !important;
-      border-color: transparent !important;
-      box-shadow: 0 12px 24px -8px rgba(91, 46, 255, 0.45);
-    }
-    .freq-btn-active {
-      background: #081B4B;
-      color: #10E594;
-      box-shadow: 0 6px 16px rgba(8, 27, 75, 0.22);
-    }
-    @keyframes shrink7s {
-      from { width: 100%; }
-      to { width: 0%; }
-    }
-    .pwa-timer-bar {
-      animation: shrink7s 7s linear forwards;
-    }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-  </style>
-</head>
-<body class="min-h-screen w-full overflow-x-hidden pb-14 lg:pl-24">
-
-  <!-- DESKTOP FLOATING 3D LEFT PILL SIDEBAR -->
-  <aside class="hidden lg:flex fixed left-4 top-4 bottom-4 w-16 bg-white/95 backdrop-blur-xl border border-white rounded-full shadow-xl shadow-indigo-500/10 flex-col items-center justify-between py-5 z-40">
-    <a href="./index.html" title="Home Page" class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#081B4B] via-[#5B2EFF] to-[#10E594] text-white flex items-center justify-center font-black text-sm shadow-md">
-      🏠
-    </a>
-    <nav class="flex flex-col items-center gap-3">
-      <a href="./app.html" title="3D Financial Dashboard" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">📊</a>
-      <a href="./invoice.html" title="Custom Navy GST Invoice" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">🧾</a>
-      <a href="./ecom-audit.html" title="E-Com Audit" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">📦</a>
-      <a href="./gst-filing.html" title="1-Click GSTR-1 JSON" class="w-11 h-11 rounded-2xl bg-[#5B2EFF] text-white flex items-center justify-center text-base shadow-md transition">🏛️</a>
-      <a href="./qr-studio.html" title="Dynamic QR Studio" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">🔳</a>
-    </nav>
-    <button type="button" data-open-account title="My Account" class="w-10 h-10 rounded-full bg-indigo-50 text-[#5B2EFF] flex items-center justify-center text-sm font-bold">
-      👤
-    </button>
-  </aside>
-
-  <!-- MAIN CONTAINER -->
-  <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-3 sm:pt-4 space-y-5 overflow-x-hidden">
-
-    <!-- TOP HEADER -->
-    <header class="bg-white/95 backdrop-blur-xl rounded-3xl border border-white px-3.5 sm:px-6 py-3 shadow-lg shadow-indigo-500/5 flex flex-wrap items-center justify-between gap-2.5">
-      <div class="flex items-center gap-2 min-w-0">
-        <a href="./index.html" class="px-3.5 py-2 rounded-2xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow-sm transition flex items-center gap-1.5 shrink-0">
-          <span>🏠 Home</span>
-        </a>
-        <div class="min-w-0">
-          <h1 class="font-extrabold text-xs sm:text-[15px] text-[#081B4B] truncate">
-            1-Click GSTR-1 (.JSON) &amp; Marketplace GST Converter
-          </h1>
-          <p class="text-[11px] text-slate-500 truncate">
-            Meesho (TCS Sales &amp; Return / ZIP) • Amazon MTR • Flipkart GSTR-1 • Monthly &amp; Quarterly
-          </p>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-2 flex-wrap justify-end ml-auto">
-        <select data-lang-switcher aria-label="Language" class="px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none">
-          <option value="en">English</option>
-          <option value="hi">हिन्दी</option>
-          <option value="hinglish">Hinglish</option>
-        </select>
-
-        <button type="button" id="pwa-install-btn" data-pwa-install class="relative overflow-hidden px-3 py-1.5 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#081B4B] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap flex items-center gap-1.5">
-          <span>📲 Install App</span>
-          <span id="pwa-sec-badge" class="px-1.5 py-0.2 rounded-full bg-white/20 text-[10px] font-mono">7s</span>
-          <span class="absolute bottom-0 left-0 h-0.5 bg-[#10E594] pwa-timer-bar"></span>
-        </button>
-
-        <button type="button" data-open-account class="px-3 py-1.5 rounded-full bg-slate-100 hover:bg-indigo-50 text-[#081B4B] border border-slate-200 text-xs font-extrabold transition whitespace-nowrap">
-          👤 My Account
-        </button>
-
-        <button type="button" data-pro-badge data-unlock-pro="MONTHLY" class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-[#5B2EFF] to-[#4318FF] text-white shadow-md whitespace-nowrap">
-          Unlock Pro ⚡
-        </button>
-      </div>
-    </header>
-
-    <!-- =================================================================== -->
-    <!-- QUICK SUITE NAVIGATION PILLS                                        -->
-    <!-- =================================================================== -->
-    <div class="bg-white/90 rounded-3xl p-2 border border-white shadow-sm flex items-center gap-2 overflow-x-auto no-scrollbar">
-      <a href="./gst-filing.html" class="px-4 py-2 rounded-2xl bg-[#5B2EFF] text-white font-extrabold text-xs whitespace-nowrap shadow-sm flex items-center gap-1.5">
-        <span>🛒 1. E-Com CSV/ZIP to JSON &amp; Excel</span>
-      </a>
-      <a href="./gov-excel-to-json.html" class="px-4 py-2 rounded-2xl bg-slate-100 hover:bg-indigo-50 text-slate-700 font-extrabold text-xs whitespace-nowrap transition flex items-center gap-1.5">
-        <span>📗 2. Gov Excel to JSON</span>
-      </a>
-      <a href="./json-validator.html" class="px-4 py-2 rounded-2xl bg-slate-100 hover:bg-indigo-50 text-slate-700 font-extrabold text-xs whitespace-nowrap transition flex items-center gap-1.5">
-        <span>🔍 3. JSON Validator &amp; Editor</span>
-      </a>
-      <a href="./reconciliation-2a-2b.html" class="px-4 py-2 rounded-2xl bg-slate-100 hover:bg-indigo-50 text-slate-700 font-extrabold text-xs whitespace-nowrap transition flex items-center gap-1.5">
-        <span>🔄 4. 2A/2B Reconciliation</span>
-      </a>
-      <a href="#pricing-comparison-section" class="px-4 py-2 rounded-2xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 font-extrabold text-xs whitespace-nowrap transition flex items-center gap-1.5">
-        <span>💎 Plans &amp; Feature Comparison (₹0 / ₹99 / ₹499)</span>
-      </a>
-    </div>
-
-    <!-- =================================================================== -->
-    <!-- MAIN GRID: LEFT UPLOAD & PLATFORM TABS + RIGHT CONFIG & JSON OUTPUT -->
-    <!-- =================================================================== -->
-    <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-
-      <!-- LEFT 7 COLS: MARKETPLACE UPLOAD TABS & SMART PARSER -->
-      <div class="bento-card p-4 sm:p-6 lg:col-span-7 space-y-4">
-        <div class="flex flex-wrap items-center justify-between gap-2">
-          <span class="px-3 py-1 rounded-full bg-indigo-50 text-[#5B2EFF] font-extrabold text-[10.5px] uppercase tracking-wider">
-            ⚡ STEP 1: SELECT MARKETPLACE &amp; UPLOAD REPORT (100% PRIVATE IN RAM)
-          </span>
-          <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-mono text-[10px] font-bold">
-            Supports .ZIP, .CSV &amp; .XLSX
-          </span>
-        </div>
-
-        <div>
-          <h2 class="text-base sm:text-lg font-extrabold text-[#081B4B]">
-            Select Your E-Commerce Platform Format
-          </h2>
-          <p class="text-xs text-slate-500 mt-0.5">
-            Har marketplace ka report format alag hota hai — apna platform chunein aur seedha downloaded <strong>.ZIP, .CSV ya .XLSX</strong> file upload karein!
-          </p>
-        </div>
-
-        <!-- 4 DEDICATED MARKETPLACE SELECTION TABS -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="marketplace-tabs-container">
-          <button
-            type="button"
-            data-platform-tab="MEESHO"
-            class="platform-tab-btn platform-tab-active p-3 rounded-2xl border border-slate-200 bg-slate-50 text-left transition flex flex-col justify-between gap-1 cursor-pointer"
-          >
-            <div class="flex items-center justify-between">
-              <span class="text-lg">🛍️</span>
-              <span class="px-1.5 py-0.5 rounded bg-white/20 text-[9px] font-mono font-extrabold">ZIP / CSV</span>
-            </div>
-            <div class="font-extrabold text-xs mt-1">Meesho GST</div>
-            <div class="text-[10px] opacity-80 leading-tight">tcs_sales + tcs_sales_return</div>
-          </button>
-
-          <button
-            type="button"
-            data-platform-tab="FLIPKART"
-            class="platform-tab-btn p-3 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-indigo-50/50 text-[#081B4B] text-left transition flex flex-col justify-between gap-1 cursor-pointer"
-          >
-            <div class="flex items-center justify-between">
-              <span class="text-lg">🛒</span>
-              <span class="px-1.5 py-0.5 rounded bg-indigo-100 text-[#5B2EFF] text-[9px] font-mono font-extrabold">XLSX / CSV</span>
-            </div>
-            <div class="font-extrabold text-xs mt-1">Flipkart / Shopsy</div>
-            <div class="text-[10px] text-slate-500 leading-tight">GSTR-1 Sales &amp; Return</div>
-          </button>
-
-          <button
-            type="button"
-            data-platform-tab="AMAZON"
-            class="platform-tab-btn p-3 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-indigo-50/50 text-[#081B4B] text-left transition flex flex-col justify-between gap-1 cursor-pointer"
-          >
-            <div class="flex items-center justify-between">
-              <span class="text-lg">📦</span>
-              <span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 text-[9px] font-mono font-extrabold">MTR CSV</span>
-            </div>
-            <div class="font-extrabold text-xs mt-1">Amazon India</div>
-            <div class="text-[10px] text-slate-500 leading-tight">MTR B2C &amp; B2B Report</div>
-          </button>
-
-          <button
-            type="button"
-            data-platform-tab="GENERIC"
-            class="platform-tab-btn p-3 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-indigo-50/50 text-[#081B4B] text-left transition flex flex-col justify-between gap-1 cursor-pointer"
-          >
-            <div class="flex items-center justify-between">
-              <span class="text-lg">🧾</span>
-              <span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[9px] font-mono font-extrabold">ANY BILL</span>
-            </div>
-            <div class="font-extrabold text-xs mt-1">Other / Custom</div>
-            <div class="text-[10px] text-slate-500 leading-tight">Tally / Custom Excel</div>
-          </button>
-        </div>
-
-        <!-- PLATFORM-SPECIFIC UPLOAD BOX -->
-        <div class="p-4 rounded-3xl border-2 border-dashed border-[#5B2EFF]/50 bg-indigo-50/30 space-y-3">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <div>
-              <span id="active-platform-badge" class="px-2.5 py-0.5 rounded-full bg-[#5B2EFF] text-white font-extrabold text-[10px] uppercase">
-                🛍️ MEESHO MODE ACTIVE
-              </span>
-              <h3 id="active-platform-title" class="text-sm font-extrabold text-[#081B4B] mt-1">
-                Upload Meesho GST Report (.ZIP, tcs_sales.csv &amp; tcs_sales_return.csv)
-              </h3>
-              <p id="active-platform-desc" class="text-[11px] text-slate-600 mt-0.5">
-                Aap Meesho se download ki gayi <strong>.ZIP file</strong> seedha chunein, ya <code>tcs_sales</code> aur <code>tcs_sales_return</code> (.csv / .xlsx) dono ek saath select karein. Sales Return automatic minus ho jayega!
-              </p>
-            </div>
-          </div>
-
-          <!-- Primary File Dropzone -->
-          <label
-            for="ecom-gst-file-input"
-            class="block p-4 rounded-2xl bg-white hover:bg-indigo-50/40 border border-indigo-200 cursor-pointer transition text-center space-y-1.5 shadow-2xs"
-          >
-            <div class="text-2xl">📥</div>
-            <div class="font-extrabold text-xs sm:text-sm text-[#081B4B]" id="upload-box-main-label">
-              Tap Here to Select Meesho .ZIP, .CSV or .XLSX Files
-            </div>
-            <div class="text-[11px] text-emerald-700 font-bold" id="upload-status-subtext">
-              ✅ Supports: Direct .ZIP archive OR multiple .CSV / .XLSX files (Sales + Return)
-            </div>
-            <input
-              type="file"
-              id="ecom-gst-file-input"
-              multiple
-              accept=".csv,.xlsx,.xls,.zip,application/zip,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-              class="hidden"
-            />
-          </label>
-
-          <!-- Optional Dedicated Second Slot for Sales Return File (if user uploads separately) -->
-          <div id="separate-return-upload-box" class="p-3 rounded-2xl bg-rose-50/70 border border-rose-200 flex flex-wrap items-center justify-between gap-2 text-xs">
-            <div class="min-w-0">
-              <div class="font-extrabold text-rose-900">
-                ↩️ Have a Separate Sales Return File? (e.g. <code>tcs_sales_return.csv</code>)
-              </div>
-              <div class="text-[10.5px] text-rose-700" id="return-file-status">
-                Optional: Upload here to auto-deduct returns from total taxable sales
-              </div>
-            </div>
-            <label
-              for="ecom-return-file-input"
-              class="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-[11px] cursor-pointer shadow-2xs shrink-0 transition"
-            >
-              + Upload Return File
-              <input
-                type="file"
-                id="ecom-return-file-input"
-                multiple
-                accept=".csv,.xlsx,.xls,.zip"
-                class="hidden"
-              />
-            </label>
-          </div>
-
-          <!-- Action Buttons: Demo Data & Reset -->
-          <div class="flex flex-wrap items-center gap-2 pt-1">
-            <button
-              type="button"
-              id="load-demo-gst-btn"
-              class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-sm transition cursor-pointer"
-            >
-              ⚡ Load Sample Meesho (tcs_sales + return) Data
-            </button>
-            <button
-              type="button"
-              id="reset-gst-data-btn"
-              class="px-3.5 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs transition cursor-pointer"
-            >
-              🔄 Reset / Clear
-            </button>
-          </div>
-        </div>
-
-        <!-- =============================================================== -->
-        <!-- 1-CLICK READY OUTPUTS BAR                                       -->
-        <!-- =============================================================== -->
-        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-extrabold text-[#081B4B]">1-Click Ready Portal &amp; Officer Outputs</span>
-            <span id="parsed-row-count-badge" class="px-2.5 py-0.5 rounded-full bg-indigo-100 text-[#5B2EFF] font-mono text-[10px] font-extrabold">
-              0 Rows Processed
-            </span>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            <button
-              type="button"
-              id="download-gstr1-json-btn"
-              class="py-3 px-4 rounded-2xl bg-gradient-to-r from-[#5B2EFF] to-[#081B4B] hover:opacity-95 text-white font-extrabold text-xs shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <span>🏛️ Download GSTR-1 Portal (.JSON)</span>
-            </button>
-
-            <button
-              type="button"
-              id="download-ready-excel-btn"
-              class="py-3 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <span>📊 Download Ready GSTR-1 Excel (.CSV)</span>
-            </button>
-          </div>
-
-          <a
-            href="./json-validator.html"
-            id="open-in-validator-link"
-            class="w-full py-2.5 px-4 rounded-xl bg-[#081B4B] hover:bg-slate-800 text-white font-extrabold text-xs text-center block transition"
-          >
-            🔍 Check &amp; Edit All B2B, B2CS &amp; HSN Tables in JSON Validator (#3) →
-          </a>
-        </div>
-      </div>
-
-      <!-- RIGHT 5 COLS: MONTHLY / QUARTERLY SELECTOR + GSTIN CONFIG + LIVE KPI -->
-      <div class="bento-card p-4 sm:p-6 lg:col-span-5 space-y-4">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-          <div>
-            <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#5B2EFF]">STEP 2: FILING FREQUENCY &amp; GSTIN</span>
-            <h3 class="text-base font-extrabold text-[#081B4B]">Monthly / Quarterly (QRMP) Settings</h3>
-          </div>
-          <span id="filing-mode-pill" class="px-2.5 py-1 rounded-full bg-[#10E594]/30 text-[#081B4B] font-mono text-[10px] font-extrabold">
-            MONTHLY
-          </span>
-        </div>
-
-        <!-- FILING FREQUENCY TOGGLE: MONTHLY VS QUARTERLY -->
-        <div class="space-y-1.5">
-          <label class="block text-xs font-extrabold text-slate-700">
-            Select GSTR-1 Filing Frequency *
-          </label>
-          <div class="grid grid-cols-2 gap-2 p-1 rounded-2xl bg-slate-100 border border-slate-200">
-            <button
-              type="button"
-              data-freq-mode="MONTHLY"
-              class="freq-toggle-btn freq-btn-active py-2.5 px-3 rounded-xl font-extrabold text-xs transition cursor-pointer"
-            >
-              📅 Monthly Filing
-            </button>
-            <button
-              type="button"
-              data-freq-mode="QUARTERLY"
-              class="freq-toggle-btn py-2.5 px-3 rounded-xl font-extrabold text-xs text-slate-600 hover:text-[#081B4B] transition cursor-pointer"
-            >
-              📊 Quarterly (QRMP)
-            </button>
-          </div>
-        </div>
-
-        <!-- DYNAMIC PERIOD SELECTOR (CHANGES BASED ON MONTHLY vs QUARTERLY) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-          <div>
-            <label class="block font-bold text-slate-600 mb-1">Financial Year *</label>
-            <select id="gst-fy-select" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-mono font-bold text-[#081B4B]">
-              <option value="2026-27" selected>FY 2026-27</option>
-              <option value="2025-26">FY 2025-26</option>
-              <option value="2024-25">FY 2024-25</option>
-            </select>
-          </div>
-
-          <div id="monthly-period-wrapper">
-            <label class="block font-bold text-slate-600 mb-1">Return Month *</label>
-            <select id="gst-month-select" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-mono font-bold text-[#081B4B]">
-              <option value="04">April (04)</option>
-              <option value="05">May (05)</option>
-              <option value="06">June (06)</option>
-              <option value="07">July (07)</option>
-              <option value="08">August (08)</option>
-              <option value="09">September (09)</option>
-              <option value="10">October (10)</option>
-              <option value="11" selected>November (11)</option>
-              <option value="12">December (12)</option>
-              <option value="01">January (01)</option>
-              <option value="02">February (02)</option>
-              <option value="03">March (03)</option>
-            </select>
-          </div>
-
-          <div id="quarterly-period-wrapper" class="hidden">
-            <label class="block font-bold text-indigo-700 mb-1">Select Quarter (QRMP) *</label>
-            <select id="gst-quarter-select" class="w-full px-3 py-2.5 rounded-xl bg-indigo-50 border border-indigo-200 font-mono font-bold text-[#081B4B]">
-              <option value="06">Q1: Apr – Jun (06)</option>
-              <option value="09">Q2: Jul – Sep (09)</option>
-              <option value="12" selected>Q3: Oct – Dec (12)</option>
-              <option value="03">Q4: Jan – Mar (03)</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- GSTIN & E-COM TCS OPERATOR GSTIN -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-          <div>
-            <label class="block font-bold text-slate-600 mb-1">Your Seller GSTIN *</label>
-            <input
-              type="text"
-              id="seller-gstin-input"
-              maxlength="15"
-              value="10FVMPR3192G1Z5"
-              placeholder="15-Digit Seller GSTIN"
-              class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 font-mono font-extrabold text-[#081B4B] uppercase"
-            />
-          </div>
-          <div>
-            <label class="block font-bold text-slate-600 mb-1">Portal Period (MMYYYY)</label>
-            <input
-              type="text"
-              id="computed-fp-input"
-              maxlength="6"
-              value="112026"
-              readonly
-              class="w-full px-3 py-2 rounded-xl bg-indigo-50/60 border border-indigo-200 font-mono font-extrabold text-[#5B2EFF]"
-            />
-          </div>
-        </div>
-
-        <div class="text-xs">
-          <label class="block font-bold text-slate-600 mb-1">E-Com Operator TCS GSTIN (Auto-Detected from Report)</label>
-          <input
-            type="text"
-            id="eco-gstin-input"
-            maxlength="15"
-            value="10AARCM9332R1CQ"
-            placeholder="e.g. 10AARCM9332R1CQ (Meesho/Fashnear)"
-            class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 font-mono font-bold text-slate-800 uppercase"
-          />
-        </div>
-
-        <!-- LIVE NET RECONCILIATION SUMMARY CARDS -->
-        <div class="p-4 rounded-2xl bg-[#081B4B] text-white space-y-3">
-          <div class="flex items-center justify-between">
-            <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#10E594]">
-              LIVE GSTR-1 NET SUMMARY (SALES - RETURNS)
-            </span>
-            <span id="summary-platform-tag" class="text-[10px] font-mono text-indigo-200">Meesho TCS</span>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2.5 text-xs">
-            <div class="p-2.5 rounded-xl bg-white/10">
-              <div class="text-[10px] text-slate-300">Gross Taxable Sales</div>
-              <div id="sum-gross-taxable" class="font-mono font-extrabold text-sm text-white mt-0.5">₹0.00</div>
-            </div>
-            <div class="p-2.5 rounded-xl bg-rose-500/20 border border-rose-400/30">
-              <div class="text-[10px] text-rose-200">Sales Returns Minus</div>
-              <div id="sum-returns-taxable" class="font-mono font-extrabold text-sm text-rose-300 mt-0.5">-₹0.00</div>
-            </div>
-            <div class="p-2.5 rounded-xl bg-emerald-500/20 border border-emerald-400/30">
-              <div class="text-[10px] text-emerald-200">Net Taxable Value</div>
-              <div id="sum-net-taxable" class="font-mono font-black text-base text-[#10E594] mt-0.5">₹0.00</div>
-            </div>
-            <div class="p-2.5 rounded-xl bg-white/10">
-              <div class="text-[10px] text-slate-300">Total Net Tax (IGST+CGST+SGST)</div>
-              <div id="sum-net-tax" class="font-mono font-black text-base text-amber-300 mt-0.5">₹0.00</div>
-            </div>
-          </div>
-
-          <div class="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] font-mono">
-            <span>IGST: <strong id="sum-igst">₹0.00</strong></span>
-            <span>CGST: <strong id="sum-cgst">₹0.00</strong></span>
-            <span>SGST: <strong id="sum-sgst">₹0.00</strong></span>
-          </div>
-        </div>
-      </div>
-
-    </section>
-
-    <!-- =================================================================== -->
-    <!-- LIVE PARSED TABLE PREVIEW (STATE-WISE B2CS + HSN + INVOICE ROWS)    -->
-    <!-- =================================================================== -->
-    <section class="bento-card p-4 sm:p-6 space-y-4">
-      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
-        <div>
-          <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#5B2EFF]">
-            LIVE PORTAL &amp; GST OFFICER AUDIT TABLE
-          </span>
-          <h3 class="text-base font-extrabold text-[#081B4B]">
-            Parsed Orders, Returns &amp; State-Wise Tax Breakdown
-          </h3>
-        </div>
-        <div class="flex items-center gap-2 text-xs">
-          <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-bold" id="table-b2cs-count">0 States (B2CS)</span>
-          <span class="px-2.5 py-1 rounded-full bg-indigo-50 text-[#5B2EFF] font-bold" id="table-hsn-count">0 HSN Codes</span>
-        </div>
-      </div>
-
-      <div class="overflow-x-auto rounded-2xl border border-slate-200">
-        <table class="w-full text-left border-collapse text-xs">
-          <thead>
-            <tr class="bg-[#081B4B] text-white font-extrabold text-[11px] uppercase">
-              <th class="py-2.5 px-3">Order / Sub-Order No</th>
-              <th class="py-2.5 px-3">Date</th>
-              <th class="py-2.5 px-3">Type</th>
-              <th class="py-2.5 px-3">Place of Supply (State)</th>
-              <th class="py-2.5 px-3">HSN</th>
-              <th class="py-2.5 px-3 text-right">Rate</th>
-              <th class="py-2.5 px-3 text-right">Taxable (₹)</th>
-              <th class="py-2.5 px-3 text-right">IGST (₹)</th>
-              <th class="py-2.5 px-3 text-right">CGST (₹)</th>
-              <th class="py-2.5 px-3 text-right">SGST (₹)</th>
-              <th class="py-2.5 px-3 text-right">Total (₹)</th>
-            </tr>
-          </thead>
-          <tbody id="gst-parsed-tbody" class="divide-y divide-slate-200 font-mono text-[11.5px] bg-white">
-            <!-- Populated dynamically -->
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- =================================================================== -->
-    <!-- TRANSPARENT PRICING & FEATURE COMPARISON (FREE vs ₹99 vs ₹499)      -->
-    <!-- =================================================================== -->
-    <section id="pricing-comparison-section" class="bento-card p-5 sm:p-8 space-y-6">
-      <div class="text-center max-w-2xl mx-auto space-y-2">
-        <span class="px-3.5 py-1 rounded-full bg-blue-50 text-blue-700 font-extrabold text-[11px] uppercase tracking-wider">
-          TRANSPARENT PRICING &amp; QUOTAS
-        </span>Aapke teeno updates — **1) Login/Signup page par Customer Mobile Number**, **2) Free vs ₹99 vs ₹499 Plans & Pricing Comparison Chart**[cite: 21], aur **3) Meesho (`tcs_sales` & `tcs_sales_return` + `.ZIP`), Amazon, Flipkart Separate Upload System + Monthly/Quarterly GSTR-1 Engine**[cite: 14, 18, 19] — niche **3 Full Uncut Files** mein taiyar hain:
-
-1. **`gst-filing.html` (Smart Multi-Marketplace + Monthly/Quarterly Engine):**
-   * **4 Separate Marketplace Upload Tabs:** **Meesho**, **Amazon MTR**, **Flipkart**, aur **Other/Generic CSV/XLSX** ke liye alag-alag tabs aur dedicated upload boxes banaye gaye hain.
-   * **Meesho `tcs_sales` + `tcs_sales_return` + Direct `.ZIP` Support:** Aapke screenshot wale exact Meesho columns (`sup_name`, `gstin`, `sub_order_num`, `hsn_code`, `gst_rate`, `total_taxable_sale_value`, `tax_amount`, `taxable_shipping`, `end_customer_state_new`, `tcs_gstin`, `month_number`)[cite: 18, 19] ko auto-map kiya gaya hai. Aap `tcs_sales` aur `tcs_sales_return` dono files ek saath select kar sakte hain (ya seedha Meesho ki `.zip` file bhi upload kar sakte hain—yeh browser ke andar hi `.zip` ko extract karke Sales mein se Returns ko minus kar dega)[cite: 14, 18, 19].
-   * **Monthly vs Quarterly (QRMP) Selector:** User **Monthly** ya **Quarterly (Apr–Jun Q1, Jul–Sep Q2, Oct–Dec Q3, Jan–Mar Q4)** select kar sakta hai. Filing period (`fp`), B2CS State-wise summary, HSN Table-12, aur Section 52 TCS (`supeco`) JSON automatic usi hisab se banega.
-2. **`login.html` (Customer Mobile Number + Plans Comparison Section):**
-   * Signup aur Customer Details mein **10-Digit Mobile / WhatsApp Number (`+91`)** field add kar diya gaya hai jo Firebase aur Admin Queue dono mein save hoga.
-   * Login page ke niche bhi aapke screenshot jaisa **Free Trial (₹0) vs Monthly Pro (₹99) vs Yearly Pro (₹499)** ka comparison cards + feature comparison chart add kar diya gaya hai[cite: 21].
-3. **`assets/js/security-core.js` (Smart QR Style Pricing Cards + Comparison Table):**
-   * Jab bhi koi user **"Unlock Pro ⚡"** ya menu mein **"Plans & Pricing (₹99 / ₹499)"** par click karega[cite: 4], toh bilkul aapke screenshot jaisa **Transparent Pricing & Quotas (`✅ WHAT'S INCLUDED`, `❌ NOT INCLUDED` + Full Comparison Table: Free vs ₹99 vs ₹499)** khulega[cite: 21].
-
----
-
-### 📁 File 1: `gst-filing.html` (100% Full Uncut Code — Separate Meesho/Amazon/Flipkart Tabs + Monthly/Quarterly Selector + `.ZIP`/`.CSV`/`.XLSX` Parser)
-
-```html
-<!DOCTYPE html>
-<html lang="en" class="overflow-x-hidden scroll-smooth">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-  <title>1-Click GSTR-1 (.JSON & Excel) Generator — Meesho, Amazon & Flipkart | SellGST Pro</title>
-  <meta name="description" content="Convert Meesho (tcs_sales & tcs_sales_return), Amazon MTR, and Flipkart GST reports into GST Portal GSTR-1 JSON & Ready Excel with Monthly & Quarterly support." />
-  <meta name="theme-color" content="#081B4B" />
-  <link rel="manifest" href="./manifest.json" />
-
-  <!-- Module Preload -->
-  <link rel="modulepreload" href="./assets/js/security-core.js?v=8.2" />
-  <link rel="modulepreload" href="./assets/js/i18n.js" />
-
-  <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)" />
-  <link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin />
-  <link href="[https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap](https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap)" rel="stylesheet" />
-
-  <!-- Tailwind CSS -->
-  <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
-  <!-- SheetJS (Excel .XLSX / .CSV Parser & Exporter) -->
-  <script src="[https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js](https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js)"></script>
-  <!-- JSZip (Automatically extracts Meesho/Amazon .ZIP GST folders in RAM!) -->
-  <script src="[https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js](https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js)"></script>
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-            mono: ['"JetBrains Mono"', 'monospace']
-          },
-          colors: {
-            navy: '#081B4B',
-            royal: '#5B2EFF',
-            mint: '#10E594'
-          }
-        }
-      }
-    };
-  </script>
-  <style>
-    *, *::before, *::after {
-      box-sizing: border-box;
-    }
-    html, body {
-      max-width: 100vw;
-      overflow-x: hidden;
-      background: linear-gradient(135deg, #DDE3FF 0%, #EEF2FF 48%, #D6F5F8 100%);
-      color: #0F172A;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 14px;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .bento-card {
-      background: rgba(255, 255, 255, 0.96);
-      backdrop-filter: blur(16px);
-      border-radius: 26px;
-      border: 1px solid rgba(255, 255, 255, 0.9);
-      box-shadow: 0 18px 40px -15px rgba(91, 46, 255, 0.14), 0 4px 12px rgba(15, 23, 42, 0.04);
-      transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease;
+      transform-style: preserve-3d;
+      will-change: transform;
       min-width: 0;
     }
     .purple-3d-card {
       background: linear-gradient(135deg, #6A3BFF 0%, #5B2EFF 55%, #3F16C4 100%);
       border-radius: 26px;
       box-shadow: 0 22px 45px -12px rgba(91, 46, 255, 0.38);
+      transform-style: preserve-3d;
       min-width: 0;
     }
     @keyframes shrink7s {
@@ -667,7 +86,7 @@
     }
   </style>
 </head>
-<body class="min-h-screen w-full overflow-x-hidden pb-14 lg:pl-24">
+<body class="min-h-screen w-full overflow-x-hidden pb-12 lg:pl-24">
 
   <!-- DESKTOP FLOATING 3D LEFT PILL SIDEBAR -->
   <aside class="hidden lg:flex fixed left-4 top-4 bottom-4 w-16 bg-white/95 backdrop-blur-xl border border-white rounded-full shadow-xl shadow-indigo-500/10 flex-col items-center justify-between py-5 z-40">
@@ -678,44 +97,60 @@
       <a href="./app.html" title="3D Financial Dashboard" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
         📊
       </a>
+      <a href="./gst-filing.html" title="1-Click GSTR-1 JSON" class="w-11 h-11 rounded-2xl bg-[#5B2EFF] text-white flex items-center justify-center text-base shadow-md transition">
+        🏛️
+      </a>
+      <a href="./ecom-audit.html" title="E-Com Audit & Profit/Loss" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+        📦
+      </a>
       <a href="./invoice.html" title="Custom Navy GST Invoice" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
         🧾
       </a>
-      <a href="./ecom-audit.html" title="E-Com Audit & 4x6 Labels" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
-        📦
-      </a>
-      <a href="./gst-filing.html" title="1-Click GSTR-1 JSON" class="w-11 h-11 rounded-2xl bg-[#5B2EFF] text-white flex items-center justify-center text-base shadow-md transition">
-        🏛️
+      <a href="./label-studio.html" title="4x6 Shipping Label Studio" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
+        🏷️
       </a>
       <a href="./qr-studio.html" title="Dynamic QR Studio" class="w-11 h-11 rounded-2xl text-slate-500 hover:bg-indigo-50 hover:text-[#5B2EFF] flex items-center justify-center text-base transition">
         🔳
       </a>
     </nav>
     <div class="flex flex-col items-center gap-2">
-      <button type="button" data-open-account title="My Account" class="w-10 h-10 rounded-full bg-indigo-50 text-[#5B2EFF] flex items-center justify-center text-sm shadow-sm">
+      <button type="button" data-open-account title="My Account" class="w-10 h-10 rounded-full bg-indigo-50 text-[#5B2EFF] flex items-center justify-center text-sm shadow-xs hover:scale-105 transition cursor-pointer">
         👤
+      </button>
+      <button type="button" id="sidebar-logout-btn" title="Logout" class="w-10 h-10 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center text-sm cursor-pointer">
+        ⏻
       </button>
     </div>
   </aside>
 
-  <!-- MAIN CONTAINER -->
-  <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-2.5 space-y-4 overflow-x-hidden">
+  <!-- MAIN CONTENT WRAPPER -->
+  <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-3 sm:pt-4 space-y-4 overflow-x-hidden">
 
-    <!-- TOP HEADER BAR -->
-    <header class="bg-white/95 backdrop-blur-xl rounded-3xl border border-white px-3.5 sm:px-6 py-3 shadow-lg shadow-indigo-500/5 flex flex-wrap items-center justify-between gap-2.5">
-      <div class="flex items-center gap-2 min-w-0">
+    <!-- TOP FLOATING HEADER BAR -->
+    <header class="bg-white/95 backdrop-blur-xl rounded-3xl border border-white px-4 sm:px-6 py-3 shadow-lg shadow-indigo-500/5 flex flex-wrap items-center justify-between gap-2.5 sticky top-1 z-30">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <button
+          type="button"
+          data-open-super-menu="true"
+          aria-label="Open All Super Tools Menu"
+          class="w-10 h-10 rounded-2xl bg-slate-100 hover:bg-[#5B2EFF] text-[#081B4B] hover:text-white border border-slate-200 flex items-center justify-center font-black text-lg shadow-xs transition shrink-0 cursor-pointer"
+        >
+          ☰
+        </button>
+
         <a
           href="./index.html"
           class="px-3.5 py-2 rounded-2xl bg-[#081B4B] hover:bg-[#5B2EFF] text-white font-extrabold text-xs shadow-sm transition flex items-center gap-1.5 shrink-0"
         >
           <span>🏠 Home</span>
         </a>
+
         <div class="min-w-0">
-          <h1 class="font-extrabold text-xs sm:text-sm text-[#081B4B] truncate">
-            1-Click GSTR-1 (.JSON &amp; Excel) Generator
+          <h1 class="font-extrabold text-xs sm:text-[15px] text-[#081B4B] truncate">
+            1-Click GSTR-1 (.JSON) &amp; Officer Audit Studio
           </h1>
-          <p class="text-[11px] text-slate-500 truncate">
-            Meesho (<code>tcs_sales</code> / <code>return</code>) • Amazon MTR • Flipkart • Monthly &amp; Quarterly
+          <p class="text-[11px] text-slate-500 truncate hidden sm:block">
+            Meesho (<code>tcs_sales</code> + return) • Amazon MTR • Flipkart • Direct <code>.ZIP</code> / <code>.CSV</code> / <code>.XLSX</code>
           </p>
         </div>
       </div>
@@ -724,7 +159,7 @@
         <select
           data-lang-switcher
           aria-label="Language"
-          class="px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none"
+          class="px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none max-w-[96px] truncate"
         >
           <option value="en">English</option>
           <option value="hi">हिन्दी</option>
@@ -735,7 +170,7 @@
           type="button"
           id="pwa-install-btn"
           data-pwa-install
-          class="relative overflow-hidden px-3 py-1.5 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#081B4B] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap flex items-center gap-1"
+          class="relative overflow-hidden px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#5B2EFF] to-[#081B4B] text-white text-xs font-extrabold shadow-md transition whitespace-nowrap flex items-center gap-1.5 cursor-pointer"
         >
           <span>📲 Install App</span>
           <span id="pwa-sec-badge" class="px-1.5 py-0.2 rounded-full bg-white/20 text-[10px] font-mono">7s</span>
@@ -745,7 +180,7 @@
         <button
           type="button"
           data-open-account
-          class="px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-[#081B4B] text-xs font-extrabold transition whitespace-nowrap"
+          class="px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-indigo-50 text-[#081B4B] border border-slate-200 text-xs font-extrabold transition whitespace-nowrap cursor-pointer"
         >
           👤 My Account
         </button>
@@ -754,628 +189,625 @@
           type="button"
           data-pro-badge
           data-unlock-pro="MONTHLY"
-          class="px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-[#5B2EFF] text-white shadow-md transition whitespace-nowrap"
+          class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-[#5B2EFF] to-[#4318FF] text-white shadow-md transition whitespace-nowrap cursor-pointer"
         >
           Unlock Pro ⚡
         </button>
       </div>
     </header>
 
-    <!-- =================================================================== -->
-    <!-- TOP SUITE SWITCHER PILLS                                            -->
-    <!-- =================================================================== -->
-    <div class="bg-white/90 backdrop-blur-md p-2 rounded-3xl border border-white shadow-sm flex items-center gap-2 overflow-x-auto no-scrollbar">
-      <a href="./gst-filing.html" class="px-4 py-2 rounded-2xl bg-[#5B2EFF] text-white font-extrabold text-xs shadow-sm whitespace-nowrap flex items-center gap-1.5">
-        <span>🛒 1. E-Com CSV/ZIP to JSON &amp; Excel</span>
+    <!-- TOP SUITE NAVIGATION PILLS -->
+    <div class="bg-white/90 backdrop-blur-md rounded-3xl p-2 border border-white shadow-xs flex items-center gap-2 overflow-x-auto no-scrollbar">
+      <a
+        href="./gst-filing.html"
+        class="px-4 py-2.5 rounded-2xl bg-[#5B2EFF] text-white font-extrabold text-xs shadow-sm whitespace-nowrap flex items-center gap-1.5"
+      >
+        <span>🛒 1. E-Com CSV / ZIP to JSON &amp; Excel</span>
       </a>
-      <a href="./gov-excel-to-json.html" class="px-4 py-2 rounded-2xl bg-slate-100 hover:bg-indigo-50 text-slate-700 font-bold text-xs whitespace-nowrap flex items-center gap-1.5 transition">
-        <span>📗 2. Gov Excel to JSON</span>
+      <a
+        href="./gov-excel-to-json.html"
+        class="px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-indigo-50 text-[#081B4B] font-extrabold text-xs whitespace-nowrap flex items-center gap-1.5 transition"
+      >
+        <span>📗 2. Gov Excel (.XLSX) to JSON</span>
       </a>
-      <a href="./json-validator.html" class="px-4 py-2 rounded-2xl bg-slate-100 hover:bg-indigo-50 text-slate-700 font-bold text-xs whitespace-nowrap flex items-center gap-1.5 transition">
+      <a
+        href="./json-validator.html"
+        class="px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-indigo-50 text-[#081B4B] font-extrabold text-xs whitespace-nowrap flex items-center gap-1.5 transition"
+      >
         <span>🔍 3. JSON Validator &amp; Editor</span>
       </a>
-      <a href="./reconciliation-2a-2b.html" class="px-4 py-2 rounded-2xl bg-slate-100 hover:bg-indigo-50 text-slate-700 font-bold text-xs whitespace-nowrap flex items-center gap-1.5 transition">
+      <a
+        href="./reconciliation-2a-2b.html"
+        class="px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-indigo-50 text-[#081B4B] font-extrabold text-xs whitespace-nowrap flex items-center gap-1.5 transition"
+      >
         <span>🔄 4. 2A/2B Reconciliation</span>
+      </a>
+      <a
+        href="./ecom-to-tally.html"
+        class="px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-indigo-50 text-[#081B4B] font-extrabold text-xs whitespace-nowrap flex items-center gap-1.5 transition"
+      >
+        <span>📁 5. E-Com to Tally XML</span>
       </a>
     </div>
 
-    <!-- =================================================================== -->
-    <!-- STEP 1: FILING FREQUENCY (MONTHLY / QUARTERLY) & SELLER SETTINGS    -->
-    <!-- =================================================================== -->
-    <section class="bento-card p-4 sm:p-6 space-y-4">
-      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
-        <div>
-          <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-[#5B2EFF] font-extrabold text-[10px] uppercase tracking-wider">
-            STEP 1 • FILING PERIOD &amp; RETURN FREQUENCY
-          </span>
-          <h2 class="text-base sm:text-lg font-extrabold text-[#081B4B] mt-1">
-            Select Monthly or Quarterly (QRMP) GSTR-1 Filing
-          </h2>
-        </div>
+    <!-- MAIN 12-COL BENTO WORKSPACE -->
+    <main class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
 
-        <!-- Monthly vs Quarterly Toggle Pill -->
-        <div class="inline-flex p-1 rounded-2xl bg-slate-100 border border-slate-200">
-          <button
-            type="button"
-            id="freq-monthly-btn"
-            data-freq="MONTHLY"
-            class="freq-toggle-btn px-4 py-2 rounded-xl bg-[#081B4B] text-white font-extrabold text-xs shadow-sm transition"
-          >
-            📅 Monthly Filing
-          </button>
-          <button
-            type="button"
-            id="freq-quarterly-btn"
-            data-freq="QUARTERLY"
-            class="freq-toggle-btn px-4 py-2 rounded-xl text-slate-600 hover:text-[#081B4B] font-extrabold text-xs transition"
-          >
-            📊 Quarterly (QRMP)
-          </button>
-        </div>
-      </div>
+      <!-- LEFT 7 COLS: STEP 1 (PLATFORM TABS) + STEP 2 (MONTHLY/QUARTERLY) -->
+      <section class="lg:col-span-7 space-y-5">
 
-      <!-- Seller GSTIN, Frequency-Aware Period & ECO TCS GSTIN -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-        <div>
-          <label class="block font-extrabold text-slate-700 mb-1">
-            Seller GSTIN (Auto-detected from File) *
-          </label>
-          <input
-            type="text"
-            id="seller-gstin-input"
-            maxlength="15"
-            value="10FVMPR3192R1Z5"
-            placeholder="15-Digit Seller GSTIN"
-            class="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 font-mono font-bold text-[#081B4B] uppercase focus:outline-none focus:border-[#5B2EFF]"
-          />
-        </div>
-
-        <!-- Monthly Period Picker (Shown when Monthly is active) -->
-        <div id="monthly-period-box">
-          <label class="block font-extrabold text-slate-700 mb-1">
-            Filing Month &amp; Year (Monthly GSTR-1) *
-          </label>
-          <div class="grid grid-cols-2 gap-1.5">
-            <select id="filing-month-select" class="px-3 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 font-bold text-[#081B4B]">
-              <option value="01">01 - Jan</option>
-              <option value="02">02 - Feb</option>
-              <option value="03" selected>03 - Mar</option>
-              <option value="04">04 - Apr</option>
-              <option value="05">05 - May</option>
-              <option value="06">06 - Jun</option>
-              <option value="07">07 - Jul</option>
-              <option value="08">08 - Aug</option>
-              <option value="09">09 - Sep</option>
-              <option value="10">10 - Oct</option>
-              <option value="11">11 - Nov</option>
-              <option value="12">12 - Dec</option>
-            </select>
-            <select id="filing-year-select" class="px-3 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 font-mono font-bold text-[#081B4B]">
-              <option value="2025">2025</option>
-              <option value="2026" selected>2026</option>
-              <option value="2027">2027</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Quarterly Period Picker (Shown when Quarterly is active) -->
-        <div id="quarterly-period-box" class="hidden">
-          <label class="block font-extrabold text-[#5B2EFF] mb-1">
-            Select Quarter &amp; FY (Quarterly GSTR-1) *
-          </label>
-          <div class="grid grid-cols-2 gap-1.5">
-            <select id="filing-quarter-select" class="px-2.5 py-2.5 rounded-2xl bg-indigo-50/70 border border-indigo-200 font-extrabold text-[#081B4B]">
-              <option value="06">Q1 (Apr - Jun)</option>
-              <option value="09">Q2 (Jul - Sep)</option>
-              <option value="12">Q3 (Oct - Dec)</option>
-              <option value="03" selected>Q4 (Jan - Mar)</option>
-            </select>
-            <select id="filing-q-year-select" class="px-3 py-2.5 rounded-2xl bg-indigo-50/70 border border-indigo-200 font-mono font-bold text-[#081B4B]">
-              <option value="2025">2025</option>
-              <option value="2026" selected>2026</option>
-              <option value="2027">2027</option>
-            </select>
-          </div>
-        </div>
-
-        <div>
-          <label class="block font-extrabold text-slate-700 mb-1">
-            Portal Filing Period Code (<code>fp</code>)
-          </label>
-          <input
-            type="text"
-            id="portal-fp-preview"
-            readonly
-            value="032026"
-            class="w-full px-3.5 py-2.5 rounded-2xl bg-indigo-50/60 border border-indigo-200 font-mono font-black text-[#5B2EFF]"
-          />
-        </div>
-
-        <div>
-          <label class="block font-extrabold text-slate-700 mb-1">
-            E-Com Operator TCS GSTIN (Sec 52)
-          </label>
-          <input
-            type="text"
-            id="eco-gstin-input"
-            maxlength="15"
-            value="10AARCM9332R1CQ"
-            placeholder="Auto-filled from tcs_gstin"
-            class="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 font-mono font-bold text-[#081B4B] uppercase"
-          />
-        </div>
-      </div>
-    </section>
-
-    <!-- =================================================================== -->
-    <!-- STEP 2: SEPARATE MARKETPLACE UPLOAD TABS (MEESHO / AMAZON / FLIPKART)-->
-    <!-- =================================================================== -->
-    <section class="bento-card p-4 sm:p-6 space-y-4">
-      <div class="flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-extrabold text-[10px] uppercase tracking-wider">
-            STEP 2 • DEDICATED MARKETPLACE PARSERS (100% PRIVATE IN RAM)
-          </span>
-          <h2 class="text-base sm:text-lg font-extrabold text-[#081B4B] mt-1">
-            Select Marketplace &amp; Upload Raw GST Reports (<code>.CSV</code>, <code>.XLSX</code> or <code>.ZIP</code>)
-          </h2>
-        </div>
-
-        <div class="flex items-center gap-2">
-          <button
-            type="button"
-            id="load-meesho-demo-btn"
-            class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-sm transition"
-          >
-            ⚡ Load Meesho Demo (Sales + Return)
-          </button>
-          <button
-            type="button"
-            id="clear-all-gst-btn"
-            class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-700 font-extrabold text-xs border border-slate-200 transition"
-          >
-            🔄 Reset / Clear
-          </button>
-        </div>
-      </div>
-
-      <!-- 4 Dedicated Marketplace Selector Tabs -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-        <button
-          type="button"
-          data-mp-tab="MEESHO"
-          class="mp-tab-btn p-3 rounded-2xl border-2 border-[#5B2EFF] bg-indigo-50/70 text-left transition flex items-center gap-2.5 shadow-xs"
-        >
-          <span class="w-9 h-9 rounded-xl bg-pink-600 text-white flex items-center justify-center font-black text-sm shrink-0">M</span>
-          <div class="min-w-0">
-            <div class="font-extrabold text-xs text-[#081B4B] truncate">Meesho GST</div>
-            <div class="text-[10px] font-semibold text-slate-500 truncate">tcs_sales &amp; return / .ZIP</div>
-          </div>
-        </button>
-
-        <button
-          type="button"
-          data-mp-tab="FLIPKART"
-          class="mp-tab-btn p-3 rounded-2xl border-2 border-slate-200 bg-white hover:bg-slate-50 text-left transition flex items-center gap-2.5"
-        >
-          <span class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black text-sm shrink-0">F</span>
-          <div class="min-w-0">
-            <div class="font-extrabold text-xs text-[#081B4B] truncate">Flipkart / Shopsy</div>
-            <div class="text-[10px] font-semibold text-slate-500 truncate">GSTR-1 Sales &amp; Return</div>
-          </div>
-        </button>
-
-        <button
-          type="button"
-          data-mp-tab="AMAZON"
-          class="mp-tab-btn p-3 rounded-2xl border-2 border-slate-200 bg-white hover:bg-slate-50 text-left transition flex items-center gap-2.5"
-        >
-          <span class="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-black text-sm shrink-0">A</span>
-          <div class="min-w-0">
-            <div class="font-extrabold text-xs text-[#081B4B] truncate">Amazon MTR</div>
-            <div class="text-[10px] font-semibold text-slate-500 truncate">B2C &amp; B2B MTR Report</div>
-          </div>
-        </button>
-
-        <button
-          type="button"
-          data-mp-tab="GENERIC"
-          class="mp-tab-btn p-3 rounded-2xl border-2 border-slate-200 bg-white hover:bg-slate-50 text-left transition flex items-center gap-2.5"
-        >
-          <span class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-black text-sm shrink-0">🧾</span>
-          <div class="min-w-0">
-            <div class="font-extrabold text-xs text-[#081B4B] truncate">Other / Tax Bills</div>
-            <div class="text-[10px] font-semibold text-slate-500 truncate">Any Custom CSV/Excel</div>
-          </div>
-        </button>
-      </div>
-
-      <!-- =============================================================== -->
-      <!-- PANEL 1: MEESHO DEDICATED UPLOAD SYSTEM                         -->
-      <!-- =============================================================== -->
-      <div id="mp-panel-MEESHO" class="mp-upload-panel space-y-3">
-        <div class="p-3.5 rounded-2xl bg-pink-50/70 border border-pink-200 text-xs flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <span class="font-extrabold text-pink-900">🛍️ Meesho Official Format Active:</span>
-            <span class="text-pink-800">
-              Supports Meesho <code>tcs_sales.csv/.xlsx</code>, <code>tcs_sales_return.csv/.xlsx</code>, OR direct Meesho GST <code>.ZIP</code> folder!
-            </span>
-          </div>
-          <span class="px-2.5 py-0.5 rounded-full bg-white text-pink-700 font-mono font-bold text-[10px] border border-pink-200">
-            Auto-Subtracts Sales Returns
-          </span>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <!-- Meesho Box A: tcs_sales OR Full Meesho .ZIP -->
-          <label
-            for="meesho-sales-file"
-            class="cursor-pointer p-4 rounded-2xl border-2 border-dashed border-pink-300 bg-white hover:bg-pink-50/40 transition flex flex-col justify-between space-y-2"
-          >
-            <div class="flex items-start justify-between gap-2">
-              <div class="flex items-center gap-2.5">
-                <span class="w-10 h-10 rounded-2xl bg-pink-100 text-pink-700 flex items-center justify-center text-lg font-bold">📈</span>
-                <div>
-                  <div class="font-extrabold text-xs sm:text-sm text-[#081B4B]">
-                    1. Upload Meesho <code>tcs_sales</code> (or Full <code>.ZIP</code>)
-                  </div>
-                  <div class="text-[11px] text-slate-500">
-                    Columns: <code>sup_name, gstin, hsn_code, gst_rate, total_taxable_sale_value, taxable_shipping</code>
-                  </div>
-                </div>
-              </div>
-              <span class="px-2 py-0.5 rounded-md bg-pink-600 text-white font-extrabold text-[10px] shrink-0">SALES</span>
+        <!-- CARD 1: SEPARATE MARKETPLACE UPLOAD TABS -->
+        <div data-3d-tilt class="bento-card p-5 sm:p-6 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-[#5B2EFF] font-extrabold text-[10px] uppercase tracking-wider">
+                ⚡ STEP 1: SELECT MARKETPLACE &amp; UPLOAD REPORT (100% PRIVATE IN RAM)
+              </span>
+              <h2 class="text-base sm:text-lg font-extrabold text-[#081B4B] mt-1">
+                Separate Marketplace GST Report Uploaders
+              </h2>
+              <p class="text-xs text-slate-500">
+                Select your marketplace tab below. Upload raw <strong>.CSV</strong>, <strong>.XLSX</strong>, or direct <strong>.ZIP</strong> files!
+              </p>
             </div>
-            <input type="file" id="meesho-sales-file" accept=".csv,.xlsx,.xls,.zip" multiple class="hidden" />
-            <div id="meesho-sales-status" class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-xl">
-              📂 Tap to select tcs_sales.csv / .xlsx OR Meesho GST .zip file
+            <div class="flex items-center gap-1.5">
+              <button
+                type="button"
+                id="load-platform-demo-btn"
+                class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-xs transition cursor-pointer"
+              >
+                ⚡ Load Demo Data
+              </button>
+              <button
+                type="button"
+                id="reset-filing-data-btn"
+                class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-700 border border-slate-200 font-bold text-xs transition cursor-pointer"
+              >
+                🔄 Reset
+              </button>
             </div>
-          </label>
-
-          <!-- Meesho Box B: tcs_sales_return (Optional separate slot) -->
-          <label
-            for="meesho-return-file"
-            class="cursor-pointer p-4 rounded-2xl border-2 border-dashed border-rose-300 bg-white hover:bg-rose-50/40 transition flex flex-col justify-between space-y-2"
-          >
-            <div class="flex items-start justify-between gap-2">
-              <div class="flex items-center gap-2.5">
-                <span class="w-10 h-10 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center text-lg font-bold">↩️</span>
-                <div>
-                  <div class="font-extrabold text-xs sm:text-sm text-[#081B4B]">
-                    2. Upload Meesho <code>tcs_sales_return</code> (Optional)
-                  </div>
-                  <div class="text-[11px] text-slate-500">
-                    Automatically deducts returned orders &amp; shipping from your state-wise taxable sales!
-                  </div>
-                </div>
-              </div>
-              <span class="px-2 py-0.5 rounded-md bg-rose-600 text-white font-extrabold text-[10px] shrink-0">RETURNS (-)</span>
-            </div>
-            <input type="file" id="meesho-return-file" accept=".csv,.xlsx,.xls,.zip" multiple class="hidden" />
-            <div id="meesho-return-status" class="text-[11px] font-bold text-rose-700 bg-rose-50 px-3 py-1.5 rounded-xl">
-              📂 Tap to select tcs_sales_return.csv / .xlsx (Auto-deducted)
-            </div>
-          </label>
-        </div>
-      </div>
-
-      <!-- =============================================================== -->
-      <!-- PANEL 2: FLIPKART / SHOPSY DEDICATED UPLOAD SYSTEM              -->
-      <!-- =============================================================== -->
-      <div id="mp-panel-FLIPKART" class="mp-upload-panel hidden space-y-3">
-        <div class="p-3.5 rounded-2xl bg-blue-50/70 border border-blue-200 text-xs flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <span class="font-extrabold text-blue-900">🛒 Flipkart / Shopsy GSTR-1 Format Active:</span>
-            <span class="text-blue-800">
-              Supports Flipkart Tax Report (Section 7 B2B, Section 7 B2C, HSN Summary &amp; Return credit notes).
-            </span>
-          </div>
-          <span class="px-2.5 py-0.5 rounded-full bg-white text-blue-700 font-mono font-bold text-[10px] border border-blue-200">
-            Multi-Sheet Excel &amp; CSV
-          </span>
-        </div>
-
-        <label
-          for="flipkart-report-file"
-          class="cursor-pointer p-5 rounded-2xl border-2 border-dashed border-blue-300 bg-white hover:bg-blue-50/40 transition block text-center space-y-2"
-        >
-          <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center text-xl mx-auto font-bold">📦</div>
-          <div class="font-extrabold text-sm text-[#081B4B]">
-            Click to Upload Flipkart / Shopsy GSTR-1 Report (<code>.XLSX</code>, <code>.CSV</code> or <code>.ZIP</code>)
-          </div>
-          <p class="text-xs text-slate-500 max-w-xl mx-auto">
-            Maps <code>Seller GSTIN</code>, <code>Customer's Delivery State</code>, <code>HSN Code</code>, <code>Taxable Value</code>, <code>IGST/CGST/SGST Rate</code> &amp; deducts <code>Return</code> rows automatically.
-          </p>
-          <input type="file" id="flipkart-report-file" accept=".csv,.xlsx,.xls,.zip" multiple class="hidden" />
-          <div id="flipkart-file-status" class="inline-block text-xs font-bold text-blue-700 bg-blue-50 px-4 py-1.5 rounded-xl">
-            📂 Select Flipkart Sales / Tax Report
-          </div>
-        </label>
-      </div>
-
-      <!-- =============================================================== -->
-      <!-- PANEL 3: AMAZON MTR DEDICATED UPLOAD SYSTEM                     -->
-      <!-- =============================================================== -->
-      <div id="mp-panel-AMAZON" class="mp-upload-panel hidden space-y-3">
-        <div class="p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200 text-xs flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <span class="font-extrabold text-amber-950">📦 Amazon MTR (B2C &amp; B2B) Format Active:</span>
-            <span class="text-amber-900">
-              Supports Amazon Monthly Tax Report (<code>Shipment</code>, <code>Refund</code>, <code>Cancel</code> rows).
-            </span>
-          </div>
-          <span class="px-2.5 py-0.5 rounded-full bg-white text-amber-800 font-mono font-bold text-[10px] border border-amber-200">
-            B2B + B2CS + HSN
-          </span>
-        </div>
-
-        <label
-          for="amazon-report-file"
-          class="cursor-pointer p-5 rounded-2xl border-2 border-dashed border-amber-400 bg-white hover:bg-amber-50/40 transition block text-center space-y-2"
-        >
-          <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center text-xl mx-auto font-bold">🛒</div>
-          <div class="font-extrabold text-sm text-[#081B4B]">
-            Click to Upload Amazon MTR B2C / B2B Report (<code>.CSV</code>, <code>.XLSX</code> or <code>.ZIP</code>)
-          </div>
-          <p class="text-xs text-slate-500 max-w-xl mx-auto">
-            Maps <code>Seller Gstin</code>, <code>Customer Bill To Gstid</code>, <code>Ship To State</code>, <code>Hsn/sac</code>, <code>Tax Exclusive Gross</code>, and subtracts <code>Refund</code> rows.
-          </p>
-          <input type="file" id="amazon-report-file" accept=".csv,.xlsx,.xls,.zip" multiple class="hidden" />
-          <div id="amazon-file-status" class="inline-block text-xs font-bold text-amber-900 bg-amber-100/80 px-4 py-1.5 rounded-xl">
-            📂 Select Amazon MTR B2C / B2B File
-          </div>
-        </label>
-      </div>
-
-      <!-- =============================================================== -->
-      <!-- PANEL 4: GENERIC / OTHER TAX INVOICES UPLOAD SYSTEM             -->
-      <!-- =============================================================== -->
-      <div id="mp-panel-GENERIC" class="mp-upload-panel hidden space-y-3">
-        <label
-          for="generic-report-file"
-          class="cursor-pointer p-5 rounded-2xl border-2 border-dashed border-emerald-300 bg-white hover:bg-emerald-50/40 transition block text-center space-y-2"
-        >
-          <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl mx-auto font-bold">🧾</div>
-          <div class="font-extrabold text-sm text-[#081B4B]">
-            Click to Upload Any Custom Sales Register / Tax Invoice Sheet (<code>.CSV</code> / <code>.XLSX</code>)
-          </div>
-          <p class="text-xs text-slate-500 max-w-xl mx-auto">
-            Automatically detects Invoice No, Date, Buyer GSTIN, State, HSN, Qty, Rate, Taxable Value &amp; Tax columns.
-          </p>
-          <input type="file" id="generic-report-file" accept=".csv,.xlsx,.xls,.zip" multiple class="hidden" />
-          <div id="generic-file-status" class="inline-block text-xs font-bold text-emerald-800 bg-emerald-50 px-4 py-1.5 rounded-xl">
-            📂 Select Custom CSV / Excel File
-          </div>
-        </label>
-      </div>
-    </section>
-
-    <!-- =================================================================== -->
-    <!-- STEP 3: LIVE RECONCILIATION SUMMARY + 1-CLICK PORTAL DOWNLOADS      -->
-    <!-- =================================================================== -->
-    <section class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
-
-      <!-- Left 7 Cols: Live Parsed Breakdown KPIs -->
-      <div class="bento-card p-4 sm:p-6 lg:col-span-7 flex flex-col justify-between space-y-4">
-        <div class="flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <span id="active-parser-badge" class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-[#5B2EFF] font-extrabold text-[10px] uppercase">
-              READY TO PARSE
-            </span>
-            <h3 class="text-base font-extrabold text-[#081B4B] mt-0.5">
-              Net GSTR-1 Taxable &amp; Return Reconciliation Summary
-            </h3>
-          </div>
-          <span id="parsed-row-count-pill" class="px-3 py-1 rounded-full bg-slate-100 text-slate-700 font-mono font-bold text-xs">
-            0 Rows Processed
-          </span>
-        </div>
-
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
-          <div class="p-3 rounded-2xl bg-emerald-50/70 border border-emerald-200">
-            <div class="text-[10px] font-bold text-emerald-800 uppercase">Gross Taxable Sales</div>
-            <div id="sum-gross-taxable" class="font-mono font-black text-sm sm:text-base text-emerald-700 mt-0.5">₹0.00</div>
-            <div id="sum-sales-rows" class="text-[10px] text-slate-500">Incl. Taxable Shipping</div>
           </div>
 
-          <div class="p-3 rounded-2xl bg-rose-50/70 border border-rose-200">
-            <div class="text-[10px] font-bold text-rose-800 uppercase">Less: Sales Returns</div>
-            <div id="sum-return-taxable" class="font-mono font-black text-sm sm:text-base text-rose-600 mt-0.5">-₹0.00</div>
-            <div id="sum-return-rows" class="text-[10px] text-slate-500">Auto-Deducted</div>
-          </div>
-
-          <div class="p-3 rounded-2xl bg-indigo-50/80 border border-indigo-200">
-            <div class="text-[10px] font-bold text-[#5B2EFF] uppercase">Net Taxable Value</div>
-            <div id="sum-net-taxable" class="font-mono font-black text-sm sm:text-base text-[#081B4B] mt-0.5">₹0.00</div>
-            <div class="text-[10px] text-indigo-700 font-semibold">Portal Reported Value</div>
-          </div>
-
-          <div class="p-3 rounded-2xl bg-slate-100 border border-slate-200">
-            <div class="text-[10px] font-bold text-slate-600 uppercase">Total Net GST Tax</div>
-            <div id="sum-total-tax" class="font-mono font-black text-sm sm:text-base text-[#081B4B] mt-0.5">₹0.00</div>
-            <div id="sum-tax-split" class="text-[10px] text-slate-500 truncate">IGST + CGST + SGST</div>
-          </div>
-        </div>
-
-        <!-- Tax Split Pill Row -->
-        <div class="grid grid-cols-3 gap-2 text-center bg-slate-50 p-2.5 rounded-2xl border border-slate-200 text-xs">
-          <div>
-            <span class="text-[10px] font-bold text-slate-400 block">NET IGST</span>
-            <span id="sum-igst-val" class="font-mono font-extrabold text-[#081B4B]">₹0.00</span>
-          </div>
-          <div class="border-x border-slate-200">
-            <span class="text-[10px] font-bold text-slate-400 block">NET CGST</span>
-            <span id="sum-cgst-val" class="font-mono font-extrabold text-[#081B4B]">₹0.00</span>
-          </div>
-          <div>
-            <span class="text-[10px] font-bold text-slate-400 block">NET SGST</span>
-            <span id="sum-sgst-val" class="font-mono font-extrabold text-[#081B4B]">₹0.00</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Right 5 Cols: 1-Click Ready Downloads Card -->
-      <div class="purple-3d-card text-white p-5 sm:p-6 lg:col-span-5 flex flex-col justify-between space-y-4">
-        <div class="flex items-center justify-between">
-          <span class="px-3 py-0.5 rounded-full bg-white/15 text-[#10E594] font-extrabold text-[10px] uppercase tracking-wider">
-            GST PORTAL &amp; OFFICER AUDIT READY
-          </span>
-          <span id="output-freq-badge" class="font-mono text-xs font-bold text-indigo-100">
-            MONTHLY • 032026
-          </span>
-        </div>
-
-        <div>
-          <h3 class="text-lg font-extrabold">1-Click GSTR-1 Outputs</h3>
-          <p class="text-xs text-indigo-100 mt-0.5">
-            Includes Table 7 (State-wise B2CS), Table 4A (B2B), Table 12 (HSN Summary), and Table 14/15 (Sec 52 E-Com TCS Summary).
-          </p>
-        </div>
-
-        <div class="space-y-2.5">
-          <button
-            type="button"
-            id="download-gstr1-json-btn"
-            class="w-full py-3 px-4 rounded-2xl bg-[#10E594] hover:bg-emerald-300 text-[#081B4B] font-extrabold text-xs sm:text-sm shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
-          >
-            <span>🏛️ Download GST Portal GSTR-1 (.JSON)</span>
-          </button>
-
-          <div class="grid grid-cols-2 gap-2">
+          <!-- 4 DEDICATED PLATFORM SELECTOR TABS -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 p-1.5 rounded-2xl bg-slate-100 border border-slate-200 text-xs font-extrabold">
             <button
               type="button"
-              id="download-ready-excel-btn"
-              class="py-2.5 px-3 rounded-xl bg-white hover:bg-indigo-50 text-[#081B4B] font-extrabold text-xs shadow transition flex items-center justify-center gap-1.5 cursor-pointer"
+              data-platform-tab="MEESHO"
+              class="platform-tab-btn py-2.5 px-2 rounded-xl bg-[#5B2EFF] text-white shadow-sm transition flex items-center justify-center gap-1.5 cursor-pointer"
             >
-              <span>📗 Multi-Sheet (.XLSX)</span>
+              <span>🛍️ Meesho</span>
             </button>
             <button
               type="button"
-              id="download-ready-csv-btn"
-              class="py-2.5 px-3 rounded-xl bg-white/15 hover:bg-white/25 text-white border border-white/30 font-extrabold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer"
+              data-platform-tab="AMAZON"
+              class="platform-tab-btn py-2.5 px-2 rounded-xl text-slate-700 hover:bg-white transition flex items-center justify-center gap-1.5 cursor-pointer"
             >
-              <span>📊 Ready GSTR-1 (.CSV)</span>
+              <span>📦 Amazon MTR</span>
+            </button>
+            <button
+              type="button"
+              data-platform-tab="FLIPKART"
+              class="platform-tab-btn py-2.5 px-2 rounded-xl text-slate-700 hover:bg-white transition flex items-center justify-center gap-1.5 cursor-pointer"
+            >
+              <span>🛒 Flipkart</span>
+            </button>
+            <button
+              type="button"
+              data-platform-tab="GENERIC"
+              class="platform-tab-btn py-2.5 px-2 rounded-xl text-slate-700 hover:bg-white transition flex items-center justify-center gap-1.5 cursor-pointer"
+            >
+              <span>🧾 Other / Custom</span>
             </button>
           </div>
 
-          <a
-            href="./json-validator.html"
-            class="w-full py-2.5 px-4 rounded-xl bg-[#081B4B]/80 hover:bg-[#081B4B] text-white font-bold text-xs text-center block border border-white/15 transition"
-          >
-            🔍 Check &amp; Edit All Tables in JSON Validator (#3) →
-          </a>
+          <!-- PANEL A: MEESHO DEDICATED UPLOADER (tcs_sales + sales_return + .ZIP) -->
+          <div id="panel-MEESHO" class="platform-upload-panel space-y-3">
+            <div class="p-3.5 rounded-2xl bg-purple-50/70 border border-purple-200 text-xs space-y-1">
+              <div class="font-extrabold text-[#081B4B] flex items-center justify-between">
+                <span>🛍️ Meesho Official GST Report Format (Auto-Detects Columns &amp; Returns)</span>
+                <span class="px-2 py-0.5 rounded bg-[#5B2EFF] text-white text-[10px] font-mono">.ZIP / .CSV / .XLSX</span>
+              </div>
+              <p class="text-[11px] text-slate-600 leading-relaxed">
+                Supports Meesho's <strong>direct downloaded <code>.ZIP</code> file</strong> (e.g. <code>3077556_...zip</code>) OR separate <strong><code>tcs_sales.csv</code></strong> and <strong><code>tcs_sales_return.csv</code></strong> files. Automatically reads <code>total_taxable_sale_value</code>, <code>taxable_shipping</code>, <code>end_customer_state_new</code>, and deducts sales returns!
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <!-- Slot 1: Meesho Sales OR Full ZIP -->
+              <label
+                for="meesho-sales-input"
+                class="cursor-pointer group p-4 rounded-2xl border-2 border-dashed border-[#5B2EFF] bg-indigo-50/40 hover:bg-indigo-50/80 transition flex flex-col justify-between space-y-2"
+              >
+                <div class="flex items-center justify-between">
+                  <span class="px-2.5 py-0.5 rounded-full bg-[#5B2EFF] text-white font-extrabold text-[10px]">
+                    SLOT 1 • GROSS SALES / .ZIP
+                  </span>
+                  <span class="text-lg">📥</span>
+                </div>
+                <div>
+                  <div class="font-extrabold text-xs sm:text-sm text-[#081B4B] group-hover:text-[#5B2EFF]">
+                    Upload Meesho <code>tcs_sales</code> or Full <code>.ZIP</code>
+                  </div>
+                  <p id="meesho-sales-status" class="text-[11px] text-slate-500 mt-0.5">
+                    Tap to select <code>tcs_sales.csv/.xlsx</code> or Meesho <code>.zip</code> file
+                  </p>
+                </div>
+                <input
+                  type="file"
+                  id="meesho-sales-input"
+                  accept=".csv,.xlsx,.xls,.zip"
+                  multiple
+                  class="hidden"
+                />
+              </label>
+
+              <!-- Slot 2: Meesho Sales Return (tcs_sales_return) -->
+              <label
+                for="meesho-return-input"
+                class="cursor-pointer group p-4 rounded-2xl border-2 border-dashed border-rose-400 bg-rose-50/40 hover:bg-rose-50/80 transition flex flex-col justify-between space-y-2"
+              >
+                <div class="flex items-center justify-between">
+                  <span class="px-2.5 py-0.5 rounded-full bg-rose-600 text-white font-extrabold text-[10px]">
+                    SLOT 2 • SALES RETURN (OPTIONAL)
+                  </span>
+                  <span class="text-lg">↩️</span>
+                </div>
+                <div>
+                  <div class="font-extrabold text-xs sm:text-sm text-[#081B4B] group-hover:text-rose-600">
+                    Upload Meesho <code>tcs_sales_return</code>
+                  </div>
+                  <p id="meesho-return-status" class="text-[11px] text-slate-500 mt-0.5">
+                    Auto-deducts return taxable value from gross sales
+                  </p>
+                </div>
+                <input
+                  type="file"
+                  id="meesho-return-input"
+                  accept=".csv,.xlsx,.xls,.zip"
+                  multiple
+                  class="hidden"
+                />
+              </label>
+            </div>
+          </div>
+
+          <!-- PANEL B: AMAZON MTR DEDICATED UPLOADER -->
+          <div id="panel-AMAZON" class="platform-upload-panel hidden space-y-3">
+            <div class="p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200 text-xs space-y-1">
+              <div class="font-extrabold text-[#081B4B] flex items-center justify-between">
+                <span>📦 Amazon MTR (B2C &amp; B2B Monthly Tax Report) Uploader</span>
+                <span class="px-2 py-0.5 rounded bg-amber-500 text-slate-950 text-[10px] font-mono">.CSV / .XLSX / .ZIP</span>
+              </div>
+              <p class="text-[11px] text-slate-600 leading-relaxed">
+                Supports Amazon Seller Central MTR B2C &amp; B2B spreadsheets. Automatically maps <code>Customer Bill To GSTID</code>, <code>Ship To State</code>, <code>Tax Exclusive Gross</code>, <code>IGST/CGST/SGST</code>, and nets off <code>Refund</code> / <code>Cancel</code> rows.
+              </p>
+            </div>
+
+            <label
+              for="amazon-file-input"
+              class="cursor-pointer block p-5 rounded-2xl border-2 border-dashed border-amber-500 bg-amber-50/30 hover:bg-amber-50/70 transition text-center space-y-1.5"
+            >
+              <div class="text-2xl">📦</div>
+              <div class="font-extrabold text-sm text-[#081B4B]">
+                Click Here to Upload Amazon MTR B2C / B2B Report (<code>.CSV</code>, <code>.XLSX</code> or <code>.ZIP</code>)
+              </div>
+              <p id="amazon-file-status" class="text-xs text-slate-500">
+                Supports selecting multiple Amazon B2C &amp; B2B files together
+              </p>
+              <input
+                type="file"
+                id="amazon-file-input"
+                accept=".csv,.xlsx,.xls,.zip"
+                multiple
+                class="hidden"
+              />
+            </label>
+          </div>
+
+          <!-- PANEL C: FLIPKART DEDICATED UPLOADER -->
+          <div id="panel-FLIPKART" class="platform-upload-panel hidden space-y-3">
+            <div class="p-3.5 rounded-2xl bg-blue-50/80 border border-blue-200 text-xs space-y-1">
+              <div class="font-extrabold text-[#081B4B] flex items-center justify-between">
+                <span>🛒 Flipkart GSTR-1 Sales &amp; Return Report Uploader</span>
+                <span class="px-2 py-0.5 rounded bg-blue-600 text-white text-[10px] font-mono">.CSV / .XLSX / .ZIP</span>
+              </div>
+              <p class="text-[11px] text-slate-600 leading-relaxed">
+                Supports Flipkart Tax Report workbooks (Section 7 B2C, Section 4 B2B, and HSN tabs). Automatically maps <code>Customer’s Delivery State</code>, <code>Aggregate Taxable Value</code>, <code>Buyer GSTIN</code>, and deducts return credit notes.
+              </p>
+            </div>
+
+            <label
+              for="flipkart-file-input"
+              class="cursor-pointer block p-5 rounded-2xl border-2 border-dashed border-blue-500 bg-blue-50/30 hover:bg-blue-50/70 transition text-center space-y-1.5"
+            >
+              <div class="text-2xl">🛒</div>
+              <div class="font-extrabold text-sm text-[#081B4B]">
+                Click Here to Upload Flipkart GST Sales Report (<code>.CSV</code>, <code>.XLSX</code> or <code>.ZIP</code>)
+              </div>
+              <p id="flipkart-file-status" class="text-xs text-slate-500">
+                Automatically reads all sheets inside Flipkart Excel or ZIP file
+              </p>
+              <input
+                type="file"
+                id="flipkart-file-input"
+                accept=".csv,.xlsx,.xls,.zip"
+                multiple
+                class="hidden"
+              />
+            </label>
+          </div>
+
+          <!-- PANEL D: GENERIC / OTHER TAX INVOICE UPLOADER -->
+          <div id="panel-GENERIC" class="platform-upload-panel hidden space-y-3">
+            <div class="p-3.5 rounded-2xl bg-emerald-50/80 border border-emerald-200 text-xs space-y-1">
+              <div class="font-extrabold text-[#081B4B] flex items-center justify-between">
+                <span>🧾 Shopsy / Myntra / Custom Tax Invoice CSV or Excel Uploader</span>
+                <span class="px-2 py-0.5 rounded bg-emerald-600 text-white text-[10px] font-mono">UNIVERSAL PARSER</span>
+              </div>
+              <p class="text-[11px] text-slate-600 leading-relaxed">
+                Upload any spreadsheet containing State/Place of Supply, Taxable Value, GST Rate (or Tax Amount), and optional Buyer GSTIN / HSN Code.
+              </p>
+            </div>
+
+            <label
+              for="generic-file-input"
+              class="cursor-pointer block p-5 rounded-2xl border-2 border-dashed border-emerald-500 bg-emerald-50/30 hover:bg-emerald-50/70 transition text-center space-y-1.5"
+            >
+              <div class="text-2xl">🧾</div>
+              <div class="font-extrabold text-sm text-[#081B4B]">
+                Click Here to Upload Custom Tax Invoice Report (<code>.CSV</code>, <code>.XLSX</code> or <code>.ZIP</code>)
+              </div>
+              <p id="generic-file-status" class="text-xs text-slate-500">
+                Universal smart header mapper active
+              </p>
+              <input
+                type="file"
+                id="generic-file-input"
+                accept=".csv,.xlsx,.xls,.zip"
+                multiple
+                class="hidden"
+              />
+            </label>
+          </div>
+
+          <!-- Live Upload Parse Status Bar -->
+          <div id="upload-summary-banner" class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div class="flex items-center gap-2 font-bold text-[#081B4B]">
+              <span id="upload-status-icon">✅</span>
+              <span id="upload-status-text">Ready: Upload your Meesho, Amazon, or Flipkart file above (or click Load Demo Data).</span>
+            </div>
+            <span id="upload-row-counter" class="px-2.5 py-0.5 rounded-full bg-indigo-100 text-[#5B2EFF] font-mono font-extrabold text-[11px]">
+              0 Rows Parsed
+            </span>
+          </div>
         </div>
-      </div>
 
-    </section>
+        <!-- CARD 2: STEP 2 — MONTHLY vs QUARTERLY (QRMP) FILING CONFIG -->
+        <div data-3d-tilt class="bento-card p-5 sm:p-6 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+            <div>
+              <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-extrabold text-[10px] uppercase tracking-wider">
+                🏛️ STEP 2: FILING FREQUENCY (MONTHLY vs QUARTERLY) &amp; GSTIN SETUP
+              </span>
+              <h2 class="text-base font-extrabold text-[#081B4B] mt-1">
+                Select Monthly or Quarterly (QRMP) GSTR-1 Parameters
+              </h2>
+            </div>
 
-    <!-- =================================================================== -->
-    <!-- STEP 4: STATE-WISE B2CS & HSN SUMMARY PREVIEW TABLES                -->
-    <!-- =================================================================== -->
-    <section class="bento-card p-4 sm:p-6 space-y-4">
+            <!-- Monthly vs Quarterly Toggle Pill -->
+            <div class="inline-flex p-1 rounded-2xl bg-slate-100 border border-slate-200 text-xs font-extrabold">
+              <button
+                type="button"
+                id="freq-monthly-btn"
+                data-freq="MONTHLY"
+                class="px-3.5 py-1.5 rounded-xl bg-[#081B4B] text-white shadow-xs transition cursor-pointer"
+              >
+                📅 Monthly Filing
+              </button>
+              <button
+                type="button"
+                id="freq-quarterly-btn"
+                data-freq="QUARTERLY"
+                class="px-3.5 py-1.5 rounded-xl text-slate-600 hover:text-[#081B4B] transition cursor-pointer"
+              >
+                📆 Quarterly (QRMP)
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">
+                Seller GSTIN (Auto-Detected from Meesho/File) *
+              </label>
+              <input
+                type="text"
+                id="seller-gstin-input"
+                maxlength="15"
+                value="10FVMPR3192G1Z5"
+                placeholder="15-Digit Seller GSTIN"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-mono font-bold uppercase text-[#081B4B] focus:outline-none focus:border-[#5B2EFF]"
+              />
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">
+                E-Com Operator TCS GSTIN (Sec 52)
+              </label>
+              <input
+                type="text"
+                id="eco-gstin-input"
+                maxlength="15"
+                value="10AARCM9332R1CQ"
+                placeholder="e.g. 10AARCM9332R1CQ"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-mono font-bold uppercase text-[#081B4B] focus:outline-none focus:border-[#5B2EFF]"
+              />
+            </div>
+
+            <!-- Dynamic Period Selector (Switches between 12 Months and 4 Quarters) -->
+            <div id="monthly-selector-wrap">
+              <label class="block font-bold text-slate-700 mb-1">
+                Select Filing Month *
+              </label>
+              <select
+                id="filing-month-select"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-bold text-[#081B4B] focus:outline-none focus:border-[#5B2EFF]"
+              >
+                <option value="01">01 — January</option>
+                <option value="02">02 — February</option>
+                <option value="03" selected>03 — March</option>
+                <option value="04">04 — April</option>
+                <option value="05">05 — May</option>
+                <option value="06">06 — June</option>
+                <option value="07">07 — July</option>
+                <option value="08">08 — August</option>
+                <option value="09">09 — September</option>
+                <option value="10">10 — October</option>
+                <option value="11">11 — November</option>
+                <option value="12">12 — December</option>
+              </select>
+            </div>
+
+            <div id="quarterly-selector-wrap" class="hidden">
+              <label class="block font-extrabold text-[#5B2EFF] mb-1">
+                Select QRMP Quarter (3-Month Consolidated) *
+              </label>
+              <select
+                id="filing-quarter-select"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-indigo-50/70 border border-indigo-300 font-extrabold text-[#081B4B] focus:outline-none focus:border-[#5B2EFF]"
+              >
+                <option value="06">Q1 (Apr – Jun) → Portal Period 06YYYY</option>
+                <option value="09">Q2 (Jul – Sep) → Portal Period 09YYYY</option>
+                <option value="12">Q3 (Oct – Dec) → Portal Period 12YYYY</option>
+                <option value="03" selected>Q4 (Jan – Mar) → Portal Period 03YYYY</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">
+                Return Year (YYYY) &amp; Portal <code>fp</code> Code *
+              </label>
+              <div class="flex gap-2">
+                <select
+                  id="filing-year-select"
+                  class="w-28 px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-mono font-bold text-[#081B4B]"
+                >
+                  <option value="2025">2025</option>
+                  <option value="2026" selected>2026</option>
+                  <option value="2027">2027</option>
+                </select>
+                <input
+                  type="text"
+                  id="computed-fp-display"
+                  readonly
+                  value="032026 (Monthly)"
+                  class="flex-1 min-w-0 px-3 py-2.5 rounded-xl bg-indigo-50 border border-indigo-200 font-mono font-extrabold text-[#5B2EFF] text-center"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-1 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-600">
+            <label class="inline-flex items-center gap-2 font-bold text-[#081B4B] cursor-pointer">
+              <input type="checkbox" id="include-shipping-taxable-toggle" class="w-4 h-4 accent-[#5B2EFF] rounded" />
+              <span>✔️ Add separate shipping taxable value only when not already included in total taxable sale value</span>
+            </label>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- RIGHT 5 COLS: 1-CLICK READY OUTPUTS + NET RECONCILIATION SUMMARY -->
+      <section class="lg:col-span-5 space-y-5">
+
+        <!-- 3D PURPLE SUMMARY & 1-CLICK DOWNLOADS CARD -->
+        <div data-3d-tilt class="purple-3d-card text-white p-5 sm:p-6 space-y-4 relative overflow-hidden">
+          <div class="-top-10 -right-10 w-36 h-36 rounded-full bg-white/10 pointer-events-none absolute"></div>
+
+          <div class="flex items-center justify-between">
+            <span id="active-platform-pill" class="px-3 py-0.5 rounded-full bg-[#10E594] text-[#081B4B] font-extrabold text-[10px] uppercase tracking-wider">
+              MEESHO • MONTHLY MODE
+            </span>
+            <span class="font-mono text-xs text-indigo-100" id="active-fp-pill">FP: 032026</span>
+          </div>
+
+          <div>
+            <div class="text-[11px] uppercase tracking-wider text-indigo-200">
+              Net GSTR-1 Taxable Value (Gross Sales − Returns)
+            </div>
+            <div id="kpi-net-taxable" class="text-2xl sm:text-3xl font-black font-mono tracking-tight mt-0.5">
+              ₹0.00
+            </div>
+          </div>
+
+          <!-- Gross vs Return Breakdown Mini Cards -->
+          <div class="bg-white text-[#081B4B] rounded-2xl p-3.5 shadow-lg grid grid-cols-3 gap-2 text-center text-xs">
+            <div class="border-r border-slate-100 pr-1">
+              <div class="text-[10px] font-bold text-slate-400">Gross Sales</div>
+              <div id="kpi-gross-sales" class="font-mono font-black text-emerald-600 mt-0.5">₹0.00</div>
+            </div>
+            <div class="border-r border-slate-100 px-1">
+              <div class="text-[10px] font-bold text-slate-400">Sales Returns</div>
+              <div id="kpi-sales-returns" class="font-mono font-black text-rose-600 mt-0.5">-₹0.00</div>
+            </div>
+            <div class="pl-1">
+              <div class="text-[10px] font-bold text-slate-400">Net GST Liability</div>
+              <div id="kpi-net-tax" class="font-mono font-black text-[#5B2EFF] mt-0.5">₹0.00</div>
+            </div>
+          </div>
+
+          <!-- IGST / CGST / SGST Split Bar -->
+          <div class="grid grid-cols-3 gap-2 text-center text-[11px] bg-white/10 rounded-2xl p-2.5 font-mono">
+            <div>
+              <span class="text-indigo-200 block text-[10px]">IGST</span>
+              <strong id="kpi-igst-val">₹0.00</strong>
+            </div>
+            <div>
+              <span class="text-indigo-200 block text-[10px]">CGST</span>
+              <strong id="kpi-cgst-val">₹0.00</strong>
+            </div>
+            <div>
+              <span class="text-indigo-200 block text-[10px]">SGST</span>
+              <strong id="kpi-sgst-val">₹0.00</strong>
+            </div>
+          </div>
+
+          <!-- 1-CLICK ACTION BUTTONS (FOR GST PORTAL & GST OFFICERS) -->
+          <div class="space-y-2.5 pt-1">
+            <button
+              type="button"
+              id="download-gstr1-json-btn"
+              class="w-full py-3.5 px-4 rounded-2xl bg-[#10E594] hover:bg-emerald-300 text-[#081B4B] font-extrabold text-xs shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <span>🏛️ Download 1-Click Portal GSTR-1 (.JSON)</span>
+            </button>
+
+            <button
+              type="button"
+              id="download-portal-csv-btn"
+              class="w-full py-3 px-4 rounded-2xl bg-white hover:bg-indigo-50 text-[#081B4B] font-extrabold text-xs shadow transition flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <span>📊 Download Portal-Ready GSTR-1 Summary (.CSV)</span>
+            </button>
+
+            <button
+              type="button"
+              id="download-officer-audit-btn"
+              class="w-full py-3 px-4 rounded-2xl bg-[#081B4B] hover:bg-slate-900 text-white border border-indigo-400/40 font-extrabold text-xs shadow transition flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <span>👮 Download GST Officer / CA Scrutiny Sheet (.CSV)</span>
+            </button>
+
+            <a
+              href="./json-validator.html"
+              id="open-in-validator-link"
+              class="w-full py-2.5 px-4 rounded-2xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs text-center transition block"
+            >
+              🔍 Check &amp; Edit All Tables in JSON Validator (#3) →
+            </a>
+          </div>
+        </div>
+
+        <!-- HSN & ECO TCS SEC 52 SUMMARY CARD -->
+        <div data-3d-tilt class="bento-card p-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#5B2EFF]">
+                TABLE 12 (HSN) &amp; TABLE 14 (ECO SEC 52)
+              </span>
+              <h3 class="text-sm font-extrabold text-[#081B4B]">HSN-Wise Net Summary</h3>
+            </div>
+            <span id="hsn-count-badge" class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-[#5B2EFF] font-mono font-bold text-[11px]">
+              0 HSNs
+            </span>
+          </div>
+
+          <div class="overflow-x-auto max-h-56">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-slate-100 text-slate-700 font-extrabold border-b border-slate-200">
+                  <th class="py-2 px-2.5">HSN Code</th>
+                  <th class="py-2 px-2 text-right">Net Qty</th>
+                  <th class="py-2 px-2 text-right">Rate</th>
+                  <th class="py-2 px-2.5 text-right">Net Taxable</th>
+                  <th class="py-2 px-2.5 text-right">Total Tax</th>
+                </tr>
+              </thead>
+              <tbody id="hsn-summary-tbody" class="divide-y divide-slate-100 font-mono text-[11px]">
+                <tr>
+                  <td colspan="5" class="py-4 text-center text-slate-400 font-sans">
+                    Upload file or click Load Demo Data to view HSN summary.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- FULL-WIDTH TABLE: STATE-WISE B2CS (TABLE 7) & B2B BREAKDOWN -->
+    <section data-3d-tilt class="bento-card p-5 sm:p-6 space-y-4">
       <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
         <div>
-          <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#5B2EFF]">
-            LIVE PORTAL TABLE PREVIEW (B2CS STATE-WISE + HSN TABLE 12)
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">
+            GST PORTAL TABLE 7 (B2CS) &amp; OFFICER AUDIT BREAKDOWN
           </span>
-          <h3 class="text-base font-extrabold text-[#081B4B]">
-            Consolidated State-Wise B2CS &amp; HSN Summary (After Return Deduction)
-          </h3>
+          <h2 class="text-base font-extrabold text-[#081B4B]">
+            State-Wise Net Taxable Sales (After Deducting <code>tcs_sales_return</code>)
+          </h2>
         </div>
-        <div class="flex items-center gap-2">
-          <button type="button" id="preview-tab-b2cs" class="px-3 py-1.5 rounded-xl bg-[#081B4B] text-white font-extrabold text-xs">
-            🗺️ State-Wise B2CS (Table 7)
-          </button>
-          <button type="button" id="preview-tab-hsn" class="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 font-extrabold text-xs">
-            📦 HSN Summary (Table 12)
-          </button>
-          <button type="button" id="preview-tab-raw" class="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 font-extrabold text-xs">
-            📋 Order-Wise Audit Rows
-          </button>
-        </div>
+        <span id="state-count-badge" class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 font-mono font-extrabold text-xs">
+          0 States Consolidated
+        </span>
       </div>
 
-      <!-- Table 1: State-Wise B2CS -->
-      <div id="table-wrap-b2cs" class="overflow-x-auto">
+      <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse text-xs">
           <thead>
-            <tr class="bg-slate-100 text-slate-600 font-extrabold uppercase text-[10px]">
-              <th class="p-3 rounded-l-xl">Place of Supply (POS)</th>
-              <th class="p-3">Supply Type</th>
-              <th class="p-3">GST Rate</th>
-              <th class="p-3 text-right">Net Taxable Value</th>
-              <th class="p-3 text-right">IGST</th>
-              <th class="p-3 text-right">CGST</th>
-              <th class="p-3 text-right rounded-r-xl">SGST</th>
+            <tr class="bg-[#081B4B] text-white font-extrabold">
+              <th class="py-3 px-3">Place of Supply (POS State Code)</th>
+              <th class="py-3 px-2.5 text-center">Supply Type</th>
+              <th class="py-3 px-2.5 text-center">GST Rate</th>
+              <th class="py-3 px-3 text-right">Gross Sales (₹)</th>
+              <th class="py-3 px-3 text-right">Returns Deducted (₹)</th>
+              <th class="py-3 px-3 text-right bg-[#5B2EFF]">Net Taxable Value (₹)</th>
+              <th class="py-3 px-2.5 text-right">IGST (₹)</th>
+              <th class="py-3 px-2.5 text-right">CGST (₹)</th>
+              <th class="py-3 px-2.5 text-right">SGST (₹)</th>
             </tr>
           </thead>
-          <tbody id="b2cs-preview-tbody" class="divide-y divide-slate-100 font-mono">
+          <tbody id="b2cs-state-tbody" class="divide-y divide-slate-200/80 font-mono text-[11.5px]">
             <tr>
-              <td colspan="7" class="p-6 text-center text-slate-400 font-sans font-semibold">
-                Upload your Meesho, Flipkart or Amazon report above (or click "⚡ Load Meesho Demo") to view State-wise B2CS summary.
+              <td colspan="9" class="py-8 text-center text-slate-400 font-sans font-semibold">
+                Upload your Meesho (<code>tcs_sales</code> / <code>.zip</code>), Amazon MTR, or Flipkart report above to generate State-Wise B2CS &amp; HSN tables.
               </td>
             </tr>
           </tbody>
-        </table>
-      </div>
-
-      <!-- Table 2: HSN Summary -->
-      <div id="table-wrap-hsn" class="hidden overflow-x-auto">
-        <table class="w-full text-left border-collapse text-xs">
-          <thead>
-            <tr class="bg-slate-100 text-slate-600 font-extrabold uppercase text-[10px]">
-              <th class="p-3 rounded-l-xl">HSN Code</th>
-              <th class="p-3">UQC</th>
-              <th class="p-3 text-right">Net Qty</th>
-              <th class="p-3 text-right">GST Rate</th>
-              <th class="p-3 text-right">Net Taxable Value</th>
-              <th class="p-3 text-right">IGST</th>
-              <th class="p-3 text-right">CGST</th>
-              <th class="p-3 text-right rounded-r-xl">SGST</th>
-            </tr>
-          </thead>
-          <tbody id="hsn-preview-tbody" class="divide-y divide-slate-100 font-mono"></tbody>
-        </table>
-      </div>
-
-      <!-- Table 3: Raw Order-Wise Rows -->
-      <div id="table-wrap-raw" class="hidden overflow-x-auto">
-        <table class="w-full text-left border-collapse text-xs">
-          <thead>
-            <tr class="bg-slate-100 text-slate-600 font-extrabold uppercase text-[10px]">
-              <th class="p-3 rounded-l-xl">Source / Type</th>
-              <th class="p-3">Order / Sub-Order No</th>
-              <th class="p-3">Date</th>
-              <th class="p-3">Customer State</th>
-              <th class="p-3">HSN</th>
-              <th class="p-3 text-right">Rate</th>
-              <th class="p-3 text-right">Taxable (Incl. Ship)</th>
-              <th class="p-3 text-right rounded-r-xl">Net Tax</th>
-            </tr>
-          </thead>
-          <tbody id="raw-preview-tbody" class="divide-y divide-slate-100 font-mono"></tbody>
         </table>
       </div>
     </section>
 
   </div>
 
-  <!-- ===================================================================== -->
-  <!-- MULTI-PLATFORM GSTR-1 PARSER ENGINE (MEESHO / AMAZON / FLIPKART)      -->
-  <!-- ===================================================================== -->
+  <!-- MULTI-PLATFORM CSV/XLSX/ZIP PARSER & MONTHLY/QUARTERLY GSTR-1 ENGINE -->
   <script type="module">
     import {
       AppState,
+      subscribeAppState,
       consumeFreeActionOrLock,
       sanitizeHTML,
       formatINR,
       showToast,
+      logoutUser,
+      syncProDOMElements,
       init3DTiltCards
-    } from "./assets/js/security-core.js?v=8.2";
+    } from "./assets/js/security-core.js?v=8.4";
 
     init3DTiltCards();
 
-    // Official Indian GST State Code Lookup Map
     const STATE_NAME_TO_CODE = {
       "JAMMU AND KASHMIR": "01", "JAMMU & KASHMIR": "01",
       "HIMACHAL PRADESH": "02",
@@ -1386,7 +818,7 @@
       "DELHI": "07", "NEW DELHI": "07", "NCT OF DELHI": "07",
       "RAJASTHAN": "08",
       "UTTAR PRADESH": "09", "UP": "09",
-      "BIHAR": "10",
+      "BIHAR": "10", "BR": "10",
       "SIKKIM": "11",
       "ARUNACHAL PRADESH": "12",
       "NAGALAND": "13",
@@ -1401,18 +833,17 @@
       "CHHATTISGARH": "22", "CHATTISGARH": "22",
       "MADHYA PRADESH": "23", "MP": "23",
       "GUJARAT": "24",
-      "DAMAN AND DIU": "25",
-      "DADRA AND NAGAR HAVELI": "26", "DADRA AND NAGAR HAVELI AND DAMAN AND DIU": "26",
-      "MAHARASHTRA": "27",
+      "DADRA AND NAGAR HAVELI AND DAMAN AND DIU": "26", "DAMAN AND DIU": "25", "DADRA AND NAGAR HAVELI": "26",
+      "MAHARASHTRA": "27", "MH": "27",
       "ANDHRA PRADESH": "37", "AP": "37",
-      "KARNATAKA": "29",
+      "KARNATAKA": "29", "KA": "29",
       "GOA": "30",
       "LAKSHADWEEP": "31",
       "KERALA": "32",
       "TAMIL NADU": "33", "TAMILNADU": "33",
       "PUDUCHERRY": "34", "PONDICHERRY": "34",
       "ANDAMAN AND NICOBAR ISLANDS": "35", "ANDAMAN & NICOBAR": "35",
-      "TELANGANA": "36",
+      "TELANGANA": "36", "TG": "36", "TS": "36",
       "LADAKH": "38"
     };
 
@@ -1425,166 +856,195 @@
       "21": "Odisha", "22": "Chhattisgarh", "23": "Madhya Pradesh", "24": "Gujarat",
       "26": "Dadra & Nagar Haveli and Daman & Diu", "27": "Maharashtra", "29": "Karnataka",
       "30": "Goa", "31": "Lakshadweep", "32": "Kerala", "33": "Tamil Nadu",
-      "34": "Puducherry", "35": "Andaman & Nicobar", "36": "Telangana",
-      "37": "Andhra Pradesh", "38": "Ladakh"
+      "34": "Puducherry", "35": "Andaman & Nicobar", "36": "Telangana", "37": "Andhra Pradesh",
+      "38": "Ladakh"
     };
 
-    function resolveStateCode(rawStateInput, fallbackCode = "09") {
-      if (!rawStateInput) return fallbackCode;
-      const clean = String(rawStateInput).trim().toUpperCase();
-      const numMatch = clean.match(/^(\d{2})/);
-      if (numMatch && CODE_TO_STATE_NAME[numMatch[1]]) return numMatch[1];
-      if (STATE_NAME_TO_CODE[clean]) return STATE_NAME_TO_CODE[clean];
+    function resolveStateCode(rawVal = "") {
+      const str = String(rawVal || "").trim().toUpperCase();
+      if (!str) return "09";
+      const codeMatch = str.match(/^(\d{2})\b/);
+      if (codeMatch && CODE_TO_STATE_NAME[codeMatch[1]]) return codeMatch[1];
+      if (STATE_NAME_TO_CODE[str]) return STATE_NAME_TO_CODE[str];
       for (const [name, code] of Object.entries(STATE_NAME_TO_CODE)) {
-        if (clean.includes(name)) return code;
+        if (str.includes(name)) return code;
       }
-      return fallbackCode;
+      return "09";
     }
 
-    // State Management for GSTR-1 Engine
-    let activeMarketplace = "MEESHO";
-    let filingFrequency = "MONTHLY"; // "MONTHLY" or "QUARTERLY"
-    let meeshoSalesRows = [];
+    let activePlatform = "MEESHO";
+    let filingFrequency = "MONTHLY";
+    let meeshoGrossRows = [];
     let meeshoReturnRows = [];
     let otherPlatformRows = [];
-    let latestCompiledPortalJSON = null;
-    let latestB2CSList = [];
-    let latestHSNList = [];
-    let latestNormalizedRows = [];
+    let latestComputedSummary = null;
 
-    // Pre-fill Seller GSTIN from User Profile if valid
-    const sellerGstinInput = document.getElementById("seller-gstin-input");
-    if (AppState.profile?.gstin && AppState.profile.gstin.length === 15) {
-      sellerGstinInput.value = AppState.profile.gstin.toUpperCase();
-    }
+    // Platform Tab Switching
+    const platformBtns = document.querySelectorAll("[data-platform-tab]");
+    const platformPanels = document.querySelectorAll(".platform-upload-panel");
 
-    // =========================================================================
-    // 1. MONTHLY VS QUARTERLY FILING FREQUENCY SELECTOR
-    // =========================================================================
-    const monthlyBox = document.getElementById("monthly-period-box");
-    const quarterlyBox = document.getElementById("quarterly-period-box");
-    const fpPreview = document.getElementById("portal-fp-preview");
-    const outputFreqBadge = document.getElementById("output-freq-badge");
-
-    function updatePeriodCode() {
-      if (filingFrequency === "MONTHLY") {
-        const m = document.getElementById("filing-month-select").value;
-        const y = document.getElementById("filing-year-select").value;
-        fpPreview.value = `${m}${y}`;
-        outputFreqBadge.textContent = `MONTHLY • ${m}${y}`;
-      } else {
-        const qEndMonth = document.getElementById("filing-quarter-select").value;
-        const qYear = document.getElementById("filing-q-year-select").value;
-        fpPreview.value = `${qEndMonth}${qYear}`;
-        const qLabel =
-          qEndMonth === "06" ? "Q1" : qEndMonth === "09" ? "Q2" : qEndMonth === "12" ? "Q3" : "Q4";
-        outputFreqBadge.textContent = `QUARTERLY (${qLabel}) • ${qEndMonth}${qYear}`;
-      }
-      recalculateAndRenderAll();
-    }
-
-    document.querySelectorAll(".freq-toggle-btn").forEach((btn) => {
+    platformBtns.forEach((btn) => {
       btn.addEventListener("click", () => {
-        filingFrequency = btn.getAttribute("data-freq") || "MONTHLY";
-        document.querySelectorAll(".freq-toggle-btn").forEach((b) => {
-          b.className = "freq-toggle-btn px-4 py-2 rounded-xl text-slate-600 hover:text-[#081B4B] font-extrabold text-xs transition";
+        activePlatform = btn.getAttribute("data-platform-tab");
+        platformBtns.forEach((b) => {
+          const isMatch = b.getAttribute("data-platform-tab") === activePlatform;
+          b.className = isMatch
+            ? "platform-tab-btn py-2.5 px-2 rounded-xl bg-[#5B2EFF] text-white shadow-sm transition flex items-center justify-center gap-1.5 cursor-pointer"
+            : "platform-tab-btn py-2.5 px-2 rounded-xl text-slate-700 hover:bg-white transition flex items-center justify-center gap-1.5 cursor-pointer";
         });
-        btn.className = "freq-toggle-btn px-4 py-2 rounded-xl bg-[#081B4B] text-white font-extrabold text-xs shadow-sm transition";
-
-        if (filingFrequency === "MONTHLY") {
-          monthlyBox.classList.remove("hidden");
-          quarterlyBox.classList.add("hidden");
-        } else {
-          monthlyBox.classList.add("hidden");
-          quarterlyBox.classList.remove("hidden");
-        }
-        updatePeriodCode();
-        showToast(
-          filingFrequency === "QUARTERLY"
-            ? "📊 Switched to Quarterly (QRMP) GSTR-1 Filing Mode!"
-            : "📅 Switched to Monthly GSTR-1 Filing Mode!",
-          "info",
-          2800
-        );
+        platformPanels.forEach((p) => {
+          p.classList.toggle("hidden", p.id !== `panel-${activePlatform}`);
+        });
+        updateHeaderPills();
       });
     });
 
-    ["filing-month-select", "filing-year-select", "filing-quarter-select", "filing-q-year-select", "seller-gstin-input", "eco-gstin-input"].forEach((id) => {
-      document.getElementById(id)?.addEventListener("change", updatePeriodCode);
-      document.getElementById(id)?.addEventListener("input", updatePeriodCode);
-    });
+    // Monthly vs Quarterly (QRMP) Frequency Toggle
+    const freqMonthlyBtn = document.getElementById("freq-monthly-btn");
+    const freqQuarterlyBtn = document.getElementById("freq-quarterly-btn");
+    const monthlyWrap = document.getElementById("monthly-selector-wrap");
+    const quarterlyWrap = document.getElementById("quarterly-selector-wrap");
 
-    // =========================================================================
-    // 2. MARKETPLACE TAB SWITCHING (MEESHO / FLIPKART / AMAZON / GENERIC)
-    // =========================================================================
-    document.querySelectorAll("[data-mp-tab]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        activeMarketplace = btn.getAttribute("data-mp-tab") || "MEESHO";
-        document.querySelectorAll("[data-mp-tab]").forEach((b) => {
-          b.className = "mp-tab-btn p-3 rounded-2xl border-2 border-slate-200 bg-white hover:bg-slate-50 text-left transition flex items-center gap-2.5";
-        });
-        btn.className = "mp-tab-btn p-3 rounded-2xl border-2 border-[#5B2EFF] bg-indigo-50/70 text-left transition flex items-center gap-2.5 shadow-xs";
+    function setFilingFrequency(mode) {
+      filingFrequency = mode === "QUARTERLY" ? "QUARTERLY" : "MONTHLY";
+      freqMonthlyBtn.className =
+        filingFrequency === "MONTHLY"
+          ? "px-3.5 py-1.5 rounded-xl bg-[#081B4B] text-white shadow-xs transition cursor-pointer"
+          : "px-3.5 py-1.5 rounded-xl text-slate-600 hover:text-[#081B4B] transition cursor-pointer";
+      freqQuarterlyBtn.className =
+        filingFrequency === "QUARTERLY"
+          ? "px-3.5 py-1.5 rounded-xl bg-[#5B2EFF] text-white shadow-xs transition cursor-pointer"
+          : "px-3.5 py-1.5 rounded-xl text-slate-600 hover:text-[#081B4B] transition cursor-pointer";
 
-        document.querySelectorAll(".mp-upload-panel").forEach((panel) => panel.classList.add("hidden"));
-        document.getElementById(`mp-panel-${activeMarketplace}`)?.classList.remove("hidden");
+      monthlyWrap.classList.toggle("hidden", filingFrequency !== "MONTHLY");
+      quarterlyWrap.classList.toggle("hidden", filingFrequency !== "QUARTERLY");
+      updateHeaderPills();
+      recomputeGSTR1Tables();
+    }
+
+    freqMonthlyBtn?.addEventListener("click", () => setFilingFrequency("MONTHLY"));
+    freqQuarterlyBtn?.addEventListener("click", () => setFilingFrequency("QUARTERLY"));
+
+    function getActiveFilingPeriodMMYYYY() {
+      const yr = document.getElementById("filing-year-select")?.value || "2026";
+      const mm =
+        filingFrequency === "QUARTERLY"
+          ? document.getElementById("filing-quarter-select")?.value || "03"
+          : document.getElementById("filing-month-select")?.value || "03";
+      return `${mm}${yr}`;
+    }
+
+    function updateHeaderPills() {
+      const fp = getActiveFilingPeriodMMYYYY();
+      const modeLabel = filingFrequency === "QUARTERLY" ? "QUARTERLY (QRMP)" : "MONTHLY";
+      const fpDisplay = document.getElementById("computed-fp-display");
+      if (fpDisplay) fpDisplay.value = `${fp} (${modeLabel})`;
+      const pill = document.getElementById("active-platform-pill");
+      if (pill) pill.textContent = `${activePlatform} • ${modeLabel}`;
+      const fpPill = document.getElementById("active-fp-pill");
+      if (fpPill) fpPill.textContent = `FP: ${fp}`;
+    }
+
+    [
+      "filing-month-select",
+      "filing-quarter-select",
+      "filing-year-select",
+      "seller-gstin-input",
+      "eco-gstin-input",
+      "include-shipping-taxable-toggle"
+    ].forEach((id) => {
+      document.getElementById(id)?.addEventListener("change", () => {
+        updateHeaderPills();
+        recomputeGSTR1Tables();
       });
     });
 
-    // Preview Table Switcher
-    const wrapB2CS = document.getElementById("table-wrap-b2cs");
-    const wrapHSN = document.getElementById("table-wrap-hsn");
-    const wrapRaw = document.getElementById("table-wrap-raw");
+    // UNIVERSAL FILE & .ZIP EXTRACTOR IN RAM (CSV / XLSX / XLS / ZIP)
+    async function extractRowsFromFileList(fileList, forcedRole = "AUTO") {
+      const extractedFiles = [];
 
-    function switchPreviewTable(mode) {
-      wrapB2CS.classList.toggle("hidden", mode !== "B2CS");
-      wrapHSN.classList.toggle("hidden", mode !== "HSN");
-      wrapRaw.classList.toggle("hidden", mode !== "RAW");
+      for (const file of Array.from(fileList || [])) {
+        const lowerName = file.name.toLowerCase();
 
-      document.getElementById("preview-tab-b2cs").className =
-        mode === "B2CS"
-          ? "px-3 py-1.5 rounded-xl bg-[#081B4B] text-white font-extrabold text-xs"
-          : "px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 font-extrabold text-xs";
-      document.getElementById("preview-tab-hsn").className =
-        mode === "HSN"
-          ? "px-3 py-1.5 rounded-xl bg-[#081B4B] text-white font-extrabold text-xs"
-          : "px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 font-extrabold text-xs";
-      document.getElementById("preview-tab-raw").className =
-        mode === "RAW"
-          ? "px-3 py-1.5 rounded-xl bg-[#081B4B] text-white font-extrabold text-xs"
-          : "px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 font-extrabold text-xs";
-    }
-
-    document.getElementById("preview-tab-b2cs")?.addEventListener("click", () => switchPreviewTable("B2CS"));
-    document.getElementById("preview-tab-hsn")?.addEventListener("click", () => switchPreviewTable("HSN"));
-    document.getElementById("preview-tab-raw")?.addEventListener("click", () => switchPreviewTable("RAW"));
-
-    // =========================================================================
-    // 3. SMART MULTI-PLATFORM CSV / XLSX / ZIP READER IN RAM
-    // =========================================================================
-    function normalizeHeaderKey(k) {
-      return String(k || "")
-        .toLowerCase()
-        .replace(/[^a-z0-9]/g, "");
-    }
-
-    function getField(rowObj, candidateKeys = []) {
-      const normMap = {};
-      for (const [k, v] of Object.entries(rowObj)) {
-        normMap[normalizeHeaderKey(k)] = v;
-      }
-      for (const cand of candidateKeys) {
-        const nk = normalizeHeaderKey(cand);
-        if (normMap[nk] !== undefined && normMap[nk] !== null && String(normMap[nk]).trim() !== "") {
-          return normMap[nk];
-        }
-      }
-      // Partial match fallback
-      for (const cand of candidateKeys) {
-        const nk = normalizeHeaderKey(cand);
-        for (const [actualKey, val] of Object.entries(normMap)) {
-          if (actualKey.includes(nk) && val !== undefined && val !== null && String(val).trim() !== "") {
-            return val;
+        // 1. Direct .ZIP File Unpacking in RAM
+        if (lowerName.endsWith(".zip") && window.JSZip) {
+          try {
+            const zipData = await window.JSZip.loadAsync(file);
+            for (const [entryName, zipEntry] of Object.entries(zipData.files)) {
+              if (zipEntry.dir) continue;
+              const cleanEntry = entryName.toLowerCase();
+              if (cleanEntry.endsWith(".csv") || cleanEntry.endsWith(".xlsx") || cleanEntry.endsWith(".xls")) {
+                const uint8 = await zipEntry.async("uint8array");
+                const wb = window.XLSX.read(uint8, { type: "array" });
+                wb.SheetNames.forEach((sheetName) => {
+                  const rows = window.XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { defval: "" });
+                  if (rows.length > 0) {
+                    extractedFiles.push({
+                      fileName: `${entryName} (${sheetName})`,
+                      isReturnFile:
+                        forcedRole === "RETURN" ||
+                        cleanEntry.includes("return") ||
+                        cleanEntry.includes("crn") ||
+                        sheetName.toLowerCase().includes("return"),
+                      rows
+                    });
+                  }
+                });
+              }
+            }
+          } catch (err) {
+            console.error("ZIP unpack error:", err);
           }
+          continue;
+        }
+
+        // 2. Standard .CSV / .XLSX / .XLS File Reader
+        try {
+          const arrayBuf = await file.arrayBuffer();
+          const wb = window.XLSX.read(new Uint8Array(arrayBuf), { type: "array" });
+          wb.SheetNames.forEach((sheetName) => {
+            const rows = window.XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { defval: "" });
+            if (rows.length > 0) {
+              extractedFiles.push({
+                fileName: `${file.name} (${sheetName})`,
+                isReturnFile:
+                  forcedRole === "RETURN" ||
+                  lowerName.includes("return") ||
+                  lowerName.includes("crn") ||
+                  sheetName.toLowerCase().includes("return"),
+                rows
+              });
+            }
+          });
+        } catch (err) {
+          console.error("Spreadsheet parse error:", err);
+        }
+      }
+
+      return extractedFiles;
+    }
+
+    function normalizeRowKeys(rowObj) {
+      const map = {};
+      for (const [k, v] of Object.entries(rowObj || {})) {
+        const cleanK = String(k || "")
+          .toLowerCase()
+          .replace(/[^a-z0-9_]/g, "_")
+          .replace(/_+/g, "_")
+          .replace(/^_|_$/g, "");
+        map[cleanK] = v;
+      }
+      return map;
+    }
+
+    function pickField(normRow, candidateKeys = []) {
+      for (const key of candidateKeys) {
+        if (normRow[key] !== undefined && normRow[key] !== "") return normRow[key];
+      }
+      for (const [rowKey, val] of Object.entries(normRow)) {
+        if (val === "" || val === undefined) continue;
+        for (const key of candidateKeys) {
+          if (rowKey.includes(key)) return val;
         }
       }
       return "";
@@ -1597,748 +1057,583 @@
       return Number.isFinite(num) ? num : 0;
     }
 
-    async function extractRowsFromSheetOrZipFile(file) {
-      const ext = file.name.toLowerCase().split(".").pop();
-      const extractedFiles = [];
+    // SMART MULTI-PLATFORM ROW MAPPER (EXACT MEESHO tcs_sales + AMAZON + FLIPKART)
+    function mapRawRowToStandardTaxRecord(rawRow, isReturnFile = false) {
+      const r = normalizeRowKeys(rawRow);
 
-      // If user uploads a .ZIP archive (like Meesho's 3077556_...zip), automatically extract CSV/XLSX inside it!
-      if (ext === "zip" && window.JSZip) {
-        const zip = await window.JSZip.loadAsync(file);
-        for (const [relativePath, zipEntry] of Object.entries(zip.files)) {
-          if (zipEntry.dir) continue;
-          const lowerName = relativePath.toLowerCase();
-          if (lowerName.endsWith(".csv") || lowerName.endsWith(".xlsx") || lowerName.endsWith(".xls")) {
-            const arrayBuf = await zipEntry.async("arraybuffer");
-            const wb = window.XLSX.read(arrayBuf, { type: "array" });
-            wb.SheetNames.forEach((sheetName) => {
-              const rows = window.XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { defval: "" });
-              if (rows.length > 0) {
-                extractedFiles.push({
-                  fileName: `${relativePath} (${sheetName})`,
-                  isReturnFile: lowerName.includes("return") || lowerName.includes("crn") || sheetName.toLowerCase().includes("return"),
-                  rows
-                });
-              }
-            });
-          }
-        }
-        return extractedFiles;
+      const sellerGstinCandidate = String(pickField(r, ["gstin", "seller_gstin", "supplier_gstin"]) || "")
+        .trim()
+        .toUpperCase();
+      if (/^\d{2}[A-Z0-9]{13}$/.test(sellerGstinCandidate)) {
+        const sellerInp = document.getElementById("seller-gstin-input");
+        if (sellerInp) sellerInp.value = sellerGstinCandidate;
       }
 
-      // Standard .CSV, .XLSX, .XLS file
-      const arrayBuf = await file.arrayBuffer();
-      const wb = window.XLSX.read(arrayBuf, { type: "array" });
-      wb.SheetNames.forEach((sheetName) => {
-        const rows = window.XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { defval: "" });
-        if (rows.length > 0) {
-          const lowerFile = file.name.toLowerCase();
-          const lowerSheet = sheetName.toLowerCase();
-          extractedFiles.push({
-            fileName: `${file.name} (${sheetName})`,
-            isReturnFile:
-              lowerFile.includes("return") ||
-              lowerSheet.includes("return") ||
-              lowerSheet.includes("crn"),
-            rows
-          });
-        }
-      });
-      return extractedFiles;
+      const ecoGstinCandidate = String(
+        pickField(r, ["eco_tcs_gstin", "ecommerce_gstin", "operator_gstin", "tcs_gstin"]) || ""
+      )
+        .trim()
+        .toUpperCase();
+      if (/^\d{2}[A-Z0-9]{13}$/.test(ecoGstinCandidate)) {
+        const ecoInp = document.getElementById("eco-gstin-input");
+        if (ecoInp) ecoInp.value = ecoGstinCandidate;
+      }
+
+      const meeshoMonth = parseInt(pickField(r, ["month_number", "month"]), 10);
+      const meeshoYear = parseInt(pickField(r, ["financial_year", "year"]), 10);
+      if (meeshoMonth >= 1 && meeshoMonth <= 12) {
+        const mmStr = String(meeshoMonth).padStart(2, "0");
+        const mSelect = document.getElementById("filing-month-select");
+        if (mSelect) mSelect.value = mmStr;
+      }
+      if (meeshoYear >= 2024 && meeshoYear <= 2028) {
+        const ySelect = document.getElementById("filing-year-select");
+        if (ySelect) ySelect.value = String(meeshoYear);
+      }
+
+      const orderId = String(
+        pickField(r, ["sub_order_num", "order_id", "invoice_no", "invoice_number", "order_item_id", "identifier"]) ||
+          "ORD-ITEM"
+      ).trim();
+
+      const hsnCode =
+        String(pickField(r, ["hsn_code", "hsn", "hsn_sac", "sac_code", "product_hsn"]) || "903289").replace(
+          /\D/g,
+          ""
+        ) || "903289";
+
+      const rawQty = parseNum(pickField(r, ["quantity", "qty", "item_quantity", "net_quantity"]) || 1);
+      const gstRate = parseNum(pickField(r, ["gst_rate", "tax_rate", "rate", "igst_rate"]) || 18);
+
+      let taxableVal = parseNum(
+        pickField(r, [
+          "total_taxable_sale_value",
+          "taxable_value",
+          "tax_exclusive_gross",
+          "aggregate_taxable_value",
+          "net_taxable_value",
+          "taxable_amount"
+        ])
+      );
+
+      const addShippingSeparately = document.getElementById("include-shipping-taxable-toggle")?.checked === true;
+      const shippingTaxable = parseNum(pickField(r, ["taxable_shipping", "shipping_taxable_value"]));
+      if (addShippingSeparately && shippingTaxable && !r.total_taxable_sale_value) {
+        taxableVal += shippingTaxable;
+      }
+
+      if (taxableVal === 0) return null;
+
+      const txType = String(pickField(r, ["transaction_type", "event_type", "type", "return_date"]) || "").toLowerCase();
+      const isReturnRow =
+        isReturnFile ||
+        Boolean(r.return_date && String(r.return_date).toLowerCase() !== "null") ||
+        txType.includes("return") ||
+        txType.includes("refund") ||
+        txType.includes("cancel") ||
+        txType.includes("crn") ||
+        taxableVal < 0;
+
+      const absTaxable = Math.abs(taxableVal);
+      const absQty = Math.max(1, Math.abs(rawQty));
+
+      const rawState = pickField(r, [
+        "end_customer_state_new",
+        "end_customer_state",
+        "place_of_supply",
+        "ship_to_state",
+        "customer_delivery_state",
+        "delivery_state",
+        "pos",
+        "state"
+      ]);
+      const posCode = resolveStateCode(rawState);
+
+      const buyerGstin = String(
+        pickField(r, ["buyer_gstin", "customer_bill_to_gstid", "customer_gstin", "ctin"]) || ""
+      )
+        .trim()
+        .toUpperCase();
+
+      return {
+        orderId,
+        hsnCode,
+        qty: isReturnRow ? -absQty : absQty,
+        gstRate: gstRate > 0 ? gstRate : 18,
+        grossTaxable: isReturnRow ? 0 : absTaxable,
+        returnTaxable: isReturnRow ? absTaxable : 0,
+        netTaxable: isReturnRow ? -absTaxable : absTaxable,
+        posCode,
+        buyerGstin: /^\d{2}[A-Z0-9]{13}$/.test(buyerGstin) ? buyerGstin : ""
+      };
     }
 
-    /**
-     * Converts raw rows from Meesho (tcs_sales / tcs_sales_return), Amazon MTR, Flipkart, or Generic CSV
-     * into unified normalized tax records.
-     */
-    function normalizeMarketplaceRows(rawRows, platformHint = "MEESHO", forceReturnMode = false) {
-      const normalized = [];
-      let detectedSellerGstin = "";
-      let detectedEcoGstin = "";
-      let detectedMonth = "";
-      let detectedYear = "";
-
-      rawRows.forEach((row, idx) => {
-        // Detect if this row is from Meesho tcs_sales / tcs_sales_return (exact columns from user screenshot!)
-        const subOrderNum = getField(row, [
-          "sub_order_num", "subordernum", "Order ID", "Order Item ID", "Invoice Number", "Invoice No", "inv_no"
-        ]);
-        const rowGstin = String(
-          getField(row, ["gstin", "Seller Gstin", "Seller GSTIN", "Supplier GSTIN"])
-        ).trim().toUpperCase();
-        if (rowGstin.length === 15 && !detectedSellerGstin) {
-          detectedSellerGstin = rowGstin;
-        }
-
-        const ecoGstin = String(
-          getField(row, ["tcs_gstin", "eco_tcs_gstin", "Merchant Tax Id", "Flipkart GSTIN", "E-Commerce GSTIN"])
-        ).trim().toUpperCase();
-        if (ecoGstin.length === 15 && !detectedEcoGstin) {
-          detectedEcoGstin = ecoGstin;
-        }
-
-        const fyVal = String(getField(row, ["financial_year", "year"])).trim();
-        const mVal = String(getField(row, ["month_number", "month"])).trim();
-        if (fyVal && /^\d{4}$/.test(fyVal)) detectedYear = fyVal;
-        if (mVal && /^\d{1,2}$/.test(mVal)) detectedMonth = mVal.padStart(2, "0");
-
-        const hsnRaw = String(
-          getField(row, ["hsn_code", "HSN Code", "Hsn/sac", "HSN", "hsn_sac"]) || "903289"
-        ).replace(/[^0-9]/g, "");
-        const hsnCode = hsnRaw || "903289";
-
-        const qtyRaw = parseNum(getField(row, ["quantity", "Item Quantity", "Qty", "Net Qty"]) || 1);
-        const gstRate = parseNum(
-          getField(row, ["gst_rate", "GST Rate", "Rate", "Tax Rate"]) ||
-            (parseNum(getField(row, ["Igst Rate", "IGST Rate"])) +
-              parseNum(getField(row, ["Cgst Rate", "CGST Rate"])) +
-              parseNum(getField(row, ["Sgst Rate", "SGST Rate"]))) ||
-            18
-        );
-
-        // Meesho combines `total_taxable_sale_value` + `taxable_shipping`
-        const hasMeeshoCols =
-          getField(row, ["total_taxable_sale_value"]) !== "" ||
-          getField(row, ["end_customer_state_new"]) !== "";
-
-        let baseTaxable = parseNum(
-          getField(row, [
-            "total_taxable_sale_value",
-            "Tax Exclusive Gross",
-            "Taxable Value (Final Invoice Amount -Taxes)",
-            "Taxable Value",
-            "taxable_value"
-          ])
-        );
-
-        const shippingTaxable = parseNum(getField(row, ["taxable_shipping", "Shipping Taxable Value"]));
-
-        // In Meesho tcs_sales, if baseTaxable is already negative (e.g. -42.37 shipping adjustment row where baseTaxable == taxable_shipping), avoid double-counting!
-        let combinedTaxable = baseTaxable;
-        if (hasMeeshoCols && shippingTaxable !== 0 && Math.abs(baseTaxable - shippingTaxable) > 0.01) {
-          combinedTaxable = baseTaxable + shippingTaxable;
-        }
-
-        if (combinedTaxable === 0) return;
-
-        // Determine if this row is a Return / Refund / Credit deduction
-        const txType = String(
-          getField(row, ["transaction_type", "Transaction Type", "Event Type", "Supply Type"])
-        ).toLowerCase();
-        const hasCancelReturnDate = String(getField(row, ["cancel_return_date"])).trim();
-
-        const isReturnRow =
-          forceReturnMode ||
-          txType.includes("return") ||
-          txType.includes("refund") ||
-          txType.includes("cancel") ||
-          txType.includes("crn") ||
-          (hasCancelReturnDate !== "" && hasCancelReturnDate.toLowerCase() !== "null" && baseTaxable > 0 && platformHint === "MEESHO_RETURN");
-
-        // Ensure return rows carry a negative sign so they subtract from gross sales
-        let signedTaxable = combinedTaxable;
-        if (isReturnRow && signedTaxable > 0) {
-          signedTaxable = -Math.abs(signedTaxable);
-        }
-
-        const signedTax = (signedTaxable * gstRate) / 100;
-
-        const customerStateRaw = getField(row, [
-          "end_customer_state_new",
-          "Customer's Delivery State",
-          "Ship To State",
-          "Place of Supply",
-          "Customer State",
-          "state"
-        ]) || "UTTAR PRADESH";
-
-        const buyerGstin = String(
-          getField(row, ["Customer Bill To Gstid", "Buyer GSTIN", "Customer GSTIN", "ctin"])
-        ).trim().toUpperCase();
-
-        const orderDate = String(
-          getField(row, ["order_date", "Invoice Date", "Buyer Invoice Date", "Date"]) || "2026-03-15"
-        ).slice(0, 10);
-
-        normalized.push({
-          source: isReturnRow ? "RETURN (-)" : signedTaxable < 0 ? "ADJUSTMENT (-)" : `${platformHint} SALE`,
-          isReturn: isReturnRow || signedTaxable < 0,
-          orderNo: String(subOrderNum || `ORD-${idx + 1}`),
-          orderDate,
-          buyerGstin: buyerGstin.length === 15 ? buyerGstin : "",
-          customerState: String(customerStateRaw).toUpperCase(),
-          posCode: resolveStateCode(customerStateRaw, "09"),
-          hsnCode,
-          qty: signedTaxable < 0 ? -Math.abs(qtyRaw) : Math.abs(qtyRaw || 1),
-          gstRate: gstRate || 18,
-          taxableValue: signedTaxable,
-          taxAmount: signedTax
-        });
-      });
-
-      if (detectedSellerGstin) {
-        sellerGstinInput.value = detectedSellerGstin;
-      }
-      if (detectedEcoGstin) {
-        document.getElementById("eco-gstin-input").value = detectedEcoGstin;
-      }
-      if (detectedMonth && filingFrequency === "MONTHLY") {
-        document.getElementById("filing-month-select").value = detectedMonth;
-      }
-      if (detectedYear) {
-        document.getElementById("filing-year-select").value = detectedYear;
-        document.getElementById("filing-q-year-select").value = detectedYear;
-      }
-
-      return normalized;
-    }
-
-    // =========================================================================
-    // 4. CONSOLIDATE INTO GSTR-1 TABLES (B2CS, HSN, B2B, ECO SEC 52)
-    // =========================================================================
-    function recalculateAndRenderAll() {
-      const allRows = [...meeshoSalesRows, ...meeshoReturnRows, ...otherPlatformRows];
-      latestNormalizedRows = allRows;
-
-      const sellerGstin = (sellerGstinInput.value || "10FVMPR3192R1Z5").trim().toUpperCase();
+    // CONSOLIDATION & GSTR-1 JSON BUILDER
+    function recomputeGSTR1Tables() {
+      const sellerGstin = (document.getElementById("seller-gstin-input")?.value || "10FVMPR3192G1Z5")
+        .trim()
+        .toUpperCase();
       const sellerStateCode = /^\d{2}/.test(sellerGstin) ? sellerGstin.slice(0, 2) : "10";
-      const fp = fpPreview.value || "032026";
-      const ecoGstin = (document.getElementById("eco-gstin-input").value || "10AARCM9332R1CQ").trim().toUpperCase();
+      const ecoGstin = (document.getElementById("eco-gstin-input")?.value || "10AARCM9332R1CQ")
+        .trim()
+        .toUpperCase();
+      const fp = getActiveFilingPeriodMMYYYY();
 
-      let grossSalesTaxable = 0;
-      let returnDeductionTaxable = 0;
-      let netTaxableTotal = 0;
+      const allRawEntries = [...meeshoGrossRows, ...meeshoReturnRows, ...otherPlatformRows];
+      const mappedRecords = [];
+
+      allRawEntries.forEach((item) => {
+        const mapped = mapRawRowToStandardTaxRecord(item.raw, item.isReturn);
+        if (mapped) mappedRecords.push(mapped);
+      });
+
+      document.getElementById("upload-row-counter").textContent = `${mappedRecords.length} Valid Tax Rows`;
+
+      let totalGrossSales = 0;
+      let totalReturns = 0;
+      let totalNetTaxable = 0;
       let totalIgst = 0;
       let totalCgst = 0;
       let totalSgst = 0;
-      let salesRowCount = 0;
-      let returnRowCount = 0;
 
-      const b2csMap = new Map();
+      const stateRateMap = new Map();
       const hsnMap = new Map();
       const b2bMap = new Map();
 
-      allRows.forEach((r) => {
-        if (r.taxableValue >= 0) {
-          grossSalesTaxable += r.taxableValue;
-          salesRowCount += 1;
-        } else {
-          returnDeductionTaxable += Math.abs(r.taxableValue);
-          returnRowCount += 1;
-        }
-        netTaxableTotal += r.taxableValue;
+      mappedRecords.forEach((rec) => {
+        totalGrossSales += rec.grossTaxable;
+        totalReturns += rec.returnTaxable;
+        totalNetTaxable += rec.netTaxable;
 
-        const isInterState = r.posCode !== sellerStateCode;
-        const splyTy = isInterState ? "INTER" : "INTRA";
-        const igst = isInterState ? r.taxAmount : 0;
-        const cgst = isInterState ? 0 : r.taxAmount / 2;
-        const sgst = isInterState ? 0 : r.taxAmount / 2;
+        const isIntraState = rec.posCode === sellerStateCode;
+        const splyTy = isIntraState ? "INTRA" : "INTER";
 
-        totalIgst += igst;
-        totalCgst += cgst;
-        totalSgst += sgst;
-
-        // 1. B2B vs B2CS Grouping
-        if (r.buyerGstin && r.buyerGstin.length === 15) {
-          if (!b2bMap.has(r.buyerGstin)) b2bMap.set(r.buyerGstin, []);
-          b2bMap.get(r.buyerGstin).push({ ...r, splyTy, igst, cgst, sgst });
-        } else {
-          const b2csKey = `${r.posCode}_${r.gstRate}_${splyTy}`;
-          if (!b2csMap.has(b2csKey)) {
-            b2csMap.set(b2csKey, {
-              pos: r.posCode,
-              stateName: CODE_TO_STATE_NAME[r.posCode] || r.customerState,
-              sply_ty: splyTy,
-              rt: r.gstRate,
-              txval: 0,
-              iamt: 0,
-              camt: 0,
-              samt: 0
-            });
-          }
-          const grp = b2csMap.get(b2csKey);
-          grp.txval += r.taxableValue;
-          grp.iamt += igst;
-          grp.camt += cgst;
-          grp.samt += sgst;
-        }
-
-        // 2. HSN Table 12 Grouping
-        const hsnKey = `${r.hsnCode}_${r.gstRate}`;
-        if (!hsnMap.has(hsnKey)) {
-          hsnMap.set(hsnKey, {
-            num: hsnMap.size + 1,
-            hsn_sc: r.hsnCode,
-            uqc: "PCS",
-            qty: 0,
-            rt: r.gstRate,
-            txval: 0,
-            iamt: 0,
-            camt: 0,
-            samt: 0,
-            csamt: 0
+        const stateKey = `${rec.posCode}_${rec.gstRate}`;
+        if (!stateRateMap.has(stateKey)) {
+          stateRateMap.set(stateKey, {
+            posCode: rec.posCode,
+            stateName: CODE_TO_STATE_NAME[rec.posCode] || "Other State",
+            splyTy,
+            gstRate: rec.gstRate,
+            grossSales: 0,
+            returnsDeducted: 0,
+            netTaxable: 0,
+            igst: 0,
+            cgst: 0,
+            sgst: 0
           });
         }
-        const hGrp = hsnMap.get(hsnKey);
-        hGrp.qty += r.qty;
-        hGrp.txval += r.taxableValue;
-        hGrp.iamt += igst;
-        hGrp.camt += cgst;
-        hGrp.samt += sgst;
+        const stEntry = stateRateMap.get(stateKey);
+        stEntry.grossSales += rec.grossTaxable;
+        stEntry.returnsDeducted += rec.returnTaxable;
+        stEntry.netTaxable += rec.netTaxable;
+
+        const hsnKey = `${rec.hsnCode}_${rec.gstRate}`;
+        if (!hsnMap.has(hsnKey)) {
+          hsnMap.set(hsnKey, {
+            hsnCode: rec.hsnCode,
+            qty: 0,
+            gstRate: rec.gstRate,
+            netTaxable: 0,
+            igst: 0,
+            cgst: 0,
+            sgst: 0
+          });
+        }
+        const hEntry = hsnMap.get(hsnKey);
+        hEntry.qty += rec.qty;
+        hEntry.netTaxable += rec.netTaxable;
+
+        if (rec.buyerGstin) {
+          if (!b2bMap.has(rec.buyerGstin)) b2bMap.set(rec.buyerGstin, []);
+          b2bMap.get(rec.buyerGstin).push({ ...rec, splyTy });
+        }
       });
 
-      // Round values cleanly to 2 decimal places for GST Portal compliance
-      const round2 = (n) => Number((Number(n) || 0).toFixed(2));
-
-      latestB2CSList = Array.from(b2csMap.values()).map((item) => ({
-        sply_ty: item.sply_ty,
-        pos: item.pos,
-        stateName: item.stateName,
-        typ: "OE",
-        rt: round2(item.rt),
-        txval: round2(item.txval),
-        iamt: round2(item.iamt),
-        camt: round2(item.camt),
-        samt: round2(item.samt),
-        csamt: 0
-      }));
-
-      latestHSNList = Array.from(hsnMap.values()).map((h, i) => ({
-        num: i + 1,
-        hsn_sc: h.hsn_sc,
-        uqc: "PCS",
-        qty: Math.max(0, Math.round(h.qty)),
-        rt: round2(h.rt),
-        txval: round2(h.txval),
-        iamt: round2(h.iamt),
-        camt: round2(h.camt),
-        samt: round2(h.samt),
-        csamt: 0
-      }));
-
-      // Build GST Portal Official GSTR-1 JSON Payload (Supports both Monthly & Quarterly)
-      latestCompiledPortalJSON = {
-        gstin: sellerGstin,
-        fp: fp,
-        filing_frequency: filingFrequency,
-        version: "GST3.1.6",
-        hash: "hash",
-        b2b: Array.from(b2bMap.entries()).map(([ctin, invs]) => ({
-          ctin,
-          inv: invs.map((inv, idx) => ({
-            inum: inv.orderNo.slice(0, 16),
-            idt: inv.orderDate.split("-").reverse().join("-"),
-            val: round2(inv.taxableValue + inv.taxAmount),
-            pos: inv.posCode,
-            rchrg: "N",
-            inv_typ: "R",
-            itms: [
-              {
-                num: idx + 1,
-                itm_det: {
-                  rt: round2(inv.gstRate),
-                  txval: round2(inv.taxableValue),
-                  iamt: round2(inv.igst),
-                  camt: round2(inv.cgst),
-                  samt: round2(inv.sgst),
-                  csamt: 0
-                }
-              }
-            ]
-          }))
-        })),
-        b2cs: latestB2CSList.map(({ stateName, ...portalB2cs }) => portalB2cs),
-        hsn: {
-          data: latestHSNList
-        },
-        supeco: {
-          clttx: [
-            {
-              etin: ecoGstin,
-              suppval: round2(netTaxableTotal),
-              igst: round2(totalIgst),
-              cgst: round2(totalCgst),
-              sgst: round2(totalSgst),
-              cess: 0,
-              flag: "N"
-            }
-          ]
+      const b2csArray = [];
+      stateRateMap.forEach((st) => {
+        const txval = Number(st.netTaxable.toFixed(2));
+        const totalTaxForState = Number(((txval * st.gstRate) / 100).toFixed(2));
+        if (st.splyTy === "INTRA") {
+          st.cgst = Number((totalTaxForState / 2).toFixed(2));
+          st.sgst = Number((totalTaxForState - st.cgst).toFixed(2));
+          st.igst = 0;
+        } else {
+          st.igst = totalTaxForState;
+          st.cgst = 0;
+          st.sgst = 0;
         }
-      };
+        totalIgst += st.igst;
+        totalCgst += st.cgst;
+        totalSgst += st.sgst;
 
-      // Save to localStorage so JSON Validator (#3) can immediately inspect & edit it!
-      try {
-        localStorage.setItem("sellgst_latest_gstr1_json", JSON.stringify(latestCompiledPortalJSON));
-      } catch (_) {}
+        b2csArray.push({
+          sply_ty: st.splyTy,
+          pos: st.posCode,
+          typ: "OE",
+          txval,
+          rt: st.gstRate,
+          iamt: st.igst,
+          camt: st.cgst,
+          samt: st.sgst,
+          csamt: 0
+        });
+      });
 
-      // Update Summary KPIs
-      document.getElementById("parsed-row-count-pill").textContent = `${allRows.length} Rows (${salesRowCount} Sales, ${returnRowCount} Returns)`;
-      document.getElementById("sum-gross-taxable").textContent = formatINR(grossSalesTaxable);
-      document.getElementById("sum-sales-rows").textContent = `${salesRowCount} Positive Sale Rows`;
-      document.getElementById("sum-return-taxable").textContent = `-${formatINR(returnDeductionTaxable)}`;
-      document.getElementById("sum-return-rows").textContent = `${returnRowCount} Return Rows Deducted`;
-      document.getElementById("sum-net-taxable").textContent = formatINR(netTaxableTotal);
-      document.getElementById("sum-total-tax").textContent = formatINR(totalIgst + totalCgst + totalSgst);
-      document.getElementById("sum-igst-val").textContent = formatINR(totalIgst);
-      document.getElementById("sum-cgst-val").textContent = formatINR(totalCgst);
-      document.getElementById("sum-sgst-val").textContent = formatINR(totalSgst);
+      const hsnDataArray = [];
+      let hsnIndex = 1;
+      hsnMap.forEach((h) => {
+        const txval = Number(h.netTaxable.toFixed(2));
+        const tax = Number(((txval * h.gstRate) / 100).toFixed(2));
+        h.igst = tax;
+        hsnDataArray.push({
+          num: hsnIndex++,
+          hsn_sc: h.hsnCode,
+          desc: "E-Commerce Goods",
+          uqc: "PCS",
+          qty: Math.max(0, h.qty),
+          val: Number((txval + tax).toFixed(2)),
+          txval,
+          rt: h.gstRate,
+          iamt: tax,
+          camt: 0,
+          samt: 0,
+          csamt: 0
+        });
+      });
 
-      renderPreviewTables();
-    }
+      const totalNetTax = totalIgst + totalCgst + totalSgst;
+      document.getElementById("kpi-gross-sales").textContent = formatINR(totalGrossSales);
+      document.getElementById("kpi-sales-returns").textContent = `-${formatINR(totalReturns)}`;
+      document.getElementById("kpi-net-taxable").textContent = formatINR(totalNetTaxable);
+      document.getElementById("kpi-net-tax").textContent = formatINR(totalNetTax);
+      document.getElementById("kpi-igst-val").textContent = formatINR(totalIgst);
+      document.getElementById("kpi-cgst-val").textContent = formatINR(totalCgst);
+      document.getElementById("kpi-sgst-val").textContent = formatINR(totalSgst);
 
-    function renderPreviewTables() {
-      const b2csTbody = document.getElementById("b2cs-preview-tbody");
-      const hsnTbody = document.getElementById("hsn-preview-tbody");
-      const rawTbody = document.getElementById("raw-preview-tbody");
-
-      if (latestB2CSList.length === 0) {
-        b2csTbody.innerHTML = `
-          <tr>
-            <td colspan="7" class="p-6 text-center text-slate-400 font-sans font-semibold">
-              No GST rows loaded yet. Upload your Meesho (<code>tcs_sales</code> / <code>tcs_sales_return</code>), Flipkart, or Amazon file above.
-            </td>
-          </tr>
-        `;
-      } else {
-        b2csTbody.innerHTML = latestB2CSList
+      document.getElementById("hsn-count-badge").textContent = `${hsnDataArray.length} HSNs`;
+      const hsnTbody = document.getElementById("hsn-summary-tbody");
+      if (hsnDataArray.length > 0) {
+        hsnTbody.innerHTML = hsnDataArray
           .map(
-            (r) => `
+            (h) => `
           <tr class="hover:bg-indigo-50/40">
-            <td class="p-3 font-bold text-[#081B4B]">${sanitizeHTML(r.pos)} - ${sanitizeHTML(r.stateName)}</td>
-            <td class="p-3"><span class="px-2 py-0.5 rounded bg-indigo-50 text-[#5B2EFF] font-bold text-[10px]">${sanitizeHTML(
-              r.sply_ty
-            )}</span></td>
-            <td class="p-3 font-bold">${r.rt}%</td>
-            <td class="p-3 text-right font-extrabold ${r.txval < 0 ? "text-rose-600" : "text-[#081B4B]"}">${formatINR(
-              r.txval
-            )}</td>
-            <td class="p-3 text-right">${formatINR(r.iamt)}</td>
-            <td class="p-3 text-right">${formatINR(r.camt)}</td>
-            <td class="p-3 text-right">${formatINR(r.samt)}</td>
+            <td class="py-2 px-2.5 font-bold text-[#081B4B]">${sanitizeHTML(h.hsn_sc)}</td>
+            <td class="py-2 px-2 text-right">${h.qty}</td>
+            <td class="py-2 px-2 text-right">${h.rt}%</td>
+            <td class="py-2 px-2.5 text-right font-bold text-[#081B4B]">${formatINR(h.txval)}</td>
+            <td class="py-2 px-2.5 text-right text-[#5B2EFF] font-bold">${formatINR(h.iamt)}</td>
           </tr>
         `
           )
           .join("");
       }
 
-      hsnTbody.innerHTML = latestHSNList
-        .map(
-          (h) => `
-        <tr class="hover:bg-indigo-50/40">
-          <td class="p-3 font-extrabold text-[#5B2EFF]">${sanitizeHTML(h.hsn_sc)}</td>
-          <td class="p-3">${h.uqc}</td>
-          <td class="p-3 text-right font-bold">${h.qty}</td>
-          <td class="p-3 text-right">${h.rt}%</td>
-          <td class="p-3 text-right font-extrabold text-[#081B4B]">${formatINR(h.txval)}</td>
-          <td class="p-3 text-right">${formatINR(h.iamt)}</td>
-          <td class="p-3 text-right">${formatINR(h.camt)}</td>
-          <td class="p-3 text-right">${formatINR(h.samt)}</td>
-        </tr>
-      `
-        )
-        .join("");
+      const stateList = Array.from(stateRateMap.values()).sort((a, b) => a.posCode.localeCompare(b.posCode));
+      document.getElementById("state-count-badge").textContent = `${stateList.length} States Consolidated`;
+      const stateTbody = document.getElementById("b2cs-state-tbody");
+      if (stateList.length > 0) {
+        stateTbody.innerHTML = stateList
+          .map(
+            (st) => `
+          <tr class="hover:bg-indigo-50/40">
+            <td class="py-2.5 px-3 font-bold text-[#081B4B]">${st.posCode} — ${sanitizeHTML(st.stateName)}</td>
+            <td class="py-2.5 px-2.5 text-center">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold ${
+                st.splyTy === "INTRA" ? "bg-emerald-100 text-emerald-800" : "bg-indigo-100 text-[#5B2EFF]"
+              }">${st.splyTy}</span>
+            </td>
+            <td class="py-2.5 px-2.5 text-center font-bold">${st.gstRate}%</td>
+            <td class="py-2.5 px-3 text-right text-emerald-700">${formatINR(st.grossSales)}</td>
+            <td class="py-2.5 px-3 text-right text-rose-600">-${formatINR(st.returnsDeducted)}</td>
+            <td class="py-2.5 px-3 text-right font-black text-[#081B4B] bg-indigo-50/50">${formatINR(st.netTaxable)}</td>
+            <td class="py-2.5 px-2.5 text-right">${formatINR(st.igst)}</td>
+            <td class="py-2.5 px-2.5 text-right">${formatINR(st.cgst)}</td>
+            <td class="py-2.5 px-2.5 text-right">${formatINR(st.sgst)}</td>
+          </tr>
+        `
+          )
+          .join("");
+      }
 
-      rawTbody.innerHTML = latestNormalizedRows
-        .slice(0, 100)
-        .map(
-          (r) => `
-        <tr class="${r.isReturn ? "bg-rose-50/60 text-rose-800" : "hover:bg-slate-50"}">
-          <td class="p-2.5 font-extrabold text-[10px]">${sanitizeHTML(r.source)}</td>
-          <td class="p-2.5">${sanitizeHTML(r.orderNo)}</td>
-          <td class="p-2.5">${sanitizeHTML(r.orderDate)}</td>
-          <td class="p-2.5">${sanitizeHTML(r.posCode)} - ${sanitizeHTML(r.customerState)}</td>
-          <td class="p-2.5">${sanitizeHTML(r.hsnCode)}</td>
-          <td class="p-2.5 text-right">${r.gstRate}%</td>
-          <td class="p-2.5 text-right font-bold">${formatINR(r.taxableValue)}</td>
-          <td class="p-2.5 text-right">${formatINR(r.taxAmount)}</td>
-        </tr>
-      `
-        )
-        .join("");
-    }
-
-    // =========================================================================
-    // 5. FILE UPLOAD LISTENERS FOR MEESHO, FLIPKART, AMAZON & GENERIC
-    // =========================================================================
-    async function handleFileInputSelection(fileList, platform, isExplicitReturnSlot = false, statusElId = "") {
-      if (!fileList || fileList.length === 0) return;
-
-      const statusEl = document.getElementById(statusElId);
-      if (statusEl) statusEl.textContent = "⏳ Extracting & Parsing GST rows in RAM...";
-
-      let salesAdded = 0;
-      let returnsAdded = 0;
-
-      try {
-        for (const file of Array.from(fileList)) {
-          const sheets = await extractRowsFromSheetOrZipFile(file);
-          for (const sheet of sheets) {
-            const isRet = isExplicitReturnSlot || sheet.isReturnFile;
-            const parsed = normalizeMarketplaceRows(sheet.rows, platform, isRet);
-
-            if (platform === "MEESHO") {
-              if (isRet) {
-                meeshoReturnRows.push(...parsed);
-                returnsAdded += parsed.length;
-              } else {
-                meeshoSalesRows.push(...parsed);
-                salesAdded += parsed.length;
-              }
-            } else {
-              otherPlatformRows.push(...parsed);
-              salesAdded += parsed.length;
+      const portalJson = {
+        gstin: sellerGstin,
+        fp,
+        filing_mode: filingFrequency,
+        gt: 0,
+        cur_gt: Number(Math.max(0, totalNetTaxable).toFixed(2)),
+        b2b: [],
+        b2cs: b2csArray,
+        hsn: {
+          data: hsnDataArray
+        },
+        supeco: {
+          clttx: [
+            {
+              etin: ecoGstin,
+              suppval: Number(Math.max(0, totalNetTaxable).toFixed(2)),
+              igst: Number(Math.max(0, totalIgst).toFixed(2)),
+              cgst: Number(Math.max(0, totalCgst).toFixed(2)),
+              sgst: Number(Math.max(0, totalSgst).toFixed(2)),
+              cess: 0
             }
-          }
+          ]
         }
+      };
 
-        updatePeriodCode();
+      latestComputedSummary = {
+        portalJson,
+        stateList,
+        hsnDataArray,
+        mappedRecords,
+        sellerGstin,
+        ecoGstin,
+        fp,
+        filingFrequency,
+        totalGrossSales,
+        totalReturns,
+        totalNetTaxable,
+        totalIgst,
+        totalCgst,
+        totalSgst
+      };
 
-        const totalLoaded = salesAdded + returnsAdded;
-        if (totalLoaded > 0) {
-          if (statusEl) {
-            statusEl.textContent = `✅ Loaded ${totalLoaded} valid GST rows (${salesAdded} Sales, ${returnsAdded} Returns)`;
-          }
-          document.getElementById("active-parser-badge").textContent = `${platform} (${filingFrequency}) PARSED`;
-          showToast(`✅ Successfully parsed ${totalLoaded} rows from ${platform} report!`, "success");
-        } else {
-          if (statusEl) {
-            statusEl.textContent = `⚠️ No valid tax rows found in selected file. Check sheet columns.`;
-          }
-          showToast("⚠️ Could not find taxable value columns in this file.", "warning");
-        }
-      } catch (err) {
-        console.error("[SellGST Parser Error]:", err);
-        if (statusEl) statusEl.textContent = "⚠️ Error reading file. Please upload .CSV, .XLSX or .ZIP.";
-        showToast("⚠️ Error parsing file. Please check file format.", "error");
-      }
+      localStorage.setItem("sellgst_last_gstr1_json", JSON.stringify(portalJson, null, 2));
     }
 
-    document.getElementById("meesho-sales-file")?.addEventListener("change", (e) => {
-      handleFileInputSelection(e.target.files, "MEESHO", false, "meesho-sales-status");
-    });
+    // FILE INPUT EVENT LISTENERS FOR ALL 4 MARKETPLACE TABS
+    document.getElementById("meesho-sales-input")?.addEventListener("change", async (e) => {
+      const files = e.target.files;
+      if (!files || files.length === 0) return;
 
-    document.getElementById("meesho-return-file")?.addEventListener("change", (e) => {
-      handleFileInputSelection(e.target.files, "MEESHO", true, "meesho-return-status");
-    });
+      const parsedBundles = await extractRowsFromFileList(files, "AUTO");
+      let salesCount = 0;
+      let returnCount = 0;
 
-    document.getElementById("flipkart-report-file")?.addEventListener("change", (e) => {
-      otherPlatformRows = [];
-      handleFileInputSelection(e.target.files, "FLIPKART", false, "flipkart-file-status");
-    });
-
-    document.getElementById("amazon-report-file")?.addEventListener("change", (e) => {
-      otherPlatformRows = [];
-      handleFileInputSelection(e.target.files, "AMAZON", false, "amazon-file-status");
-    });
-
-    document.getElementById("generic-report-file")?.addEventListener("change", (e) => {
-      otherPlatformRows = [];
-      handleFileInputSelection(e.target.files, "GENERIC", false, "generic-file-status");
-    });
-
-    // =========================================================================
-    // 6. LOAD MEESHO DEMO DATA (MATCHING USER'S EXACT AGNI VOLT SCREENSHOT!)
-    // =========================================================================
-    function loadMeeshoScreenshotDemoData() {
-      meeshoSalesRows = [];
-      meeshoReturnRows = [];
-      otherPlatformRows = [];
-
-      // Exact sample rows from user's AGNI VOLT Meesho tcs_sales screenshot
-      const demoMeeshoTcsSales = [
-        {
-          identifier: "hnyzd", sup_name: "AGNI VOLT", gstin: "10FVMPR3192R1Z5",
-          sub_order_num: "264352448622_1", order_date: "2026-03-14", hsn_code: "903289",
-          quantity: 1, gst_rate: 18, total_taxable_sale_value: 481.36, tax_amount: 86.64,
-          total_invoice_value: 568, taxable_shipping: 63.56, end_customer_state_new: "UTTAR PRADESH",
-          tcs_gstin: "10AARCM9332R1CQ", financial_year: "2026", month_number: "3", supplier_id: "3077556"
-        },
-        {
-          identifier: "hnyzd", sup_name: "AGNI VOLT", gstin: "10FVMPR3192R1Z5",
-          sub_order_num: "269834083711_1", order_date: "2026-03-29", hsn_code: "853110",
-          quantity: 1, gst_rate: 18, total_taxable_sale_value: 832.20, tax_amount: 149.80,
-          total_invoice_value: 982, taxable_shipping: 64.41, end_customer_state_new: "UTTAR PRADESH",
-          tcs_gstin: "10AARCM9332R1CQ", financial_year: "2026", month_number: "3", supplier_id: "3077556"
-        },
-        {
-          identifier: "hnyzd", sup_name: "AGNI VOLT", gstin: "10FVMPR3192R1Z5",
-          sub_order_num: "268635803419_1", order_date: "2026-03-26", hsn_code: "853110",
-          quantity: 1, gst_rate: 18, total_taxable_sale_value: 605.08, tax_amount: 108.92,
-          total_invoice_value: 714, taxable_shipping: 102.54, end_customer_state_new: "CHHATTISGARH",
-          tcs_gstin: "10AARCM9332R1CQ", financial_year: "2026", month_number: "3", supplier_id: "3077556"
-        },
-        {
-          identifier: "hnyzd", sup_name: "AGNI VOLT", gstin: "10FVMPR3192R1Z5",
-          sub_order_num: "262187316188_1", order_date: "2026-03-08", hsn_code: "903289",
-          quantity: 1, gst_rate: 18, total_taxable_sale_value: 468.64, tax_amount: 84.36,
-          total_invoice_value: 553, taxable_shipping: 50.85, end_customer_state_new: "TELANGANA",
-          tcs_gstin: "10AARCM9332R1CQ", financial_year: "2026", month_number: "3", supplier_id: "3077556"
-        },
-        {
-          identifier: "hnyzd", sup_name: "AGNI VOLT", gstin: "10FVMPR3192R1Z5",
-          sub_order_num: "269856658290_1", order_date: "2026-03-29", hsn_code: "903289",
-          quantity: 1, gst_rate: 18, total_taxable_sale_value: 651.69, tax_amount: 117.31,
-          total_invoice_value: 769, taxable_shipping: 59.32, end_customer_state_new: "HARYANA",
-          tcs_gstin: "10AARCM9332R1CQ", financial_year: "2026", month_number: "3", supplier_id: "3077556"
-        },
-        {
-          identifier: "hnyzd", sup_name: "AGNI VOLT", gstin: "10FVMPR3192R1Z5",
-          sub_order_num: "261806091522_1", order_date: "2026-03-07", hsn_code: "853110",
-          quantity: 1, gst_rate: 18, total_taxable_sale_value: 635.59, tax_amount: 114.41,
-          total_invoice_value: 750, taxable_shipping: 80.17, end_customer_state_new: "DELHI",
-          tcs_gstin: "10AARCM9332R1CQ", financial_year: "2026", month_number: "3", supplier_id: "3077556"
-        }
-      ];
-
-      // Exact sample return row from user's Meesho tcs_sales_return screenshot
-      const demoMeeshoTcsReturn = [
-        {
-          identifier: "hnyzd", sup_name: "AGNI VOLT", gstin: "10FVMPR3192R1Z5",
-          sub_order_num: "264352448622_RET", order_date: "2026-03-14", cancel_return_date: "2026-03-26",
-          hsn_code: "903289", quantity: 1, gst_rate: 18, total_taxable_sale_value: 481.36,
-          tax_amount: 86.64, total_invoice_value: 568, taxable_shipping: 63.56,
-          end_customer_state_new: "UTTAR PRADESH", eco_tcs_gstin: "10AARCM9332R1CQ",
-          financial_year: "2026", month_number: "3", supplier_id: "3077556"
-        }
-      ];
-
-      meeshoSalesRows = normalizeMarketplaceRows(demoMeeshoTcsSales, "MEESHO", false);
-      meeshoReturnRows = normalizeMarketplaceRows(demoMeeshoTcsReturn, "MEESHO", true);
-      updatePeriodCode();
-      document.getElementById("meesho-sales-status").textContent = "✅ Loaded 6 Meesho tcs_sales rows (AGNI VOLT)";
-      document.getElementById("meesho-return-status").textContent = "✅ Loaded 1 Meesho tcs_sales_return row (Auto-deducted)";
-    }
-
-    document.getElementById("load-meesho-demo-btn")?.addEventListener("click", () => {
-      loadMeeshoScreenshotDemoData();
-      showToast("⚡ Loaded AGNI VOLT Meesho tcs_sales + tcs_sales_return Demo!", "success");
-    });
-
-    document.getElementById("clear-all-gst-btn")?.addEventListener("click", () => {
-      meeshoSalesRows = [];
-      meeshoReturnRows = [];
-      otherPlatformRows = [];
-      recalculateAndRenderAll();
-      document.getElementById("meesho-sales-status").textContent = "📂 Tap to select tcs_sales.csv / .xlsx OR Meesho GST .zip file";
-      document.getElementById("meesho-return-status").textContent = "📂 Tap to select tcs_sales_return.csv / .xlsx (Auto-deducted)";
-      showToast("Cleared all uploaded GST rows.", "info");
-    });
-
-    // =========================================================================
-    // 7. 1-CLICK PORTAL JSON, MULTI-SHEET EXCEL (.XLSX) & CSV DOWNLOADS
-    // =========================================================================
-    document.getElementById("download-gstr1-json-btn")?.addEventListener("click", () => {
-      if (!latestCompiledPortalJSON || latestNormalizedRows.length === 0) {
-        showToast("⚠️ Please upload a GST report or click 'Load Meesho Demo' first!", "warning");
-        return;
-      }
-      if (!consumeFreeActionOrLock("GSTR-1 Portal JSON Download")) return;
-
-      const fp = fpPreview.value || "032026";
-      const gstin = (sellerGstinInput.value || "10FVMPR3192R1Z5").trim();
-      const blob = new Blob([JSON.stringify(latestCompiledPortalJSON, null, 2)], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `GSTR1_${gstin}_${fp}_${filingFrequency}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-      showToast(`🏛️ Downloaded Portal-Compliant GSTR-1 JSON (${filingFrequency} - ${fp})!`, "success");
-    });
-
-    document.getElementById("download-ready-excel-btn")?.addEventListener("click", () => {
-      if (latestNormalizedRows.length === 0) {
-        showToast("⚠️ Please upload a GST report first!", "warning");
-        return;
-      }
-      if (!consumeFreeActionOrLock("Multi-Sheet GSTR-1 Excel Download")) return;
-
-      const wb = window.XLSX.utils.book_new();
-
-      // Sheet 1: b2cs (Portal & Officer Ready State-Wise Summary)
-      const b2csSheetRows = latestB2CSList.map((r) => ({
-        "Type": r.typ,
-        "Place Of Supply": `${r.pos}-${r.stateName}`,
-        "Supply Type": r.sply_ty,
-        "Rate": r.rt,
-        "Taxable Value": r.txval,
-        "Integrated Tax Amount": r.iamt,
-        "Central Tax Amount": r.camt,
-        "State/UT Tax Amount": r.samt,
-        "Cess Amount": 0
-      }));
-      window.XLSX.utils.book_append_sheet(wb, window.XLSX.utils.json_to_sheet(b2csSheetRows), "b2cs");
-
-      // Sheet 2: hsn (Table 12 HSN Summary)
-      const hsnSheetRows = latestHSNList.map((h) => ({
-        "HSN": h.hsn_sc,
-        "Description": "Electronic & E-Commerce Goods",
-        "UQC": "PCS-PIECES",
-        "Total Quantity": h.qty,
-        "Rate": h.rt,
-        "Taxable Value": h.txval,
-        "Integrated Tax Amount": h.iamt,
-        "Central Tax Amount": h.camt,
-        "State/UT Tax Amount": h.samt,
-        "Cess Amount": 0
-      }));
-      window.XLSX.utils.book_append_sheet(wb, window.XLSX.utils.json_to_sheet(hsnSheetRows), "hsn");
-
-      // Sheet 3: Order_Wise_Audit (For GST Officer Verification)
-      const auditRows = latestNormalizedRows.map((r) => ({
-        "Entry Type": r.source,
-        "Sub Order / Invoice No": r.orderNo,
-        "Order Date": r.orderDate,
-        "Customer State": `${r.posCode}-${r.customerState}`,
-        "HSN Code": r.hsnCode,
-        "Qty": r.qty,
-        "GST Rate (%)": r.gstRate,
-        "Net Taxable Value (INR)": Number(r.taxableValue.toFixed(2)),
-        "Net GST Tax (INR)": Number(r.taxAmount.toFixed(2)),
-        "Total Invoice Value (INR)": Number((r.taxableValue + r.taxAmount).toFixed(2))
-      }));
-      window.XLSX.utils.book_append_sheet(wb, window.XLSX.utils.json_to_sheet(auditRows), "Officer_Audit_Register");
-
-      const fp = fpPreview.value || "032026";
-      window.XLSX.writeFile(wb, `Ready_GSTR1_${filingFrequency}_${fp}.xlsx`);
-      showToast("📗 Downloaded Multi-Sheet GSTR-1 Excel (b2cs + hsn + Officer Audit)!", "success");
-    });
-
-    document.getElementById("download-ready-csv-btn")?.addEventListener("click", () => {
-      if (latestB2CSList.length === 0) {
-        showToast("⚠️ Please upload a GST report first!", "warning");
-        return;
-      }
-      if (!consumeFreeActionOrLock("Ready GSTR-1 CSV Download")) return;
-
-      const csvRows = [
-        ["Place Of Supply", "Supply Type", "GST Rate (%)", "Net Taxable Value", "IGST", "CGST", "SGST", "Filing Mode"]
-      ];
-      latestB2CSList.forEach((r) => {
-        csvRows.push([
-          `${r.pos}-${r.stateName}`,
-          r.sply_ty,
-          r.rt,
-          r.txval,
-          r.iamt,
-          r.camt,
-          r.samt,
-          filingFrequency
-        ]);
+      meeshoGrossRows = [];
+      parsedBundles.forEach((b) => {
+        b.rows.forEach((r) => {
+          if (b.isReturnFile) {
+            meeshoReturnRows.push({ raw: r, isReturn: true });
+            returnCount++;
+          } else {
+            meeshoGrossRows.push({ raw: r, isReturn: false });
+            salesCount++;
+          }
+        });
       });
 
-      const csvContent = csvRows.map((row) => row.join(",")).join("\n");
-      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      document.getElementById("meesho-sales-status").textContent =
+        `✅ Loaded ${salesCount} sales rows` + (returnCount ? ` + ${returnCount} return rows from ZIP` : "");
+      document.getElementById("upload-status-text").textContent =
+        `Meesho report parsed successfully (${salesCount} sales rows, ${meeshoReturnRows.length} return rows).`;
+      updateHeaderPills();
+      recomputeGSTR1Tables();
+      showToast(`🛍️ Meesho File Parsed! (${salesCount} Sales Rows, ${meeshoReturnRows.length} Return Rows)`, "success");
+    });
+
+    document.getElementById("meesho-return-input")?.addEventListener("change", async (e) => {
+      const files = e.target.files;
+      if (!files || files.length === 0) return;
+
+      const parsedBundles = await extractRowsFromFileList(files, "RETURN");
+      meeshoReturnRows = [];
+      parsedBundles.forEach((b) => {
+        b.rows.forEach((r) => {
+          meeshoReturnRows.push({ raw: r, isReturn: true });
+        });
+      });
+
+      document.getElementById("meesho-return-status").textContent =
+        `✅ Deducting ${meeshoReturnRows.length} rows from tcs_sales_return`;
+      document.getElementById("upload-status-text").textContent =
+        `Meesho tcs_sales_return (${meeshoReturnRows.length} rows) deducted from gross sales!`;
+      recomputeGSTR1Tables();
+      showToast(`↩️ Deducted ${meeshoReturnRows.length} Meesho Sales Return rows!`, "info");
+    });
+
+    ["amazon-file-input", "flipkart-file-input", "generic-file-input"].forEach((inputId) => {
+      document.getElementById(inputId)?.addEventListener("change", async (e) => {
+        const files = e.target.files;
+        if (!files || files.length === 0) return;
+
+        const parsedBundles = await extractRowsFromFileList(files, "AUTO");
+        otherPlatformRows = [];
+        parsedBundles.forEach((b) => {
+          b.rows.forEach((r) => {
+            otherPlatformRows.push({ raw: r, isReturn: b.isReturnFile });
+          });
+        });
+
+        const statusId = inputId.replace("-input", "-status");
+        const statusEl = document.getElementById(statusId);
+        if (statusEl) statusEl.textContent = `✅ Loaded ${otherPlatformRows.length} rows from ${files[0].name}`;
+        document.getElementById("upload-status-text").textContent =
+          `${activePlatform} report parsed (${otherPlatformRows.length} rows).`;
+        recomputeGSTR1Tables();
+        showToast(`✅ Parsed ${otherPlatformRows.length} rows for ${activePlatform}!`, "success");
+      });
+    });
+
+    // LOAD REAL MEESHO DEMO DATA
+    function loadRealMeeshoSampleData() {
+      meeshoGrossRows = [
+        { raw: { identifier: "hnyzd", sup_name: "AGNI VOLT ELECTRONIC", gstin: "10FVMPR3192G1Z5", sub_order_num: "2643524486_1", order_date: "2026-03-14", hsn_code: "903289", quantity: 1, gst_rate: 18, total_taxable_sale_value: 481.36, tax_amount: 86.64, total_invoice_value: 568, taxable_shipping: 63.56, end_customer_state_new: "UTTAR PRADESH", eco_tcs_gstin: "10AARCM9332R1CQ", financial_year: 2026, month_number: 3 }, isReturn: false },
+        { raw: { identifier: "hnyzd", sup_name: "AGNI VOLT ELECTRONIC", gstin: "10FVMPR3192G1Z5", sub_order_num: "2698340637_1", order_date: "2026-03-29", hsn_code: "853110", quantity: 1, gst_rate: 18, total_taxable_sale_value: 632.20, tax_amount: 113.80, total_invoice_value: 746, taxable_shipping: 64.41, end_customer_state_new: "UTTAR PRADESH", eco_tcs_gstin: "10AARCM9332R1CQ", financial_year: 2026, month_number: 3 }, isReturn: false },
+        { raw: { identifier: "hnyzd", sup_name: "AGNI VOLT ELECTRONIC", gstin: "10FVMPR3192G1Z5", sub_order_num: "2686358034_1", order_date: "2026-03-26", hsn_code: "853110", quantity: 1, gst_rate: 18, total_taxable_sale_value: 605.08, tax_amount: 108.91, total_invoice_value: 714, taxable_shipping: 102.54, end_customer_state_new: "CHHATTISGARH", eco_tcs_gstin: "10AARCM9332R1CQ", financial_year: 2026, month_number: 3 }, isReturn: false },
+        { raw: { identifier: "hnyzd", sup_name: "AGNI VOLT ELECTRONIC", gstin: "10FVMPR3192G1Z5", sub_order_num: "2621873161_1", order_date: "2026-03-08", hsn_code: "903289", quantity: 1, gst_rate: 18, total_taxable_sale_value: 468.64, tax_amount: 84.36, total_invoice_value: 553, taxable_shipping: 50.85, end_customer_state_new: "TELANGANA", eco_tcs_gstin: "10AARCM9332R1CQ", financial_year: 2026, month_number: 3 }, isReturn: false },
+        { raw: { identifier: "hnyzd", sup_name: "AGNI VOLT ELECTRONIC", gstin: "10FVMPR3192G1Z5", sub_order_num: "2698566562_1", order_date: "2026-03-29", hsn_code: "903289", quantity: 1, gst_rate: 18, total_taxable_sale_value: 651.69, tax_amount: 117.31, total_invoice_value: 769, taxable_shipping: 59.32, end_customer_state_new: "HARYANA", eco_tcs_gstin: "10AARCM9332R1CQ", financial_year: 2026, month_number: 3 }, isReturn: false },
+        { raw: { identifier: "hnyzd", sup_name: "AGNI VOLT ELECTRONIC", gstin: "10FVMPR3192G1Z5", sub_order_num: "2618060915_1", order_date: "2026-03-07", hsn_code: "853110", quantity: 1, gst_rate: 18, total_taxable_sale_value: 635.59, tax_amount: 114.41, total_invoice_value: 750, taxable_shipping: 80.17, end_customer_state_new: "DELHI", eco_tcs_gstin: "10AARCM9332R1CQ", financial_year: 2026, month_number: 3 }, isReturn: false },
+        { raw: { identifier: "hnyzd", sup_name: "AGNI VOLT ELECTRONIC", gstin: "10FVMPR3192G1Z5", sub_order_num: "2689238882_1", order_date: "2026-03-27", hsn_code: "903289", quantity: 1, gst_rate: 18, total_taxable_sale_value: 650.85, tax_amount: 117.15, total_invoice_value: 768, taxable_shipping: 58.47, end_customer_state_new: "KARNATAKA", eco_tcs_gstin: "10AARCM9332R1CQ", financial_year: 2026, month_number: 3 }, isReturn: false },
+        { raw: { identifier: "hnyzd", sup_name: "AGNI VOLT ELECTRONIC", gstin: "10FVMPR3192G1Z5", sub_order_num: "2646008645_1", order_date: "2026-03-15", hsn_code: "853110", quantity: 1, gst_rate: 18, total_taxable_sale_value: 555.08, tax_amount: 99.91, total_invoice_value: 655, taxable_shipping: 98.31, end_customer_state_new: "RAJASTHAN", eco_tcs_gstin: "10AARCM9332R1CQ", financial_year: 2026, month_number: 3 }, isReturn: false }
+      ];
+
+      meeshoReturnRows = [
+        { raw: { identifier: "hnyzd", sup_name: "AGNI VOLT ELECTRONIC", gstin: "10FVMPR3192G1Z5", sub_order_num: "2643524486_R", order_date: "2026-03-14", return_date: "2026-03-26", hsn_code: "903289", quantity: 1, gst_rate: 18, total_taxable_sale_value: 481.36, tax_amount: 86.64, total_invoice_value: 568, end_customer_state_new: "UTTAR PRADESH", eco_tcs_gstin: "10AARCM9332R1CQ", financial_year: 2026, month_number: 3 }, isReturn: true }
+      ];
+
+      otherPlatformRows = [];
+      updateHeaderPills();
+      recomputeGSTR1Tables();
+    }
+
+    document.getElementById("load-platform-demo-btn")?.addEventListener("click", () => {
+      loadRealMeeshoSampleData();
+      showToast("⚡ Loaded AGNI VOLT Meesho tcs_sales & tcs_sales_return sample data!", "success");
+    });
+
+    document.getElementById("reset-filing-data-btn")?.addEventListener("click", () => {
+      meeshoGrossRows = [];
+      meeshoReturnRows = [];
+      otherPlatformRows = [];
+      recomputeGSTR1Tables();
+      document.getElementById("b2cs-state-tbody").innerHTML = `
+        <tr>
+          <td colspan="9" class="py-8 text-center text-slate-400 font-sans font-semibold">
+            All data cleared. Upload your Meesho, Amazon, or Flipkart report above.
+          </td>
+        </tr>
+      `;
+      showToast("Cleared all uploaded rows.", "info");
+    });
+
+    // 1-CLICK DOWNLOAD HANDLERS (JSON + PORTAL CSV + GST OFFICER AUDIT CSV)
+    document.getElementById("download-gstr1-json-btn")?.addEventListener("click", () => {
+      if (!latestComputedSummary || latestComputedSummary.mappedRecords.length === 0) {
+        showToast("⚠️ Please upload a file or click Load Demo Data first!", "warning");
+        return;
+      }
+      if (!consumeFreeActionOrLock("1-Click GSTR-1 Portal JSON")) return;
+
+      const jsonStr = JSON.stringify(latestComputedSummary.portalJson, null, 2);
+      const blob = new Blob([jsonStr], { type: "application/json" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `Ready_GSTR1_B2CS_${fpPreview.value || "032026"}.csv`;
+      a.download = `GSTR1_${latestComputedSummary.sellerGstin}_${latestComputedSummary.fp}_${latestComputedSummary.filingFrequency}.json`;
       a.click();
       URL.revokeObjectURL(url);
-      showToast("📊 Downloaded Ready GSTR-1 State-Wise CSV!", "success");
+      showToast("🏛️ Downloaded Portal-Compliant GSTR-1 (.JSON)!", "success");
     });
 
-    // Load initial AGNI VOLT Meesho Demo on startup so page is immediately populated and testable
-    loadMeeshoScreenshotDemoData();
+    document.getElementById("download-portal-csv-btn")?.addEventListener("click", () => {
+      if (!latestComputedSummary || latestComputedSummary.stateList.length === 0) {
+        showToast("⚠️ Please upload a file or click Load Demo Data first!", "warning");
+        return;
+      }
+      if (!consumeFreeActionOrLock("Portal GSTR-1 Summary CSV")) return;
+
+      const lines = [
+        ["Type", "Place Of Supply", "Supply Type", "Rate", "Gross Sales", "Sales Return Deducted", "Net Taxable Value", "IGST", "CGST", "SGST"].join(",")
+      ];
+      latestComputedSummary.stateList.forEach((st) => {
+        lines.push(
+          [
+            "OE",
+            `"${st.posCode}-${st.stateName}"`,
+            st.splyTy,
+            st.gstRate,
+            st.grossSales.toFixed(2),
+            st.returnsDeducted.toFixed(2),
+            st.netTaxable.toFixed(2),
+            st.igst.toFixed(2),
+            st.cgst.toFixed(2),
+            st.sgst.toFixed(2)
+          ].join(",")
+        );
+      });
+
+      const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Ready_GSTR1_B2CS_${latestComputedSummary.sellerGstin}_${latestComputedSummary.fp}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast("📊 Downloaded Ready GSTR-1 State Summary (.CSV)!", "success");
+    });
+
+    document.getElementById("download-officer-audit-btn")?.addEventListener("click", () => {
+      if (!latestComputedSummary || latestComputedSummary.mappedRecords.length === 0) {
+        showToast("⚠️ Please upload a file or click Load Demo Data first!", "warning");
+        return;
+      }
+      if (!consumeFreeActionOrLock("GST Officer Scrutiny Audit Sheet")) return;
+
+      const s = latestComputedSummary;
+      const lines = [
+        `"SELLGST PRO — GST OFFICER & CA SCRUTINY RECONCILIATION SHEET (${s.filingFrequency})"`,
+        `"Seller GSTIN:","${s.sellerGstin}","Filing Period (FP):","${s.fp}","E-Com Operator TCS GSTIN:","${s.ecoGstin}"`,
+        `"Gross Sales Taxable:","${s.totalGrossSales.toFixed(2)}","Sales Returns Deducted:","${s.totalReturns.toFixed(2)}","Net GSTR-1 Taxable:","${s.totalNetTaxable.toFixed(2)}"`,
+        "",
+        `"SECTION 1: STATE-WISE B2CS RECONCILIATION (TABLE 7)"`,
+        ["POS Code", "State Name", "Supply Type", "GST Rate (%)", "Gross Taxable Sales", "Sales Returns (tcs_sales_return)", "Net Taxable Value", "IGST", "CGST", "SGST"].join(",")
+      ];
+
+      s.stateList.forEach((st) => {
+        lines.push(
+          [
+            `"${st.posCode}"`,
+            `"${st.stateName}"`,
+            st.splyTy,
+            st.gstRate,
+            st.grossSales.toFixed(2),
+            st.returnsDeducted.toFixed(2),
+            st.netTaxable.toFixed(2),
+            st.igst.toFixed(2),
+            st.cgst.toFixed(2),
+            st.sgst.toFixed(2)
+          ].join(",")
+        );
+      });
+
+      lines.push("");
+      lines.push(`"SECTION 2: HSN-WISE SUMMARY (TABLE 12)"`);
+      lines.push(["HSN Code", "UQC", "Net Quantity", "GST Rate (%)", "Net Taxable Value", "Total Tax", "Total Invoice Value"].join(","));
+      s.hsnDataArray.forEach((h) => {
+        lines.push([`"${h.hsn_sc}"`, h.uqc, h.qty, h.rt, h.txval.toFixed(2), h.iamt.toFixed(2), h.val.toFixed(2)].join(","));
+      });
+
+      const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `GST_Officer_Audit_${s.sellerGstin}_${s.fp}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast("👮 Downloaded Full GST Officer & CA Scrutiny Sheet (.CSV)!", "success");
+    });
+
+    document.getElementById("sidebar-logout-btn")?.addEventListener("click", () => {
+      logoutUser();
+    });
+
+    subscribeAppState(() => {
+      syncProDOMElements();
+    });
+
+    // Initialize with real AGNI VOLT Meesho demo data so page is ready immediately
+    loadRealMeeshoSampleData();
   </script>
 </body>
 </html>
